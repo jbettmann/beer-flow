@@ -6,6 +6,7 @@ import Layout from "./layout";
 import { useEffect, useState } from "react";
 import { redirect, usePathname } from "next/navigation";
 import getUser from "@/lib/getUser";
+import { useUser } from "@/context/userContext";
 
 export default function Home() {
   const { data: session, status, update } = useSession({ required: true });

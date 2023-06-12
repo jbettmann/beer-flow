@@ -5,10 +5,10 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { Users } from "@/app/types/users";
 import { Session } from "next-auth";
 
-export default async function getBreweries(user: Users, session: Session) {
-  // const session = await getServerSession(authOptions);
+export default async function getBreweries(user: Users) {
+  const session = await getServerSession(authOptions);
 
-  if (session?.user && user.breweries) {
+  if (session?.user && user?.breweries) {
     try {
       // using axios due to fetch problem with body length of array?
       const response = await axios.post(

@@ -22,8 +22,8 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     async function fetchData() {
       const session = await getSession();
-      const user = await getUser(session as Session);
-      const breweries = await getBreweries(user, session as Session);
+      const user = await getUser();
+      const breweries = await getBreweries(user);
 
       setUser(user);
       setBreweries(breweries);

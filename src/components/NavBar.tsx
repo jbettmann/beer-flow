@@ -1,9 +1,5 @@
 "use-client";
 import { Brewery } from "@/app/types/brewery";
-import { Users } from "@/app/types/users";
-import getBreweries from "@/lib/getBreweries";
-import getUser from "@/lib/getUser";
-import { Session } from "next-auth";
 
 import { useSession } from "next-auth/react";
 import React from "react";
@@ -13,6 +9,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "./ui/accordion";
+import Link from "next/link";
 
 const NavBar = async ({ breweries }: { breweries: Brewery[] }) => {
   return (
@@ -25,7 +22,9 @@ const NavBar = async ({ breweries }: { breweries: Brewery[] }) => {
           <AccordionContent>
             <div>
               {breweries.map((brewery: Brewery) => (
-                <h3 key={brewery._id}>{brewery.companyName}</h3>
+                <Link key={brewery._id} href={`/breweries/${brewery._id}`}>
+                  <h3>{brewery.companyName}</h3>
+                </Link>
               ))}
             </div>
           </AccordionContent>

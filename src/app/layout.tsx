@@ -25,14 +25,14 @@ export default async function Layout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOptions);
+  const user = await getUser();
+  const breweries = await getBreweries(user);
 
-  const user = await getUser(session);
-  const breweries = await getBreweries(user, session);
   return (
     <html lang="en">
       <Provider>
         <body className={inter.className}>
+          {/* @ts-expect-error Server Component */}
           <NavBar breweries={breweries} />
           {/* <Chat /> */}
           {children}

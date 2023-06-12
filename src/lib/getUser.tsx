@@ -5,8 +5,8 @@ import { Session } from "next-auth";
 import { getServerSession } from "next-auth/next";
 import React from "react";
 
-export default async function getUser(session: Session) {
-  // const session = await getServerSession(authOptions);
+export default async function getUser() {
+  const session = await getServerSession(authOptions);
 
   const res = await fetch(
     `https://beer-bible-api.vercel.app/users/${session?.user.email}`,

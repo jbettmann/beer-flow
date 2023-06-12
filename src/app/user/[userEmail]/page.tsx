@@ -8,6 +8,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 
 import { notFound } from "next/navigation";
+import { Session } from "next-auth";
 
 interface pageProps {
   //  params are important here! Need to get out of url

@@ -15,9 +15,7 @@ const Provider: FC<ProviderProps> = ({ children }) => {
   return (
     <SessionProvider>
       <QueryClientProvider client={queryClient}>
-        <MessagesProvider>
-          <UserProvider>{children}</UserProvider>
-        </MessagesProvider>
+        <MessagesProvider>{children}</MessagesProvider>
       </QueryClientProvider>
     </SessionProvider>
   );
