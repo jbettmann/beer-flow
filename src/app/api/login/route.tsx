@@ -1,5 +1,5 @@
 import { signJwtAccessToken } from "@/lib/jwt";
-import mongo from "@/lib/mongodb";
+import { db } from "@/lib/db";
 import * as bcyrpt from "bcrypt";
 
 interface RequestBody {
@@ -11,7 +11,7 @@ export async function POST(req: Request, res: Response) {
   try {
     const body: RequestBody = await req.json();
 
-    const client = await mongo;
+    const client = await db;
     const collection = client.db().collection("users");
 
     const user = await collection.findOne({ username: body.username });

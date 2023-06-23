@@ -1,23 +1,66 @@
 import { NextRequest, NextResponse } from "next/server";
 import { rateLimiter } from "./lib/rate-limiter";
+import { withAuth } from "next-auth/middleware";
+import { getToken } from "next-auth/jwt";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./app/api/auth/[...nextauth]/route";
 
-export { default } from "next-auth/middleware";
+// export { default } from "next-auth/middleware";
 
 export const config = {
-  matcher: ["/api/message/:path*", "/breweries/:path*"],
+  matcher: ["/", "/api/:path*", "/api/message/:path*", "/breweries/:path*"],
 };
 
-export async function middleware(req: NextRequest) {
-  const ip = req.ip ?? "127.0.0.1";
+export default withAuth(
+  async function middleware(req: NextRequest) {
+    const pathname = req.nextUrl.pathname; // relative path
 
-  try {
-    const { success } = await rateLimiter.limit(ip);
+    if (pathname.startsWith("/api")) {
+      const ip = req.ip ?? "127.0.0.1";
 
-    if (!success) return new NextResponse("You are writing messages too fast.");
-    return NextResponse.next();
-  } catch (error) {
-    return new NextResponse(
-      "Sorry, something went wrong processing your message. Please try again later."
-    );
+      try {
+        const { success } = await rateLimiter.limit(ip);
+
+        if (!success)
+          return new NextResponse("You are writing messages too fast.");
+        return NextResponse.next();
+      } catch (error) {
+        return new NextResponse(
+          "Sorry, something went wrong processing your message. Please try again later."
+        );
+      }
+    }
+
+    // Manage route protection
+
+    const token = await getToken({ req });
+    console.log("tokenMiddle", token);
+
+    const isAuth = !!token;
+
+    const isAuthPage = pathname.startsWith("/api/auth/signin");
+
+    const sensitiveRoutes = ["/"];
+
+    if (isAuthPage) {
+      if (isAuth) {
+        return NextResponse.redirect(new URL("/", req.url));
+      }
+      return null;
+    }
+
+    if (
+      !isAuth &&
+      sensitiveRoutes.some((route) => pathname.startsWith(route))
+    ) {
+      return NextResponse.redirect(new URL("/api/auth/signin", req.url));
+    }
+  },
+  {
+    callbacks: {
+      async authorized() {
+        return true;
+      },
+    },
   }
-}
+);

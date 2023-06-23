@@ -2,14 +2,15 @@ import NextAuth from "next-auth/next";
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
-import mongo from "@/lib/mongodb";
+import { db } from "@/lib/db";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { signJwtAccessToken, signJwtRefreshToken } from "@/lib/jwt";
 import type { NextAuthOptions } from "next-auth";
 import { NextApiRequest, NextApiResponse } from "next";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 
 export const authOptions: NextAuthOptions = {
-  // adapter: MongoDBAdapter(mongo),
+  adapter: PrismaAdapter(db),
   // pages: {
   //   signIn: "/auth/login",
   // },

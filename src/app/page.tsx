@@ -9,7 +9,7 @@ import getUser from "@/lib/getUser";
 import { useUser } from "@/context/userContext";
 
 export default function Home() {
-  const { data: session, status, update } = useSession({ required: true });
+  const { data: session, status, update } = useSession();
 
   console.log(session?.user);
   return (
