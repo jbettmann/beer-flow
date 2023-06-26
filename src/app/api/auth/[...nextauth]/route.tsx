@@ -2,15 +2,15 @@ import NextAuth from "next-auth/next";
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { db } from "@/lib/db";
+
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { signJwtAccessToken, signJwtRefreshToken } from "@/lib/jwt";
 import type { NextAuthOptions } from "next-auth";
 import { NextApiRequest, NextApiResponse } from "next";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import getUser from "@/lib/getUser";
+import User from "../../../../../models/user";
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(db),
   // pages: {
   //   signIn: "/auth/login",
   // },
@@ -69,12 +69,14 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user, account }) {
       // Persist the OAuth access_token and or the user id to the token right after signin
+
       if (user) {
         const accessToken = signJwtAccessToken(user); // creates accessToken for API authorization
         const refreshToken = signJwtRefreshToken(user); // sends for new accessToken after expires
         token.id = user.id;
         return {
           ...token,
+          breweries: user.breweries,
           accessToken: accessToken,
           refreshToken: refreshToken,
         };
@@ -86,8 +88,6 @@ export const authOptions: NextAuthOptions = {
             process.env.NEXTAUTH_SECRET as string
           );
         } catch (e) {
-          console.log("jwt.verify error:", e);
-          console.log("token", token);
           try {
             const { exp, ...rest } = jwt.verify(
               token.refreshToken as string,
@@ -95,9 +95,8 @@ export const authOptions: NextAuthOptions = {
             ) as JwtPayload & { exp?: number };
             // console.log("experation", exp, "Rest of Verify", rest);
             const newAccessToken = signJwtAccessToken(rest);
-            console.log("newAcessToken", newAccessToken);
+
             token.accessToken = newAccessToken;
-            console.log("New AccessToken On User", token);
           } catch (err) {
             console.error("Error refreshing access token", err);
 
@@ -110,13 +109,13 @@ export const authOptions: NextAuthOptions = {
     },
 
     async signIn({ user, profile }) {
-      // Connect to MongoDB
-      const client = await mongo;
-      const collection = client.db().collection("users");
-
       // Get the user's name and email either from the 'user' object or the 'profile' object
       const name = user.name ?? profile?.name;
       const email = user.email ?? profile?.email;
+
+      // Connect to MongoDB
+      // const client = await db.user.findFirst();
+      // const collection = client.db().collection("users");
 
       if (!email) {
         // OAuth provider didn't return an email
@@ -125,27 +124,31 @@ export const authOptions: NextAuthOptions = {
 
       let existingUser;
       try {
-        existingUser = await collection.findOne({ email: email });
+        existingUser = await getUser(email);
       } catch (err) {
         console.error(err);
       }
 
       if (existingUser) {
         // User exists in your DB
-        user.id = existingUser._id.toString(); // or whatever the field for the user id is
+        user.id = existingUser.id.toString(); // or whatever the field for the user id is
+        user.breweries = existingUser.breweries; // add breweries to user
         return true;
-      } else {
+      } else if (name && email) {
         try {
           // User does not exist, create the user
-          const newUser = await collection.insertOne({
+
+          // Create a new user with Mongoose
+          const newUser = new User({
             fullName: name,
-            username: email, // using email as username here, modify if needed
             email: email,
             breweries: [],
           });
 
-          if (newUser) {
-            user.id = newUser.insertedId.toString(); // Add the new user's id to the user object so it will be included in the JWT
+          const savedUser = await newUser.save();
+          if (savedUser) {
+            user.id = savedUser.id.toString(); // Add the new user's id to the user object so it will be included in the JWT
+            user.breweries = savedUser.breweries; // breweries for new user
             return true;
           }
         } catch (err) {
@@ -155,12 +158,13 @@ export const authOptions: NextAuthOptions = {
         return false;
       }
     },
-    async session({ session, token }) {
+    async session({ session, token, user }) {
       if (token.accessToken) {
         session.user = token as any;
         session.user.accessToken = token.accessToken as string; // sets users accessToken for API authorization
+        session.user.breweries = token.breweries as string[]; // sets user's breweries
       }
-
+      console.log({ session });
       return session;
     },
   },

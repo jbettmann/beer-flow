@@ -1,16 +1,10 @@
-import { NextResponse, NextRequest } from "next/server";
-import {db} from "@/lib/db";
-import { Brewery } from "@/app/types/brewery";
+import { db } from "@/lib/db";
 import { getServerSession } from "next-auth";
+import { useRouter } from "next/router";
 import { authOptions } from "../auth/[...nextauth]/route";
-import { z } from "zod";
-import { Users } from "@/app/types/users";
 
-const reqSchema = z.object({
-  userId: z.number(),
-  breweryId: z.number(),
- 
-});
+import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 
 // Create and connect the MongoDB client outside of the handler function
 let client;
@@ -27,8 +21,7 @@ export async function GET() {
   try {
     // Reuse the existing MongoDB client if it's already connected
     if (!client) {
-      
-      client = await db.brewery.findMany();
+      client = await db.breweries.findMany();
     }
 
     const collection = client.db().collection("breweries");
@@ -46,27 +39,48 @@ export async function GET() {
   }
 }
 
-export async function DELETE(req: Request) {
-  const body = req.body as unknown
+const reqSchema = z.object({
+  breweryId: z.string(),
+});
 
-  const auth = req.headers.authorization;
+//  DELETE REQUEST ******************************
+export async function POST(req) {
+  // Convert the ReadableStream to a string
+  const body = await new Response(req.body).json();
 
-  if(!auth) return NextResponse.json({error: "Unauthorized"}, {status: 401})
-
-
-  
+  // Parse the string as a JavaScript object
+  // Convert the ReadableStream to a string
+  console.log(body.breweryId);
+  const auth = req.headers.get("authorization");
+  if (!auth)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
-    
-    const {userId, breweryId} = reqSchema.safeParse(body)
+    // Parse the string as a JavaScript object
+    const { data, success } = reqSchema.safeParse(body);
+    console.log({ data, success });
 
-    const vlidApiKey = await
-  } catch (error) {
-    if(error instanceof z.ZodError) {
-      return NextResponse.json({error: error.issues}, {status: 400})
+    if (!success) {
+      return NextResponse.json(
+        { error: "Brewery does not exist" },
+        { status: 500 }
+      );
     }
-    return NextResponse.json({error: 'Internal Server Error'}, {status: 500})
+    const brewery = await db.breweries.delete({
+      where: { id: data.breweryId },
+    });
+    console.log(brewery);
+    return NextResponse.json({
+      message: `${brewery.companyName} has been deleted`,
+    });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json({ error: error.issues }, { status: 400 });
+    }
+    console.error(error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
-
-
- }
+}

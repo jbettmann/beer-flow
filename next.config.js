@@ -11,5 +11,7 @@ module.exports = {
   },
   experiments: {
     topLevelAwait: true,
+    // esmExternals: "loose", // <-- add this
+    // serverComponentsExternalPackages: ["mongoose"], // <-- and this
   },
 };

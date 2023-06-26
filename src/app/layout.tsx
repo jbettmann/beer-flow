@@ -1,15 +1,9 @@
-import "./globals.css";
-import { Inter } from "next/font/google";
-import Chat from "@/components/Chat";
-import Provider from "@/components/Provider";
-import { useSession } from "next-auth/react";
-import { Metadata } from "next";
 import NavBar from "@/components/NavBar";
-import { getServerSession } from "next-auth";
-import { authOptions } from "./api/auth/[...nextauth]/route";
-import getUser from "@/lib/getUser";
+import Provider from "@/components/Provider";
 import getBreweries from "@/lib/getBreweries";
-import { Session } from "inspector";
+import { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,8 +19,8 @@ export default async function Layout({
 }: {
   children: React.ReactNode;
 }) {
-  const user = await getUser();
-  const breweries = await getBreweries(user);
+  const breweries = await getBreweries();
+  // const session = await getServerSession(authOptions);
 
   return (
     <html lang="en">

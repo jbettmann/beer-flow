@@ -4,17 +4,14 @@ export type Users = {
   username: string;
   password: string;
   email: string;
-  breweries: number[];
+  breweries: string[];
   __v: number;
-};
-
-export type User = {
-  id: number;
-  name: string;
+  accessToken: string;
+  refreshToken: string;
 };
 
 export type AuthContextType = {
-  user: User | null;
+  user: Users | null;
   login: (username: string, password: string) => Promise<void>;
   logout: () => void;
 };

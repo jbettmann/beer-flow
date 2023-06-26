@@ -6,7 +6,7 @@ import Layout from "./layout";
 import { useEffect, useState } from "react";
 import { redirect, usePathname } from "next/navigation";
 import getUser from "@/lib/getUser";
-import { useUser } from "@/context/userContext";
+import SingleBreweryPage from "./breweries/[breweryId]/page";
 
 export default function Home() {
   const { data: session, status, update } = useSession();
@@ -14,12 +14,14 @@ export default function Home() {
   console.log(session?.user);
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div>
-        <>
-          <p>{session?.user.fullName}</p>
-          <button onClick={() => signOut()}>Sign Out</button>
-        </>
-      </div>
+      {session?.user.breweries ? (
+        <div>
+          {/* @ts-expect-error Server Component */}
+          {/* <SingleBreweryPage breweryId={session?.user.breweries[0]} />{" "} */}
+        </div>
+      ) : (
+        <div>NoSession</div>
+      )}
 
       <Link href="/user">All Users</Link>
       <Link href="/breweries">All Breweries</Link>
