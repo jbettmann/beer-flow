@@ -19,7 +19,7 @@ const UserPage = async () => {
 
   const users = await userData;
 
-  console.log("Hellow");
+  console.log(users);
 
   const content = (
     <section>

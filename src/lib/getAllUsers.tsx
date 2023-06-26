@@ -1,5 +1,5 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { User } from "@/app/types/users";
+import { Users } from "@/app/types/users";
 
 import { Session, getServerSession } from "next-auth";
 import { Dispatch, SetStateAction } from "react";

@@ -22,7 +22,7 @@ export async function generateMetadata({
   params: { userEmail },
 }: pageProps): Promise<Metadata> {
   // nextjs deduplicates since there are two of these api calls
-  const userData: Promise<Users> = getUser();
+  const userData: Promise<Users> = getUser(userEmail);
   const user: Users = await userData;
 
   if (!user) {
@@ -39,8 +39,10 @@ export async function generateMetadata({
 export default async function UserByEmailPage({
   params: { userEmail },
 }: pageProps) {
+  let email = userEmail.replace("%40", "@");
   //  requesting data in parallel
-  const userData: Promise<Users> = getUser();
+  console.log(email);
+  const userData: Promise<Users> = getUser(email);
 
   const breweryData: Promise<Brewery[]> = getAllBreweries(); // pass promise down to BreweryProfiles component
 

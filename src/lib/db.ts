@@ -1,18 +1,11 @@
-import { PrismaClient } from "@prisma/client";
+import mongoose from "mongoose";
 
-declare global {
-  // eslint-disable-next-line no-var, no-unused-vars
-  var cachedPrisma: PrismaClient;
+async function dbConnect() {
+  // check if we are already connected to the database
+  if (mongoose.connection.readyState >= 1) return;
+
+  // otherwise, create a new connection
+  return mongoose.connect(process.env.DATABASE_URL || "");
 }
 
-let prisma: PrismaClient;
-if (process.env.NODE_ENV === "production") {
-  prisma = new PrismaClient();
-} else {
-  if (!global.cachedPrisma) {
-    global.cachedPrisma = new PrismaClient();
-  }
-  prisma = global.cachedPrisma;
-}
-
-export const db = prisma;
+export default dbConnect;

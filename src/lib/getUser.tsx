@@ -1,25 +1,10 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { Users } from "@/app/types/users";
-import axios from "axios";
-import { Session } from "next-auth";
-import { getServerSession } from "next-auth/next";
-import React from "react";
+import dbConnect from "@/lib/db";
+import User from "../../models/user";
 
-export default async function getUser() {
-  const session = await getServerSession(authOptions);
+async function getUser(email: string) {
+  await dbConnect();
 
-  const res = await fetch(
-    `https://beer-bible-api.vercel.app/users/${session?.user.email}`,
-    // ISR Incremental Static Regeneration. Static Site Generation or Server Side Rendering
-    {
-      method: "GET",
-
-      headers: {
-        authorization: `bearer ${session?.user.accessToken}`,
-      },
-    }
-  );
-  if (!res.ok) return undefined;
-  const data = await res.json();
-  return data;
+  return await User.findOne({ email });
 }
+
+export default getUser;
