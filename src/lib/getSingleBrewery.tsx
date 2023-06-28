@@ -5,20 +5,21 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { Users } from "@/app/types/users";
 import { Session } from "next-auth";
 
-export default async function getBreweries(breweryId) {
+export default async function getSingleBrewery(breweryId: string) {
   const session = await getServerSession(authOptions);
 
   if (session?.user) {
     try {
       // using axios due to fetch problem with body length of array?
-      const response = await axios.post(
-        `https://beer-bible-api.vercel.app//breweries/${breweryId}`,
-        { breweryIds: session.user.breweries },
+      const response = await fetch(
+        `https://beer-bible-api.vercel.app/breweries/${breweryId}`,
+
         {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${session?.user.accessToken}`,
           },
+          method: "GET",
         }
       );
 
@@ -26,7 +27,7 @@ export default async function getBreweries(breweryId) {
         throw new Error(response.statusText);
       }
 
-      return response.data.breweries;
+      return await response.json();
     } catch (err) {
       console.error(err);
       return []; // Return empty array on error
