@@ -1,19 +1,25 @@
+import { Beer } from "@/app/types/beer";
 import { Brewery } from "@/app/types/brewery";
-import { FC } from "react";
+import BeerCategory from "./BeerCategory";
 
 type Props = {
-  promise: Promise<Brewery[]>;
+  promise: Promise<[Brewery, Beer[]]>;
 };
 
 export default async function BreweryProfiles({ promise }: Props) {
-  const breweries = await promise;
+  const [brewery, beers] = await promise;
+  console.log(brewery, beers);
+  const categories = [...brewery.categories];
 
-  const content = breweries.map((brewery) => {
-    return (
-      <section key={brewery._id}>
-        <h2>{brewery.companyName}</h2>
-      </section>
-    );
-  });
+  const content = (
+    <section className="w-1/2 m-auto">
+      <h1>{brewery.companyName}</h1>
+
+      {categories.map((category, i) => (
+        <BeerCategory key={i} category={category} beers={beers} />
+      ))}
+    </section>
+  );
+
   return content;
 }
