@@ -12,3 +12,7 @@
   background-color: '#f7fafc';
   background-color: rgba(247, 250, 253, var(--bg-opacity));
 }
+
+p {
+  @apply my-4 mx-4 
+}
