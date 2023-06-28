@@ -1,5 +1,5 @@
 export type Brewery = {
-  _id: number;
+  _id: string;
   companyName: string;
   owner: number;
   admin: string[];
