@@ -164,7 +164,7 @@ export const authOptions: NextAuthOptions = {
         session.user.accessToken = token.accessToken as string; // sets users accessToken for API authorization
         session.user.breweries = token.breweries as string[]; // sets user's breweries
       }
-      console.log({ session });
+
       return session;
     },
   },
