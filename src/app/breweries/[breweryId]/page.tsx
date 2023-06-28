@@ -1,14 +1,31 @@
+import { Brewery } from "@/app/types/brewery";
+import BreweryProfiles from "@/components/BreweryProfiles";
 import getBreweries from "@/lib/getBreweries";
+import getBreweryBeers from "@/lib/getBreweryBeers";
+import getSingleBrewery from "@/lib/getSingleBrewery";
+import { notFound } from "next/navigation";
 import React from "react";
 
-type Props = {
-  breweryId: string;
+type pageProps = {
+  params: {
+    breweryId: string;
+  };
 };
 
-const SingleBreweryPage = async ({ breweryId }: Props) => {
-  const brewery = await getBreweries();
-  if (!brewery) return <div>No Brewery by {brewery.companyName}</div>;
-  return <div>{brewery.companyName}</div>;
-};
+//  breweries/breweryId *********************************
+export default async function SingleBreweryPage({
+  params: { breweryId },
+}: pageProps) {
+  const singleBrewery: Promise<Brewery> = getSingleBrewery(breweryId);
+  const breweryBeers: Promise<Brewery[]> = getBreweryBeers(breweryId);
 
-export default SingleBreweryPage;
+  const promise = await Promise.all([singleBrewery, breweryBeers]);
+
+  if (!singleBrewery) return notFound();
+  return (
+    <div className="w-full h-full">
+      {/* @ts-expect-error Server Component */}
+      <BreweryProfiles promise={promise} />
+    </div>
+  );
+}
