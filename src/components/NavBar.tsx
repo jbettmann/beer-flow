@@ -1,7 +1,7 @@
 "use client";
 import { Brewery } from "@/app/types/brewery";
 import { signIn, signOut, useSession } from "next-auth/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -9,10 +9,26 @@ import {
   AccordionTrigger,
 } from "./ui/accordion";
 import Link from "next/link";
+import { Users } from "@/app/types/users";
+import brewery from "../../models/brewery";
 
-const NavBar = ({ breweries: initialBreweries }: { breweries: Brewery[] }) => {
+const NavBar = ({
+  breweries: initialBreweries,
+  user,
+}: {
+  breweries: Brewery[];
+  user: Users;
+}) => {
   const [selectedBrewery, setSelectedBrewery] = useState<Brewery | null>(null);
   const [breweries, setBreweries] = useState(initialBreweries);
+  const [open, setOpen] = useState(false);
+
+  // Reference to the collapsible div
+  const collapseDiv = useRef<HTMLDivElement>(null);
+
+  const adminAllowed = breweries.map((brewery) =>
+    brewery.admin.includes(user._id)
+  );
 
   // On component mount, check if there's a brewery ID in local storage
   useEffect(() => {
@@ -23,6 +39,24 @@ const NavBar = ({ breweries: initialBreweries }: { breweries: Brewery[] }) => {
         setSelectedBrewery(savedBrewery);
       }
     }
+
+    // Function to handle outside click
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        collapseDiv.current &&
+        !collapseDiv.current.contains(event.target as Node)
+      ) {
+        setOpen(false);
+      }
+    }
+
+    // Add the outside click handler
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Cleanup function
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, [breweries]);
 
   const handleBreweryClick = (brewery: Brewery) => {
@@ -31,17 +65,6 @@ const NavBar = ({ breweries: initialBreweries }: { breweries: Brewery[] }) => {
 
     // Update the selected brewery
     setSelectedBrewery(brewery);
-
-    // Move selected brewery to the beginning of the array and remove duplicates
-    const updatedBreweries = breweries.filter((b) => b._id !== brewery._id);
-    updatedBreweries.unshift(brewery);
-
-    // Ensuring uniqueness in breweries array
-    const uniqueBreweries = updatedBreweries.filter(
-      (v, i, a) => a.findIndex((t) => t._id === v._id) === i
-    );
-
-    setBreweries(uniqueBreweries);
   };
 
   return (
@@ -53,14 +76,20 @@ const NavBar = ({ breweries: initialBreweries }: { breweries: Brewery[] }) => {
           <button onClick={() => signIn()}>Sign In</button>
         )}
       </div>
+
+      <div>
+        {adminAllowed ? <Link href={"/admin"}>Admin Edits</Link> : null}
+      </div>
       <Link href={"/"}>Home</Link>
-      <Accordion type="single" collapsible>
-        <AccordionItem value="item-1">
-          <AccordionTrigger>
-            <div>Breweries</div>
-          </AccordionTrigger>
-          <AccordionContent>
-            <div>
+      <div
+        className={`collapse  max-w-fit ${open ? "collapse-open" : ""}`}
+        onClick={() => setOpen(!open)}
+        ref={collapseDiv}
+      >
+        <div className="collapse-title text-xl font-medium">
+          <div>{selectedBrewery?.companyName}</div>
+          <div className="collapse-content">
+            <div className="text-base">
               {breweries.map((brewery: Brewery) => (
                 <Link
                   onClick={() => handleBreweryClick(brewery)}
@@ -71,9 +100,9 @@ const NavBar = ({ breweries: initialBreweries }: { breweries: Brewery[] }) => {
                 </Link>
               ))}
             </div>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

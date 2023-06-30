@@ -4,6 +4,8 @@ import getBreweries from "@/lib/getBreweries";
 import { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]/route";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,14 +22,14 @@ export default async function Layout({
   children: React.ReactNode;
 }) {
   const breweries = await getBreweries();
-  // const session = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions);
 
   return (
     <html lang="en">
       <Provider>
         <body className={inter.className}>
           {/* @ts-expect-error Server Component */}
-          <NavBar breweries={breweries} />
+          <NavBar breweries={breweries} user={session} />
           {/* <Chat /> */}
           {children}
         </body>

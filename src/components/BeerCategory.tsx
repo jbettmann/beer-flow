@@ -14,23 +14,20 @@ type Props = {
 
 export default async function BeerCategory({ category, beers }: Props) {
   return (
-    <Accordion type="single" collapsible key={category}>
-      <AccordionItem value="item-1">
-        <AccordionTrigger>
-          <div>{category}</div>
-        </AccordionTrigger>
-        <AccordionContent>
-          <div>
-            {beers
-              .filter((beer) => beer.category.includes(category))
-              .map((beer) => (
-                <Link href={`/beers/${beer._id}`} key={beer._id}>
-                  {beer.name}
-                </Link>
-              ))}
-          </div>
-        </AccordionContent>
-      </AccordionItem>
-    </Accordion>
+    <div className="collapse collapse-arrow  bg-base-200">
+      <input type="checkbox" />
+      <div className="collapse-title text-xl font-medium">{category}</div>
+      <div className="collapse-content">
+        <div>
+          {beers
+            .filter((beer) => beer.category.includes(category))
+            .map((beer) => (
+              <Link href={`/beers/${beer._id}`} key={beer._id}>
+                {beer.name}
+              </Link>
+            ))}
+        </div>
+      </div>
+    </div>
   );
 }

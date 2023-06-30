@@ -43,7 +43,9 @@ const Page = async () => {
         return (
           <>
             <p key={brewery._id}>
-              <Link href={`/users/${brewery._id}`}>{brewery.companyName}</Link>
+              <Link href={`/breweries/${brewery._id}`}>
+                {brewery.companyName}
+              </Link>
             </p>
           </>
         );
