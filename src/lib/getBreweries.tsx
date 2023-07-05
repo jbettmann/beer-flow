@@ -12,7 +12,7 @@ export default async function getBreweries() {
     try {
       // using axios due to fetch problem with body length of array?
       const response = await axios.post(
-        `https://beer-bible-api.vercel.app//breweries`,
+        `https://beer-bible-api.vercel.app/breweries`,
         { breweryIds: session.user.breweries },
         {
           headers: {

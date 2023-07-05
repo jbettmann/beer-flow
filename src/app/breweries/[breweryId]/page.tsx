@@ -1,6 +1,6 @@
 import { Brewery } from "@/app/types/brewery";
 import BreweryProfiles from "@/components/BreweryProfiles";
-import getBreweries from "@/lib/getBreweries";
+
 import getBreweryBeers from "@/lib/getBreweryBeers";
 import getSingleBrewery from "@/lib/getSingleBrewery";
 import { notFound } from "next/navigation";
