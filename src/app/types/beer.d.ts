@@ -12,4 +12,5 @@ export type Beer = {
   aroma: string;
   nameSake: string;
   notes: string;
+  archived: boolean;
 };

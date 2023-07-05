@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import getAllBreweries from "@/lib/getAllBreweries";
 import Link from "next/link";
 import { Brewery } from "../types/brewery";
+import { authOptions } from "../api/auth/[...nextauth]/route";
+import { getServerSession } from "next-auth";
 
 // export async function generateMetadata({
 //   params,
@@ -32,7 +34,8 @@ const Page = async () => {
   const breweryData: Promise<Brewery[]> = getAllBreweries();
 
   const breweries = await breweryData;
-
+  const session = await getServerSession(authOptions);
+  console.log(session?.user);
   const content = (
     <section>
       <h2>

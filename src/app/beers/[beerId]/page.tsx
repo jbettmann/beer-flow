@@ -1,6 +1,7 @@
 import { Beer } from "@/app/types/beer";
 import BreweryProfiles from "@/components/BreweryProfiles";
 import getSingleBeer from "@/lib/getSingleBeer";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 type pageProps = {
@@ -22,6 +23,9 @@ export default async function SingleBeerPage({
   if (!beer) return notFound();
   return (
     <div className="w-full h-full">
+      <h2>
+        <Link href="/">Back Home</Link>
+      </h2>
       <div>
         <h1>{beer.name}</h1>
         <p>ABV {beer.abv}%</p>
