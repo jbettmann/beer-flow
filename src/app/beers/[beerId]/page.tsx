@@ -18,7 +18,7 @@ export default async function SingleBeerPage({
 
   const beer = allBeers.find((b) => b._id === beerId);
 
-  console.log({ allBeers, beer });
+  console.log({ beer });
 
   if (!beer) return notFound();
   return (
@@ -45,7 +45,12 @@ export default async function SingleBeerPage({
         </p>
         <p>Flavor Notes: {beer.flavorNotes}</p>
         <p>Aroma: {beer.aroma}</p>
-        <p>Category: {beer.category}</p>
+        <p>
+          Category:{" "}
+          {beer.category.map((c, i) => (
+            <span key={i}>{c.name}</span>
+          ))}
+        </p>
         <p>Name Details: {beer.nameSake}</p>
         <p>Other Notes: {beer.notes}</p>
       </div>
