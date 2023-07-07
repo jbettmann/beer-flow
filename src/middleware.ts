@@ -2,13 +2,21 @@ import { NextRequest, NextResponse } from "next/server";
 import { rateLimiter } from "./lib/rate-limiter";
 import { withAuth } from "next-auth/middleware";
 import { getToken } from "next-auth/jwt";
-import { getServerSession } from "next-auth";
+
 import { authOptions } from "./app/api/auth/[...nextauth]/route";
 
 // export { default } from "next-auth/middleware";
 
+// Directs middleware to check url path for these routes
 export const config = {
-  matcher: ["/", "/api/:path*", "/api/message/:path*", "/breweries/:path*"],
+  matcher: [
+    "/",
+    "/api/:path*",
+    "/api/message/:path*",
+    "/breweries/:path*",
+    "/beers/:path*",
+    "/admin/:path*",
+  ],
 };
 
 export default withAuth(
@@ -34,7 +42,7 @@ export default withAuth(
     // Manage route protection
 
     const token = await getToken({ req });
-    
+
     const isAuth = !!token;
 
     const isAuthPage = pathname.startsWith("/api/auth/signin");
