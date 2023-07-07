@@ -1,3 +1,5 @@
+import { Category } from "./category";
+
 export type Beer = {
   _id: string;
   companyId: number;
@@ -5,7 +7,7 @@ export type Beer = {
   style: string;
   abv: number;
   ibu: number;
-  category: [string];
+  category: Category[];
   malt: [string];
   hops: [string];
   flavorNotes: string;

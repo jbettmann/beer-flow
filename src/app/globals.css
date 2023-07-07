@@ -16,3 +16,10 @@
 p {
   @apply my-4 mx-4 
 }
+
+.close-btn {
+  @apply absolute mt-3 mr-3;
+  
+  
+}
+

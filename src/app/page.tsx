@@ -1,8 +1,10 @@
 "use client";
+import getSingleBeer from "@/lib/getSingleBeer";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Beer } from "./types/beer";
 
 export default function Home() {
   const { data: session, status, update } = useSession();

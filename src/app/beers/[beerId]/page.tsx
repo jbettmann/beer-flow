@@ -37,13 +37,8 @@ export default async function SingleBeerPage({
             <span key={i}>{malt} </span>
           ))}
         </p>
-        <p>
-          Hops:{" "}
-          {beer.hops.map((hops, i) => (
-            <span key={i}>{hops} </span>
-          ))}
-        </p>
-        <p>Flavor Notes: {beer.flavorNotes}</p>
+        <p>Hops: {beer.hops.map((hop) => hop).join(", ")}</p>
+        <p>Description: {beer.flavorNotes}</p>
         <p>Aroma: {beer.aroma}</p>
         <p>
           Category:{" "}
