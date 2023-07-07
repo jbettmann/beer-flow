@@ -1,3 +1,4 @@
+"use client";
 import { Beer } from "@/app/types/beer";
 import {
   Accordion,
@@ -11,10 +12,18 @@ import { Category } from "@/app/types/category";
 type Props = {
   category: Category;
   beers: Beer[];
+  isOpen: boolean;
+  onClick: () => void;
 };
 
 // in BeerCategory.tsx
-export default function BeerCategory({ category, beers }: Props) {
+export default function BeerCategory({
+  category,
+  beers,
+  isOpen,
+  onClick,
+}: Props) {
+  console.log({ isOpen });
   const filteredBeers = () => {
     if (category.name === "All Beers") {
       return beers;
@@ -51,7 +60,7 @@ export default function BeerCategory({ category, beers }: Props) {
       ([categoryName, beersInCategory]) => (
         <div
           key={categoryName}
-          className="collapse collapse-arrow  bg-base-200"
+          className={`collapse collapse-arrow  bg-base-200`}
         >
           <input type="checkbox" />
           <div className="collapse-title text-xl font-medium">
@@ -75,8 +84,12 @@ export default function BeerCategory({ category, beers }: Props) {
   };
 
   return (
-    <div className="collapse collapse-arrow  bg-base-200">
-      <input type="checkbox" />
+    <div
+      onClick={onClick}
+      className={`collapse  ${
+        isOpen ? "collapse-open" : ""
+      } collapse-arrow  bg-base-200`}
+    >
       <div className="collapse-title text-xl font-medium">{category.name}</div>
       <div className="collapse-content">
         <div>
