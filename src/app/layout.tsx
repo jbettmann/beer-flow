@@ -16,10 +16,9 @@ export const metadata: Metadata = {
 // Segment-level Caching. Revalidate data every 60 seconds app wide
 export const revalidate = 86400; // 1 day
 
-export default async function Layout({
-  children,
-}: {
+export default async function Layout(props: {
   children: React.ReactNode;
+  modal: React.ReactNode;
 }) {
   const breweries = await getBreweries();
   const session = await getServerSession(authOptions);
@@ -31,7 +30,8 @@ export default async function Layout({
           {/* @ts-expect-error Server Component */}
           <NavBar breweries={breweries} user={session} />
           {/* <Chat /> */}
-          {children}
+          {props.children}
+          {props.modal}
         </body>
       </Provider>
     </html>
