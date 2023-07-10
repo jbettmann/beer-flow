@@ -15,7 +15,7 @@ export default async function BeerModel({ params: { beerId } }: pageProps) {
 
   const beer = allBeers.find((b) => b._id === beerId);
   return (
-    <Modal>
+    <Modal closeButtonOnly={false}>
       <BeerCard beer={beer} />
     </Modal>
   );

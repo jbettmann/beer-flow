@@ -2,7 +2,13 @@
 import { useCallback, useRef, useEffect, MouseEventHandler } from "react";
 import { useRouter } from "next/navigation";
 
-export default function Modal({ children }: { children: React.ReactNode }) {
+export default function Modal({
+  children,
+  closeButtonOnly,
+}: {
+  children: React.ReactNode;
+  closeButtonOnly: boolean;
+}) {
   const overlay = useRef(null);
   const wrapper = useRef(null);
   const router = useRouter();
@@ -13,6 +19,7 @@ export default function Modal({ children }: { children: React.ReactNode }) {
 
   const onClick: MouseEventHandler = useCallback(
     (e) => {
+      if (closeButtonOnly) return;
       if (e.target === overlay.current || e.target === wrapper.current) {
         if (onDismiss) onDismiss();
       }
@@ -40,9 +47,9 @@ export default function Modal({ children }: { children: React.ReactNode }) {
     >
       <div
         ref={wrapper}
-        className="absolute flex flex-row-reverse top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full sm:w-10/12 md:w-8/12 lg:w-1/2 p-6"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full sm:w-10/12 md:w-8/12 lg:w-1/2 p-6"
       >
-        <button className="btn glass close-btn" onClick={onDismiss}>
+        <button className="btn glass close-btn " onClick={onDismiss}>
           {/* X Close Button SVG */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -59,6 +66,7 @@ export default function Modal({ children }: { children: React.ReactNode }) {
             />
           </svg>
         </button>
+
         {children}
       </div>
     </div>
