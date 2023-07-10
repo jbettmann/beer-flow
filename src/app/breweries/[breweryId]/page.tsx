@@ -4,6 +4,7 @@ import BreweryProfiles from "@/components/BreweryProfiles";
 
 import getBreweryBeers from "@/lib/getBreweryBeers";
 import getSingleBrewery from "@/lib/getSingleBrewery";
+
 import { notFound } from "next/navigation";
 import React from "react";
 
@@ -22,10 +23,10 @@ export default async function SingleBreweryPage({
 
   const promise = await Promise.all([singleBrewery, breweryBeers]);
 
+  console.log({ promise });
   if (!singleBrewery) return notFound();
   return (
     <main className="w-full h-full">
-      {/* @ts-expect-error Server Component */}
       <BreweryProfiles promise={promise} />
     </main>
   );
