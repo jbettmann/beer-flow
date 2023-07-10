@@ -23,7 +23,6 @@ export default function BeerCategory({
   isOpen,
   onClick,
 }: Props) {
-  console.log({ isOpen });
   const filteredBeers = () => {
     if (category.name === "All Beers") {
       return beers;
@@ -93,12 +92,14 @@ export default function BeerCategory({
       <div className="collapse-title text-xl font-medium">{category.name}</div>
       <div className="collapse-content">
         <div>
-          {category.name === "All Beers"
-            ? renderAllBeers(beers)
-            : category.name === "Archived"
+          {category.name === "Archived"
             ? renderArchivedBeers()
             : filteredBeers().map((beer) => (
-                <Link href={`/beers/${beer._id}`} key={beer._id}>
+                <Link
+                  href={`/beers/${beer._id}`}
+                  key={beer._id}
+                  onClick={(e) => e.stopPropagation()}
+                >
                   {beer.name}
                 </Link>
               ))}
