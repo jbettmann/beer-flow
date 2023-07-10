@@ -10,23 +10,24 @@ export default async function getBreweries() {
 
   if (session?.user) {
     try {
-      // using axios due to fetch problem with body length of array?
-      const response = await axios.post(
-        `https://beer-bible-api.vercel.app/breweries`,
-        { breweryIds: session.user.breweries },
+      const response = await fetch(
+        `https://beer-bible-api.vercel.app/users/breweries`,
         {
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${session?.user.accessToken}`,
+            Authorization: `Bearer ${session.user.accessToken}`,
           },
+          body: JSON.stringify({ breweryIds: session.user.breweries }),
         }
       );
 
-      if (response.status != 200) {
+      if (!response.ok) {
         throw new Error(response.statusText);
       }
 
-      return response.data.breweries;
+      const responseData = await response.json();
+      return responseData.breweries;
     } catch (err) {
       console.error(err);
       return []; // Return empty array on error
