@@ -9,6 +9,7 @@ import type { NextAuthOptions } from "next-auth";
 import { NextApiRequest, NextApiResponse } from "next";
 import getUser from "@/lib/getUser";
 import User from "../../../../../models/user";
+import { Brewery } from "@/app/types/brewery";
 
 export const authOptions: NextAuthOptions = {
   // pages: {
@@ -67,8 +68,13 @@ export const authOptions: NextAuthOptions = {
   //   jwt: true,
   // },
   callbacks: {
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, trigger, session }) {
       // Persist the OAuth access_token and or the user id to the token right after signin
+
+      if (trigger === "update" && session.newBreweryId) {
+        token.breweries.push(session.newBreweryId) as string;
+        return token;
+      }
 
       if (user) {
         const accessToken = signJwtAccessToken(user); // creates accessToken for API authorization
@@ -162,6 +168,7 @@ export const authOptions: NextAuthOptions = {
       if (token.accessToken) {
         session.user = token as any;
         session.user.accessToken = token.accessToken as string; // sets users accessToken for API authorization
+
         session.user.breweries = token.breweries as string[]; // sets user's breweries
       }
 
