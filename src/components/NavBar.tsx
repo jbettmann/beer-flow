@@ -59,6 +59,7 @@ const NavBar = ({
     };
   }, [breweries]);
 
+  // Sets local storage and selectedBrewery when a brewery is clicked
   const handleBreweryClick = (brewery: Brewery) => {
     // Save the clicked brewery's ID in local storage
     localStorage.setItem("selectedBreweryId", brewery._id);
@@ -67,11 +68,18 @@ const NavBar = ({
     setSelectedBrewery(brewery);
   };
 
+  // clear local storage when sign out
+  const handleSignOut = () => {
+    signOut();
+    localStorage.removeItem("selectedBreweryId");
+    sessionStorage.removeItem("openCategory");
+  };
+
   return (
     <div className="flex flex-row-reverse justify-between">
       <div>
         {breweries ? (
-          <button onClick={() => signOut()}>Sign Out</button>
+          <button onClick={handleSignOut}>Sign Out</button>
         ) : (
           <button onClick={() => signIn()}>Sign In</button>
         )}
