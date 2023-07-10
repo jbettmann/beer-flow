@@ -8,6 +8,6 @@ const userSchema = new Schema({
     { type: mongoose.Schema.Types.ObjectId, ref: "Brewery", default: [] },
   ],
 });
-const User = mongoose.models.User || mongoose.model("User", userSchema);
+const User = mongoose.models?.User || mongoose.model("User", userSchema);
 
 export default User;
