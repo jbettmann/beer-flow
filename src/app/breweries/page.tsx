@@ -1,14 +1,11 @@
-import { Metadata } from "next";
-import { Users } from "@/app/types/users";
 // import { PageProps } from "../../../.next/types/app/layout";
-import axios from "axios";
-import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
 import getAllBreweries from "@/lib/getAllBreweries";
-import Link from "next/link";
-import { Brewery } from "../types/brewery";
-import { authOptions } from "../api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
+import Link from "next/link";
+import { authOptions } from "../api/auth/[...nextauth]/route";
+import { Brewery } from "../types/brewery";
+import getBreweries from "@/lib/getBreweries";
+import { redirect } from "next/dist/server/api-utils";
 
 // export async function generateMetadata({
 //   params,
@@ -30,77 +27,40 @@ import { getServerSession } from "next-auth";
 //   });
 // }
 
-const Page = async () => {
-  const breweryData: Promise<Brewery[]> = getAllBreweries();
-
+const BreweriesPage = async () => {
+  const breweryData: Promise<Brewery[]> = getBreweries();
   const breweries = await breweryData;
   const session = await getServerSession(authOptions);
-  console.log(session?.user);
-  const content = (
-    <section>
+  console.log(breweries, session?.user);
+
+  return (
+    <section className="w-full">
       <h2>
         <Link href="/">Back Home</Link>
       </h2>
       <br />
-      {breweries.map((brewery) => {
-        return (
-          <>
-            <p key={brewery._id}>
-              <Link href={`/breweries/${brewery._id}`}>
-                {brewery.companyName}
-              </Link>
-            </p>
-          </>
-        );
-      })}
+      <div className="flex justify-center">
+        {breweries.length > 0 &&
+          breweries.map((brewery) => {
+            return (
+              <>
+                <p key={brewery._id}>
+                  <Link href={`/breweries/${brewery._id}`}>
+                    {brewery.companyName}
+                  </Link>
+                </p>
+              </>
+            );
+          })}
+        <Link
+          href={"/create/brewery"}
+          className="btn btn-accent text-indigo-900"
+        >
+          Create A Brewery
+        </Link>
+      </div>
     </section>
   );
-
-  return content;
 };
-// console.log(getAllBreweries());
-// const { data: session, update } = useSession();
 
-// const [users, setUsers] = useState(null);
-
-// const fetchUsers = async () => {
-//   const res = await axios.get("https://beer-bible-api.vercel.app/users", {
-//     headers: {
-//       authorization: `bearer ${session?.user.accessToken}`,
-//     },
-//   });
-//   const data = await res.data;
-
-//   setUsers(data);
-// };
-
-// const deleteUsers = async (userId: string) => {
-//   const res = await axios.delete(
-//     `https://beer-bible-api.vercel.app/users/${userId}`,
-//     {
-//       headers: {
-//         authorization: `bearer ${session?.user.accessToken}`,
-//       },
-//     }
-//   );
-//   const data = await res.data;
-
-//   console.log(data);
-// };
-// console.log({ session, users });
-
-// useEffect(() => {
-//   fetchUsers();
-// }, []);
-
-// return (
-//   <div>
-//     {/* {users ? (
-//       users.map((user) => <p key={user._id}>{user.email}</p>)
-//     ) : (
-//       <p>No Good </p>
-//     )} */}
-//   </div>
-// );
-
-export default Page;
+export default BreweriesPage;
