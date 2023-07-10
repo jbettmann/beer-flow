@@ -9,17 +9,19 @@ import { Beer } from "./types/beer";
 export default function Home() {
   const { data: session, status, update } = useSession();
 
-  const savedBreweryId = localStorage.getItem("selectedBreweryId");
-
+  let savedBreweryId;
+  if (typeof window !== "undefined") {
+    savedBreweryId = localStorage.getItem("selectedBreweryId");
+  }
   if (session?.user && savedBreweryId) {
     redirect(`/breweries/${savedBreweryId}`);
   }
 
-  if (session?.user && !savedBreweryId) {
-    redirect(`/breweries/${session.user.breweries[0]}`);
+  if (session?.user && !savedBreweryId && session.user.breweries.length < 1) {
+    redirect(`/breweries`);
   }
 
-  console.log(session);
+  console.log(session?.user);
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       {session?.user.breweries ? (
