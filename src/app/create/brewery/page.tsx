@@ -1,9 +1,10 @@
+import BreweryForm from "@/components/CreateBreweryForm";
 import React from "react";
 
 type Props = {};
 
 const CreateBrewery = (props: Props) => {
-  return <div>CreateBrewery</div>;
+  return <BreweryForm />;
 };
 
 export default CreateBrewery;
