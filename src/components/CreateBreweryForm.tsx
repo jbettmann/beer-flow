@@ -34,7 +34,7 @@ const validateFields = (values: FormValues) => {
   return errors;
 };
 
-const BreweryForm: React.FC = () => {
+const CreateBreweryForm: React.FC = () => {
   const [values, setValues] = useState<FormValues>({
     companyName: "",
     image: null,
@@ -67,7 +67,7 @@ const BreweryForm: React.FC = () => {
   }, [values]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    // event.preventDefault();
+    event.preventDefault();
 
     // Don't submit if there are validation errors
     if (Object.keys(errors).length > 0) {
@@ -117,7 +117,6 @@ const BreweryForm: React.FC = () => {
     setTouched((prevTouched) => ({ ...prevTouched, [field]: true }));
   };
 
-  console.log(session?.user);
   return (
     <form
       onSubmit={handleSubmit}
@@ -165,4 +164,4 @@ const BreweryForm: React.FC = () => {
   );
 };
 
-export default BreweryForm;
+export default CreateBreweryForm;
