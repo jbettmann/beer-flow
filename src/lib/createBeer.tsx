@@ -1,25 +1,28 @@
+import { Beer, NewBeer } from "@/app/types/beer";
 import { Brewery, NewBrewery } from "@/app/types/brewery";
 
 type pageProps = {
-  brewery: NewBrewery;
+  newBeer: NewBeer;
+  breweryId: string;
   accessToken: string | undefined;
 };
 
-export default async function createBrewery({
-  brewery,
+export default async function createBeer({
+  breweryId,
+  newBeer,
   accessToken,
 }: pageProps) {
   if (accessToken) {
     try {
       const response = await fetch(
-        `https://beer-bible-api.vercel.app/breweries`,
+        `https://beer-bible-api.vercel.app/breweries/${breweryId}/beers`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,
           },
-          body: JSON.stringify(brewery),
+          body: JSON.stringify(newBeer),
         }
       );
 
@@ -27,7 +30,7 @@ export default async function createBrewery({
         throw new Error(response.statusText);
       }
 
-      const responseData: Brewery = await response.json();
+      const responseData: Beer = await response.json();
       return responseData;
     } catch (err) {
       console.error(err);
