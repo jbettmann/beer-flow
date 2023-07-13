@@ -7,6 +7,7 @@ import { notFound, redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { compareSync } from "bcrypt";
 
 type Props = {
   promise: [Brewery, Beer[]];
@@ -30,8 +31,6 @@ export default function BreweryProfiles({ promise }: Props) {
       setOpenCategory(storedOpenCategory);
     }
   }, []);
-
-  console.log({ openCategory });
 
   // Handle category change
   const handleCategoryClick = (categoryKey: any) => {
@@ -80,7 +79,7 @@ export default function BreweryProfiles({ promise }: Props) {
         </div>
       )}
       <div className="w-full h-full flex justify-center">
-        <Link href={`/create/beer`} className="btn btn-accent">
+        <Link href={`/create/${brewery._id}/beer`} className="btn btn-accent">
           Create A Beer
         </Link>
       </div>
