@@ -5,12 +5,12 @@ import { compareSync } from "bcrypt";
 
 export default async function BreweriesLayout(props: {
   children: React.ReactNode;
-  modal: React.ReactNode;
+  createBeerModal: React.ReactNode;
 }) {
   return (
     <div>
       {props.children}
-      {props.modal}
+      {props.createBeerModal}
     </div>
   );
 }

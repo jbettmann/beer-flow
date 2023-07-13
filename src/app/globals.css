@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
 .scrollbar-w-2::-webkit-scrollbar {
   width: .25rem;
   height: .25rem
@@ -20,6 +22,32 @@ p {
 .close-btn {
   @apply float-right mt-3 mr-3;
   
-  
 }
+
+/* Create New Beer Form */
+
+.container-create__form {
+  @apply flex flex-col m-3
+}
+
+.form__input {
+  @apply input text-black
+}
+.ReactTags__selected {
+  @apply m-4
+}
+
+.ReactTags__tag {
+  @apply p-2 bg-lime-300 rounded-full text-black
+}
+
+.ReactTags__tagInput {
+  @apply mt-4
+}
+
+.ReactTags__tagInputField {
+  @apply min-w-fit w-72 input text-black
+}
+
+
 

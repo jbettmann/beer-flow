@@ -5,10 +5,11 @@ interface FormValues {
   malt: Tag[];
   hops: Tag[];
   description: string;
-  category: { name: string }[];
+  category: string[] | { label: string; value: string }[];
   nameSake: string;
   notes: string;
   image: File | null | string;
+  releaseDate: Date | string | null;
 }
 
 interface ErrorValues {
