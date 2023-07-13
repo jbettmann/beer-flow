@@ -6,6 +6,12 @@ import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import CategorySelect from "../CategorySelect/CategorySelect";
 import TagInput from "../TagInput/TagInput";
+import { hopSuggestions, maltSuggestions } from "@/lib/suggestionsDB";
+import { ErrorValues, FormValues } from "./types";
+import createCategory from "@/lib/createCategory";
+import { Category, NewCategory } from "@/app/types/category";
+import createBeer from "@/lib/createBeer";
+import { Console } from "console";
 
 // import createBeer from "@/lib/createBeer";
 
@@ -18,12 +24,13 @@ const validateFields = (values: FormValues) => {
   const errors: ErrorValues = {};
 
   // validate name
-  if (!values.name || values.name.length < 3) {
-    errors.name = "Name is required and must be at least 3 characters long.";
+
+  if (!values.name || values.name.trim() === "") {
+    errors.name = "Name is required.";
   }
 
   // validate style
-  if (!values.style) {
+  if (!values.style || values.style.trim() === "") {
     errors.style = "Style is required.";
   }
 
@@ -53,21 +60,21 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
   const [values, setValues] = useState<FormValues>({
     name: "",
     abv: "",
+    ibu: "",
     style: "",
     malt: [],
     hops: [],
     description: "",
-    category:
-      brewery?.categories.map((cat) => ({
-        label: cat.name,
-        value: cat.name,
-      })) || [],
+    category: [],
     nameSake: "",
     notes: "",
     image: null,
-    releaseDate: "",
+    releasedOn: "",
+    archived: false,
   });
 
+  console.log({ brewery });
+  const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<ErrorValues>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -78,7 +85,7 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
   const onDismiss = useCallback(() => {
     router.back();
   }, [router]);
-
+  console.log({ brewery });
   // Load persisted state on initial render
   useEffect(() => {
     const persistedState = sessionStorage.getItem("beerForm");
@@ -96,88 +103,6 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
     console.log({ values });
   }, [values]);
 
-  // Suggested hops for autocomplete
-  // With labelField of `name`
-  const hopSuggestions = [
-    { id: "cascade", name: "Cascade" },
-    { id: "centennial", name: "Centennial" },
-    { id: "citra", name: "Citra" },
-    { id: "columbus", name: "Columbus" },
-    { id: "amarillo", name: "Amarillo" },
-    { id: "simcoe", name: "Simcoe" },
-    { id: "chinook", name: "Chinook" },
-    { id: "hallertau-mittelfruh", name: "Hallertau Mittelfrüh" },
-    { id: "saaz", name: "Saaz" },
-    { id: "tettnang", name: "Tettnang" },
-    { id: "fuggle", name: "Fuggle" },
-    { id: "willamette", name: "Willamette" },
-    { id: "east-kent-goldings", name: "East Kent Goldings" },
-    { id: "galaxy", name: "Galaxy" },
-    { id: "mosaic", name: "Mosaic" },
-    { id: "nelson-sauvin", name: "Nelson Sauvin" },
-    { id: "sorachi-ace", name: "Sorachi Ace" },
-    { id: "styrian-goldings", name: "Styrian Goldings" },
-    { id: "magnum", name: "Magnum" },
-    { id: "perle", name: "Perle" },
-  ];
-  // Suggested malt for autocomplete
-  // With labelField of `name`
-  const maltSuggestions = [
-    { id: "pale-malt", name: "Pale Malt" },
-    { id: "pilsner", name: "Pilsner" },
-    { id: "maris-otter", name: "Maris Otter" },
-    { id: "vienna", name: "Vienna" },
-    { id: "munich", name: "Munich" },
-    { id: "wheat", name: "Wheat" },
-    {
-      id: "crystal/caramel-(various-levels-of-darkness)",
-      name: "Crystal/Caramel (various levels of darkness)",
-    },
-    { id: "rye", name: "Rye" },
-    { id: "aromatic", name: "Aromatic" },
-    { id: "biscuit", name: "Biscuit" },
-    { id: "special-b", name: "Special B" },
-    { id: "roasted-barley", name: "Roasted Barley" },
-    { id: "chocolate -alt", name: "Chocolate Malt" },
-    { id: "black-patent", name: "Black Patent" },
-    { id: "carapils/dextrin", name: "Carapils/Dextrin" },
-    { id: "flaked-oats", name: "Flaked Oats" },
-    { id: "flaked-barley", name: "Flaked Barley" },
-    { id: "flaked-wheat", name: "Flaked Wheat" },
-    { id: "carafoam", name: "Carafoam" },
-    { id: "caramunich", name: "CaraMunich" },
-    { id: "carafa-special-I", name: "Carafa Special I" },
-    { id: "carafa-special-II", name: "Carafa Special II" },
-    { id: "carafa-special-III", name: "Carafa Special III" },
-    { id: "honey-malt", name: "Honey Malt" },
-    { id: "victory", name: "Victory" },
-    { id: "acidulated", name: "Acidulated" },
-    { id: "smoked-malt", name: "Smoked Malt" },
-    { id: "melanoidin", name: "Melanoidin" },
-    { id: "amber", name: "Amber" },
-    { id: "pale-wheat", name: "Pale Wheat" },
-    { id: "dark-munich", name: "Dark Munich" },
-    { id: "aromatic-munich", name: "Aromatic Munich" },
-    { id: "carared", name: "Carared" },
-    { id: "roasted-wheat", name: "Roasted Wheat" },
-    { id: "peated-malt", name: "Peated Malt" },
-    { id: "caramel-wheat", name: "Caramel Wheat" },
-    { id: "caramel-rye", name: "Caramel Rye" },
-    { id: "caraaroma", name: "CaraAroma" },
-    { id: "carabrown", name: "Carabrown" },
-    { id: "spelt", name: "Spelt" },
-    { id: "raw-wheat", name: "Raw Wheat" },
-    { id: "raw-rye", name: "Raw Rye" },
-    { id: "oat", name: "Oat" },
-    { id: "coffee-malt", name: "Coffee Malt" },
-    { id: "midnight-wheat", name: "Midnight Wheat" },
-    { id: "roasted-buckwheat", name: "Roasted Buckwheat" },
-    { id: "kiln-coffee-malt", name: "Kiln Coffee Malt" },
-    { id: "belgian-special-b", name: "Belgian Special B" },
-    { id: "belgian-aromatic", name: "Belgian Aromatic" },
-    { id: "belgian-biscuit", name: "Belgian Biscuit" },
-  ];
-
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -188,53 +113,80 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
     }
 
     isSubmitting.current = true;
+    setIsLoading(true); // Set loading state to true
 
     try {
+      // Save the image to the database and create link
       const beerImage = values.image
         ? await saveImage({ file: values.image })
         : undefined;
+
+      // Converting brewery categories to a Set for O(1) lookup times
+      const existingCategories = new Set(
+        brewery.categories.map((cat) => cat.name)
+      );
+
+      // Only include categories that are not already in the brewery's categories
+      const newCategories = values.category.filter(
+        (category: { value: string }) => !existingCategories.has(category.value)
+      );
+
+      console.log({ newCategories, existingCategories });
+
+      // Call createCategory for each new category
+      const createNewCategories = await Promise.all(
+        newCategories.map((category) => {
+          const newCategory = { name: category.value };
+          return createCategory({
+            newCategory,
+            breweryId: brewery._id,
+            accessToken: session?.user?.accessToken,
+          });
+        })
+      );
+      console.log({ createNewCategories });
 
       const newBeer = {
         ...values,
         hops: values.hops.map((hop) => hop.name),
         malt: values.malt.map((malt) => malt.name),
+        category: createNewCategories.map((category: Category) => category._id),
         image: beerImage,
       };
+      console.log({ newBeer });
 
-      const responseBeer = await createBeer({
-        beer: newBeer,
+      const newBeerRes = await createBeer({
+        newBeer,
+        breweryId: brewery._id,
         accessToken: session?.user?.accessToken,
       });
 
+      console.log({ newBeerRes });
       setValues({
         name: "",
         abv: "",
+        ibu: "",
         style: "",
         malt: [],
         hops: [],
         description: "",
-        category:
-          brewery?.categories.map((cat) => ({
-            label: cat.name,
-            value: cat.name,
-          })) || [],
+        category: [],
         nameSake: "",
         notes: "",
         image: null,
-        releaseDate: "",
+        releasedOn: "",
+        archived: false,
       });
       sessionStorage.removeItem("beerForm"); // Remove the saved form
       onDismiss();
 
-      // await update({
-      //   newBeerId: responseBeer.savedBeer._id,
-      // });
-      // router.push(`/beers/${responseBeer.savedBeer._id}`);
+      // router.push(`/beers/${newBeerRes.savedBeer._id}`);
     } catch (err) {
       console.error(err);
       setSubmitError(err.message);
     } finally {
       isSubmitting.current = false;
+      setIsLoading(false); // Set loading state to false
     }
   };
 
@@ -242,6 +194,7 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
   const [touched, setTouched] = useState<{ [K in keyof FormValues]: boolean }>({
     name: false,
     abv: false,
+    ibu: false,
     style: false,
     malt: false,
     hops: false,
@@ -250,7 +203,8 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
     nameSake: false,
     notes: false,
     image: false,
-    releaseDate: false,
+    releasedOn: false,
+    archived: false,
   });
 
   // Handle blur events for the inputs
@@ -261,7 +215,7 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-zinc-800 h-fit p-4 w-1/2 flex flex-col justify-between mx-auto rounded-lg shadow-2xl text-white"
+      className="bg-zinc-800 h-fit p-4  flex flex-col justify-between mx-auto rounded-lg shadow-2xl text-white"
     >
       {/* Name */}
       <div className="container-create__form">
@@ -280,12 +234,12 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
 
       {/* Style */}
       <div className="container-create__form">
-        <label htmlFor="name">Style</label>
+        <label htmlFor="style">Style</label>
         <input
           id="style"
           name="style"
           className="form__input"
-          placeholder="Beer Style"
+          placeholder="West Coast IPA, Pilsner, Swchwarzbier..."
           value={values.style}
           onChange={(e) => setValues({ ...values, style: e.target.value })}
           onBlur={handleBlur("style")}
@@ -295,48 +249,78 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
 
       {/* ABV */}
       <div className="container-create__form">
-        <label htmlFor="abv">ABV</label>
+        <label htmlFor="abv">ABV %</label>
         <input
           id="abv"
           name="abv"
+          type="number"
+          step="0.01"
+          min={0}
           className="form__input"
-          placeholder="ABV"
-          pattern="\d+(\.\d{1,2})?"
+          placeholder="ABV %"
           value={values.abv}
           onChange={(e) => {
-            // Ensure input value is only numbers or decimal
-            if (e.target.validity.valid || e.target.value === "") {
-              setValues({ ...values, abv: e.target.value });
-            }
+            setValues({ ...values, abv: parseFloat(e.target.value) });
           }}
           onBlur={handleBlur("abv")}
         />
         {touched.abv && errors.abv && <div>{errors.abv}</div>}
+
+        {/* IBUs   */}
+        <label htmlFor="ibu">IBUs</label>
+        <input
+          id="ibu"
+          name="ibu"
+          type="number"
+          step="1"
+          min={0}
+          className="form__input"
+          placeholder="33, 70, 90..."
+          value={values.ibu}
+          onChange={(e) => {
+            setValues({ ...values, ibu: parseFloat(e.target.value) });
+          }}
+          onBlur={handleBlur("ibu")}
+        />
       </div>
 
       <CategorySelect
         setValues={setValues}
-        values={values}
-        categories={values.category}
+        selectedValues={values.category}
+        categories={brewery?.categories?.map((cat) => ({
+          label: cat.name,
+          value: cat.name,
+        }))}
       />
 
       {/* Description */}
       <div className="container-create__form">
-        <label htmlFor="name">Description</label>
+        <label htmlFor="description">Description</label>
         <textarea
           id="description"
           name="description"
-          className="form__input"
+          className="form__input-textarea"
           placeholder="Description"
           value={values.description}
           onChange={(e) =>
             setValues({ ...values, description: e.target.value })
           }
-          onBlur={handleBlur("description")}
+          maxLength={2500}
         />
-        {touched.description && errors.description && (
-          <div>{errors.description}</div>
-        )}
+      </div>
+
+      {/* Name Details */}
+      <div className="container-create__form">
+        <label htmlFor="nameSake">Name Details</label>
+        <textarea
+          id="nameSake"
+          name="nameSake"
+          className="form__input-textarea"
+          placeholder="Let staff know about any fun deets..."
+          value={values.nameSake}
+          onChange={(e) => setValues({ ...values, nameSake: e.target.value })}
+          maxLength={2500}
+        />
       </div>
 
       {/* Hops */}
@@ -359,33 +343,68 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
 
       {/* Release Date */}
       <div className="container-create__form">
-        <label htmlFor="name">Release Date</label>
+        <label htmlFor="releasedOn">Release Date</label>
         <input
-          id="releaseDate"
-          name="releaseDate"
+          id="releasedOn"
+          name="releasedOn"
           type="date"
           className="form__input"
           placeholder="Beer release date"
-          value={values.releaseDate}
-          onChange={(e) =>
-            setValues({ ...values, releaseDate: e.target.value })
-          }
+          value={values.releasedOn}
+          onChange={(e) => setValues({ ...values, releasedOn: e.target.value })}
         />
       </div>
-      {/* Add similar input fields for the other properties */}
 
+      {/* Archived */}
+      <div className="container-create__form">
+        <label htmlFor="archived">Archive</label>
+        <input
+          id="archived"
+          name="archived"
+          type="checkbox"
+          className="checkbox-accent"
+          placeholder="Beer release date"
+          checked={values.archived}
+          onChange={(e) => setValues({ ...values, archived: e.target.checked })}
+        />
+      </div>
+
+      {/* Other Notes */}
+      <div className="container-create__form">
+        <label htmlFor="notes">Other notess</label>
+        <textarea
+          id="notes"
+          name="notes"
+          className="form__input-textarea"
+          placeholder="Additional info... barrels aged in, collaboration, etc."
+          value={values.notes}
+          onChange={(e) => setValues({ ...values, notes: e.target.value })}
+          maxLength={2500}
+        />
+      </div>
+
+      {/*  Beer Image */}
       <div className="container-create__form">
         <label htmlFor="image">Image</label>
         <input
           id="image"
           name="image"
+          className="file-input file-input-bordered file-input-accent w-full max-w-xs text-black"
           type="file"
-          onChange={(e) =>
-            setValues({
-              ...values,
-              image: e.target.files ? e.target.files[0] : null,
-            })
-          }
+          onChange={(e) => {
+            const file = e.target.files ? e.target.files[0] : null;
+            if (file && file.size > 2 * 1024 * 1024) {
+              // Check if file size is greater than 2MB
+              alert("File is too large. Please select a file less than 2MB.");
+              e.target.value = ""; // Clear the selected file
+            } else {
+              setValues({
+                ...values,
+                image: file,
+              });
+            }
+          }}
+          disabled={values.name && values.category ? false : true}
           onBlur={handleBlur("image")}
         />
         {touched.image && errors.image && <div>{errors.image}</div>}
@@ -397,7 +416,11 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
           type="submit"
           disabled={isSubmitting.current}
         >
-          Create
+          {isLoading ? (
+            <span className="loading loading-spinner text-accent"></span>
+          ) : (
+            "Create"
+          )}
         </button>
       </div>
     </form>
