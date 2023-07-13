@@ -1,11 +1,17 @@
 "use client";
+import { Brewery } from "@/app/types/brewery";
 import saveImage from "@/lib/saveImage";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Tag, WithContext as Tags } from "react-tag-input";
+import CategorySelect from "../CategorySelect/CategorySelect";
+import TagInput from "../TagInput/TagInput";
 
 // import createBeer from "@/lib/createBeer";
+
+type pageProps = {
+  brewery: Brewery;
+};
 
 // Utility function to validate form fields
 const validateFields = (values: FormValues) => {
@@ -43,7 +49,7 @@ const validateFields = (values: FormValues) => {
   return errors;
 };
 
-const CreateBeerForm: React.FC = () => {
+const CreateBeerForm = ({ brewery }: pageProps) => {
   const [values, setValues] = useState<FormValues>({
     name: "",
     abv: "",
@@ -51,11 +57,17 @@ const CreateBeerForm: React.FC = () => {
     malt: [],
     hops: [],
     description: "",
-    category: [],
+    category:
+      brewery?.categories.map((cat) => ({
+        label: cat.name,
+        value: cat.name,
+      })) || [],
     nameSake: "",
     notes: "",
     image: null,
+    releaseDate: "",
   });
+
   const [errors, setErrors] = useState<ErrorValues>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -81,26 +93,90 @@ const CreateBeerForm: React.FC = () => {
     sessionStorage.setItem("beerForm", JSON.stringify(values));
     // Clear the error message when the form fields change
     setSubmitError(null);
+    console.log({ values });
   }, [values]);
 
-  //  Handle tag deletions
-  const handleHopDelete = (i: number) => {
-    setValues({
-      ...values,
-      hops: values.hops.filter((_, index) => index !== i),
-    });
-  };
-  // Handle tag additions
-  const handleAddition = (name: keyof FormValues) => (newTags: Tag) => {
-    setValues({ ...values, [name]: [...(values[name] as Tag[]), newTags] });
-  };
-
-  // Key codes for enter and comma
-  const KeyCodes = {
-    comma: 188,
-    enter: 13,
-  };
-  const delimiters = [KeyCodes.comma, KeyCodes.enter];
+  // Suggested hops for autocomplete
+  // With labelField of `name`
+  const hopSuggestions = [
+    { id: "cascade", name: "Cascade" },
+    { id: "centennial", name: "Centennial" },
+    { id: "citra", name: "Citra" },
+    { id: "columbus", name: "Columbus" },
+    { id: "amarillo", name: "Amarillo" },
+    { id: "simcoe", name: "Simcoe" },
+    { id: "chinook", name: "Chinook" },
+    { id: "hallertau-mittelfruh", name: "Hallertau Mittelfrüh" },
+    { id: "saaz", name: "Saaz" },
+    { id: "tettnang", name: "Tettnang" },
+    { id: "fuggle", name: "Fuggle" },
+    { id: "willamette", name: "Willamette" },
+    { id: "east-kent-goldings", name: "East Kent Goldings" },
+    { id: "galaxy", name: "Galaxy" },
+    { id: "mosaic", name: "Mosaic" },
+    { id: "nelson-sauvin", name: "Nelson Sauvin" },
+    { id: "sorachi-ace", name: "Sorachi Ace" },
+    { id: "styrian-goldings", name: "Styrian Goldings" },
+    { id: "magnum", name: "Magnum" },
+    { id: "perle", name: "Perle" },
+  ];
+  // Suggested malt for autocomplete
+  // With labelField of `name`
+  const maltSuggestions = [
+    { id: "pale-malt", name: "Pale Malt" },
+    { id: "pilsner", name: "Pilsner" },
+    { id: "maris-otter", name: "Maris Otter" },
+    { id: "vienna", name: "Vienna" },
+    { id: "munich", name: "Munich" },
+    { id: "wheat", name: "Wheat" },
+    {
+      id: "crystal/caramel-(various-levels-of-darkness)",
+      name: "Crystal/Caramel (various levels of darkness)",
+    },
+    { id: "rye", name: "Rye" },
+    { id: "aromatic", name: "Aromatic" },
+    { id: "biscuit", name: "Biscuit" },
+    { id: "special-b", name: "Special B" },
+    { id: "roasted-barley", name: "Roasted Barley" },
+    { id: "chocolate -alt", name: "Chocolate Malt" },
+    { id: "black-patent", name: "Black Patent" },
+    { id: "carapils/dextrin", name: "Carapils/Dextrin" },
+    { id: "flaked-oats", name: "Flaked Oats" },
+    { id: "flaked-barley", name: "Flaked Barley" },
+    { id: "flaked-wheat", name: "Flaked Wheat" },
+    { id: "carafoam", name: "Carafoam" },
+    { id: "caramunich", name: "CaraMunich" },
+    { id: "carafa-special-I", name: "Carafa Special I" },
+    { id: "carafa-special-II", name: "Carafa Special II" },
+    { id: "carafa-special-III", name: "Carafa Special III" },
+    { id: "honey-malt", name: "Honey Malt" },
+    { id: "victory", name: "Victory" },
+    { id: "acidulated", name: "Acidulated" },
+    { id: "smoked-malt", name: "Smoked Malt" },
+    { id: "melanoidin", name: "Melanoidin" },
+    { id: "amber", name: "Amber" },
+    { id: "pale-wheat", name: "Pale Wheat" },
+    { id: "dark-munich", name: "Dark Munich" },
+    { id: "aromatic-munich", name: "Aromatic Munich" },
+    { id: "carared", name: "Carared" },
+    { id: "roasted-wheat", name: "Roasted Wheat" },
+    { id: "peated-malt", name: "Peated Malt" },
+    { id: "caramel-wheat", name: "Caramel Wheat" },
+    { id: "caramel-rye", name: "Caramel Rye" },
+    { id: "caraaroma", name: "CaraAroma" },
+    { id: "carabrown", name: "Carabrown" },
+    { id: "spelt", name: "Spelt" },
+    { id: "raw-wheat", name: "Raw Wheat" },
+    { id: "raw-rye", name: "Raw Rye" },
+    { id: "oat", name: "Oat" },
+    { id: "coffee-malt", name: "Coffee Malt" },
+    { id: "midnight-wheat", name: "Midnight Wheat" },
+    { id: "roasted-buckwheat", name: "Roasted Buckwheat" },
+    { id: "kiln-coffee-malt", name: "Kiln Coffee Malt" },
+    { id: "belgian-special-b", name: "Belgian Special B" },
+    { id: "belgian-aromatic", name: "Belgian Aromatic" },
+    { id: "belgian-biscuit", name: "Belgian Biscuit" },
+  ];
 
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -120,6 +196,8 @@ const CreateBeerForm: React.FC = () => {
 
       const newBeer = {
         ...values,
+        hops: values.hops.map((hop) => hop.name),
+        malt: values.malt.map((malt) => malt.name),
         image: beerImage,
       };
 
@@ -135,10 +213,15 @@ const CreateBeerForm: React.FC = () => {
         malt: [],
         hops: [],
         description: "",
-        category: [],
+        category:
+          brewery?.categories.map((cat) => ({
+            label: cat.name,
+            value: cat.name,
+          })) || [],
         nameSake: "",
         notes: "",
         image: null,
+        releaseDate: "",
       });
       sessionStorage.removeItem("beerForm"); // Remove the saved form
       onDismiss();
@@ -167,6 +250,7 @@ const CreateBeerForm: React.FC = () => {
     nameSake: false,
     notes: false,
     image: false,
+    releaseDate: false,
   });
 
   // Handle blur events for the inputs
@@ -177,15 +261,16 @@ const CreateBeerForm: React.FC = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-slate-100 h-40 flex flex-col justify-between"
+      className="bg-zinc-800 h-fit p-4 w-1/2 flex flex-col justify-between mx-auto rounded-lg shadow-2xl text-white"
     >
       {/* Name */}
-      <div>
-        <label htmlFor="name">Name:</label>
+      <div className="container-create__form">
+        <label htmlFor="name">Name</label>
         <input
           id="name"
           name="name"
-          placeholder="Name"
+          className="form__input"
+          placeholder="Beer name"
           value={values.name}
           onChange={(e) => setValues({ ...values, name: e.target.value })}
           onBlur={handleBlur("name")}
@@ -194,11 +279,12 @@ const CreateBeerForm: React.FC = () => {
       </div>
 
       {/* Style */}
-      <div>
-        <label htmlFor="name">Style:</label>
+      <div className="container-create__form">
+        <label htmlFor="name">Style</label>
         <input
           id="style"
           name="style"
+          className="form__input"
           placeholder="Beer Style"
           value={values.style}
           onChange={(e) => setValues({ ...values, style: e.target.value })}
@@ -208,11 +294,12 @@ const CreateBeerForm: React.FC = () => {
       </div>
 
       {/* ABV */}
-      <div>
-        <label htmlFor="abv">ABV:</label>
+      <div className="container-create__form">
+        <label htmlFor="abv">ABV</label>
         <input
           id="abv"
           name="abv"
+          className="form__input"
           placeholder="ABV"
           pattern="\d+(\.\d{1,2})?"
           value={values.abv}
@@ -227,12 +314,19 @@ const CreateBeerForm: React.FC = () => {
         {touched.abv && errors.abv && <div>{errors.abv}</div>}
       </div>
 
+      <CategorySelect
+        setValues={setValues}
+        values={values}
+        categories={values.category}
+      />
+
       {/* Description */}
-      <div>
-        <label htmlFor="name">Description:</label>
+      <div className="container-create__form">
+        <label htmlFor="name">Description</label>
         <textarea
           id="description"
           name="description"
+          className="form__input"
           placeholder="Description"
           value={values.description}
           onChange={(e) =>
@@ -246,22 +340,42 @@ const CreateBeerForm: React.FC = () => {
       </div>
 
       {/* Hops */}
-      <div>
-        <label htmlFor="hops">Hops:</label>
-        <Tags
-          id="hops"
-          name="hops"
-          placeholder="Enter hops and press enter"
-          tags={values.hops}
-          delimiters={delimiters}
-          handleAddition={handleAddition("hops")}
-          handleDelete={handleHopDelete}
+      <TagInput
+        valueInput={"hops"}
+        values={values}
+        setValues={setValues}
+        tags={values.hops}
+        suggestions={hopSuggestions}
+      />
+
+      {/* Malt */}
+      <TagInput
+        valueInput={"malt"}
+        values={values}
+        setValues={setValues}
+        tags={values.malt}
+        suggestions={maltSuggestions}
+      />
+
+      {/* Release Date */}
+      <div className="container-create__form">
+        <label htmlFor="name">Release Date</label>
+        <input
+          id="releaseDate"
+          name="releaseDate"
+          type="date"
+          className="form__input"
+          placeholder="Beer release date"
+          value={values.releaseDate}
+          onChange={(e) =>
+            setValues({ ...values, releaseDate: e.target.value })
+          }
         />
       </div>
       {/* Add similar input fields for the other properties */}
 
-      <div>
-        <label htmlFor="image">Image:</label>
+      <div className="container-create__form">
+        <label htmlFor="image">Image</label>
         <input
           id="image"
           name="image"
@@ -278,8 +392,12 @@ const CreateBeerForm: React.FC = () => {
       </div>
       <div>
         {submitError && <div>Error: {submitError}</div>}
-        <button type="submit" disabled={isSubmitting.current}>
-          Submit
+        <button
+          className="btn btn-accent"
+          type="submit"
+          disabled={isSubmitting.current}
+        >
+          Create
         </button>
       </div>
     </form>
