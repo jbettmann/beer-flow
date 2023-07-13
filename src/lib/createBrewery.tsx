@@ -1,11 +1,4 @@
-import axios from "axios";
-import React, { use } from "react";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { Users } from "@/app/types/users";
-import { Session } from "next-auth";
 import { Brewery, NewBrewery } from "@/app/types/brewery";
-import { useSession } from "next-auth/react";
 
 type pageProps = {
   brewery: NewBrewery;

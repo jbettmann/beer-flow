@@ -6,7 +6,6 @@ import getBreweryBeers from "@/lib/getBreweryBeers";
 import getSingleBrewery from "@/lib/getSingleBrewery";
 
 import { notFound } from "next/navigation";
-import React from "react";
 
 type pageProps = {
   params: {

@@ -1,8 +1,6 @@
 import { Brewery } from "@/app/types/brewery";
 import CreateBeerForm from "@/components/CreateBeerForm/CreateBeerForm";
-import Modal from "@/components/Modal";
 import getSingleBrewery from "@/lib/getSingleBrewery";
-import React from "react";
 
 type pageProps = {
   params: {
