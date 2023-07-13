@@ -3,3 +3,7 @@ export type Category = {
   name: string;
   __v: number;
 };
+
+export type NewCategory = {
+  name: string;
+};
