@@ -33,6 +33,11 @@ p {
 .form__input {
   @apply input text-black
 }
+
+.form__input-textarea {
+  @apply textarea textarea-accent text-black
+}
+
 .ReactTags__selected {
   @apply m-4
 }
