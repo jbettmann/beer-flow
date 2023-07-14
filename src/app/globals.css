@@ -4,19 +4,26 @@
 
 
 
-.scrollbar-w-2::-webkit-scrollbar {
-  width: .25rem;
-  height: .25rem
-}
-
-.scrollbar-track-blue-lighter::-webkit-scrollbar-track {
-  --bg-opacity: 1;
-  background-color: '#f7fafc';
-  background-color: rgba(247, 250, 253, var(--bg-opacity));
+h1 {
+  @apply text-4xl font-bold text-center
 }
 
 p {
   @apply my-4 mx-4 
+}
+
+
+
+.beer-category__image {
+  @apply rounded-full my-2 mx-4
+}
+
+.beer-card__image {
+  @apply w-64 h-64 bg-transparent
+}
+
+.error {
+  @apply text-red-500 text-sm
 }
 
 .close-btn {
@@ -30,12 +37,24 @@ p {
   @apply flex flex-col m-3
 }
 
+.create__btn {
+  @apply btn btn-accent
+}
+
+.form {
+  @apply bg-zinc-800 h-fit
+}
+
 .form__input {
   @apply input text-black
 }
 
 .form__input-textarea {
   @apply textarea textarea-accent text-black
+}
+
+.form__input-file {
+  @apply file-input file-input-bordered file-input-accent
 }
 
 .ReactTags__selected {
@@ -54,5 +73,15 @@ p {
   @apply min-w-fit w-72 input text-black
 }
 
+.scrollbar-w-2::-webkit-scrollbar {
+  width: .25rem;
+  height: .25rem
+}
+
+.scrollbar-track-blue-lighter::-webkit-scrollbar-track {
+  --bg-opacity: 1;
+  background-color: '#f7fafc';
+  background-color: rgba(247, 250, 253, var(--bg-opacity));
+}
 
 
