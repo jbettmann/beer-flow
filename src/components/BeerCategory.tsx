@@ -8,6 +8,9 @@ import {
 } from "./ui/accordion";
 import Link from "next/link";
 import { Category } from "@/app/types/category";
+import Image from "next/image";
+import { supabase } from "@/lib/supabase";
+import ImageDisplay from "./ImageDisplay/ImageDisplay";
 
 type Props = {
   category: Category;
@@ -82,6 +85,8 @@ export default function BeerCategory({
     return renderAllBeers(archivedBeers);
   };
 
+  console.log({ beers });
+
   return (
     <div
       onClick={onClick}
@@ -91,15 +96,22 @@ export default function BeerCategory({
     >
       <div className="collapse-title text-xl font-medium">{category.name}</div>
       <div className="collapse-content">
-        <div>
+        <div className="flex flex-col">
           {category.name === "Archived"
             ? renderArchivedBeers()
             : filteredBeers().map((beer) => (
                 <Link
+                  className="flex items-center"
                   href={`/beers/${beer._id}`}
                   key={beer._id}
                   onClick={(e) => e.stopPropagation()}
                 >
+                  {beer.image && (
+                    <ImageDisplay
+                      className="beer-category__image"
+                      item={beer}
+                    />
+                  )}
                   {beer.name}
                 </Link>
               ))}
