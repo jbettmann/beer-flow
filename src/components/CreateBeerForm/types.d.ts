@@ -29,3 +29,11 @@ interface ErrorValues {
   notes?: string;
   image?: string;
 }
+
+type RefsType = {
+  name: React.RefObject<HTMLInputElement>;
+  abv: React.RefObject<HTMLInputElement>;
+  style: React.RefObject<HTMLInputElement>;
+  image: React.RefObject<HTMLInputElement>;
+  [key: string]: React.RefObject<HTMLInputElement>;
+};

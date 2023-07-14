@@ -7,9 +7,9 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import CategorySelect from "../CategorySelect/CategorySelect";
 import TagInput from "../TagInput/TagInput";
 import { hopSuggestions, maltSuggestions } from "@/lib/suggestionsDB";
-import { ErrorValues, FormValues } from "./types";
+import { ErrorValues, FormValues, RefsType } from "./types";
 import createCategory from "@/lib/createCategory";
-import { Category, NewCategory } from "@/app/types/category";
+import ErrorField from "../ErrorField/ErrorField";
 import createBeer from "@/lib/createBeer";
 import { Console } from "console";
 
@@ -35,18 +35,18 @@ const validateFields = (values: FormValues) => {
   }
 
   // validate abv
-  if (!values.abv) {
-    errors.abv = "ABV is required.";
-  } else if (!/^(\d+(\.\d{1,2})?)$/.test(values.abv)) {
-    errors.abv = "ABV must be a number or decimal.";
+  if (!/^(\d+(\.\d{1,2})?)$/.test(values.abv)) {
+    errors.abv = "ABV must be a number.";
+  }
+
+  if (!/^(\d+(\.\d{1,2})?)$/.test(values.ibu)) {
+    errors.ibu = "IBU must be a number.";
   }
 
   // validate category
-  if (!values.category) {
+  if (values.category.length === 0) {
     errors.category = "A category is required.";
   }
-
-  // ...continue with validations for other fields...
 
   // validate image
   if (!values.image) {
@@ -82,10 +82,21 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
   const router = useRouter();
   const isSubmitting = useRef(false);
 
+  // Create a map that connects field names to their refs
+  const fieldRefs: RefsType = {
+    name: useRef<HTMLInputElement>(null),
+    abv: useRef<HTMLInputElement>(null),
+    category: useRef<HTMLInputElement>(null),
+    style: useRef<HTMLInputElement>(null),
+    image: useRef<HTMLInputElement>(null),
+  };
+
   const onDismiss = useCallback(() => {
     router.back();
   }, [router]);
+
   console.log({ brewery });
+
   // Load persisted state on initial render
   useEffect(() => {
     const persistedState = sessionStorage.getItem("beerForm");
@@ -100,19 +111,45 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
     sessionStorage.setItem("beerForm", JSON.stringify(values));
     // Clear the error message when the form fields change
     setSubmitError(null);
-    console.log({ values });
+    console.log({ values, errors, touched });
   }, [values]);
 
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    isSubmitting.current = true;
+    // Mark all fields as touched
+    setTouched({
+      name: true,
+      abv: true,
+      ibu: true,
+      style: true,
+      malt: true,
+      hops: true,
+      description: true,
+      category: true,
+      nameSake: true,
+      notes: true,
+      image: true,
+      releasedOn: true,
+      archived: true,
+    });
 
     // Don't submit if there are validation errors
     if (Object.keys(errors).length > 0) {
+      const firstErrorKey = Object.keys(errors)[0];
+      const errorContainer = fieldRefs[firstErrorKey].current;
+      if (errorContainer) {
+        const { top } = errorContainer.getBoundingClientRect();
+        window.scrollTo({
+          top: window.scrollY + top - 30, // Adjust the scroll position as needed
+          behavior: "smooth",
+        });
+      }
+      isSubmitting.current = false;
       return;
     }
 
-    isSubmitting.current = true;
     setIsLoading(true); // Set loading state to true
 
     try {
@@ -121,36 +158,45 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
         ? await saveImage({ file: values.image })
         : undefined;
 
-      // Converting brewery categories to a Set for O(1) lookup times
-      const existingCategories = new Set(
-        brewery.categories.map((cat) => cat.name)
+      // Converting brewery categories to a Map for O(1) lookup times
+      const existingCategories = new Map(
+        brewery.categories.map((cat) => [cat.name, cat._id])
       );
 
-      // Only include categories that are not already in the brewery's categories
-      const newCategories = values.category.filter(
-        (category: { value: string }) => !existingCategories.has(category.value)
-      );
-
-      console.log({ newCategories, existingCategories });
-
-      // Call createCategory for each new category
-      const createNewCategories = await Promise.all(
-        newCategories.map((category) => {
-          const newCategory = { name: category.value };
-          return createCategory({
+      // Function to get category ID, creating a new category if necessary
+      const getCategoryId = async (categoryName: string): Promise<string> => {
+        if (existingCategories.has(categoryName)) {
+          const existingId = existingCategories.get(categoryName);
+          if (!existingId) {
+            throw new Error(
+              `ID not found for existing category: ${categoryName}`
+            );
+          }
+          return existingId;
+        } else {
+          const newCategory = { name: categoryName };
+          const createdCategory = await createCategory({
             newCategory,
             breweryId: brewery._id,
             accessToken: session?.user?.accessToken,
           });
-        })
+          if (!createdCategory._id) {
+            throw new Error(`Category creation failed for: ${categoryName}`);
+          }
+          return createdCategory._id;
+        }
+      };
+
+      // Map categories to their IDs
+      const categoryIds = await Promise.all(
+        values.category.map((category) => getCategoryId(category.value))
       );
-      console.log({ createNewCategories });
 
       const newBeer = {
         ...values,
         hops: values.hops.map((hop) => hop.name),
         malt: values.malt.map((malt) => malt.name),
-        category: createNewCategories.map((category: Category) => category._id),
+        category: categoryIds,
         image: beerImage,
       };
       console.log({ newBeer });
@@ -215,7 +261,7 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-zinc-800 h-fit p-4  flex flex-col justify-between mx-auto rounded-lg shadow-2xl text-white"
+      className=" p-4 form flex flex-col justify-between mx-auto rounded-lg shadow-2xl text-white"
     >
       {/* Name */}
       <div className="container-create__form">
@@ -223,13 +269,14 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
         <input
           id="name"
           name="name"
+          ref={fieldRefs.name}
           className="form__input"
           placeholder="Beer name"
           value={values.name}
           onChange={(e) => setValues({ ...values, name: e.target.value })}
           onBlur={handleBlur("name")}
         />
-        {touched.name && errors.name && <div>{errors.name}</div>}
+        {touched.name && errors.name && <ErrorField message={errors.name} />}
       </div>
 
       {/* Style */}
@@ -238,13 +285,14 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
         <input
           id="style"
           name="style"
+          ref={fieldRefs.style}
           className="form__input"
           placeholder="West Coast IPA, Pilsner, Swchwarzbier..."
           value={values.style}
           onChange={(e) => setValues({ ...values, style: e.target.value })}
           onBlur={handleBlur("style")}
         />
-        {touched.style && errors.style && <div>{errors.style}</div>}
+        {touched.style && errors.style && <ErrorField message={errors.style} />}
       </div>
 
       {/* ABV */}
@@ -253,6 +301,7 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
         <input
           id="abv"
           name="abv"
+          ref={fieldRefs.abv}
           type="number"
           step="0.01"
           min={0}
@@ -264,7 +313,7 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
           }}
           onBlur={handleBlur("abv")}
         />
-        {touched.abv && errors.abv && <div>{errors.abv}</div>}
+        {touched.abv && errors.abv && <ErrorField message={errors.abv} />}
 
         {/* IBUs   */}
         <label htmlFor="ibu">IBUs</label>
@@ -284,14 +333,21 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
         />
       </div>
 
-      <CategorySelect
-        setValues={setValues}
-        selectedValues={values.category}
-        categories={brewery?.categories?.map((cat) => ({
-          label: cat.name,
-          value: cat.name,
-        }))}
-      />
+      {/* Categories  */}
+      <div ref={fieldRefs.category}>
+        <CategorySelect
+          setValues={setValues}
+          selectedValues={values.category}
+          categories={brewery?.categories?.map((cat) => ({
+            label: cat.name,
+            value: cat.name,
+          }))}
+          handleBlur={handleBlur}
+        />
+        {touched.category && errors.category && (
+          <ErrorField message={errors.category} />
+        )}
+      </div>
 
       {/* Description */}
       <div className="container-create__form">
@@ -389,7 +445,8 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
         <input
           id="image"
           name="image"
-          className="file-input file-input-bordered file-input-accent w-full max-w-xs text-black"
+          ref={fieldRefs.image}
+          className="form__input-file w-full max-w-xs text-black"
           type="file"
           onChange={(e) => {
             const file = e.target.files ? e.target.files[0] : null;
@@ -407,12 +464,12 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
           disabled={values.name && values.category ? false : true}
           onBlur={handleBlur("image")}
         />
-        {touched.image && errors.image && <div>{errors.image}</div>}
+        {touched.image && errors.image && <ErrorField message={errors.image} />}
       </div>
       <div>
         {submitError && <div>Error: {submitError}</div>}
         <button
-          className="btn btn-accent"
+          className="create__btn"
           type="submit"
           disabled={isSubmitting.current}
         >

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import createBrewery from "@/lib/createBrewery";
+import ErrorField from "./ErrorField/ErrorField";
 
 interface FormValues {
   companyName: string;
@@ -21,9 +22,11 @@ const validateFields = (values: FormValues) => {
   const errors: ErrorValues = {};
 
   // validate companyName
-  if (!values.companyName || values.companyName.length < 3) {
-    errors.companyName =
-      "Company Name is required and must be at least 3 characters long.";
+  if (!values.companyName) {
+    errors.companyName = "Company Name is required.";
+  }
+  if (values.companyName && values.companyName.length < 2) {
+    errors.companyName = "Company Name must be at least 2 characters long.";
   }
 
   // validate image
@@ -120,13 +123,14 @@ const CreateBreweryForm: React.FC = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-slate-100 h-40 flex flex-col justify-between"
+      className="form bg-slate-100 p-12 justify-between"
     >
       <div>
         <label htmlFor="companyName">Company Name:</label>
         <input
           id="companyName"
           name="companyName"
+          className="form__input "
           placeholder="Company Name"
           value={values.companyName}
           onChange={(e) =>
@@ -135,7 +139,7 @@ const CreateBreweryForm: React.FC = () => {
           onBlur={handleBlur("companyName")}
         />
         {touched.companyName && errors.companyName && (
-          <div>{errors.companyName}</div>
+          <ErrorField message={errors.companyName} />
         )}
       </div>
       <div>
@@ -144,19 +148,31 @@ const CreateBreweryForm: React.FC = () => {
           id="image"
           name="image"
           type="file"
-          onChange={(e) =>
-            setValues({
-              ...values,
-              image: e.target.files ? e.target.files[0] : null,
-            })
-          }
+          className="form__input-file"
+          onChange={(e) => {
+            const file = e.target.files ? e.target.files[0] : null;
+            if (file && file.size > 2 * 1024 * 1024) {
+              // Check if file size is greater than 2MB
+              alert("File is too large. Please select a file less than 2MB.");
+              e.target.value = ""; // Clear the selected file
+            } else {
+              setValues({
+                ...values,
+                image: file,
+              });
+            }
+          }}
           onBlur={handleBlur("image")}
         />
-        {touched.image && errors.image && <div>{errors.image}</div>}
+        {touched.image && errors.image && <ErrorField message={errors.image} />}
       </div>
       <div>
         {submitError && <div>Error: {submitError}</div>}
-        <button type="submit" disabled={isSubmitting.current}>
+        <button
+          className="create__btn"
+          type="submit"
+          disabled={isSubmitting.current}
+        >
           Submit
         </button>
       </div>
