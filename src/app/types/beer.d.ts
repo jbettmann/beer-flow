@@ -11,7 +11,7 @@ export type Beer = {
   malt: string[];
   hops: string[];
   description: string;
-
+  image: string;
   nameSake: string;
   notes: string;
   archived: boolean;
@@ -21,9 +21,10 @@ export type Beer = {
 export type NewBeer = {
   name: string;
   style: string;
+  image: string;
   abv: number;
   ibu: number;
-  category: Category[];
+  category: string[];
   malt: string[];
   hops: string[];
   description: string;
