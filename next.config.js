@@ -1,5 +1,16 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "npaxzbaiagyllapbxeps.supabase.co",
+        port: "",
+        pathname: "/storage/**",
+      },
+    ],
+  },
+};
 
 module.exports = {
   ...nextConfig,
