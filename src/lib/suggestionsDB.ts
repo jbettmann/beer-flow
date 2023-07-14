@@ -31,8 +31,8 @@ const maltSuggestions = [
   { id: "munich", name: "Munich" },
   { id: "wheat", name: "Wheat" },
   {
-    id: "crystal/caramel-(various-levels-of-darkness)",
-    name: "Crystal/Caramel (various levels of darkness)",
+    id: "crystal/caramel",
+    name: "Crystal/Caramel",
   },
   { id: "rye", name: "Rye" },
   { id: "aromatic", name: "Aromatic" },
