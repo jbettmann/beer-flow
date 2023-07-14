@@ -1,19 +1,13 @@
-import { Category } from "@/app/types/category";
-import { create } from "domain";
-import React, { KeyboardEventHandler, use, useEffect } from "react";
+import React, { RefObject, useEffect } from "react";
 
 import CreatableSelect from "react-select/creatable";
-import { Tag } from "react-tag-input";
 import { FormValues } from "../CreateBeerForm/types";
-import { set } from "mongoose";
 
 type Props = {
   selectedValues: Option[];
   setValues: (values: FormValues) => void;
   categories: Option[];
-};
-const components = {
-  DropdownIndicator: null,
+  handleBlur: (field: keyof FormValues) => (e: any) => void;
 };
 
 interface Option {
@@ -26,7 +20,12 @@ const createOption = (label: string) => ({
   value: label,
 });
 
-const CategorySelect = ({ selectedValues, setValues, categories }: Props) => {
+const CategorySelect = ({
+  selectedValues,
+  setValues,
+  categories,
+  handleBlur,
+}: Props) => {
   const [options, setOptions] = React.useState<Option[]>(categories);
   const [selectedOptions, setSelectedOptions] =
     React.useState<Option[]>(selectedValues);
@@ -66,6 +65,7 @@ const CategorySelect = ({ selectedValues, setValues, categories }: Props) => {
       <p className="m-0">Category</p>
       <CreatableSelect
         className="text-black"
+        onBlur={handleBlur("category")}
         options={options}
         isMulti
         onChange={handleChange}
