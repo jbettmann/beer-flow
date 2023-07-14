@@ -1,13 +1,9 @@
 "use client";
 import { Beer } from "@/app/types/beer";
 import { Brewery } from "@/app/types/brewery";
-import BeerCategory from "./BeerCategory";
-import { Category } from "@/app/types/category";
-import { notFound, redirect } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { compareSync } from "bcrypt";
+import { useEffect, useState } from "react";
+import BeerCategory from "./BeerCategory";
 
 type Props = {
   promise: [Brewery, Beer[]];
@@ -15,8 +11,6 @@ type Props = {
 
 export default function BreweryProfiles({ promise }: Props) {
   const [brewery, beers] = promise;
-  const { data: session, update } = useSession();
-  console.log(session?.user);
 
   const categories = [...brewery?.categories];
 
