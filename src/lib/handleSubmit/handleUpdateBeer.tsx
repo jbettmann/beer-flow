@@ -1,20 +1,27 @@
+"use server";
 import { Brewery } from "@/app/types/brewery";
-import saveImage from "../saveImage";
 import { FormValues } from "@/components/CreateBeerForm/types";
-import createCategory from "../createCategory";
-import createBeer from "@/lib/createBeer";
-import getSingleBrewery from "../getSingleBrewery";
 import updateBeer from "../PUT/updateBeer";
+import createCategory from "../createCategory";
+import getSingleBrewery from "../getSingleBrewery";
+import { revalidatePath } from "next/cache";
 
 // Handle form submission
-const handleUpdateBeer = async (values: FormValues, breweryId: string) => {
+const handleUpdateBeer = async (
+  values: FormValues,
+  breweryId: string,
+  accessToken: string
+) => {
   let brewery: Brewery;
   if (!breweryId) {
     const savedBrewery = sessionStorage.getItem("selectedBreweryId");
-    const getBrewery = await getSingleBrewery(JSON.parse(savedBrewery));
+    const getBrewery = await getSingleBrewery(
+      JSON.parse(savedBrewery),
+      accessToken
+    );
     brewery = getBrewery;
   }
-  brewery = await getSingleBrewery(breweryId);
+  brewery = await getSingleBrewery(breweryId, accessToken);
 
   try {
     // Converting brewery categories to a Map for O(1) lookup times
@@ -37,6 +44,7 @@ const handleUpdateBeer = async (values: FormValues, breweryId: string) => {
         const createdCategory = await createCategory({
           newCategory,
           breweryId: brewery._id,
+          accessToken,
         });
         if (!createdCategory._id) {
           throw new Error(`Category creation failed for: ${categoryName}`);
@@ -60,7 +68,10 @@ const handleUpdateBeer = async (values: FormValues, breweryId: string) => {
     const updatedBeerRes = await updateBeer({
       updatedBeer,
       breweryId: brewery._id,
+      accessToken,
     });
+
+    if (updatedBeerRes) revalidatePath(`/breweries/[breweryId]`);
 
     return updatedBeerRes;
   } catch (error) {

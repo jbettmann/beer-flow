@@ -1,9 +1,10 @@
 import { Brewery } from "@/app/types/brewery";
-import saveImage from "../saveImage";
+
 import { FormValues } from "@/components/CreateBeerForm/types";
 import createCategory from "../createCategory";
 import createBeer from "@/lib/createBeer";
 import getSingleBrewery from "../getSingleBrewery";
+import saveImage from "../supabase/saveImage";
 
 // Handle form submission
 const handleCreateBeer = async (
@@ -67,6 +68,7 @@ const handleCreateBeer = async (
     const newBeerRes = await createBeer({
       newBeer,
       breweryId: brewery._id,
+      accessToken,
     });
 
     return newBeerRes;

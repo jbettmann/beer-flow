@@ -2,16 +2,21 @@
 import { Beer } from "@/app/types/beer";
 import { Brewery } from "@/app/types/brewery";
 import { hopSuggestions, maltSuggestions } from "@/lib/suggestionsDB";
-import { getImagePublicURL, updateImage } from "@/lib/utils";
+import { getImagePublicURL } from "@/lib/utils";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import CategorySelect from "../CategorySelect/CategorySelect";
 import ErrorField from "../ErrorField/ErrorField";
 import TagInput from "../TagInput/TagInput";
-import { ErrorValues, FormValues, RefsType } from "./types";
+import { ErrorValues, FormValues, RefsType } from "../CreateBeerForm/types";
 import ImageDisplay from "../ImageDisplay/ImageDisplay";
 import handleUpdateBeer from "@/lib/handleSubmit/handleUpdateBeer";
+import { useSession } from "next-auth/react";
+import { revalidatePath } from "next/cache";
+import { handleAction } from "@/lib/handleSubmit/handleAction";
+import { set } from "mongoose";
+import { updateImage } from "@/lib/supabase/updateImage";
 
 // import createBeer from "@/lib/createBeer";
 
@@ -21,6 +26,8 @@ type pageProps = {
 };
 
 const UpdateBeerForm = ({ brewery, beer }: pageProps) => {
+  const { data: session } = useSession();
+
   const [values, setValues] = useState<FormValues>({
     _id: beer?._id || "",
     name: beer?.name || "",
@@ -45,6 +52,8 @@ const UpdateBeerForm = ({ brewery, beer }: pageProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<ErrorValues>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const [updateSuccess, setUpdateSuccess] = useState(false);
 
   const [previewImage, setPreviewImage] = useState(null);
 
@@ -72,12 +81,6 @@ const UpdateBeerForm = ({ brewery, beer }: pageProps) => {
       releasedOn: formattedDate,
     }));
   }, []);
-
-  const onDismiss = useCallback(() => {
-    router.back();
-  }, [router]);
-
-  console.log({ brewery, beer, values });
 
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -124,33 +127,22 @@ const UpdateBeerForm = ({ brewery, beer }: pageProps) => {
         const newImage = await updateImage(beer.image, values.image);
         updatedBeer = { ...values, image: newImage };
       }
-      const updatedBeerRes = await handleUpdateBeer(
+      await handleUpdateBeer(
         updatedBeer,
-        beer.companyId
+        brewery?._id,
+        session?.user?.accessToken
       );
 
-      setValues({
-        id: "",
-        name: "",
-        abv: "",
-        ibu: "",
-        style: "",
-        malt: [],
-        hops: [],
-        description: "",
-        category: [],
-        nameSake: "",
-        notes: "",
-        image: null,
-        releasedOn: "",
-        archived: false,
-      });
-
-      router.push(`/beers/${updatedBeerRes?.existingBeer._id}`);
+      // allows hard navigation back to brewery page
+      setUpdateSuccess(true);
     } catch (err) {
       console.error(err);
       setSubmitError(err.message);
     } finally {
+      if (previewImage) {
+        URL.revokeObjectURL(previewImage);
+        setPreviewImage(null);
+      }
       isSubmitting.current = false;
       setIsLoading(false); // Set loading state to false
     }
@@ -178,9 +170,16 @@ const UpdateBeerForm = ({ brewery, beer }: pageProps) => {
     setTouched((prevTouched) => ({ ...prevTouched, [field]: true }));
   };
 
+  // allows hard navigation back to brewery page
+  if (updateSuccess) {
+    setUpdateSuccess(false);
+    redirect(`/breweries/${brewery?._id}`);
+  }
+
   return (
     <form
       onSubmit={handleSubmit}
+      // action={handleAction}
       className=" p-4 form flex flex-col justify-between mx-auto rounded-lg shadow-2xl text-white"
     >
       <div className="flex justify-around">
@@ -413,6 +412,7 @@ const UpdateBeerForm = ({ brewery, beer }: pageProps) => {
           className="create__btn"
           type="submit"
           disabled={isSubmitting.current}
+          // onClick={() => handleAction(values)}
         >
           {isLoading ? (
             <span className="loading loading-spinner text-accent"></span>

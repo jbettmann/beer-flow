@@ -1,29 +1,32 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { Beer, NewBeer } from "@/app/types/beer";
-import { Brewery, NewBrewery } from "@/app/types/brewery";
-import { getServerSession } from "next-auth/next";
+"use server";
+import { Beer } from "@/app/types/beer";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/dist/server/api-utils";
 
 type pageProps = {
   updatedBeer: Beer;
   breweryId: string;
+  accessToken: string;
 };
 
 export default async function updateBeer({
   updatedBeer,
   breweryId,
+  accessToken,
 }: pageProps) {
-  const session = await getServerSession(authOptions);
-  if (session?.user.accessToken) {
+  if (accessToken) {
+    console.log({ updatedBeer, breweryId, accessToken });
     try {
       const response = await fetch(
-        `https://beer-bible-api.vercel.app/breweries/${breweryId}/beers/${updatedBeer._id}}`,
+        `https://beer-bible-api.vercel.app/breweries/${breweryId}/beers/${updatedBeer._id}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${session?.user.accessToken}`,
+            Authorization: `Bearer ${accessToken}`,
           },
           body: JSON.stringify(updatedBeer),
+          next: { revalidate: 0 },
         }
       );
 
@@ -32,6 +35,8 @@ export default async function updateBeer({
       }
 
       const responseData: Beer = await response.json();
+      // revalidatePath(`/breweries/[breweryId]`);
+      // console.log({ responseData });
       return responseData;
     } catch (err) {
       console.error(err);
