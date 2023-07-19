@@ -1,10 +1,12 @@
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { Beer, NewBeer } from "@/app/types/beer";
 import { Brewery, NewBrewery } from "@/app/types/brewery";
+import { getServerSession } from "next-auth/next";
 
 type pageProps = {
   newBeer: NewBeer;
   breweryId: string;
-  accessToken: string | undefined;
+  accessToken: string;
 };
 
 export default async function createBeer({

@@ -5,10 +5,21 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { Users } from "@/app/types/users";
 import { Session } from "next-auth";
 
-export default async function getSingleBrewery(breweryId: string) {
-  const session = await getServerSession(authOptions);
+export default async function getSingleBrewery(
+  breweryId: string,
+  accessToken?: string
+) {
+  let token;
 
-  if (session?.user) {
+  if (breweryId) {
+    if (accessToken) {
+      token = accessToken;
+    } else {
+      const session = await getServerSession(authOptions);
+      token = session?.user.accessToken;
+    }
+
+   
     try {
       // using axios due to fetch problem with body length of array?
       const response = await fetch(
@@ -17,7 +28,7 @@ export default async function getSingleBrewery(breweryId: string) {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${session?.user.accessToken}`,
+            Authorization: `Bearer ${token}`,
           },
           method: "GET",
         }
