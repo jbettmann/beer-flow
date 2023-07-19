@@ -1,5 +1,6 @@
 import React from "react";
 import { Tag, WithContext as Tags } from "react-tag-input";
+import { FormValues } from "../CreateBeerForm/types";
 
 type Props = {
   valueInput: keyof FormValues;
