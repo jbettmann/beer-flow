@@ -2,7 +2,7 @@ import { Category } from "./category";
 
 export type Beer = {
   _id: string;
-  companyId: number;
+  companyId: string;
   name: string;
   style: string;
   abv: number;
@@ -16,6 +16,8 @@ export type Beer = {
   notes: string;
   archived: boolean;
   releasedOn: Date | string | null;
+  createdAt: Date | string;
+  updatedAt: Date | string;
 };
 
 export type NewBeer = {

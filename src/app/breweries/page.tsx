@@ -30,8 +30,6 @@ import { redirect } from "next/dist/server/api-utils";
 const BreweriesPage = async () => {
   const breweryData: Promise<Brewery[]> = getBreweries();
   const breweries = await breweryData;
-  const session = await getServerSession(authOptions);
-  console.log(breweries, session?.user);
 
   return (
     <section className="w-full">

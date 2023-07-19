@@ -13,7 +13,6 @@ p {
 }
 
 
-
 .beer-category__image {
   @apply rounded-full my-2 mx-4
 }
@@ -41,6 +40,10 @@ p {
   @apply btn btn-accent
 }
 
+.date-create {
+  @apply text-sm italic
+}
+
 .form {
   @apply bg-zinc-800 h-fit
 }
@@ -54,7 +57,11 @@ p {
 }
 
 .form__input-file {
-  @apply file-input file-input-bordered file-input-accent
+  @apply file-input file-input-bordered file-input-accent 
+}
+
+.form__input-file-sx {
+  @apply file-input file-input-bordered file-input-accent file-input-xs w-full max-w-xs
 }
 
 .ReactTags__selected {
