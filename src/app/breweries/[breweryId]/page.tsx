@@ -12,7 +12,7 @@ type pageProps = {
     breweryId: string;
   };
 };
-
+export const revalidate = 0;
 //  breweries/breweryId *********************************
 export default async function SingleBreweryPage({
   params: { breweryId },
