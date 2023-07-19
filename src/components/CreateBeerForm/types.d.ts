@@ -27,7 +27,7 @@ interface ErrorValues {
   category?: string;
   nameSake?: string;
   notes?: string;
-  image?: string;
+  image?: string | undefined;
 }
 
 type RefsType = {

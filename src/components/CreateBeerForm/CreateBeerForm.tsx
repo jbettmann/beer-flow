@@ -1,59 +1,20 @@
 "use client";
 import { Brewery } from "@/app/types/brewery";
-import saveImage from "@/lib/saveImage";
-import { useSession } from "next-auth/react";
+import handleCreateBeer from "@/lib/handleSubmit/handleCreateBeer";
+import { hopSuggestions, maltSuggestions } from "@/lib/suggestionsDB";
+import validateFields from "@/lib/validators/forms";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import CategorySelect from "../CategorySelect/CategorySelect";
-import TagInput from "../TagInput/TagInput";
-import { hopSuggestions, maltSuggestions } from "@/lib/suggestionsDB";
-import { ErrorValues, FormValues, RefsType } from "./types";
-import createCategory from "@/lib/createCategory";
 import ErrorField from "../ErrorField/ErrorField";
-import createBeer from "@/lib/createBeer";
-import { Console } from "console";
+import TagInput from "../TagInput/TagInput";
+import { ErrorValues, FormValues, RefsType } from "./types";
+import { useSession } from "next-auth/react";
 
 // import createBeer from "@/lib/createBeer";
 
 type pageProps = {
-  brewery: Brewery;
-};
-
-// Utility function to validate form fields
-const validateFields = (values: FormValues) => {
-  const errors: ErrorValues = {};
-
-  // validate name
-
-  if (!values.name || values.name.trim() === "") {
-    errors.name = "Name is required.";
-  }
-
-  // validate style
-  if (!values.style || values.style.trim() === "") {
-    errors.style = "Style is required.";
-  }
-
-  // validate abv
-  if (!/^(\d+(\.\d{1,2})?)$/.test(values.abv)) {
-    errors.abv = "ABV must be a number.";
-  }
-
-  if (!/^(\d+(\.\d{1,2})?)$/.test(values.ibu)) {
-    errors.ibu = "IBU must be a number.";
-  }
-
-  // validate category
-  if (values.category.length === 0) {
-    errors.category = "A category is required.";
-  }
-
-  // validate image
-  if (!values.image) {
-    errors.image = "Image is required.";
-  }
-
-  return errors;
+  brewery?: Brewery;
 };
 
 const CreateBeerForm = ({ brewery }: pageProps) => {
@@ -73,7 +34,6 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
     archived: false,
   });
 
-  console.log({ brewery });
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<ErrorValues>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -153,61 +113,8 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
     setIsLoading(true); // Set loading state to true
 
     try {
-      // Save the image to the database and create link
-      const beerImage = values.image
-        ? await saveImage({ file: values.image })
-        : undefined;
+      await handleCreateBeer(values, brewery, session?.user?.accessToken);
 
-      // Converting brewery categories to a Map for O(1) lookup times
-      const existingCategories = new Map(
-        brewery.categories.map((cat) => [cat.name, cat._id])
-      );
-
-      // Function to get category ID, creating a new category if necessary
-      const getCategoryId = async (categoryName: string): Promise<string> => {
-        if (existingCategories.has(categoryName)) {
-          const existingId = existingCategories.get(categoryName);
-          if (!existingId) {
-            throw new Error(
-              `ID not found for existing category: ${categoryName}`
-            );
-          }
-          return existingId;
-        } else {
-          const newCategory = { name: categoryName };
-          const createdCategory = await createCategory({
-            newCategory,
-            breweryId: brewery._id,
-            accessToken: session?.user?.accessToken,
-          });
-          if (!createdCategory._id) {
-            throw new Error(`Category creation failed for: ${categoryName}`);
-          }
-          return createdCategory._id;
-        }
-      };
-
-      // Map categories to their IDs
-      const categoryIds = await Promise.all(
-        values.category.map((category) => getCategoryId(category.value))
-      );
-
-      const newBeer = {
-        ...values,
-        hops: values.hops.map((hop) => hop.name),
-        malt: values.malt.map((malt) => malt.name),
-        category: categoryIds,
-        image: beerImage,
-      };
-      console.log({ newBeer });
-
-      const newBeerRes = await createBeer({
-        newBeer,
-        breweryId: brewery._id,
-        accessToken: session?.user?.accessToken,
-      });
-
-      console.log({ newBeerRes });
       setValues({
         name: "",
         abv: "",
@@ -225,9 +132,8 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
       });
       sessionStorage.removeItem("beerForm"); // Remove the saved form
       onDismiss();
-
-      // router.push(`/beers/${newBeerRes.savedBeer._id}`);
     } catch (err) {
+      // router.push(`/beers/${newBeerRes.savedBeer._id}`);
       console.error(err);
       setSubmitError(err.message);
     } finally {
@@ -483,5 +389,4 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
     </form>
   );
 };
-
 export default CreateBeerForm;

@@ -1,5 +1,5 @@
 "use client";
-import saveImage from "@/lib/saveImage";
+import saveImage from "@/lib/supabase/saveImage";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useRef, useState } from "react";

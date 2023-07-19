@@ -18,6 +18,7 @@ export default function BreweryProfiles({ promise }: Props) {
   const [openCategory, setOpenCategory] = useState<string | null | number>(
     null
   );
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem("selectedBreweryId", brewery._id);
@@ -51,6 +52,7 @@ export default function BreweryProfiles({ promise }: Props) {
               beers={beers}
               onClick={() => handleCategoryClick(i)}
               isOpen={openCategory == i}
+              breweryId={brewery._id}
             />
           ))}
           <div className="mt-10">
@@ -68,6 +70,7 @@ export default function BreweryProfiles({ promise }: Props) {
               beers={beers}
               onClick={() => handleCategoryClick("archived")}
               isOpen={openCategory == "archived"}
+              breweryId={brewery._id}
             />
           </div>
         </div>

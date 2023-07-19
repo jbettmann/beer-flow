@@ -30,13 +30,11 @@ const CategorySelect = ({
   const [selectedOptions, setSelectedOptions] =
     React.useState<Option[]>(selectedValues);
 
-  console.log(selectedOptions);
   // // sets selectedOptions to selectedValues from localSession
   useEffect(() => {
     setSelectedOptions(selectedValues || []);
   }, [selectedValues]);
 
-  console.log(selectedOptions);
   // Creates new category and adds it to selectedOptions
   const handleCreate = (inputValue: string) => {
     if (!inputValue) return;
