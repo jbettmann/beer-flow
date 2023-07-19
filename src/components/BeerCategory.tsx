@@ -17,6 +17,7 @@ type Props = {
   beers: Beer[];
   isOpen: boolean;
   onClick: () => void;
+  breweryId: string;
 };
 
 // in BeerCategory.tsx
@@ -25,6 +26,7 @@ export default function BeerCategory({
   beers,
   isOpen,
   onClick,
+  breweryId,
 }: Props) {
   const filteredBeers = () => {
     if (category.name === "All Beers") {
@@ -70,7 +72,10 @@ export default function BeerCategory({
           </div>
           <div className="collapse-content">
             {beersInCategory.map((beer) => (
-              <Link href={`/beers/${beer._id}`} key={beer._id}>
+              <Link
+                href={`/breweries/${breweryId}/beers/${beer._id}`}
+                key={beer._id}
+              >
                 {beer.name}
               </Link>
             ))}
@@ -102,7 +107,7 @@ export default function BeerCategory({
             : filteredBeers().map((beer) => (
                 <Link
                   className="flex items-center"
-                  href={`/beers/${beer._id}`}
+                  href={`/breweries/${breweryId}/beers/${beer._id}`}
                   key={beer._id}
                   onClick={(e) => e.stopPropagation()}
                 >
