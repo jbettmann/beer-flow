@@ -1,28 +1,24 @@
+"use client";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { getServerSession } from "next-auth/next";
+import { getServerSession } from "next-auth";
+import { useSession } from "next-auth/react";
 
-export default async function getBreweryBeers(breweryId: string) {
-  const session = await getServerSession(authOptions);
-
-  if (session?.user) {
+export default async function getBreweryBeers([url, token]) {
+  if (token) {
     try {
-      // using axios due to fetch problem with body length of array?
-      const response = await fetch(
-        `https://beer-bible-api.vercel.app/breweries/${breweryId}/beers`,
-
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session?.user.accessToken}`,
-          },
-          method: "GET",
-        }
-      );
+      const response = await fetch(url, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        method: "GET",
+      });
 
       if (!response.ok) {
         throw new Error(response.statusText);
       }
 
+      console.log({ response });
       return await response.json();
     } catch (err) {
       console.error(err);
