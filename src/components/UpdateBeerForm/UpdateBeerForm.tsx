@@ -14,9 +14,12 @@ import ImageDisplay from "../ImageDisplay/ImageDisplay";
 import handleUpdateBeer from "@/lib/handleSubmit/handleUpdateBeer";
 import { useSession } from "next-auth/react";
 import { revalidatePath } from "next/cache";
-import { handleAction } from "@/lib/handleSubmit/handleAction";
+
 import { set } from "mongoose";
 import { updateImage } from "@/lib/supabase/updateImage";
+import { useBreweryContext } from "@/context/brewery-beer";
+import useSWR from "swr";
+import getBreweryBeers from "@/lib/getBreweryBeers";
 
 // import createBeer from "@/lib/createBeer";
 
@@ -27,6 +30,18 @@ type pageProps = {
 
 const UpdateBeerForm = ({ brewery, beer }: pageProps) => {
   const { data: session } = useSession();
+
+  const {
+    data: allBeers,
+    error: beersError,
+    mutate,
+  } = useSWR(
+    [
+      `https://beer-bible-api.vercel.app/breweries/${brewery._id}/beers`,
+      session?.user.accessToken,
+    ],
+    getBreweryBeers
+  );
 
   const [values, setValues] = useState<FormValues>({
     _id: beer?._id || "",
@@ -80,6 +95,7 @@ const UpdateBeerForm = ({ brewery, beer }: pageProps) => {
 
       releasedOn: formattedDate,
     }));
+    console.log({ allBeers });
   }, []);
 
   // Handle form submission
@@ -121,20 +137,27 @@ const UpdateBeerForm = ({ brewery, beer }: pageProps) => {
     setIsLoading(true); // Set loading state to true
 
     try {
-      let updatedBeer = values;
+      let updatedBeer: FormValues = values;
 
       if (beer?.image !== values.image) {
         const newImage = await updateImage(beer.image, values.image);
         updatedBeer = { ...values, image: newImage };
       }
-      await handleUpdateBeer(
+      const updateBeerRes = await handleUpdateBeer(
         updatedBeer,
         brewery?._id,
         session?.user?.accessToken
       );
 
+      const beerIndex = allBeers.findIndex((b) => b._id === updatedBeer._id);
+
+      // Replace the beer at that index with the updated beer
+      const updatedBeers = [...allBeers];
+      updatedBeers[beerIndex] = updateBeerRes;
       // allows hard navigation back to brewery page
-      setUpdateSuccess(true);
+      // setUpdateSuccess(true);
+      mutate(updatedBeers);
+      router.back();
     } catch (err) {
       console.error(err);
       setSubmitError(err.message);
@@ -179,7 +202,6 @@ const UpdateBeerForm = ({ brewery, beer }: pageProps) => {
   return (
     <form
       onSubmit={handleSubmit}
-      // action={handleAction}
       className=" p-4 form flex flex-col justify-between mx-auto rounded-lg shadow-2xl text-white"
     >
       <div className="flex justify-around">

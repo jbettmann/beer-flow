@@ -2,6 +2,7 @@ import { Beer } from "@/app/types/beer";
 import { Brewery } from "@/app/types/brewery";
 import BeerCard from "@/components/BeerCard";
 import Modal from "@/components/Modal";
+import getBreweryBeers from "@/lib/getBreweryBeers";
 import getSingleBeer from "@/lib/getSingleBeer";
 import getSingleBrewery from "@/lib/getSingleBrewery";
 import React from "react";
@@ -16,14 +17,16 @@ type pageProps = {
 export default async function BeerModel({
   params: { breweryId, beerId },
 }: pageProps) {
-  console.log({ breweryId, beerId });
-  const brewery: Brewery = await getSingleBrewery(breweryId);
-  const allBeers: Beer[] = await getSingleBeer();
+  const singleBrewery: Promise<Brewery> = getSingleBrewery(breweryId);
 
-  const beer = allBeers.find((b) => b._id === beerId);
+  const promise = await Promise.all([singleBrewery]);
+
+  const [brewery] = promise;
+
   return (
     <Modal closeButtonOnly={false}>
-      <BeerCard beer={beer} brewery={brewery} />
+      {/* @ts-expect-error Server component */}
+      <BeerCard brewery={brewery} beerId={beerId} />
     </Modal>
   );
 }

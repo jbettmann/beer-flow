@@ -2,11 +2,14 @@ import { Beer } from "@/app/types/beer";
 import { Brewery } from "@/app/types/brewery";
 import BeerCard from "@/components/BeerCard";
 import BreweryProfiles from "@/components/BreweryProfiles";
+import getBreweryBeers from "@/lib/getBreweryBeers";
 import getSingleBeer from "@/lib/getSingleBeer";
 import getSingleBrewery from "@/lib/getSingleBrewery";
+import { useSession } from "next-auth/react";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import useSWR from "swr";
 
 type pageProps = {
   params: {
@@ -22,21 +25,20 @@ export default async function SingleBeerPage({
   params: { breweryId, beerId },
 }: pageProps) {
   console.log({ breweryId, beerId });
-  const brewery: Brewery = await getSingleBrewery(breweryId);
-  const allBeers: Beer[] = await getSingleBeer();
+  const singleBrewery: Promise<Brewery> = getSingleBrewery(breweryId);
 
-  const beer = allBeers.find((b) => b._id === beerId);
+  const promise = await Promise.all([singleBrewery]);
 
-  console.log({ beer });
+  const [brewery] = promise;
 
-  if (!beer) return notFound();
+  if (!brewery) return notFound();
   return (
     <div className="w-full h-full">
       <h2>
         <Link href="/">Back Home</Link>
       </h2>
-
-      <BeerCard beer={beer} brewery={brewery} />
+      {/* @ts-expect-error Server component */}
+      <BeerCard brewery={brewery} beerId={beerId} />
     </div>
   );
 }

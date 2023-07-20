@@ -1,6 +1,7 @@
 import { Category, NewCategory } from "@/app/types/category";
 
 interface FormValues {
+  _id?: string;
   name: string;
   abv: number;
   ibu: number;

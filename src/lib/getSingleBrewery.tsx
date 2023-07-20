@@ -19,7 +19,6 @@ export default async function getSingleBrewery(
       token = session?.user.accessToken;
     }
 
-   
     try {
       // using axios due to fetch problem with body length of array?
       const response = await fetch(

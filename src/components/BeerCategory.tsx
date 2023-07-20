@@ -1,15 +1,7 @@
 "use client";
 import { Beer } from "@/app/types/beer";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "./ui/accordion";
-import Link from "next/link";
 import { Category } from "@/app/types/category";
-import Image from "next/image";
-import { supabase } from "@/lib/supabase";
+import Link from "next/link";
 import ImageDisplay from "./ImageDisplay/ImageDisplay";
 
 type Props = {
@@ -29,6 +21,7 @@ export default function BeerCategory({
   breweryId,
 }: Props) {
   const filteredBeers = () => {
+    if (!beers) return [];
     if (category.name === "All Beers") {
       return beers;
     }
@@ -36,7 +29,9 @@ export default function BeerCategory({
       return beers.filter((beer) => beer.archived);
     }
     return beers.filter((beer) =>
-      beer.category.some((cat) => cat.name === category.name)
+      beer.category
+        ? beer.category.some((cat) => cat.name === category.name)
+        : false
     );
   };
 
@@ -46,7 +41,7 @@ export default function BeerCategory({
 
     for (let beer of beers) {
       const categoryName = beer.category[0].name;
-      console.log({ categoryName });
+
       if (groupedBeers[categoryName]) {
         groupedBeers[categoryName].push(beer);
       } else {
@@ -86,6 +81,7 @@ export default function BeerCategory({
   };
 
   const renderArchivedBeers = () => {
+    if (!beers) return null;
     const archivedBeers = beers.filter((beer) => beer.archived);
     return renderAllBeers(archivedBeers);
   };

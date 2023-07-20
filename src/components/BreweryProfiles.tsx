@@ -1,29 +1,62 @@
 "use client";
-import { Beer } from "@/app/types/beer";
 import { Brewery } from "@/app/types/brewery";
+import { Category } from "@/app/types/category";
+import { useBreweryContext } from "@/context/brewery-beer";
+import getBreweryBeers from "@/lib/getBreweryBeers";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
+import useSWR from "swr";
 import BeerCategory from "./BeerCategory";
 
-type Props = {
-  promise: [Brewery, Beer[]];
+type pageProps = {
+  promise: [Brewery];
+  breweryId: string;
 };
 
-export default function BreweryProfiles({ promise }: Props) {
-  const [brewery, beers] = promise;
+export const revalidate = 0;
 
-  const categories = [...brewery?.categories];
+export default function BreweryProfiles({ promise, breweryId }: pageProps) {
+  const [brewery] = promise;
 
+  const { data: session } = useSession();
+  const { data: beers, error: beersError } = useSWR(
+    [
+      `https://beer-bible-api.vercel.app/breweries/${breweryId}/beers`,
+      session?.user.accessToken,
+    ],
+    getBreweryBeers
+  );
+
+  const {
+    setSelectedBrewery,
+    setSelectedBeers,
+    selectedBrewery,
+    selectedBeers,
+  } = useBreweryContext();
+  // const [categories, setCategories] = useState<Category[]>([]);
   // check for previous open category to prises open state
   const [openCategory, setOpenCategory] = useState<string | null | number>(
     null
   );
 
+  const categories = [...brewery?.categories];
+
+  console.log(beers, beersError);
+  useEffect(() => {
+    setSelectedBrewery(brewery);
+    setSelectedBeers(beers);
+    // setCategories(brewery.categories);
+  }, [beers, brewery]);
+
   useEffect(() => {
     if (typeof window !== "undefined") {
-      localStorage.setItem("selectedBreweryId", brewery._id);
       const storedOpenCategory = sessionStorage.getItem("openCategory");
       setOpenCategory(storedOpenCategory);
+    }
+
+    if (typeof window !== "undefined" && selectedBrewery) {
+      localStorage.setItem("selectedBreweryId", selectedBrewery._id);
     }
   }, []);
 
@@ -40,48 +73,44 @@ export default function BreweryProfiles({ promise }: Props) {
     }
   };
 
-  const content = (
+  return (
     <section className="w-1/2 m-auto">
-      <h1>{brewery.companyName}</h1>
-      {brewery.categories.length > 1 && (
-        <div>
-          {categories.map((category, i) => (
-            <BeerCategory
-              key={i}
-              category={category}
-              beers={beers}
-              onClick={() => handleCategoryClick(i)}
-              isOpen={openCategory == i}
-              breweryId={brewery._id}
-            />
-          ))}
-          <div className="mt-10">
-            {/* <BeerCategory
-            key="all"
-            category={{ name: "All Beers" }}
-            beers={beers}
-            onClick={() => handleCategoryClick("all")}
-            isOpen={openCategory === "all"}
-          /> */}
+      <h1>{selectedBrewery?.companyName}</h1>
 
+      <div>
+        <Suspense fallback={<div>Loading...</div>}>
+          {brewery.categories.length > 0 &&
+            categories.map((category, i) => (
+              <BeerCategory
+                key={i}
+                category={category}
+                beers={selectedBeers}
+                onClick={() => handleCategoryClick(i)}
+                isOpen={openCategory == i}
+                breweryId={selectedBrewery?._id}
+              />
+            ))}
+          <div className="mt-10">
             <BeerCategory
               key="archived"
               category={{ name: "Archived" }}
-              beers={beers}
+              beers={selectedBeers}
               onClick={() => handleCategoryClick("archived")}
               isOpen={openCategory == "archived"}
-              breweryId={brewery._id}
+              breweryId={selectedBrewery?._id}
             />
           </div>
-        </div>
-      )}
+        </Suspense>
+      </div>
+
       <div className="w-full h-full flex justify-center">
-        <Link href={`/create/${brewery._id}/beer`} className="btn btn-accent">
+        <Link
+          href={`/create/${selectedBrewery?._id}/beer`}
+          className="btn btn-accent"
+        >
           Create A Beer
         </Link>
       </div>
     </section>
   );
-
-  return content;
 }
