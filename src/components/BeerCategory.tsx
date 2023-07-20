@@ -3,6 +3,7 @@ import { Beer } from "@/app/types/beer";
 import { Category } from "@/app/types/category";
 import Link from "next/link";
 import ImageDisplay from "./ImageDisplay/ImageDisplay";
+import { handleBeerView, isNew } from "@/lib/utils";
 
 type Props = {
   category: Category;
@@ -56,27 +57,31 @@ export default function BeerCategory({
     const groupedBeers = groupBeersByCategory(beers);
 
     return Object.entries(groupedBeers).map(
-      ([categoryName, beersInCategory]) => (
-        <div
-          key={categoryName}
-          className={`collapse collapse-arrow  bg-base-200`}
-        >
-          <input type="checkbox" />
-          <div className="collapse-title text-xl font-medium">
-            {categoryName}
+      ([categoryName, beersInCategory]) => {
+        // Check if any beer in the category is new
+
+        return (
+          <div
+            key={categoryName}
+            className={`collapse collapse-arrow  bg-base-200`}
+          >
+            <input type="checkbox" />
+            <div className="collapse-title text-xl font-medium">
+              <p>{category.name}</p>
+            </div>
+            <div className="collapse-content">
+              {beersInCategory.map((beer) => (
+                <Link
+                  href={`/breweries/${breweryId}/beers/${beer._id}`}
+                  key={beer._id}
+                >
+                  {beer.name}
+                </Link>
+              ))}
+            </div>
           </div>
-          <div className="collapse-content">
-            {beersInCategory.map((beer) => (
-              <Link
-                href={`/breweries/${breweryId}/beers/${beer._id}`}
-                key={beer._id}
-              >
-                {beer.name}
-              </Link>
-            ))}
-          </div>
-        </div>
-      )
+        );
+      }
     );
   };
 
@@ -88,6 +93,11 @@ export default function BeerCategory({
 
   console.log({ beers });
 
+  const beersInCategory = filteredBeers();
+
+  // Check if any beer in the category is new
+  const isCategoryNew = beersInCategory.some((beer) => isNew(beer));
+
   return (
     <div
       onClick={onClick}
@@ -95,25 +105,34 @@ export default function BeerCategory({
         isOpen ? "collapse-open" : ""
       } collapse-arrow  bg-base-200`}
     >
-      <div className="collapse-title text-xl font-medium">{category.name}</div>
+      <div className="collapse-title text-xl font-medium inline-flex justify-between">
+        <p>{category.name}</p>
+        {isCategoryNew && <p className="new-tag">NEW</p>}
+      </div>
       <div className="collapse-content">
         <div className="flex flex-col">
           {category.name === "Archived"
             ? renderArchivedBeers()
             : filteredBeers().map((beer) => (
                 <Link
-                  className="flex items-center"
+                  className="flex items-center justify-between"
                   href={`/breweries/${breweryId}/beers/${beer._id}`}
                   key={beer._id}
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleBeerView(beer._id);
+                  }}
                 >
-                  {beer.image && (
-                    <ImageDisplay
-                      className="beer-category__image"
-                      item={beer}
-                    />
-                  )}
-                  {beer.name}
+                  <div className="inline-flex items-center">
+                    {beer.image && (
+                      <ImageDisplay
+                        className="beer-category__image"
+                        item={beer}
+                      />
+                    )}
+                    {beer.name}
+                  </div>
+                  {isNew(beer) && <p className="tag-new">NEW</p>}
                 </Link>
               ))}
         </div>
