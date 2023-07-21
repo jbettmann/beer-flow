@@ -30,6 +30,7 @@ export default async function getSingleBrewery(
             Authorization: `Bearer ${token}`,
           },
           method: "GET",
+          next: { revalidate: 0 },
         }
       );
 
