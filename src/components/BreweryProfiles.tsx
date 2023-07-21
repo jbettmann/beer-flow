@@ -14,8 +14,6 @@ type pageProps = {
   breweryId: string;
 };
 
-export const revalidate = 0;
-
 export default function BreweryProfiles({ promise, breweryId }: pageProps) {
   const [brewery] = promise;
 
@@ -34,7 +32,7 @@ export default function BreweryProfiles({ promise, breweryId }: pageProps) {
     selectedBrewery,
     selectedBeers,
   } = useBreweryContext();
-  // const [categories, setCategories] = useState<Category[]>([]);
+
   // check for previous open category to prises open state
   const [openCategory, setOpenCategory] = useState<string | null | number>(
     null
@@ -42,11 +40,9 @@ export default function BreweryProfiles({ promise, breweryId }: pageProps) {
 
   const categories = [...brewery?.categories];
 
-  console.log(beers, beersError);
   useEffect(() => {
     setSelectedBrewery(brewery);
     setSelectedBeers(beers);
-    // setCategories(brewery.categories);
   }, [beers, brewery]);
 
   useEffect(() => {
