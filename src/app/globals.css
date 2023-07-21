@@ -25,8 +25,12 @@ p {
   @apply text-red-500 text-sm
 }
 
+.create__btn {
+  @apply btn btn-accent
+}
+
 .close-btn {
-  @apply float-right mt-3 mr-3;
+  @apply float-right mt-[-2rem] mr-[-2rem] btn btn-ghost;
   
 }
 
@@ -36,9 +40,7 @@ p {
   @apply flex flex-col m-3
 }
 
-.create__btn {
-  @apply btn btn-accent
-}
+
 
 .date-create {
   @apply text-sm italic
