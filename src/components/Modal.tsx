@@ -49,7 +49,7 @@ export default function Modal({
         ref={wrapper}
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full sm:w-10/12 md:w-8/12 lg:w-1/2 p-6 h-5/6"
       >
-        <button className="btn glass close-btn " onClick={onDismiss}>
+        <button className="close-btn " onClick={onDismiss}>
           {/* X Close Button SVG */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
