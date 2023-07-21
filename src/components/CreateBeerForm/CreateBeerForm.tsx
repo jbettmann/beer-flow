@@ -10,6 +10,9 @@ import ErrorField from "../ErrorField/ErrorField";
 import TagInput from "../TagInput/TagInput";
 import { ErrorValues, FormValues, RefsType } from "./types";
 import { useSession } from "next-auth/react";
+import useSWR from "swr";
+import getBreweryBeers from "@/lib/getBreweryBeers";
+import { useBreweryContext } from "@/context/brewery-beer";
 
 // import createBeer from "@/lib/createBeer";
 
@@ -18,6 +21,7 @@ type pageProps = {
 };
 
 const CreateBeerForm = ({ brewery }: pageProps) => {
+  const { data: session, status, update } = useSession();
   const [values, setValues] = useState<FormValues>({
     name: "",
     abv: "",
@@ -34,11 +38,20 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
     archived: false,
   });
 
+  const { selectedBeers, setSelectedBeers } = useBreweryContext();
+
+  const { mutate } = useSWR(
+    [
+      `https://beer-bible-api.vercel.app/breweries/${brewery?._id}/beers`,
+      session?.user.accessToken,
+    ],
+    getBreweryBeers
+  );
+
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<ErrorValues>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const { data: session, status, update } = useSession();
   const router = useRouter();
   const isSubmitting = useRef(false);
 
@@ -113,27 +126,35 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
     setIsLoading(true); // Set loading state to true
 
     try {
-      await handleCreateBeer(values, brewery, session?.user?.accessToken);
+      const newBeerRes = await handleCreateBeer(
+        values,
+        brewery,
+        session?.user?.accessToken
+      );
 
-      setValues({
-        name: "",
-        abv: "",
-        ibu: "",
-        style: "",
-        malt: [],
-        hops: [],
-        description: "",
-        category: [],
-        nameSake: "",
-        notes: "",
-        image: null,
-        releasedOn: "",
-        archived: false,
-      });
-      sessionStorage.removeItem("beerForm"); // Remove the saved form
-      onDismiss();
+      if (newBeerRes) {
+        // forced revalidation of the beers
+        mutate([...selectedBeers, newBeerRes]);
+
+        setValues({
+          name: "",
+          abv: "",
+          ibu: "",
+          style: "",
+          malt: [],
+          hops: [],
+          description: "",
+          category: [],
+          nameSake: "",
+          notes: "",
+          image: null,
+          releasedOn: "",
+          archived: false,
+        });
+        sessionStorage.removeItem("beerForm"); // Remove the saved form
+        onDismiss();
+      }
     } catch (err) {
-      // router.push(`/beers/${newBeerRes.savedBeer._id}`);
       console.error(err);
       setSubmitError(err.message);
     } finally {
