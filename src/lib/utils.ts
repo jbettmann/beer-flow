@@ -73,7 +73,7 @@ export const handleBeerView = (beerId: string) => {
 };
 //  keep track of local storage size
 const manageLocalStorageSize = () => {
-  const maxEntries = 500;
+  const maxEntries = 20;
   let viewedBeers = JSON.parse(localStorage.getItem("viewedBeers")) || {};
 
   // If the size exceeds maxEntries, remove oldest entries.
@@ -85,7 +85,7 @@ const manageLocalStorageSize = () => {
     entries.sort((a, b) => a[1] - b[1]);
 
     // Keep only the newest entries
-    entries = entries.slice(entries.length - maxEntries);
+    entries = entries.slice(-maxEntries);
 
     // Convert back to an object
     viewedBeers = Object.fromEntries(entries);
