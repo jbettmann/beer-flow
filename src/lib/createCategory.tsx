@@ -8,8 +8,8 @@ type pageProps = {
 };
 
 export default async function createCategory({
-  breweryId,
   newCategory,
+  breweryId,
   accessToken,
 }: pageProps) {
   if (accessToken) {
