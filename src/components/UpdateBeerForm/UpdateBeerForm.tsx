@@ -1,41 +1,44 @@
 "use client";
 import { Beer } from "@/app/types/beer";
 import { Brewery } from "@/app/types/brewery";
-import { hopSuggestions, maltSuggestions } from "@/lib/suggestionsDB";
-import { getImagePublicURL } from "@/lib/utils";
-import Image from "next/image";
-import { redirect, useRouter } from "next/navigation";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import CategorySelect from "../CategorySelect/CategorySelect";
-import ErrorField from "../ErrorField/ErrorField";
-import TagInput from "../TagInput/TagInput";
-import { ErrorValues, FormValues, RefsType } from "../CreateBeerForm/types";
-import ImageDisplay from "../ImageDisplay/ImageDisplay";
 import handleUpdateBeer from "@/lib/handleSubmit/handleUpdateBeer";
+import { hopSuggestions, maltSuggestions } from "@/lib/suggestionsDB";
 import { useSession } from "next-auth/react";
-import { revalidatePath } from "next/cache";
+import Image from "next/image";
+import React, { useEffect, useRef, useState } from "react";
+import CategorySelect from "../CategorySelect/CategorySelect";
+import { ErrorValues, FormValues, RefsType } from "../CreateBeerForm/types";
+import ErrorField from "../ErrorField/ErrorField";
+import ImageDisplay from "../ImageDisplay/ImageDisplay";
+import TagInput from "../TagInput/TagInput";
 
-import { set } from "mongoose";
-import { updateImage } from "@/lib/supabase/updateImage";
 import { useBreweryContext } from "@/context/brewery-beer";
-import useSWR from "swr";
 import getBreweryBeers from "@/lib/getBreweryBeers";
+import { updateImage } from "@/lib/supabase/updateImage";
+import validateFields from "@/lib/validators/forms";
+import useSWR from "swr";
+import deleteBeers from "@/lib/DELETE/deleteBeers";
+import { useRouter } from "next/navigation";
+import DeleteBeerButton from "../Buttons/DeleteBeerButton";
 
 // import createBeer from "@/lib/createBeer";
 
 type pageProps = {
-  brewery?: Brewery;
-  beer?: Beer;
+  brewery: Brewery;
+  beer: Beer;
+  setBeer: (beer: Beer) => void;
+  setIsEditing: (isEditing: boolean) => void;
 };
 
-const UpdateBeerForm = ({ brewery, beer }: pageProps) => {
+const UpdateBeerForm = ({
+  brewery,
+  beer,
+  setBeer,
+  setIsEditing,
+}: pageProps) => {
   const { data: session } = useSession();
-
-  const {
-    data: allBeers,
-    error: beersError,
-    mutate,
-  } = useSWR(
+  const router = useRouter();
+  const { mutate } = useSWR(
     [
       `https://beer-bible-api.vercel.app/breweries/${brewery._id}/beers`,
       session?.user.accessToken,
@@ -67,12 +70,10 @@ const UpdateBeerForm = ({ brewery, beer }: pageProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<ErrorValues>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
-
-  const [updateSuccess, setUpdateSuccess] = useState(false);
-
   const [previewImage, setPreviewImage] = useState(null);
 
-  const router = useRouter();
+  const { selectedBeers } = useBreweryContext();
+
   const isSubmitting = useRef(false);
 
   // Create a map that connects field names to their refs
@@ -82,6 +83,12 @@ const UpdateBeerForm = ({ brewery, beer }: pageProps) => {
     category: useRef<HTMLInputElement>(null),
     style: useRef<HTMLInputElement>(null),
     image: useRef<HTMLInputElement>(null),
+  };
+
+  // updated beer card state and isEditing to false
+  const updateBeerState = (beer: Beer) => {
+    setIsEditing(false);
+    setBeer(beer);
   };
 
   useEffect(() => {
@@ -95,8 +102,12 @@ const UpdateBeerForm = ({ brewery, beer }: pageProps) => {
 
       releasedOn: formattedDate,
     }));
-    console.log({ allBeers });
   }, []);
+
+  // Validate fields and persist state on every render
+  useEffect(() => {
+    setErrors(validateFields(values));
+  }, [values]);
 
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -149,15 +160,22 @@ const UpdateBeerForm = ({ brewery, beer }: pageProps) => {
         session?.user?.accessToken
       );
 
-      const beerIndex = allBeers.findIndex((b) => b._id === updatedBeer._id);
+      const beerIndex = selectedBeers?.findIndex(
+        (b) => b._id === updatedBeer._id
+      );
 
-      // Replace the beer at that index with the updated beer
-      const updatedBeers = [...allBeers];
-      updatedBeers[beerIndex] = updateBeerRes;
-      // allows hard navigation back to brewery page
-      // setUpdateSuccess(true);
-      mutate(updatedBeers);
-      router.back();
+      console.log(updateBeerRes);
+      if (updateBeerRes) {
+        // Replace the beer at that index with the updated beer
+        const updatedBeers = [...selectedBeers];
+        updatedBeers[beerIndex] = updateBeerRes;
+
+        // forced revalidation of the beers
+        mutate(updatedBeers);
+
+        // set beer to updated beer and edit to false
+        updateBeerState(updateBeerRes);
+      }
     } catch (err) {
       console.error(err);
       setSubmitError(err.message);
@@ -192,12 +210,6 @@ const UpdateBeerForm = ({ brewery, beer }: pageProps) => {
   const handleBlur = (field: keyof FormValues) => () => {
     setTouched((prevTouched) => ({ ...prevTouched, [field]: true }));
   };
-
-  // allows hard navigation back to brewery page
-  if (updateSuccess) {
-    setUpdateSuccess(false);
-    redirect(`/breweries/${brewery?._id}`);
-  }
 
   return (
     <form
@@ -428,13 +440,20 @@ const UpdateBeerForm = ({ brewery, beer }: pageProps) => {
         />
       </div>
 
-      <div>
+      <div className="flex justify-between">
         {submitError && <div>Error: {submitError}</div>}
+        <DeleteBeerButton
+          isSubmitting={isSubmitting}
+          beer={beer}
+          breweryId={brewery?._id}
+          token={session?.user.accessToken}
+          mutate={mutate}
+        />
+
         <button
           className="create__btn"
           type="submit"
           disabled={isSubmitting.current}
-          // onClick={() => handleAction(values)}
         >
           {isLoading ? (
             <span className="loading loading-spinner text-accent"></span>
