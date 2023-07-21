@@ -22,7 +22,6 @@ export default async function SingleBreweryPage({
 
   const promise = await Promise.all([singleBrewery]);
 
-  console.log({ promise });
   if (!singleBrewery) return notFound();
   return (
     <main className="w-full h-full">
