@@ -3,7 +3,9 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 import { useSession } from "next-auth/react";
 
-export default async function getBreweryBeers([url, token]) {
+type pageProps = [url: string, token: string];
+
+export default async function getBreweryBeers([url, token]: pageProps) {
   if (token) {
     try {
       const response = await fetch(url, {
@@ -18,7 +20,6 @@ export default async function getBreweryBeers([url, token]) {
         throw new Error(response.statusText);
       }
 
-      console.log({ response });
       return await response.json();
     } catch (err) {
       console.error(err);
