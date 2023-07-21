@@ -91,8 +91,6 @@ export default function BeerCategory({
     return renderAllBeers(archivedBeers);
   };
 
-  console.log({ beers });
-
   const beersInCategory = filteredBeers();
 
   // Check if any beer in the category is new
