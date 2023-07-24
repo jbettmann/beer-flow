@@ -94,3 +94,6 @@ p {
 }
 
 
+.tag-new {
+  @apply indicator-item badge badge-primary
+}
