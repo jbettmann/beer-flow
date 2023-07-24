@@ -38,13 +38,14 @@ export default function BreweryProfiles({ promise, breweryId }: pageProps) {
     null
   );
 
-  const categories = [...brewery?.categories];
+  let categories: Category[] = [...brewery?.categories];
 
   useEffect(() => {
     setSelectedBrewery(brewery);
     setSelectedBeers(beers);
   }, [beers, brewery]);
 
+  console.log({ brewery });
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedOpenCategory = sessionStorage.getItem("openCategory");
@@ -74,7 +75,11 @@ export default function BreweryProfiles({ promise, breweryId }: pageProps) {
       <h1>{selectedBrewery?.companyName}</h1>
 
       <div>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense
+          fallback={
+            <span className="loading loading-spinner loading-lg"></span>
+          }
+        >
           {brewery.categories.length > 0 &&
             categories.map((category, i) => (
               <BeerCategory
