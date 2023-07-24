@@ -4,6 +4,8 @@ import { Category } from "@/app/types/category";
 import Link from "next/link";
 import ImageDisplay from "./ImageDisplay/ImageDisplay";
 import { handleBeerView, isNew } from "@/lib/utils";
+import OptionsButton from "./Buttons/OptionsButton";
+import { useState } from "react";
 
 type Props = {
   category: Category;
@@ -21,6 +23,9 @@ export default function BeerCategory({
   onClick,
   breweryId,
 }: Props) {
+  // State for managing the visibility of the options container
+  const [isOptionsOpen, setIsOptionsOpen] = useState(false);
+
   const filteredBeers = () => {
     if (!beers) return [];
     if (category.name === "All Beers") {
@@ -96,45 +101,73 @@ export default function BeerCategory({
   // Check if any beer in the category is new
   const isCategoryNew = beersInCategory.some((beer) => isNew(beer));
 
+  const handleOptions = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    setIsOptionsOpen(!isOptionsOpen);
+  };
+
+  // Options for the category
+  const options = [
+    {
+      name: "Edit Category",
+      href: `/breweries/${breweryId}/categories/${category._id}`,
+      disabled: false,
+    },
+    {
+      name: "Delete Category",
+      onClick: () => {
+        console.log("Delete Category clicked");
+      },
+      disabled: beersInCategory.length > 0, // Disable this option if there are beers in the category
+    },
+  ];
   return (
-    <div
-      onClick={onClick}
-      className={`collapse  ${
-        isOpen ? "collapse-open" : ""
-      } collapse-arrow  bg-base-200`}
-    >
-      <div className="collapse-title text-xl font-medium inline-flex justify-between">
-        <p>{category.name}</p>
-        {isCategoryNew && <p className="new-tag">NEW</p>}
-      </div>
-      <div className="collapse-content">
-        <div className="flex flex-col">
-          {category.name === "Archived"
-            ? renderArchivedBeers()
-            : filteredBeers().map((beer) => (
-                <Link
-                  className="flex items-center justify-between"
-                  href={`/breweries/${breweryId}/beers/${beer._id}`}
-                  key={beer._id}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleBeerView(beer._id);
-                  }}
-                >
-                  <div className="inline-flex items-center">
-                    {beer.image && (
-                      <ImageDisplay
-                        className="beer-category__image"
-                        item={beer}
-                      />
-                    )}
-                    {beer.name}
-                  </div>
-                  {isNew(beer) && <p className="tag-new">NEW</p>}
-                </Link>
-              ))}
+    <div className="relative">
+      <div
+        onClick={onClick}
+        className={`collapse  ${
+          isOpen ? "collapse-open" : ""
+        } collapse-arrow my-8  bg-base-200`}
+      >
+        <div className="collapse-title text-xl font-medium inline-flex justify-between ">
+          <p>{category.name}</p>
+          {isCategoryNew && <p className="tag-new">NEW</p>}
+        </div>
+        <div className="collapse-content">
+          <div className="flex flex-col">
+            {category.name === "Archived"
+              ? renderArchivedBeers()
+              : filteredBeers().map((beer) => (
+                  <Link
+                    className="flex items-center justify-between"
+                    href={`/breweries/${breweryId}/beers/${beer._id}`}
+                    key={beer._id}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleBeerView(beer._id);
+                    }}
+                  >
+                    <div className="inline-flex items-center">
+                      {beer.image && (
+                        <ImageDisplay
+                          className="beer-category__image"
+                          item={beer}
+                        />
+                      )}
+                      {beer.name}
+                    </div>
+                    {isNew(beer) && <p className="tag-new">NEW</p>}
+                  </Link>
+                ))}
+          </div>
         </div>
       </div>
+
+      <OptionsButton
+        handleOptions={(e) => handleOptions(e)}
+        className="btn btn-circle btn-ghost"
+        options={options}
+      />
     </div>
   );
 }
