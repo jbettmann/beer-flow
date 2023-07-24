@@ -31,9 +31,14 @@ const BeerCard = ({ brewery, beerId }: Props) => {
   return (
     beer && (
       <div className="bg-slate-100 p-5 rounded-lg">
-        <button className={`btn`} onClick={() => setIsEditing(!isEditing)}>
-          {isEditing ? "Cancel" : "Edit"}
-        </button>
+        <div className="flex w-full justify-end">
+          <button
+            className={`ink link-hover link-neutral`}
+            onClick={() => setIsEditing(!isEditing)}
+          >
+            {isEditing ? "Cancel" : "Edit"}
+          </button>
+        </div>
         {isEditing ? (
           <UpdateBeerForm
             beer={beer}
