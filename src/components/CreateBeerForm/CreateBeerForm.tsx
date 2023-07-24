@@ -68,7 +68,7 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
     router.back();
   }, [router]);
 
-  console.log({ brewery });
+  console.log({ selectedBeers });
 
   // Load persisted state on initial render
   useEffect(() => {
@@ -136,22 +136,8 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
         // forced revalidation of the beers
         mutate([...selectedBeers, newBeerRes]);
 
-        setValues({
-          name: "",
-          abv: "",
-          ibu: "",
-          style: "",
-          malt: [],
-          hops: [],
-          description: "",
-          category: [],
-          nameSake: "",
-          notes: "",
-          image: null,
-          releasedOn: "",
-          archived: false,
-        });
-        sessionStorage.removeItem("beerForm"); // Remove the saved form
+        handleClear(); // Clear the form
+
         onDismiss();
       }
     } catch (err) {
@@ -161,6 +147,41 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
       isSubmitting.current = false;
       setIsLoading(false); // Set loading state to false
     }
+  };
+
+  const handleClear = () => {
+    setValues({
+      name: "",
+      abv: "",
+      ibu: "",
+      style: "",
+      malt: [],
+      hops: [],
+      description: "",
+      category: [],
+      nameSake: "",
+      notes: "",
+      image: null,
+      releasedOn: "",
+      archived: false,
+    });
+
+    setTouched({
+      name: false,
+      abv: false,
+      ibu: false,
+      style: false,
+      malt: false,
+      hops: false,
+      description: false,
+      category: false,
+      nameSake: false,
+      notes: false,
+      image: false,
+      releasedOn: false,
+      archived: false,
+    });
+    sessionStorage.removeItem("beerForm"); // Remove the saved form
   };
 
   // Define a new state to track "touched" status for each field
@@ -190,6 +211,7 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
       onSubmit={handleSubmit}
       className=" p-4 form flex flex-col justify-between mx-auto rounded-lg shadow-2xl text-white"
     >
+      <button onClick={handleClear}>Clear</button>
       {/* Name */}
       <div className="container-create__form">
         <label htmlFor="name">Name</label>
