@@ -160,12 +160,11 @@ const UpdateBeerForm = ({
         session?.user?.accessToken
       );
 
-      const beerIndex = selectedBeers?.findIndex(
-        (b) => b._id === updatedBeer._id
-      );
-
       console.log(updateBeerRes);
       if (updateBeerRes) {
+        const beerIndex = selectedBeers?.findIndex(
+          (b) => b._id === updatedBeer._id
+        );
         // Replace the beer at that index with the updated beer
         const updatedBeers = [...selectedBeers];
         updatedBeers[beerIndex] = updateBeerRes;
