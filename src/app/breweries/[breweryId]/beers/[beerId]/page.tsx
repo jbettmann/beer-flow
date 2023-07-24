@@ -2,7 +2,7 @@ import { Beer } from "@/app/types/beer";
 import { Brewery } from "@/app/types/brewery";
 import BeerCard from "@/components/BeerCard";
 import BreweryProfiles from "@/components/BreweryProfiles";
-import SingleBeerPageContainer from "@/components/SingleBeerPageContainer";
+import SetSelectedContainer from "@/components/SetSelectedContainer";
 import getBreweryBeers from "@/lib/getBreweryBeers";
 import getSingleBeer from "@/lib/getSingleBeer";
 import getSingleBrewery from "@/lib/getSingleBrewery";
@@ -39,10 +39,10 @@ export default async function SingleBeerPage({
         <Link href="/">Back Home</Link>
       </h2>
       {/* SingleBeerPageContainer Only on [beerId] page to set selectedBeers State */}
-      <SingleBeerPageContainer breweryId={breweryId} beerId={beerId}>
+      <SetSelectedContainer breweryId={breweryId}>
         {/* @ts-expect-error Server component */}
         <BeerCard brewery={brewery} beerId={beerId} />
-      </SingleBeerPageContainer>
+      </SetSelectedContainer>
     </div>
   );
 }
