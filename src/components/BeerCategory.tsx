@@ -6,6 +6,9 @@ import ImageDisplay from "./ImageDisplay/ImageDisplay";
 import { handleBeerView, isNew } from "@/lib/utils";
 import OptionsButton from "./Buttons/OptionsButton";
 import { useState } from "react";
+import { handleDeleteCategory } from "@/lib/handleSubmit/handleDeleteCategory";
+import { useBreweryContext } from "@/context/brewery-beer";
+import { useSession } from "next-auth/react";
 
 type Props = {
   category: Category;
@@ -25,6 +28,10 @@ export default function BeerCategory({
 }: Props) {
   // State for managing the visibility of the options container
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
+  const { selectedBeers, selectedBrewery, setSelectedBrewery } =
+    useBreweryContext();
+
+  const { data: session } = useSession();
 
   const filteredBeers = () => {
     if (!beers) return [];
@@ -115,9 +122,15 @@ export default function BeerCategory({
     },
     {
       name: "Delete Category",
-      onClick: () => {
-        console.log("Delete Category clicked");
-      },
+      onClick: () =>
+        handleDeleteCategory({
+          categoryId: category._id,
+          breweryId,
+          selectedBeers,
+          selectedBrewery,
+          setSelectedBrewery,
+          token: session?.user?.accessToken,
+        }),
       disabled: beersInCategory.length > 0, // Disable this option if there are beers in the category
     },
   ];

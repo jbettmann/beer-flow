@@ -45,7 +45,7 @@ export default function BreweryProfiles({ promise, breweryId }: pageProps) {
     setSelectedBeers(beers);
   }, [beers, brewery]);
 
-  console.log({ brewery });
+  console.log({ brewery, beers });
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedOpenCategory = sessionStorage.getItem("openCategory");
