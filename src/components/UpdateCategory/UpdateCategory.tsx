@@ -1,23 +1,17 @@
 "use client";
-import { Beer } from "@/app/types/beer";
-import { Brewery } from "@/app/types/brewery";
-import handleUpdateBeer from "@/lib/handleSubmit/handleUpdateBeer";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useRef, useState } from "react";
 
 import ErrorField from "../ErrorField/ErrorField";
 
 import { useBreweryContext } from "@/context/brewery-beer";
-import getBreweryBeers from "@/lib/getBreweryBeers";
-import { updateImage } from "@/lib/supabase/updateImage";
-import validateFields from "@/lib/validators/forms";
-import { useRouter } from "next/navigation";
-import useSWR, { mutate } from "swr";
-import DeleteBeerButton from "../Buttons/DeleteBeerButton";
-import { ErrorValues, FormValues, RefsType } from "./types";
-import { Category } from "@/app/types/category";
-import useSWRMutation from "swr/mutation";
 import updateCategory from "@/lib/PUT/updateCategory";
+import { useRouter } from "next/navigation";
+import { mutate } from "swr";
+import { ErrorValues, FormValues, RefsType } from "./types";
+import deleteCategory from "@/lib/DELETE/deleteCategory";
+import DeleteBeerButton from "../Buttons/DeleteBeerButton";
+import { handleDeleteCategory } from "@/lib/handleSubmit/handleDeleteCategory";
 // import createBeer from "@/lib/createBeer";
 
 type pageProps = {
@@ -29,17 +23,21 @@ const UpdateCategory = ({ breweryId, categoryId }: pageProps) => {
   const { data: session } = useSession();
   const router = useRouter();
 
-  // const { trigger } = useSWRMutation(
-  //   `https://beer-bible-api.vercel.app/categories/${categoryId}`,
-  //   updateCategory,
-  //   { revalidate: true }
-  // );
-  const { selectedBrewery } = useBreweryContext();
+  const {
+    selectedBrewery,
+    setSelectedBrewery,
+    selectedBeers,
+    setSelectedBeers,
+  } = useBreweryContext();
 
   const [values, setValues] = useState<FormValues>({
     __v: undefined,
     _id: "",
     name: "",
+  });
+  // Define a new state to track "touched" status for each field
+  const [touched, setTouched] = useState<{ [K in keyof FormValues]: boolean }>({
+    name: false,
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -67,7 +65,7 @@ const UpdateCategory = ({ breweryId, categoryId }: pageProps) => {
         name: selectedCat?.name,
       });
     }
-  }, []);
+  }, [selectedBrewery]);
 
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -101,41 +99,67 @@ const UpdateCategory = ({ breweryId, categoryId }: pageProps) => {
       const updatedCatRes = await updateCategory({
         updatedCategory,
         categoryId,
-        token: session?.user?.accessToken,
+        accessToken: session?.user?.accessToken,
       });
 
-      if (updatedCatRes) {
-        const catIndex = selectedBrewery?.categories.findIndex(
+      //  update brewery with new category
+      if (updatedCatRes && selectedBrewery) {
+        const updatedBrewery = { ...selectedBrewery };
+        const catIndex = updatedBrewery.categories.findIndex(
           (b) => b._id === updatedCategory._id
         );
-        // Replace the beer at that index with the updated beer
-        const updatedCategories = [...selectedBrewery?.categories];
-        updatedCategories[catIndex] = updatedCatRes;
+        updatedBrewery.categories[catIndex] = updatedCatRes;
 
-        // forced revalidation of the beers
-        mutate(updatedCatRes);
+        console.log({ updatedCatRes, updatedCategory, updatedBrewery });
+
+        setSelectedBrewery(updatedBrewery);
       }
+
+      //  update beers with new category
+      if (updatedCatRes && selectedBeers) {
+        const updatedBeers = selectedBeers.map((beer) => {
+          const updatedCategories = beer.category.map((cat) => {
+            if (cat._id === updatedCatRes._id) {
+              return updatedCatRes; // Replace the category with the updated one
+            }
+            return cat; // If not this category, return the category as is
+          });
+
+          return {
+            ...beer,
+            category: updatedCategories, // Assign the updated categories back to the beer
+          };
+        });
+
+        setSelectedBeers(updatedBeers);
+      }
+      router.back();
     } catch (err) {
       console.error(err);
       setSubmitError(err.message);
     } finally {
-      if (previewImage) {
-        URL.revokeObjectURL(previewImage);
-        setPreviewImage(null);
-      }
       isSubmitting.current = false;
       setIsLoading(false); // Set loading state to false
     }
   };
 
-  // Define a new state to track "touched" status for each field
-  const [touched, setTouched] = useState<{ [K in keyof FormValues]: boolean }>({
-    name: false,
-  });
-
   // Handle blur events for the inputs
   const handleBlur = (field: keyof FormValues) => () => {
     setTouched((prevTouched) => ({ ...prevTouched, [field]: true }));
+  };
+
+  const handleDelete = async () => {
+    isSubmitting.current = true;
+    setIsLoading(true); // Set loading state to true
+    try {
+      await handleDeleteCategory({ categoryId, breweryId });
+    } catch (err) {
+      console.error(err);
+      setSubmitError(err.message);
+    } finally {
+      isSubmitting.current = false;
+      setIsLoading(false); // Set loading state to false
+    }
   };
 
   return (
@@ -160,13 +184,10 @@ const UpdateCategory = ({ breweryId, categoryId }: pageProps) => {
 
       <div className="flex justify-between">
         {submitError && <div>Error: {submitError}</div>}
-        {/* <DeleteBeerButton
+        <DeleteBeerButton
           isSubmitting={isSubmitting}
-          beer={beer}
-          breweryId={brewery?._id}
-          token={session?.user.accessToken}
-          mutate={mutate}
-        /> */}
+          handleDelete={handleDelete}
+        />
 
         <button
           className="create__btn"

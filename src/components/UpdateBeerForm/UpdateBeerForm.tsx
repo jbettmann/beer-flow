@@ -20,6 +20,7 @@ import useSWR from "swr";
 import deleteBeers from "@/lib/DELETE/deleteBeers";
 import { useRouter } from "next/navigation";
 import DeleteBeerButton from "../Buttons/DeleteBeerButton";
+import { deleteImage } from "@/lib/supabase/deleteImage";
 
 // import createBeer from "@/lib/createBeer";
 
@@ -65,6 +66,23 @@ const UpdateBeerForm = ({
     image: beer?.image || null,
     releasedOn: beer?.releasedOn || "",
     archived: beer?.archived || false,
+  });
+
+  // Define a new state to track "touched" status for each field
+  const [touched, setTouched] = useState<{ [K in keyof FormValues]: boolean }>({
+    name: false,
+    abv: false,
+    ibu: false,
+    style: false,
+    malt: false,
+    hops: false,
+    description: false,
+    category: false,
+    nameSake: false,
+    notes: false,
+    image: false,
+    releasedOn: false,
+    archived: false,
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -188,26 +206,37 @@ const UpdateBeerForm = ({
     }
   };
 
-  // Define a new state to track "touched" status for each field
-  const [touched, setTouched] = useState<{ [K in keyof FormValues]: boolean }>({
-    name: false,
-    abv: false,
-    ibu: false,
-    style: false,
-    malt: false,
-    hops: false,
-    description: false,
-    category: false,
-    nameSake: false,
-    notes: false,
-    image: false,
-    releasedOn: false,
-    archived: false,
-  });
-
   // Handle blur events for the inputs
   const handleBlur = (field: keyof FormValues) => () => {
     setTouched((prevTouched) => ({ ...prevTouched, [field]: true }));
+  };
+
+  //  Delete Beer
+  const handleDelete = async () => {
+    const result = confirm(
+      "Are you sure you want to delete this beer? This action cannot be undone."
+    );
+    try {
+      if (result) {
+        isSubmitting.current = true;
+
+        const deletedBeer = await deleteBeers({
+          beerId: beer?._id,
+          breweryId: brewery?._id,
+          token: session?.user.accessToken as string,
+        });
+        if (deletedBeer) {
+          await deleteImage(beer?.image);
+          // forced revalidation of the beers
+          mutate();
+          router.back();
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      isSubmitting.current = false;
+    }
   };
 
   return (
@@ -443,10 +472,7 @@ const UpdateBeerForm = ({
         {submitError && <div>Error: {submitError}</div>}
         <DeleteBeerButton
           isSubmitting={isSubmitting}
-          beer={beer}
-          breweryId={brewery?._id}
-          token={session?.user.accessToken}
-          mutate={mutate}
+          handleDelete={handleDelete}
         />
 
         <button
