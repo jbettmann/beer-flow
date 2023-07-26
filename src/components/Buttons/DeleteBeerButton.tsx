@@ -19,7 +19,7 @@ const DeleteBeerButton = ({ isSubmitting, handleDelete }: Props) => {
       type="button"
       onClick={handleDelete}
     >
-      {isSubmitting ? (
+      {!isSubmitting ? (
         <span className="loading loading-spinner text-accent"></span>
       ) : (
         "Delete"
