@@ -12,6 +12,7 @@ import { ErrorValues, FormValues, RefsType } from "./types";
 import deleteCategory from "@/lib/DELETE/deleteCategory";
 import DeleteBeerButton from "../Buttons/DeleteBeerButton";
 import { handleDeleteCategory } from "@/lib/handleSubmit/handleDeleteCategory";
+import { Brewery } from "@/app/types/brewery";
 // import createBeer from "@/lib/createBeer";
 
 type pageProps = {
@@ -65,6 +66,7 @@ const UpdateCategory = ({ breweryId, categoryId }: pageProps) => {
         name: selectedCat?.name,
       });
     }
+    console.log({ selectedCat });
   }, [selectedBrewery]);
 
   // Handle form submission
@@ -152,7 +154,17 @@ const UpdateCategory = ({ breweryId, categoryId }: pageProps) => {
     isSubmitting.current = true;
     setIsLoading(true); // Set loading state to true
     try {
-      await handleDeleteCategory({ categoryId, breweryId });
+      const updatedBreweryCat = await handleDeleteCategory({
+        categoryId,
+        breweryId,
+        selectedBeers,
+        selectedBrewery,
+        token: session?.user?.accessToken,
+      });
+
+      router.back();
+      // if !updatedBreweryCat then state doesnt get set
+      if (updatedBreweryCat) setSelectedBrewery(updatedBreweryCat as Brewery);
     } catch (err) {
       console.error(err);
       setSubmitError(err.message);
