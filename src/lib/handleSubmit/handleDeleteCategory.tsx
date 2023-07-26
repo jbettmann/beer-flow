@@ -1,19 +1,17 @@
 "use client";
-import { useBreweryContext } from "@/context/brewery-beer";
-import { getSession, useSession } from "next-auth/react";
+import { Beer } from "@/app/types/beer";
+import { Brewery } from "@/app/types/brewery";
+import { Category } from "@/app/types/category";
 import React from "react";
 import deleteCategory from "../DELETE/deleteCategory";
-import { set } from "mongoose";
-import { Category } from "@/app/types/category";
-import { Brewery } from "@/app/types/brewery";
-import { Beer } from "@/app/types/beer";
+import { revalidatePath } from "next/cache";
 
 type Props = {
   categoryId: string | Category;
   breweryId: string;
-  setIsOptionsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+
   selectedBrewery: Brewery;
-  setSelectedBrewery: React.Dispatch<React.SetStateAction<Brewery>>;
+
   selectedBeers: Beer[];
   token: string;
 };
@@ -21,9 +19,9 @@ type Props = {
 export const handleDeleteCategory = async ({
   categoryId,
   breweryId,
-  setIsOptionsOpen,
+
   selectedBrewery,
-  setSelectedBrewery,
+
   selectedBeers,
   token,
 }: Props) => {
@@ -33,6 +31,10 @@ export const handleDeleteCategory = async ({
       beer.category.some((cat) => cat._id === categoryId)
     );
     if (associatedBeers && associatedBeers.length > 0) {
+      alert(
+        `There are beers under with this category.
+        Please recategorize them before deleting category.`
+      );
       throw new Error(
         "There are beers associated with this category. Please recategorize beers before deleting category."
       );
@@ -64,16 +66,14 @@ export const handleDeleteCategory = async ({
           (cat) => cat._id !== categoryId
         ),
       };
-      console.log({ updatedBrewery, deletedCategory });
-      setSelectedBrewery(updatedBrewery);
-    }
 
-    if (deletedCategory) {
+      console.log({ selectedBrewery, updatedBrewery });
+
       alert(deletedCategory.message);
+
+      return updatedBrewery;
     }
   } catch (err) {
     console.error(err);
-  } finally {
-    setIsOptionsOpen && setIsOptionsOpen(false);
   }
 };
