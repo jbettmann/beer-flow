@@ -10,12 +10,9 @@ type pageProps = {
 };
 
 export default async function CreateBeer({ params: { breweryId } }: pageProps) {
-  const singleBrewery: Promise<Brewery> = getSingleBrewery(breweryId);
-  const brewery = await singleBrewery;
-
   return (
     <Modal closeButtonOnly={true}>
-      <CreateBeerForm brewery={brewery} />
+      <CreateBeerForm />
     </Modal>
   );
 }

@@ -22,6 +22,8 @@ import { useRouter } from "next/navigation";
 import DeleteBeerButton from "../Buttons/DeleteBeerButton";
 import { deleteImage } from "@/lib/supabase/deleteImage";
 
+import getSingleBrewery from "@/lib/getSingleBrewery";
+
 // import createBeer from "@/lib/createBeer";
 
 type pageProps = {
@@ -39,12 +41,19 @@ const UpdateBeerForm = ({
 }: pageProps) => {
   const { data: session } = useSession();
   const router = useRouter();
-  const { mutate } = useSWR(
+  const { mutate: beerMutate } = useSWR(
     [
       `https://beer-bible-api.vercel.app/breweries/${brewery._id}/beers`,
       session?.user.accessToken,
     ],
     getBreweryBeers
+  );
+  const { mutate: breweryMutate } = useSWR(
+    [
+      `https://beer-bible-api.vercel.app/breweries/${brewery._id}`,
+      session?.user.accessToken,
+    ],
+    getSingleBrewery
   );
 
   const [values, setValues] = useState<FormValues>({
@@ -174,7 +183,7 @@ const UpdateBeerForm = ({
       }
       const updateBeerRes = await handleUpdateBeer(
         updatedBeer,
-        brewery?._id,
+        brewery,
         session?.user?.accessToken
       );
 
@@ -188,8 +197,8 @@ const UpdateBeerForm = ({
         updatedBeers[beerIndex] = updateBeerRes;
 
         // forced revalidation of the beers
-        mutate(updatedBeers);
-
+        beerMutate(updatedBeers);
+        breweryMutate();
         // set beer to updated beer and edit to false
         updateBeerState(updateBeerRes);
       }
@@ -228,7 +237,7 @@ const UpdateBeerForm = ({
         if (deletedBeer) {
           await deleteImage(beer?.image);
           // forced revalidation of the beers
-          mutate();
+          beerMutate();
           router.back();
         }
       }

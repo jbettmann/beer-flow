@@ -5,34 +5,18 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { Users } from "@/app/types/users";
 import { Session } from "next-auth";
 
-export default async function getSingleBrewery(
-  breweryId: string,
-  accessToken?: string
-) {
-  let token;
+type pageProps = [url: string, token: string];
 
-  if (breweryId) {
-    if (accessToken) {
-      token = accessToken;
-    } else {
-      const session = await getServerSession(authOptions);
-      token = session?.user.accessToken;
-    }
-
+export default async function getSingleBrewery([url, token]: pageProps) {
+  if (token) {
     try {
-      // using axios due to fetch problem with body length of array?
-      const response = await fetch(
-        `https://beer-bible-api.vercel.app/breweries/${breweryId}`,
-
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          method: "GET",
-          next: { revalidate: 0 },
-        }
-      );
+      const response = await fetch(url, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        method: "GET",
+      });
 
       if (response.status != 200) {
         throw new Error(response.statusText);
@@ -41,9 +25,9 @@ export default async function getSingleBrewery(
       return await response.json();
     } catch (err) {
       console.error(err);
-      return []; // Return empty array on error
+      return {}; // Return empty array on error
     }
   } else {
-    return []; // Return empty array if user has no breweries
+    return {}; // Return empty array if user has no breweries
   }
 }

@@ -13,17 +13,16 @@ import useSWR from "swr";
 
 type Props = {
   beerId: string;
-  brewery: Brewery | undefined;
 };
 
-const BeerCard = ({ brewery, beerId }: Props) => {
+const BeerCard = ({ beerId }: Props) => {
   const [isEditing, setIsEditing] = useState(false);
 
-  const { selectedBeers } = useBreweryContext();
+  const { selectedBeers, selectedBrewery } = useBreweryContext();
 
   const [beer, setBeer] = useState<Beer | undefined>(undefined);
 
-  console.log({ brewery, beerId, selectedBeers });
+  console.log({ selectedBrewery, beerId, selectedBeers });
   useEffect(() => {
     setBeer(selectedBeers?.find((beer) => beer._id === beerId));
   }, [selectedBeers]);
@@ -42,7 +41,7 @@ const BeerCard = ({ brewery, beerId }: Props) => {
         {isEditing ? (
           <UpdateBeerForm
             beer={beer}
-            brewery={brewery}
+            brewery={selectedBrewery}
             setIsEditing={setIsEditing}
             setBeer={setBeer}
           />

@@ -25,14 +25,13 @@ type pageProps = {
 export default async function SingleBeerPage({
   params: { breweryId, beerId },
 }: pageProps) {
-  console.log({ breweryId, beerId });
-  const singleBrewery: Promise<Brewery> = getSingleBrewery(breweryId);
+  // const singleBrewery: Promise<Brewery> = getSingleBrewery(breweryId);
 
-  const promise = await Promise.all([singleBrewery]);
+  // const promise = await Promise.all([singleBrewery]);
 
-  const [brewery] = promise;
+  // const [brewery] = promise;
 
-  if (!brewery) return notFound();
+  if (!beerId) return notFound();
   return (
     <div className="w-full h-full">
       <h2>
@@ -41,7 +40,7 @@ export default async function SingleBeerPage({
       {/* SingleBeerPageContainer Only on [beerId] page to set selectedBeers State */}
       <SetSelectedContainer breweryId={breweryId}>
         {/* @ts-expect-error Server component */}
-        <BeerCard brewery={brewery} beerId={beerId} />
+        <BeerCard beerId={beerId} />
       </SetSelectedContainer>
     </div>
   );

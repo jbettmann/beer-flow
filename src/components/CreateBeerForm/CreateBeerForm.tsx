@@ -17,10 +17,10 @@ import { useBreweryContext } from "@/context/brewery-beer";
 // import createBeer from "@/lib/createBeer";
 
 type pageProps = {
-  brewery?: Brewery;
+  // brewery?: Brewery;
 };
 
-const CreateBeerForm = ({ brewery }: pageProps) => {
+const CreateBeerForm = ({}: pageProps) => {
   const { data: session, status, update } = useSession();
   const [values, setValues] = useState<FormValues>({
     name: "",
@@ -38,11 +38,11 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
     archived: false,
   });
 
-  const { selectedBeers, setSelectedBeers } = useBreweryContext();
+  const { selectedBeers, selectedBrewery } = useBreweryContext();
 
   const { mutate } = useSWR(
     [
-      `https://beer-bible-api.vercel.app/breweries/${brewery?._id}/beers`,
+      `https://beer-bible-api.vercel.app/breweries/${selectedBrewery?._id}/beers`,
       session?.user.accessToken,
     ],
     getBreweryBeers
@@ -126,19 +126,21 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
     setIsLoading(true); // Set loading state to true
 
     try {
-      const newBeerRes = await handleCreateBeer(
-        values,
-        brewery,
-        session?.user?.accessToken
-      );
+      if (selectedBrewery && session?.user) {
+        const newBeerRes = await handleCreateBeer(
+          values,
+          selectedBrewery,
+          session?.user?.accessToken
+        );
 
-      if (newBeerRes) {
-        // forced revalidation of the beers
-        mutate([...selectedBeers, newBeerRes]);
+        if (newBeerRes) {
+          // forced revalidation of the beers
+          mutate([...selectedBeers, newBeerRes]);
 
-        handleClear(); // Clear the form
+          handleClear(); // Clear the form
 
-        onDismiss();
+          onDismiss();
+        }
       }
     } catch (err) {
       console.error(err);
@@ -287,7 +289,7 @@ const CreateBeerForm = ({ brewery }: pageProps) => {
         <CategorySelect
           setValues={setValues}
           selectedValues={values.category}
-          categories={brewery?.categories?.map((cat) => ({
+          categories={selectedBrewery?.categories?.map((cat) => ({
             label: cat.name,
             value: cat.name,
           }))}

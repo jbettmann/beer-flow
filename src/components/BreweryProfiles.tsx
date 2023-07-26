@@ -8,15 +8,14 @@ import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
 import useSWR from "swr";
 import BeerCategory from "./BeerCategory";
+import getSingleBrewery from "@/lib/getSingleBrewery";
+import { set } from "mongoose";
 
 type pageProps = {
-  promise: [Brewery];
   breweryId: string;
 };
 
-export default function BreweryProfiles({ promise, breweryId }: pageProps) {
-  const [brewery] = promise;
-
+export default function BreweryProfiles({ breweryId }: pageProps) {
   const { data: session } = useSession();
   const { data: beers, error: beersError } = useSWR(
     [
@@ -24,6 +23,14 @@ export default function BreweryProfiles({ promise, breweryId }: pageProps) {
       session?.user.accessToken,
     ],
     getBreweryBeers
+  );
+
+  const { data: brewery, error: breweryError } = useSWR(
+    [
+      `https://beer-bible-api.vercel.app/breweries/${breweryId}`,
+      session?.user.accessToken,
+    ],
+    getSingleBrewery
   );
 
   const {
@@ -38,11 +45,14 @@ export default function BreweryProfiles({ promise, breweryId }: pageProps) {
     null
   );
 
-  let categories: Category[] = [...brewery?.categories];
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  // let categories: Category[] = [...brewery?.categories];
 
   useEffect(() => {
     setSelectedBrewery(brewery);
     setSelectedBeers(beers);
+    setCategories(brewery?.categories);
   }, [beers, brewery]);
 
   console.log({ brewery, beers });
@@ -80,8 +90,8 @@ export default function BreweryProfiles({ promise, breweryId }: pageProps) {
             <span className="loading loading-spinner loading-lg"></span>
           }
         >
-          {brewery.categories.length > 0 &&
-            categories.map((category, i) => (
+          {brewery?.categories?.length > 0 &&
+            categories?.map((category, i) => (
               <BeerCategory
                 key={i}
                 category={category}
@@ -89,6 +99,7 @@ export default function BreweryProfiles({ promise, breweryId }: pageProps) {
                 onClick={() => handleCategoryClick(i)}
                 isOpen={openCategory == i}
                 breweryId={selectedBrewery?._id}
+                setSelectedBrewery={setSelectedBrewery}
               />
             ))}
           <div className="mt-10">
@@ -99,6 +110,7 @@ export default function BreweryProfiles({ promise, breweryId }: pageProps) {
               onClick={() => handleCategoryClick("archived")}
               isOpen={openCategory == "archived"}
               breweryId={selectedBrewery?._id}
+              setSelectedBrewery={setSelectedBrewery}
             />
           </div>
         </Suspense>

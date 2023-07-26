@@ -9,20 +9,9 @@ import { revalidatePath } from "next/cache";
 // Handle form submission
 const handleUpdateBeer = async (
   values: FormValues,
-  breweryId: string,
+  brewery: Brewery,
   accessToken: string
 ) => {
-  let brewery: Brewery;
-  if (!breweryId) {
-    const savedBrewery = sessionStorage.getItem("selectedBreweryId");
-    const getBrewery = await getSingleBrewery(
-      JSON.parse(savedBrewery),
-      accessToken
-    );
-    brewery = getBrewery;
-  }
-  brewery = await getSingleBrewery(breweryId, accessToken);
-
   try {
     // Converting brewery categories to a Map for O(1) lookup times
     const existingCategories = new Map(

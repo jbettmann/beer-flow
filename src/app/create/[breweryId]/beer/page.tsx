@@ -12,13 +12,13 @@ type pageProps = {
 export default async function CreateBeerPage({
   params: { breweryId },
 }: pageProps) {
-  const singleBrewery: Promise<Brewery> = getSingleBrewery(breweryId);
-  const brewery = await singleBrewery;
+  // const singleBrewery: Promise<Brewery> = getSingleBrewery(breweryId);
+  // const brewery = await singleBrewery;
 
   return (
     // SingleBeerPageContainer Only on [beerId] page to set selectedBeers State *
     <SetSelectedContainer breweryId={breweryId}>
-      <CreateBeerForm brewery={brewery} />
+      <CreateBeerForm />
     </SetSelectedContainer>
   );
 }

@@ -17,16 +17,16 @@ type pageProps = {
 export default async function BeerModel({
   params: { breweryId, beerId },
 }: pageProps) {
-  const singleBrewery: Promise<Brewery> = getSingleBrewery(breweryId);
+  // const singleBrewery: Promise<Brewery> = getSingleBrewery(breweryId);
 
-  const promise = await Promise.all([singleBrewery]);
+  // const promise = await Promise.all([singleBrewery]);
 
-  const [brewery] = promise;
+  // const [brewery] = promise;
 
   return (
     <Modal closeButtonOnly={false}>
       {/* @ts-expect-error Server component */}
-      <BeerCard brewery={brewery} beerId={beerId} />
+      <BeerCard beerId={beerId} />
     </Modal>
   );
 }

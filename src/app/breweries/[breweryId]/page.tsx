@@ -18,14 +18,15 @@ type pageProps = {
 export default async function SingleBreweryPage({
   params: { breweryId },
 }: pageProps) {
-  const singleBrewery: Promise<Brewery> = getSingleBrewery(breweryId);
+  // removed for swr
+  // const singleBrewery: Promise<Brewery> = getSingleBrewery(breweryId);
 
-  const promise = await Promise.all([singleBrewery]);
+  // const promise = await Promise.all([singleBrewery]);
 
-  if (!singleBrewery) return notFound();
+  if (!breweryId) return notFound();
   return (
     <main className="w-full h-full">
-      <BreweryProfiles promise={promise} breweryId={breweryId} />
+      <BreweryProfiles breweryId={breweryId} />
     </main>
   );
 }
