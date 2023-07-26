@@ -5,10 +5,13 @@ import Link from "next/link";
 import ImageDisplay from "./ImageDisplay/ImageDisplay";
 import { handleBeerView, isNew } from "@/lib/utils";
 import OptionsButton from "./Buttons/OptionsButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { handleDeleteCategory } from "@/lib/handleSubmit/handleDeleteCategory";
 import { useBreweryContext } from "@/context/brewery-beer";
 import { useSession } from "next-auth/react";
+import { mutate } from "swr";
+import { set } from "mongoose";
+import { Brewery } from "@/app/types/brewery";
 
 type Props = {
   category: Category;
@@ -16,6 +19,7 @@ type Props = {
   isOpen: boolean;
   onClick: () => void;
   breweryId: string;
+  setSelectedBrewery: React.Dispatch<React.SetStateAction<Brewery>>;
 };
 
 // in BeerCategory.tsx
@@ -25,14 +29,15 @@ export default function BeerCategory({
   isOpen,
   onClick,
   breweryId,
+  setSelectedBrewery,
 }: Props) {
   // State for managing the visibility of the options container
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
-  const { selectedBeers, selectedBrewery, setSelectedBrewery } =
-    useBreweryContext();
+  const { selectedBeers, selectedBrewery } = useBreweryContext();
 
   const { data: session } = useSession();
 
+  console.log({ selectedBrewery, selectedBeers });
   const filteredBeers = () => {
     if (!beers) return [];
     if (category.name === "All Beers") {
@@ -122,15 +127,18 @@ export default function BeerCategory({
     },
     {
       name: "Delete Category",
-      onClick: () =>
-        handleDeleteCategory({
+      onClick: async () => {
+        const updateBrewCats = await handleDeleteCategory({
           categoryId: category._id,
           breweryId,
           selectedBeers,
           selectedBrewery,
-          setSelectedBrewery,
           token: session?.user?.accessToken,
-        }),
+        });
+
+        if (updateBrewCats) setSelectedBrewery(updateBrewCats as Brewery);
+      },
+
       disabled: beersInCategory.length > 0, // Disable this option if there are beers in the category
     },
   ];
@@ -177,7 +185,7 @@ export default function BeerCategory({
       </div>
 
       <OptionsButton
-        handleOptions={(e) => handleOptions(e)}
+        handleOptions={handleOptions}
         className="btn btn-circle btn-ghost"
         options={options}
       />
