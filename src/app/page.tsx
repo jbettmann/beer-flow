@@ -1,13 +1,14 @@
-"use client";
 import getSingleBeer from "@/lib/getSingleBeer";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Beer } from "./types/beer";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]/route";
 
-export default function Home() {
-  const { data: session, status, update } = useSession();
+export default async function Home() {
+  const session = await getServerSession(authOptions);
 
   let savedBreweryId;
   if (typeof window !== "undefined") {
@@ -19,6 +20,11 @@ export default function Home() {
 
   if (session?.user && !savedBreweryId && session.user.breweries.length < 1) {
     redirect(`/breweries`);
+  }
+
+  if (session?.user && !savedBreweryId) {
+    let savedBreweryId = session?.user.breweries[0];
+    redirect(`/breweries/${savedBreweryId}`);
   }
 
   console.log(session?.user);
