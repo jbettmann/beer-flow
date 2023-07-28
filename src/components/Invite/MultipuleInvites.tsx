@@ -1,23 +1,86 @@
 "use client";
 import React, { useState } from "react";
 import Invite from "./Invite";
+import { sendInvite } from "@/lib/POST/sendInvite";
+import { validateEmail } from "@/lib/validators/email";
+import { useSession } from "next-auth/react";
 
-const MultipleInvites = () => {
-  const [invitees, setInvitees] = useState([{ email: "", admin: false }]);
+type pageProps = {
+  breweryId: string;
+};
+
+const MultipleInvites = ({ breweryId }: pageProps) => {
+  const { data: session } = useSession();
+  const [invitees, setInvitees] = useState([
+    { email: "", isAdmin: false, error: "" },
+  ]);
+  console.log({ invitees });
 
   const addInvitee = () => {
-    setInvitees([...invitees, { email: "", admin: false }]);
+    setInvitees([...invitees, { email: "", isAdmin: false, error: "" }]);
   };
 
   const removeInvitee = (indexToRemove: number) => {
     setInvitees(invitees.filter((_, index) => index !== indexToRemove));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log(invitees);
-    // Call the API to send invites
+    // validate email addresses and set errors if necessary
+    const newInvitees = invitees.map((invitee) => {
+      if (!invitee.email || !validateEmail(invitee.email)) {
+        return {
+          ...invitee,
+          error: "Invalid email address.",
+        };
+      }
+      return invitee;
+    });
+
+    // If any errors, update the state and return
+    if (newInvitees.some((invitee) => invitee.error)) {
+      setInvitees(newInvitees);
+      return;
+    }
+
+    // waits for all the promises to settle.
+    // Returns an array of objects, where each
+    // object describes the outcome of each promise
+    try {
+      if (session?.user.accessToken) {
+        const results = await Promise.allSettled(
+          invitees.map((invitee) =>
+            sendInvite({
+              inviteData: invitee,
+              breweryId,
+              accessToken: session?.user.accessToken,
+            })
+          )
+        );
+        console.log(results);
+        const successEmails = results
+          .filter((result) => result.status === "fulfilled")
+          .map((result, index) => invitees[index].email);
+        const failedEmails = results
+          .filter((result) => result.status === "rejected")
+          .map((result, index) => invitees[index].email);
+
+        if (successEmails.length) {
+          alert(
+            `All invitations were successfully sent to: ${successEmails.join(
+              ", "
+            )}`
+          );
+          setInvitees([{ email: "", isAdmin: false, error: "" }]);
+        }
+        if (failedEmails.length) {
+          alert(`Failed to send invitations to: ${failedEmails.join(", ")}`);
+        }
+      }
+    } catch (error) {
+      console.error("Error sending invites:", error);
+    }
   };
 
   const handleChange = (
@@ -27,6 +90,11 @@ const MultipleInvites = () => {
   ) => {
     const newInvitees = [...invitees];
     newInvitees[index][field] = value;
+
+    // If there's an error and the field is email, clear the error
+    if (field === "email" && newInvitees[index].error) {
+      newInvitees[index].error = "";
+    }
     setInvitees(newInvitees);
   };
 
@@ -56,6 +124,7 @@ const MultipleInvites = () => {
                   handleChange={(field, value) =>
                     handleChange(index, field, value)
                   }
+                  error={invitee.error}
                 />
               </div>
             ))}
