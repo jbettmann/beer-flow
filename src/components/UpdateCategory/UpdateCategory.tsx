@@ -44,7 +44,6 @@ const UpdateCategory = ({ breweryId, categoryId }: pageProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<ErrorValues>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [previewImage, setPreviewImage] = useState(null);
 
   const isSubmitting = useRef(false);
 
@@ -202,7 +201,7 @@ const UpdateCategory = ({ breweryId, categoryId }: pageProps) => {
         />
 
         <button
-          className="create__btn"
+          className="create-btn"
           type="submit"
           disabled={isSubmitting.current}
         >
