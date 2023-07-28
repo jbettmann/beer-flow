@@ -33,7 +33,6 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
     ],
     getSingleBrewery
   );
-
   const {
     setSelectedBrewery,
     setSelectedBeers,
@@ -90,7 +89,7 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
     return categories?.map((category, i) => {
       return selectedBeers?.filter((beer) =>
         beer.category
-          ? beer.category.some((cat) => cat.name === category.name) &&
+          ? beer?.category.some((cat) => cat.name === category.name) &&
             !beer.archived
           : false
       );
@@ -108,8 +107,9 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
           }
         >
           {beersForCategory &&
+            beers &&
             beersForCategory.map((beers, i) => {
-              return beers.length > 0 ? (
+              return beers?.length > 0 ? (
                 <BeerCategory
                   key={i}
                   category={categories[i]}
