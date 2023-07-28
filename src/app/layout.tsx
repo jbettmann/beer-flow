@@ -4,8 +4,10 @@ import getBreweries from "@/lib/getBreweries";
 import { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { getServerSession } from "next-auth";
+import { User, getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/route";
+import Dashboard from "@/components/Dashboard/Dashboard";
+import { Brewery } from "./types/brewery";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,12 +25,16 @@ export default async function Layout(props: {
   const breweries = await getBreweries();
   const session = await getServerSession(authOptions);
 
+  const adminAllowed = breweries.map((brewery: Brewery) =>
+    brewery.admin.includes(session?.user._id)
+  );
   return (
     <html lang="en">
       <Provider>
         <body className={inter.className}>
           {/* @ts-expect-error Server Component */}
           <NavBar breweries={breweries} user={session} />
+          {adminAllowed && <Dashboard />}
           {/* <Chat /> */}
           {props.children}
           {props.modal}
