@@ -29,7 +29,9 @@ export default async function createBeer({
       );
 
       if (!response.ok) {
-        throw new Error(response.statusText);
+        // Read the response body which contains the error message
+        const errorBody = await response.text();
+        throw new Error(errorBody);
       }
 
       const responseData: Beer = await response.json();
