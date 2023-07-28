@@ -53,7 +53,10 @@ export function isNew(beer: Beer) {
   const oneDayAgo = Date.now() - oneDayInMilliseconds;
   const beerCreatedAt = new Date(beer.createdAt).getTime();
 
-  return !viewedBeerIds.includes(beer._id) || beerCreatedAt > oneDayAgo;
+  return (
+    !viewedBeerIds.includes(beer._id) ||
+    (beerCreatedAt > oneDayAgo && !beer.archived)
+  );
 }
 export const handleBeerView = (beerId: string) => {
   // Get the existing data from local storage
