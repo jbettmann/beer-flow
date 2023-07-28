@@ -1,9 +1,16 @@
+"use client";
+import { Brewery } from "@/app/types/brewery";
+import { useBreweryContext } from "@/context/brewery-beer";
 import Link from "next/link";
 import React from "react";
 
-type Props = {};
+type Props = {
+  breweries: Brewery[];
+};
 
-const Dashboard = (props: Props) => {
+const Dashboard = (breweries: Props) => {
+  const { selectedBrewery } = useBreweryContext();
+  console.log({ selectedBrewery });
   return (
     <div className="fixed bottom-2 left-2 ">
       <ul className="menu bg-primary text-white rounded-box ">
@@ -49,9 +56,9 @@ const Dashboard = (props: Props) => {
         </li>
         <li>
           <Link
-            href={"/invite"}
+            href={`/breweries/${selectedBrewery?._id}/invite`}
             className="tooltip tooltip-right"
-            data-tip="Stats"
+            data-tip="Invite New Staff"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
