@@ -12,11 +12,6 @@ const handleCreateBeer = async (
   brewery: Brewery,
   accessToken: string
 ) => {
-  if (!brewery) {
-    const savedBrewery = sessionStorage.getItem("selectedBreweryId");
-    const getBrewery = await getSingleBrewery(JSON.parse(savedBrewery));
-    brewery = getBrewery;
-  }
   try {
     // Save the image to the database and create link
     const beerImage = values.image
@@ -73,6 +68,8 @@ const handleCreateBeer = async (
 
     return newBeerRes;
   } catch (error) {
+    alert(error.message);
+    // This will be the error message from your server
     console.error(error);
   }
 };
