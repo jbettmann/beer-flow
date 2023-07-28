@@ -11,16 +11,12 @@ import {
 import Link from "next/link";
 import { Users } from "@/app/types/users";
 import brewery from "../../models/brewery";
+import { useBreweryContext } from "@/context/brewery-beer";
+import Image from "next/image";
 
-const NavBar = ({
-  breweries: initialBreweries,
-  user,
-}: {
-  breweries: Brewery[];
-  user: Users;
-}) => {
-  const [selectedBrewery, setSelectedBrewery] = useState<Brewery | null>(null);
-  const [breweries, setBreweries] = useState(initialBreweries);
+const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: Users }) => {
+  const { selectedBrewery, setSelectedBrewery } = useBreweryContext();
+
   const [open, setOpen] = useState(false);
 
   // Reference to the collapsible div
@@ -34,7 +30,7 @@ const NavBar = ({
   useEffect(() => {
     const savedBreweryId = localStorage.getItem("selectedBreweryId");
     if (savedBreweryId) {
-      const savedBrewery = breweries.find((b) => b._id === savedBreweryId);
+      const savedBrewery = breweries?.find((b) => b._id === savedBreweryId);
       if (savedBrewery) {
         setSelectedBrewery(savedBrewery);
       }
@@ -70,19 +66,29 @@ const NavBar = ({
 
   // clear local storage when sign out
   const handleSignOut = () => {
-    signOut();
+    // After sign out, redirects next user to homepage
+    signOut({ callbackUrl: `${window.location.origin}/` });
+    // Clear local & session storage
     localStorage.removeItem("selectedBreweryId");
     sessionStorage.removeItem("openCategory");
+    sessionStorage.removeItem("beerForm");
   };
 
   return (
     <div className="flex flex-row-reverse justify-between">
-      <div>
+      <div className="flex justify-center h-fit">
         {breweries ? (
           <button onClick={handleSignOut}>Sign Out</button>
         ) : (
           <button onClick={() => signIn()}>Sign In</button>
         )}
+        <Image
+          src={user.user.picture}
+          alt={`profile picture of ${user.user.fullName}`}
+          className="beer-category__image"
+          width={50}
+          height={50}
+        />
       </div>
 
       <div>
