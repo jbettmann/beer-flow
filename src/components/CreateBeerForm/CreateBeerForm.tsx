@@ -68,7 +68,7 @@ const CreateBeerForm = ({}: pageProps) => {
     router.back();
   }, [router]);
 
-  console.log({ selectedBeers });
+  console.log({ selectedBeers, selectedBrewery });
 
   // Load persisted state on initial render
   useEffect(() => {
