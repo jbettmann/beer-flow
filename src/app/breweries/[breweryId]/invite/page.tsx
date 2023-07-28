@@ -1,5 +1,7 @@
 import MultipleInvites from "@/components/Invite/MultipuleInvites";
 import SetSelectedContainer from "@/components/SetSelectedContainer";
+import { redirect } from "next/navigation";
+
 import React from "react";
 type pageProps = {
   params: {
@@ -8,9 +10,10 @@ type pageProps = {
 };
 
 const InviteNewStaffPage = ({ params: { breweryId } }: pageProps) => {
+  if (!breweryId) redirect("/");
   return (
     <SetSelectedContainer breweryId={breweryId}>
-      <MultipleInvites />
+      <MultipleInvites breweryId={breweryId} />
     </SetSelectedContainer>
   );
 };
