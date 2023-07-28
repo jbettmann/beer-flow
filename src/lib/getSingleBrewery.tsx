@@ -8,6 +8,7 @@ import { Session } from "next-auth";
 type pageProps = [url: string, token: string];
 
 export default async function getSingleBrewery([url, token]: pageProps) {
+  console.log({ url, token });
   if (token) {
     try {
       const response = await fetch(url, {
