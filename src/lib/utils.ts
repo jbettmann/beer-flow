@@ -54,8 +54,8 @@ export function isNew(beer: Beer) {
   const beerCreatedAt = new Date(beer.createdAt).getTime();
 
   return (
-    !viewedBeerIds.includes(beer._id) ||
-    (beerCreatedAt > oneDayAgo && !beer.archived)
+    !beer.archived &&
+    (!viewedBeerIds.includes(beer._id) || beerCreatedAt > oneDayAgo)
   );
 }
 export const handleBeerView = (beerId: string) => {
@@ -76,24 +76,16 @@ export const handleBeerView = (beerId: string) => {
 };
 //  keep track of local storage size
 const manageLocalStorageSize = () => {
-  const maxEntries = 20;
-  let viewedBeers = JSON.parse(localStorage.getItem("viewedBeers")) || {};
+  const maxEntries = 500;
+
+  let viewedBeers = JSON.parse(localStorage.getItem("viewedBeers")) || [];
 
   // If the size exceeds maxEntries, remove oldest entries.
-  if (Object.keys(viewedBeers).length > maxEntries) {
-    // Convert to an array of [key, value] pairs
-    let entries = Object.entries(viewedBeers);
-
-    // Sort by timestamp (i.e., value)
-    entries.sort((a, b) => a[1] - b[1]);
-
+  if (viewedBeers.length > maxEntries) {
     // Keep only the newest entries
-    entries = entries.slice(-maxEntries);
-
-    // Convert back to an object
-    viewedBeers = Object.fromEntries(entries);
+    const shortenedViewBeersList = viewedBeers.slice(-maxEntries);
 
     // Store the new object back in local storage
-    localStorage.setItem("viewedBeers", JSON.stringify(viewedBeers));
+    localStorage.setItem("viewedBeers", JSON.stringify(shortenedViewBeersList));
   }
 };
