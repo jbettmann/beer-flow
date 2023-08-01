@@ -5,22 +5,35 @@ import { signIn, useSession } from "next-auth/react";
 import TextareaAutosize from "react-textarea-autosize";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { redirect } from "next/navigation";
+import {
+  redirect,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
+import path from "path";
 
 type Props = {};
 
 const LoginPage = () => {
+  const router = useRouter();
+
+  const searchParams = useSearchParams();
   const { data: session } = useSession();
 
   const [isLoading, setIsLoading] = useState(false);
-
+  const acceptInviteUrl = searchParams.get("next");
+  console.log({ acceptInviteUrl });
   const onSignIn = async () => {
     setIsLoading(true);
     try {
-      await signIn();
+      await signIn("google", {
+        callbackUrl: acceptInviteUrl || "http://localhost:3000/",
+      });
     } catch (error) {
       alert(error);
     } finally {
+      if (acceptInviteUrl) redirect(acceptInviteUrl);
       setIsLoading(false);
     }
   };
