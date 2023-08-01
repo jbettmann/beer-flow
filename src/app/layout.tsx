@@ -33,7 +33,7 @@ export default async function Layout(props: {
       <Provider>
         <body className={inter.className}>
           {/* @ts-expect-error Server Component */}
-          <NavBar breweries={breweries} user={session} />
+          {session && <NavBar breweries={breweries} user={session} />}
           {adminAllowed && <Dashboard breweries={breweries} />}
           {/* <Chat /> */}
           {props.children}
