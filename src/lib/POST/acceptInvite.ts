@@ -18,8 +18,9 @@ export const acceptInvite = async ({ token, accessToken }: pageProps) => {
       );
 
       if (!response.ok) {
+        console.log(response.statusText);
         throw new Error(
-          `Invitation could not be accepted. ${response.statusText}`
+          `Invitation could not be accepted at this time. Please try again later.`
         );
       }
 

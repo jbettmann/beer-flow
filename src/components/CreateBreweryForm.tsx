@@ -29,10 +29,10 @@ const validateFields = (values: FormValues) => {
     errors.companyName = "Company Name must be at least 2 characters long.";
   }
 
-  // validate image
-  if (!values.image) {
-    errors.image = "Image is required.";
-  }
+  // // validate image
+  // if (!values.image) {
+  //   errors.image = "Image is required.";
+  // }
 
   return errors;
 };
@@ -169,11 +169,11 @@ const CreateBreweryForm: React.FC = () => {
       <div>
         {submitError && <div>Error: {submitError}</div>}
         <button
-          className="create__btn"
+          className="create-btn"
           type="submit"
           disabled={isSubmitting.current}
         >
-          Submit
+          Create Brewery
         </button>
       </div>
     </form>

@@ -485,7 +485,7 @@ const UpdateBeerForm = ({
         />
 
         <button
-          className="create__btn"
+          className="create-btn"
           type="submit"
           disabled={isSubmitting.current}
         >
