@@ -49,6 +49,8 @@ export default withAuth(
 
     const isAuthPage = pathname.startsWith("/api/auth/signin");
 
+    const acceptInvite = pathname.startsWith("/accept-invite");
+
     const sensitiveRoutes = ["/"];
 
     if (isAuthPage) {
@@ -62,6 +64,18 @@ export default withAuth(
       !isAuth &&
       sensitiveRoutes.some((route) => pathname.startsWith(route))
     ) {
+      // Redirect unauthenticated users trying to access the accept-invite URL to the login page
+      if (acceptInvite) {
+        const loginUrl = new URL("/auth/login", req.url);
+        loginUrl.searchParams.set("next", req.url); // store the original URL
+        console.log(
+          "We are in conditional accpetInvite true",
+          loginUrl,
+          req.url
+        );
+        return NextResponse.redirect(loginUrl);
+      }
+
       return NextResponse.redirect(new URL("/api/auth/signin", req.url));
     }
   },
