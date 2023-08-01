@@ -84,7 +84,6 @@ const CreateBeerForm = ({}: pageProps) => {
     sessionStorage.setItem("beerForm", JSON.stringify(values));
     // Clear the error message when the form fields change
     setSubmitError(null);
-    console.log({ values, errors, touched });
   }, [values]);
 
   // Handle form submission
@@ -420,7 +419,7 @@ const CreateBeerForm = ({}: pageProps) => {
       <div>
         {submitError && <div>Error: {submitError}</div>}
         <button
-          className="create__btn"
+          className="create-btn"
           type="submit"
           disabled={isSubmitting.current}
         >
