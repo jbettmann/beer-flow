@@ -133,7 +133,6 @@ export default function BeerCategory({
                   className="flex items-center justify-between"
                   href={`/breweries/${breweryId}/beers/${beer._id}`}
                   key={beer._id}
-                  onClick={(e) => handleBeerView(beer._id)}
                 >
                   <div className="inline-flex items-center">
                     {beer.image && (
