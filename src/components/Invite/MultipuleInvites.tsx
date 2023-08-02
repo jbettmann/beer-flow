@@ -4,6 +4,7 @@ import Invite from "./Invite";
 import { sendInvite } from "@/lib/POST/sendInvite";
 import { validateEmail } from "@/lib/validators/email";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 type pageProps = {
   breweryId: string;
@@ -11,10 +12,10 @@ type pageProps = {
 
 const MultipleInvites = ({ breweryId }: pageProps) => {
   const { data: session } = useSession();
+  const router = useRouter();
   const [invitees, setInvitees] = useState([
     { email: "", isAdmin: false, error: "" },
   ]);
-  console.log({ invitees });
 
   const addInvitee = () => {
     setInvitees([...invitees, { email: "", isAdmin: false, error: "" }]);
@@ -58,7 +59,7 @@ const MultipleInvites = ({ breweryId }: pageProps) => {
             })
           )
         );
-        console.log(results);
+
         const successEmails = results
           .filter((result) => result.status === "fulfilled")
           .map((result, index) => invitees[index].email);
@@ -68,11 +69,10 @@ const MultipleInvites = ({ breweryId }: pageProps) => {
 
         if (successEmails.length) {
           alert(
-            `All invitations were successfully sent to: ${successEmails.join(
-              ", "
-            )}`
+            `${successEmails.join(", ")} invitations were successfully sent`
           );
           setInvitees([{ email: "", isAdmin: false, error: "" }]);
+          router.back();
         }
         if (failedEmails.length) {
           alert(`Failed to send invitations to: ${failedEmails.join(", ")}`);
