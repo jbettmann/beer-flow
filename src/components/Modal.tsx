@@ -7,7 +7,7 @@ export default function Modal({
   closeButtonOnly,
 }: {
   children: React.ReactNode;
-  closeButtonOnly: boolean;
+  closeButtonOnly?: boolean;
 }) {
   const overlay = useRef(null);
   const wrapper = useRef(null);

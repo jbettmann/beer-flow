@@ -58,7 +58,6 @@ const AcceptInvite = (props: Props) => {
   useEffect(() => {
     // accept-invite url example:
     // const inviteUrl = `http://localhost:3000/accept-invite?token=${token}`;
-
     const token = searchParams.get("token");
 
     if (token) {
