@@ -11,7 +11,7 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import useSWR from "swr";
-
+import BackArrow from "@/components/Buttons/BackArrow";
 type pageProps = {
   params: {
     breweryId: string;
@@ -35,7 +35,9 @@ export default async function SingleBeerPage({
   return (
     <div className="w-full h-full">
       <h2>
-        <Link href="/">Back Home</Link>
+        <Link href="/">
+          <BackArrow width={"60"} height={"30"} />
+        </Link>
       </h2>
       {/* SingleBeerPageContainer Only on [beerId] page to set selectedBeers State */}
       <SetSelectedContainer breweryId={breweryId}>
