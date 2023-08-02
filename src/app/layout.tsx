@@ -25,16 +25,13 @@ export default async function Layout(props: {
   const breweries = await getBreweries();
   const session = await getServerSession(authOptions);
 
-  const adminAllowed = breweries.map((brewery: Brewery) =>
-    brewery.admin.includes(session?.user._id)
-  );
   return (
     <html lang="en">
       <Provider>
         <body className={inter.className}>
           {/* @ts-expect-error Server Component */}
           {session && <NavBar breweries={breweries} user={session} />}
-          {adminAllowed && <Dashboard breweries={breweries} />}
+          <Dashboard breweries={breweries} user={session} />
           {/* <Chat /> */}
           {props.children}
           {props.modal}
