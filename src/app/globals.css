@@ -48,6 +48,14 @@ p {
   @apply text-sm italic
 }
 
+.logo {
+  @apply w-16 h-fit rounded-2xl 
+}
+
+.logo__default {
+  @apply flex h-16 bg-gray-800 justify-center items-center text-accent font-bold text-2xl
+}
+
 .form {
   @apply bg-zinc-800 h-fit
 }
