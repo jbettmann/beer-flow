@@ -1,16 +1,37 @@
 "use client";
 import { Brewery } from "@/app/types/brewery";
 import { useBreweryContext } from "@/context/brewery-beer";
+import { Session } from "next-auth";
 import Link from "next/link";
-import React from "react";
+import React, { use, useEffect } from "react";
 
 type Props = {
   breweries: Brewery[];
+  user: Session;
 };
 
-const Dashboard = (breweries: Props) => {
+const Dashboard = ({ breweries, user }: Props) => {
   const { selectedBrewery } = useBreweryContext();
-  console.log({ selectedBrewery });
+  const [adminAllowed, setAdminAllowed] = React.useState(
+    selectedBrewery?.admin?.includes(user?.user.id)
+  );
+
+  useEffect(() => {
+    if (selectedBrewery && selectedBrewery.admin) {
+      if (typeof selectedBrewery.admin[0] === "string") {
+        // If admin is an array of string IDs
+        setAdminAllowed(selectedBrewery.admin.includes(user?.user.id));
+      } else if (typeof selectedBrewery.admin[0] === "object") {
+        // If admin is an array of objects
+        setAdminAllowed(
+          selectedBrewery.admin.some((admin) => admin._id === user?.user.id)
+        );
+      }
+    }
+  }, [selectedBrewery]);
+
+  console.log({ selectedBrewery, adminAllowed });
+
   return (
     <div className="fixed bottom-2 left-2 ">
       <ul className="menu bg-primary text-white rounded-box ">
@@ -54,28 +75,30 @@ const Dashboard = (breweries: Props) => {
             </svg>
           </Link>
         </li>
-        <li>
-          <Link
-            href={`/breweries/${selectedBrewery?._id}/invite`}
-            className="tooltip tooltip-right"
-            data-tip="Invite New Staff"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+        {adminAllowed && (
+          <li>
+            <Link
+              href={`/breweries/${selectedBrewery?._id}/invite`}
+              className="tooltip tooltip-right"
+              data-tip="Invite New Staff"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-              />
-            </svg>
-          </Link>
-        </li>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                />
+              </svg>
+            </Link>
+          </li>
+        )}
       </ul>
     </div>
   );
