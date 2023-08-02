@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import fetchAllUsers from "@/lib/getAllUsers";
 import Link from "next/link";
-
+import BackArrow from "@/components/Buttons/BackArrow";
 export const metadata: Metadata = {
   title: "Users",
   description: "Users of Beer Flow",
@@ -24,7 +24,9 @@ const UserPage = async () => {
   const content = (
     <section>
       <h2>
-        <Link href="/">Back Home</Link>
+        <Link href="/">
+          <BackArrow width={"60"} height={"30"} />
+        </Link>
       </h2>
       <br />
       {users.map((user) => {

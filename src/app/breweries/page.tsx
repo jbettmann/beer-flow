@@ -6,6 +6,7 @@ import { authOptions } from "../api/auth/[...nextauth]/route";
 import { Brewery } from "../types/brewery";
 import getBreweries from "@/lib/getBreweries";
 import { redirect } from "next/dist/server/api-utils";
+import BackArrow from "@/components/Buttons/BackArrow";
 
 // export async function generateMetadata({
 //   params,
@@ -34,7 +35,9 @@ const BreweriesPage = async () => {
   return (
     <section className="w-full">
       <h2>
-        <Link href="/">Back Home</Link>
+        <Link href="/">
+          <BackArrow width={"60"} height={"30"} />
+        </Link>
       </h2>
       <br />
       <div className="flex justify-center">
