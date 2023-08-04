@@ -122,7 +122,7 @@ const NavBar = ({
     sessionStorage.removeItem("openCategory");
     sessionStorage.removeItem("beerForm");
   };
-
+  console.log({ user });
   return (
     <div className="navbar justify-between">
       <div className="drawer w-fit p-3">
@@ -217,7 +217,7 @@ const NavBar = ({
           <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
             <Image
               src={user.user.picture}
-              alt={`profile picture of ${user.user.fullName}`}
+              alt={`profile picture of ${user.user.name}`}
               className="beer-category__image"
               width={50}
               height={50}
@@ -235,7 +235,7 @@ const NavBar = ({
                 <ul className="menu">
                   <li>
                     <Link
-                      href={"/account/management/category"}
+                      href={`/breweries/${selectedBrewery?._id}/categories`}
                       className="flex flex-row items-center"
                     >
                       <ListFilter size={24} />
