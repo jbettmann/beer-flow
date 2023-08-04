@@ -1,3 +1,4 @@
+import EditCategoryLS from "@/components/LoadingSkeleton/EditCategoryLS";
 import Modal from "@/components/Modal";
 import UpdateCategory from "@/components/UpdateCategory/UpdateCategory";
 import React from "react";

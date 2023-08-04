@@ -10,6 +10,7 @@ import useSWR from "swr";
 import BeerCategory from "./BeerCategory";
 import getSingleBrewery from "@/lib/getSingleBrewery";
 import { set } from "mongoose";
+import BreweryProfileSkeleton from "./LoadingSkeleton/BreweryProfileLS";
 
 type pageProps = {
   breweryId: string;
@@ -97,52 +98,50 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
   }, [selectedBeers, selectedBrewery, categories]);
 
   return (
-    <section className="w-1/2 m-auto">
-      <h1>{selectedBrewery?.companyName}</h1>
+    beers && (
+      <section className="w-1/2 m-auto">
+        <Suspense fallback={<BreweryProfileSkeleton />}>
+          <h1>{selectedBrewery?.companyName}</h1>
 
-      <div>
-        <Suspense
-          fallback={
-            <span className="loading loading-spinner loading-lg"></span>
-          }
-        >
-          {beersForCategory &&
-            beers &&
-            beersForCategory.map((beers, i) => {
-              return beers?.length > 0 ? (
-                <BeerCategory
-                  key={i}
-                  category={categories[i]}
-                  beers={beers}
-                  onClick={() => handleCategoryClick(i)}
-                  isOpen={openCategory == i}
-                  breweryId={selectedBrewery?._id}
-                  setSelectedBrewery={setSelectedBrewery}
-                />
-              ) : null;
-            })}
-          <div className="mt-10">
-            <BeerCategory
-              key="archived"
-              category={{ name: "Archived" }}
-              beers={selectedBeers}
-              onClick={() => handleCategoryClick("archived")}
-              isOpen={openCategory == "archived"}
-              breweryId={selectedBrewery?._id}
-              setSelectedBrewery={setSelectedBrewery}
-            />
+          <div>
+            {beersForCategory &&
+              beers &&
+              beersForCategory.map((beers, i) => {
+                return beers?.length > 0 ? (
+                  <BeerCategory
+                    key={i}
+                    category={categories[i]}
+                    beers={beers}
+                    onClick={() => handleCategoryClick(i)}
+                    isOpen={openCategory == i}
+                    breweryId={selectedBrewery?._id}
+                    setSelectedBrewery={setSelectedBrewery}
+                  />
+                ) : null;
+              })}
+            <div className="mt-10">
+              <BeerCategory
+                key="archived"
+                category={{ name: "Archived" }}
+                beers={selectedBeers}
+                onClick={() => handleCategoryClick("archived")}
+                isOpen={openCategory == "archived"}
+                breweryId={selectedBrewery?._id}
+                setSelectedBrewery={setSelectedBrewery}
+              />
+            </div>
+          </div>
+
+          <div className="w-full h-full flex justify-center">
+            <Link
+              href={`/create/${selectedBrewery?._id}/beer`}
+              className="btn btn-accent"
+            >
+              Create A Beer
+            </Link>
           </div>
         </Suspense>
-      </div>
-
-      <div className="w-full h-full flex justify-center">
-        <Link
-          href={`/create/${selectedBrewery?._id}/beer`}
-          className="btn btn-accent"
-        >
-          Create A Beer
-        </Link>
-      </div>
-    </section>
+      </section>
+    )
   );
 }
