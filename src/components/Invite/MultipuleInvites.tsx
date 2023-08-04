@@ -5,6 +5,7 @@ import { sendInvite } from "@/lib/POST/sendInvite";
 import { validateEmail } from "@/lib/validators/email";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useBreweryContext } from "@/context/brewery-beer";
 
 type pageProps = {
   breweryId: string;
@@ -16,6 +17,7 @@ const MultipleInvites = ({ breweryId }: pageProps) => {
   const [invitees, setInvitees] = useState([
     { email: "", isAdmin: false, error: "" },
   ]);
+  const { selectedBrewery } = useBreweryContext();
 
   const addInvitee = () => {
     setInvitees([...invitees, { email: "", isAdmin: false, error: "" }]);
@@ -100,7 +102,9 @@ const MultipleInvites = ({ breweryId }: pageProps) => {
 
   return (
     <>
-      <h1>Invite To Brewery</h1>
+      {selectedBrewery && (
+        <h1>Invite New Staff to {selectedBrewery.companyName} </h1>
+      )}
       <form
         onSubmit={handleSubmit}
         className="form flex flex-col w-1/2 mt-8 p-5 rounded-lg mx-auto"
