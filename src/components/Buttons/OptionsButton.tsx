@@ -38,27 +38,29 @@ const OptionsButton = ({ handleOptions, className, options }: Props) => {
 
       <ul
         tabIndex={0}
-        className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+        className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 flex items-center"
       >
-        {options.map((option, index) =>
-          option.name === "Edit Category" ? (
-            <Link
-              key={index}
-              href={option.href}
-              className={`${option.disabled ? "disabled" : ""} py-2 `}
-            >
-              {option.name}
-            </Link>
-          ) : (
-            <button
-              key={index}
-              onClick={option.onClick}
-              disabled={option.disabled}
-              className={`${option.disabled ? "disabled" : ""} py-2 `}
-            >
-              {option.name}
-            </button>
-          )
+        {options.map(
+          (option, index) =>
+            option.name === "Edit Category" ? (
+              <li>
+                <Link
+                  key={index}
+                  href={option.href}
+                  className={`${option.disabled ? "disabled" : ""} p-2 `}
+                >
+                  {option.name}
+                </Link>
+              </li>
+            ) : null
+          // <button
+          //   key={index}
+          //   onClick={option.onClick}
+          //   disabled={option.disabled}
+          //   className={`${option.disabled ? "disabled" : ""} py-2 `}
+          // >
+          //   {option.name}
+          // </button>
         )}
       </ul>
     </div>
