@@ -176,7 +176,7 @@ const UpdateCategory = ({ breweryId, categoryId }: pageProps) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className=" p-4 form flex flex-col justify-between mx-auto rounded-lg shadow-2xl text-white"
+      className="p-4 form flex flex-col justify-between mx-auto rounded-lg shadow-2xl text-white"
     >
       {/* Name */}
       <div className="container-create__form">
