@@ -1,17 +1,7 @@
-import { Beer } from "@/app/types/beer";
-import { Brewery } from "@/app/types/brewery";
 import BeerCard from "@/components/BeerCard";
-import BreweryProfiles from "@/components/BreweryProfiles";
-import SetSelectedContainer from "@/components/SetSelectedContainer";
-import getBreweryBeers from "@/lib/getBreweryBeers";
-import getSingleBeer from "@/lib/getSingleBeer";
-import getSingleBrewery from "@/lib/getSingleBrewery";
-import { useSession } from "next-auth/react";
-import { cookies } from "next/headers";
+import BackArrow from "@/components/Buttons/BackArrow";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import useSWR from "swr";
-import BackArrow from "@/components/Buttons/BackArrow";
 type pageProps = {
   params: {
     breweryId: string;
@@ -40,10 +30,9 @@ export default async function SingleBeerPage({
         </Link>
       </h2>
       {/* SingleBeerPageContainer Only on [beerId] page to set selectedBeers State */}
-      <SetSelectedContainer breweryId={breweryId}>
-        {/* @ts-expect-error Server component */}
-        <BeerCard beerId={beerId} />
-      </SetSelectedContainer>
+
+      {/* @ts-expect-error Server component */}
+      <BeerCard beerId={beerId} />
     </div>
   );
 }

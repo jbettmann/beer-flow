@@ -1,4 +1,5 @@
 import CategoryList from "@/components/CategoryManagement/CategoryList";
+import { SelectContainer } from "react-select/dist/declarations/src/components/containers";
 
 type Props = {};
 
