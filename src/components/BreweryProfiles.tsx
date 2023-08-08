@@ -1,15 +1,9 @@
 "use client";
-import { Brewery } from "@/app/types/brewery";
 import { Category } from "@/app/types/category";
 import { useBreweryContext } from "@/context/brewery-beer";
-import getBreweryBeers from "@/lib/getBreweryBeers";
-import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { Suspense, useEffect, useMemo, useState } from "react";
-import useSWR from "swr";
 import BeerCategory from "./BeerCategory";
-import getSingleBrewery from "@/lib/getSingleBrewery";
-import { set } from "mongoose";
 import BreweryProfileSkeleton from "./LoadingSkeleton/BreweryProfileLS";
 
 type pageProps = {
@@ -17,23 +11,6 @@ type pageProps = {
 };
 
 export default function BreweryProfiles({ breweryId }: pageProps) {
-  const { data: session } = useSession();
-
-  const { data: beers, error: beersError } = useSWR(
-    [
-      `https://beer-bible-api.vercel.app/breweries/${breweryId}/beers`,
-      session?.user.accessToken,
-    ],
-    getBreweryBeers
-  );
-
-  const { data: brewery, error: breweryError } = useSWR(
-    [
-      `https://beer-bible-api.vercel.app/breweries/${breweryId}`,
-      session?.user.accessToken,
-    ],
-    getSingleBrewery
-  );
   const {
     setSelectedBrewery,
     setSelectedBeers,
@@ -50,18 +27,12 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
 
   // let categories: Category[] = [...brewery?.categories];
 
-  useEffect(() => {
-    setSelectedBrewery(brewery);
-    setSelectedBeers(beers);
-    setCategories(brewery?.categories);
-  }, [beers, brewery]);
-
   // watch for change in selected brewery and beer to update categories
   useEffect(() => {
     setCategories(selectedBrewery?.categories || []);
   }, [selectedBrewery, selectedBeers]);
 
-  console.log({ brewery, beers, session });
+  // console.log({ brewery, beers, session });
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedOpenCategory = sessionStorage.getItem("openCategory");
@@ -98,14 +69,14 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
   }, [selectedBeers, selectedBrewery, categories]);
 
   return (
-    beers && (
+    selectedBeers && (
       <section className="w-1/2 m-auto">
         <Suspense fallback={<BreweryProfileSkeleton />}>
           <h1>{selectedBrewery?.companyName}</h1>
 
           <div>
             {beersForCategory &&
-              beers &&
+              selectedBeers &&
               beersForCategory.map((beers, i) => {
                 return beers?.length > 0 ? (
                   <BeerCategory
