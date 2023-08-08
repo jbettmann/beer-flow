@@ -82,6 +82,9 @@ const NavBar = ({
   const handleBreweryClick = (brewery: Brewery) => {
     // Save the clicked brewery's ID in local storage
     localStorage.setItem("selectedBreweryId", brewery._id);
+    // Dispatch a custom event to notify other parts of the app
+    const event = new Event("selectedBreweryChanged");
+    window.dispatchEvent(event);
     sessionStorage.removeItem("openCategory");
 
     // Update the selected brewery
@@ -102,7 +105,7 @@ const NavBar = ({
       (word) =>
         !["at", "the", "and", "of", "to", ""].includes(word.toLowerCase())
     );
-    console.log({ filteredWords });
+
     // If there are two or more words, return the first letter of the first two words
     if (filteredWords.length >= 2) {
       return (
@@ -122,7 +125,7 @@ const NavBar = ({
     sessionStorage.removeItem("openCategory");
     sessionStorage.removeItem("beerForm");
   };
-  console.log({ user });
+
   return (
     <div className="navbar justify-between">
       <div className="drawer w-fit p-3">
