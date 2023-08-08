@@ -1,119 +1,87 @@
 "use client";
 import { Beer } from "@/app/types/beer";
 import { Category } from "@/app/types/category";
-import { Beer as BeerMug } from "lucide-react";
+import {
+  BadgeInfo,
+  Beer as BeerMug,
+  Boxes,
+  Check,
+  Files,
+  Blocks,
+  ArrowLeftSquare,
+  Scissors,
+  Flame,
+} from "lucide-react";
+
 import React, { useState } from "react";
 
 type Props = {
-  categories: Category[];
-  beers: Beer[];
+  category: Category;
+  beer: Beer;
+  isChecked: boolean;
+  handleCheckbox: (beerId: string, isChecked: boolean) => void;
 };
 
-const CategoryItem = ({ categories, beers }: Props) => {
-  const [openStates, setOpenStates] = useState<{ [index: number]: boolean }>(
-    {}
-  );
-
-  const handleOpen = (index: number) => {
-    setOpenStates({ ...openStates, [index]: !openStates[index] });
-  };
-
+const CategoryItem = ({ category, beer, handleCheckbox, isChecked }: Props) => {
+  const isInMultipleCategories = beer.category && beer.category.length > 1;
   return (
-    categories &&
-    beers &&
-    categories.map((category, index) => {
-      // Filter the beers that belong to this category
-      const beersInCategory = beers?.filter((beer) => {
-        return beer.category
-          ? beer.category.some((cat) => cat.name === category.name)
-          : false;
-      });
-      const isOpen = openStates[index] || false;
-      return (
-        <>
-          <tr key={index}>
-            <th>
-              <label>
-                <input type="checkbox" className="checkbox" />
-              </label>
-            </th>
-            <td>
-              <div className="flex items-center space-x-3">
-                <div className="avatar">
-                  <div className="mask mask-squircle w-12 h-12">
-                    <BeerMug size={24} />
-                  </div>
-                </div>
-                <div>
-                  <div className="font-bold">{category.name}</div>
-                  <div className="text-sm opacity-50">
-                    Beers associated with category
-                  </div>
-                </div>
-              </div>
-            </td>
-            <td>
-              <button
-                className="btn btn-ghost btn-xs"
-                onClick={() => handleOpen(index)}
-              >
-                {" "}
-                {beersInCategory?.length || 0}
-              </button>
-            </td>
-            <td>Purple</td>
-            <th>details</th>
-          </tr>
-          <tr>
-            <div className="collapse">
-              <input type="checkbox" checked={isOpen} className="hidden" />
+    <tr className="relative">
+      <th></th>
+      <td>
+        <div className="flex items-center space-x-3 ">
+          <label className=" swap btn btn-circle">
+            <input
+              type="checkbox"
+              onChange={(e) => handleCheckbox(beer._id, e.target.checked)}
+            />
 
-              <div className="collapse-content">
-                {/* head */}
-                <thead>
-                  <tr>
-                    <th>
-                      <label>
-                        <input type="checkbox" className="checkbox" />
-                      </label>
-                    </th>
-                    <th>Name</th>
-                    <th>Category</th>
-                    <th>Favorite Color</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {beersInCategory?.map((beer) => {
-                    return (
-                      <tr key={beer._id}>
-                        <th>
-                          <label>
-                            <input type="checkbox" className="checkbox" />
-                          </label>
-                        </th>
-                        <td>
-                          <div className="font-bold">{beer.name}</div>
-                        </td>
-                        <td>
-                          <button className="btn btn-ghost btn-xs">
-                            {category.name
-                              ? beer.category.includes(category.name)
-                              : null}
-                          </button>
-                        </td>
-                        <td>Purple</td>
-                        <th>details</th>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </div>
+            {/* this hidden checkbox controls the state */}
+            <BeerMug size={24} className="swap-off " />
+
+            <Check size={24} className=" swap-on" />
+          </label>
+          <div>
+            <div className="font-bold flex">
+              {beer.name}{" "}
+              {isInMultipleCategories && (
+                <span
+                  className="ml-2 text-gray-600 cursor-pointer"
+                  title={`${beer.name} is in more than one category`}
+                >
+                  <Flame size={12} />
+                </span>
+              )}
             </div>
-          </tr>
-        </>
-      );
-    })
+          </div>
+        </div>
+      </td>
+
+      <td>
+        <button className="btn btn-ghost btn-xs">
+          {category.name ? category.name : null}
+        </button>
+      </td>
+      <th className="absolute right-0">
+        {isInMultipleCategories && (
+          <button
+            onClick={() => handleRemove(beer._id)}
+            className={`btn btn-circle btn-sm ${
+              isChecked ? "btn-error" : "btn-disabled"
+            } `}
+          >
+            <Scissors size={20} />
+          </button>
+        )}
+        <button
+          onClick={() => handleRemove(beer._id)}
+          className={`btn btn-circle btn-sm ml-2 ${
+            isChecked ? "btn-warning" : "btn-disabled"
+          } `}
+        >
+          <ArrowLeftSquare size={20} />
+        </button>
+      </th>
+    </tr>
   );
 };
 
