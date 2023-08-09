@@ -1,28 +1,23 @@
 "use client";
 import { Beer } from "@/app/types/beer";
 import { Category } from "@/app/types/category";
-import {
-  BadgeInfo,
-  Beer as BeerMug,
-  Boxes,
-  Check,
-  Files,
-  Blocks,
-  ArrowLeftSquare,
-  Scissors,
-  Flame,
-} from "lucide-react";
-
-import React, { useState } from "react";
+import { Beer as BeerMug, Check, Flame, LogIn, Scissors } from "lucide-react";
 
 type Props = {
   category: Category;
   beer: Beer;
   isChecked: boolean;
   handleCheckbox: (beerId: string, isChecked: boolean) => void;
+  setAlertOpen: React.Dispatch<React.SetStateAction<boolean | string>>;
 };
 
-const CategoryItem = ({ category, beer, handleCheckbox, isChecked }: Props) => {
+const CategoryItem = ({
+  category,
+  beer,
+  handleCheckbox,
+  isChecked,
+  setAlertOpen,
+}: Props) => {
   const isInMultipleCategories = beer.category && beer.category.length > 1;
   return (
     <tr className="relative">
@@ -46,7 +41,7 @@ const CategoryItem = ({ category, beer, handleCheckbox, isChecked }: Props) => {
               {isInMultipleCategories && (
                 <span
                   className="ml-2 text-gray-600 cursor-pointer"
-                  title={`${beer.name} is in more than one category`}
+                  title={`Beer is in more than one category`}
                 >
                   <Flame size={12} />
                 </span>
@@ -64,21 +59,25 @@ const CategoryItem = ({ category, beer, handleCheckbox, isChecked }: Props) => {
       <th className="absolute right-0">
         {isInMultipleCategories && (
           <button
-            onClick={() => handleRemove(beer._id)}
-            className={`btn btn-circle btn-sm ${
+            onClick={() => setAlertOpen(true)}
+            className={`btn btn-circle ${
               isChecked ? "btn-error" : "btn-disabled"
             } `}
           >
-            <Scissors size={20} />
+            <span title="Remove from Category">
+              <Scissors size={20} />
+            </span>
           </button>
         )}
         <button
-          onClick={() => handleRemove(beer._id)}
-          className={`btn btn-circle btn-sm ml-2 ${
+          onClick={() => setAlertOpen(beer._id)}
+          className={`btn btn-circle ml-2 ${
             isChecked ? "btn-warning" : "btn-disabled"
           } `}
         >
-          <ArrowLeftSquare size={20} />
+          <span title="Move to different Category">
+            <LogIn size={20} />
+          </span>
         </button>
       </th>
     </tr>
