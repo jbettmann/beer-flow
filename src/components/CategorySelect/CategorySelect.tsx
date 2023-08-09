@@ -7,7 +7,7 @@ type Props = {
   selectedValues: Option[];
   setValues: (values: FormValues) => void;
   categories: Option[];
-  handleBlur: (field: keyof FormValues) => (e: any) => void;
+  handleBlur?: (field: keyof FormValues) => (e: any) => void;
 };
 
 interface Option {
