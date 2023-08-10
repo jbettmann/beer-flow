@@ -3,19 +3,24 @@ import { Category } from "@/app/types/category";
 import React, { useEffect, useRef, useState } from "react";
 import Modal from "../Modal";
 import CategorySelect from "../CategorySelect/CategorySelect";
+import { FormValues } from "../UpdateCategory/types";
+import { useBreweryContext } from "@/context/brewery-beer";
 
 type Props = {
   category: Category;
   setAlertOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setToContinue: React.Dispatch<React.SetStateAction<boolean>>;
+  setToMoveContinue: React.Dispatch<React.SetStateAction<boolean>>;
   alertOpen: boolean;
+  setValues: (values: FormValues) => void;
+  checkedBeers: Category[];
 };
 
 const MoveBeerToCategory = ({
-  category,
   alertOpen,
-  setToContinue,
+  setToMoveContinue,
   setAlertOpen,
+  setValues,
+  checkedBeers,
 }: Props) => {
   const modalRef = useRef<HTMLDialogElement>(null);
 
@@ -34,6 +39,7 @@ const MoveBeerToCategory = ({
       setAlertOpen(false);
     }
   };
+
   return (
     <dialog
       ref={modalRef}
@@ -57,18 +63,19 @@ const MoveBeerToCategory = ({
           </svg>
           <CategorySelect
             setValues={setValues}
-            selectedValues={beer.category}
-            categories={brewery?.categories?.map((cat) => ({
+            selectedValues={null}
+            categories={checkedBeers.map((cat) => ({
               label: cat.name,
               value: cat.name,
             }))}
+            handleBlur={() => null}
           />
 
           <div>
             <button
               className="btn btn-sm"
               onClick={() => {
-                setToContinue(false);
+                setToMoveContinue(false);
                 closeModal();
               }}
             >
@@ -77,11 +84,11 @@ const MoveBeerToCategory = ({
             <button
               className="ml-2 btn btn-sm btn-accent"
               onClick={() => {
-                setToContinue(true);
+                setToMoveContinue(true);
                 closeModal();
               }}
             >
-              Remove
+              Move
             </button>
           </div>
         </div>
