@@ -8,8 +8,7 @@ import CategoryRow from "./CategoryRow";
 type Props = {};
 
 const CategoryList = (props: Props) => {
-  const {  selectedBrewery } =
-    useBreweryContext();
+  const { selectedBrewery } = useBreweryContext();
   const [categories, setCategories] = useState<Category[]>(
     selectedBrewery?.categories || []
   );
@@ -27,7 +26,7 @@ const CategoryList = (props: Props) => {
 
   return (
     <div className="overflow-x-auto">
-      <table className="table table-zebra ">
+      <table className="table ">
         {/* head */}
         <thead>
           <tr>
