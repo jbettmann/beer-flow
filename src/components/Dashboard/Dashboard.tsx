@@ -30,8 +30,6 @@ const Dashboard = ({ breweries, user }: Props) => {
     }
   }, [selectedBrewery]);
 
-  console.log({ selectedBrewery, adminAllowed });
-
   return (
     <div className="fixed bottom-2 left-2 ">
       <ul className="menu bg-primary text-white rounded-box ">
