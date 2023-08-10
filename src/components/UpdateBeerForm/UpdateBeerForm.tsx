@@ -187,7 +187,6 @@ const UpdateBeerForm = ({
         session?.user?.accessToken
       );
 
-      console.log(updateBeerRes);
       if (updateBeerRes) {
         const beerIndex = selectedBeers?.findIndex(
           (b) => b._id === updatedBeer._id
