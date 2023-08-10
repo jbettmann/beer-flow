@@ -1,15 +1,26 @@
 "use client";
 import { Category } from "@/app/types/category";
 import { useBreweryContext } from "@/context/brewery-beer";
-import { Check, Library, LogIn, Move, Scissors } from "lucide-react";
+import {
+  Check,
+  Library,
+  LogIn,
+  Move,
+  Scissors,
+  BookMarked,
+} from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 import RemoveBeerFromCategory from "../Alerts/RemoveBeerFromCategory";
 import CategoryItem from "./CategoryItem";
 import updateBeerCategory from "@/lib/PUT/updateBeerCategory";
-import { set } from "mongoose";
-import MoveBeerToCategory from "../Alerts/MoveBeerToCategory";
 
+import MoveBeerToCategory from "../Alerts/MoveBeerToCategory";
+import handleMoveBeerToCategory from "@/lib/handleSubmit/handleMoveBeerToCategory";
+import { FormValues } from "../CreateBeerForm/types";
+import getBreweryBeers from "@/lib/getBreweryBeers";
+import getSingleBrewery from "@/lib/getSingleBrewery";
+import useSWR from "swr";
 type Props = {
   category: Category;
   index: number;
@@ -18,18 +29,42 @@ type Props = {
 };
 
 const CategoryRow = ({ category, index, isOpen, handleOpen }: Props) => {
-  
   const [toContinue, setToContinue] = useState(false);
+  const [toMoveContinue, setToMoveContinue] = useState(false);
   const [alertOpen, setAlertOpen] = useState(false);
+  const [moveAlertOpen, setMoveAlertOpen] = useState<boolean>(false);
   const { data: session } = useSession();
-  const { selectedBeers, selectedBrewery, setSelectedBeers } =
-    useBreweryContext();
+
+  const {
+    selectedBeers,
+    selectedBrewery,
+    setSelectedBeers,
+    setSelectedBrewery,
+  } = useBreweryContext();
+  const { mutate: beerMutate } = useSWR(
+    [
+      `https://beer-bible-api.vercel.app/breweries/${selectedBrewery?._id}/beers`,
+      session?.user.accessToken,
+    ],
+    getBreweryBeers
+  );
+
+  const { mutate: breweryMutate } = useSWR(
+    [
+      `https://beer-bible-api.vercel.app/breweries/${selectedBrewery?._id}`,
+      session?.user.accessToken,
+    ],
+    getSingleBrewery
+  );
+
   const [checkedBeers, setCheckedBeers] = useState<
     Record<string, Record<string, boolean>>
   >({});
   const [checkedBeersCount, setCheckedBeersCount] = useState<
     Record<string, number>
   >({});
+
+  const [moveCategory, setMoveCategory] = useState<FormValues | []>([]);
 
   const handleCheckbox = (
     categoryId: string,
@@ -89,16 +124,27 @@ const CategoryRow = ({ category, index, isOpen, handleOpen }: Props) => {
     if (toContinue) {
       removeBeersFromCategory(category._id);
     }
-  }, [toContinue]);
+    if (toMoveContinue) {
+      moveBeerToCategory(category._id);
+    }
+  }, [toContinue, toMoveContinue]);
+
+  const beersToUpdate = () => {
+    // Identify the beers that need to be moved
+    const beerIdsToMove = Object.keys(checkedBeers[category._id] || {}).filter(
+      (beerId) => checkedBeers[category._id][beerId]
+    );
+
+    if (beerIdsToMove.length === 0) return; // No beers to move
+
+    return beerIdsToMove;
+  };
 
   const removeBeersFromCategory = async (categoryId: string) => {
     try {
       // Determine which beers to update
-      const beerIdsToUpdate = Object.keys(
-        checkedBeers[categoryId] || {}
-      ).filter((beerId) => checkedBeers[categoryId][beerId]);
-
-      if (beerIdsToUpdate.length === 0) return; // No beers to update
+   
+      const beerIdsToUpdate = beersToUpdate() || [];
 
       // Prepare the updated categories for each beer by removing the specified category
       const updatedBeersRequests = beerIdsToUpdate
@@ -110,7 +156,7 @@ const CategoryRow = ({ category, index, isOpen, handleOpen }: Props) => {
           const updatedCategoryIds = beer.category
             .filter((cat) => cat._id !== categoryId)
             .map((cat) => cat._id);
-
+        
           return updateBeerCategory({
             beerId,
             updatedCategory: updatedCategoryIds,
@@ -119,10 +165,10 @@ const CategoryRow = ({ category, index, isOpen, handleOpen }: Props) => {
           });
         })
         .filter(Boolean);
-
+     
       // Call the `updateBeerCategory` function for each updated beer
-      const updatedBeers = await Promise.all(updatedBeersRequests);
-
+      const removedBeers = await Promise.all(updatedBeersRequests);
+     
       // Update the client state
       setSelectedBeers((prevSelectedBeers) => {
         // Iterate over the previous selected beers and create a new array
@@ -156,6 +202,92 @@ const CategoryRow = ({ category, index, isOpen, handleOpen }: Props) => {
     }
   };
 
+  const moveBeerToCategory = async (categoryId: string) => {
+    try {
+      // Determine which beers to update
+      const beerIdsToMove = beersToUpdate() || [];
+
+      console.log({ beerIdsToMove });
+      const updatedBeersRequests = beerIdsToMove
+        .map((beerId) => {
+          const beer = selectedBeers?.find((b) => b._id === beerId);
+          if (!beer) return null;
+
+          // Remove the current category and add the target category
+          const updatedCategoryIds = beer.category
+            .filter((cat) => cat._id !== category._id) // Exclude current category
+            .map((cat) => cat._id);
+
+          console.log({ updatedCategoryIds });
+          return handleMoveBeerToCategory({
+            values: moveCategory,
+            beerId,
+            updatedCategory: updatedCategoryIds,
+            brewery: selectedBrewery,
+            accessToken: session?.user.accessToken,
+          });
+        })
+        .filter(Boolean);
+
+      // Update the beers with the new category
+      const updatedBeers = await Promise.all(updatedBeersRequests);
+      console.log({ updatedBeers });
+      console.log({ selectedBrewery });
+
+      // Extract all unique category IDs from the updated beers
+      const updatedCategoryIds = new Set(
+        updatedBeers.flatMap((beer) => beer.category.map((cat) => cat._id))
+      );
+
+      // Identify the new categories that are not in the selectedBrewery.categories
+      const newCategories: Category[] = [];
+      updatedCategoryIds.forEach((categoryId) => {
+        if (
+          !selectedBrewery?.categories.some((cat) => cat._id === categoryId)
+        ) {
+          const newCategory = updatedBeers
+            .flatMap((beer) => beer.category)
+            .find((cat) => cat._id === categoryId);
+          if (newCategory) {
+            newCategories.push(newCategory);
+          }
+        }
+      });
+
+      // If there are new categories, update the selectedBrewery
+      if (newCategories.length > 0) {
+        setSelectedBrewery((prevBrewery) => ({
+          ...prevBrewery,
+          categories: [...(prevBrewery?.categories || []), ...newCategories],
+        }));
+      }
+      // Update the client state with the newly updated beers
+      setSelectedBeers((prevSelectedBeers) => {
+        return prevSelectedBeers?.map((prevBeer) => {
+          const updatedBeer = updatedBeers.find(
+            (beer) => beer?._id === prevBeer._id
+          );
+          return updatedBeer || prevBeer; // Replace the beer if it was updated, or keep it as is
+        });
+      });
+
+      // Optionally, you may want to reset the checked beers for this category
+      setCheckedBeers((prevCheckedBeers) => ({
+        ...prevCheckedBeers,
+        [categoryId]: {},
+      }));
+    } catch (error) {
+      console.error(
+        "An error occurred while removing beers from category:",
+        error
+      );
+
+      // Optionally, show an error message to the user
+    } finally {
+      setMoveAlertOpen(false);
+    }
+  };
+
   // Filter the beers that belong to this category
   const beersInCategory = selectedBeers?.filter((beer) => {
     return beer.category
@@ -167,6 +299,33 @@ const CategoryRow = ({ category, index, isOpen, handleOpen }: Props) => {
     category._id
   );
 
+  const getCategoriesNotInCheckedBeers = () => {
+    // Get all the unique categories from selectedBrewery
+    const allCategories = selectedBrewery?.categories || [];
+
+    // Get all the unique categories from checkedBeers
+    const checkedBeerCategories = Object.keys(checkedBeers)
+      .flatMap((categoryId) => {
+        return Object.keys(checkedBeers[categoryId]).flatMap((beerId) =>
+          checkedBeers[categoryId][beerId]
+            ? selectedBeers
+                ?.find((beer) => beer._id === beerId)
+                ?.category.map((cat) => cat._id) || []
+            : []
+        );
+      })
+      .filter((value, index, self) => self.indexOf(value) === index); // To get unique category IDs
+
+    // Find the categories that are not in checkedBeerCategories
+    const categoriesNotInCheckedBeers = allCategories.filter(
+      (category) => !checkedBeerCategories.includes(category._id)
+    );
+
+    return categoriesNotInCheckedBeers;
+  };
+
+  const categoriesNotInCheckedBeers = getCategoriesNotInCheckedBeers();
+
   return (
     <>
       {alertOpen && (
@@ -177,16 +336,19 @@ const CategoryRow = ({ category, index, isOpen, handleOpen }: Props) => {
           setAlertOpen={setAlertOpen}
         />
       )}
-      {alertOpen && (
+      {moveAlertOpen && (
         <MoveBeerToCategory
-          category={category}
-          setToContinue={setToContinue}
-          setAlertOpen={setAlertOpen}
+          alertOpen={moveAlertOpen}
+          checkedBeers={categoriesNotInCheckedBeers}
+          setToMoveContinue={setToMoveContinue}
+          setValues={setMoveCategory}
+          setAlertOpen={setMoveAlertOpen}
         />
       )}
       <tr
         className="hover:bg-accent hover:bg-opacity-30 hover:cursor-pointer"
         onClick={() => handleOpen(index)}
+        key={index}
       >
         <th></th>
         <td>
@@ -195,9 +357,9 @@ const CategoryRow = ({ category, index, isOpen, handleOpen }: Props) => {
               <input type="checkbox" className="hover:checked" />
 
               {/* this hidden checkbox controls the state */}
-              <Library size={24} className="swap-off " />
+              <BookMarked size={24} className="swap-off " strokeWidth={1} />
 
-              <Check size={24} className=" swap-on" />
+              <Check size={24} className=" swap-on" strokeWidth={1} />
             </label>
             <div>
               <div className="font-bold ">
@@ -221,7 +383,7 @@ const CategoryRow = ({ category, index, isOpen, handleOpen }: Props) => {
 
         <th>details</th>
       </tr>
-      <tr>
+      <tr className="bg-base-200">
         <td colSpan={4}>
           <div
             className={`collapse transition-all duration-300 overflow-hidden ${
@@ -230,7 +392,7 @@ const CategoryRow = ({ category, index, isOpen, handleOpen }: Props) => {
           >
             <input type="checkbox" checked={isOpen} className="hidden" />
 
-            <div className="collapse-content table table-zebra relative">
+            <div className="collapse-content table  relative">
               <thead>
                 <tr className="">
                   <th>
@@ -243,13 +405,13 @@ const CategoryRow = ({ category, index, isOpen, handleOpen }: Props) => {
                     {isMoveAllButtonVisible && (
                       <button
                         className="btn btn-warning"
-                        onClick={() => handleCommonAction("Move")}
+                        onClick={() => setMoveAlertOpen(true)}
                       >
                         <div
                           className="flex items-center"
                           title="Move beers to different Category"
                         >
-                          <LogIn size={20} />
+                          <LogIn size={20} strokeWidth={1} />
                           <span className="inline-flex items-center">
                             <p className="m-1">Move</p>(
                             {checkedBeersCount[category._id] || 0})
@@ -267,7 +429,7 @@ const CategoryRow = ({ category, index, isOpen, handleOpen }: Props) => {
                           className="flex items-center"
                           title="Remove beers from Category"
                         >
-                          <Scissors size={20} />
+                          <Scissors size={20} strokeWidth={1} />
                           <span className="inline-flex items-center">
                             <p className="m-1">Remove</p>(
                             {checkedBeersCount[category._id] || 0})
@@ -289,6 +451,7 @@ const CategoryRow = ({ category, index, isOpen, handleOpen }: Props) => {
                         handleCheckbox(category._id, beerId, isChecked)
                       }
                       setAlertOpen={setAlertOpen}
+                      setMoveAlertOpen={setMoveAlertOpen}
                       isChecked={
                         checkedBeers[category._id]?.[beer._id] || false
                       }
