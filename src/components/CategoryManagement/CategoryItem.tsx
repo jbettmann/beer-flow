@@ -2,6 +2,7 @@
 import { Beer } from "@/app/types/beer";
 import { Category } from "@/app/types/category";
 import { Beer as BeerMug, Check, Flame, LogIn, Scissors } from "lucide-react";
+import { useState } from "react";
 
 type Props = {
   category: Category;
@@ -19,18 +20,32 @@ const CategoryItem = ({
   setAlertOpen,
 }: Props) => {
   const isInMultipleCategories = beer.category && beer.category.length > 1;
+  const [checked, setChecked] = useState(isChecked);
+
+  // detect source of click
+  const handleClick = (
+    e: React.MouseEvent<HTMLTableRowElement, MouseEvent>
+  ) => {
+    // Ignore clicks on input or label elements
+    if (
+      e.target instanceof HTMLInputElement ||
+      e.target instanceof HTMLLabelElement
+    )
+      return;
+
+    const newChecked = !checked;
+    setChecked(newChecked);
+    handleCheckbox(beer._id, newChecked);
+  };
+
   return (
     <tr className="relative">
       <th></th>
-      <td>
+      <td className="hover:cursor-pointer" onClick={handleClick}>
         <div className="flex items-center space-x-3 ">
           <label className=" swap btn btn-circle">
-            <input
-              type="checkbox"
-              onChange={(e) => handleCheckbox(beer._id, e.target.checked)}
-            />
+            <input type="checkbox" checked={checked} />
 
-            {/* this hidden checkbox controls the state */}
             <BeerMug size={24} className="swap-off " />
 
             <Check size={24} className=" swap-on" />
@@ -51,7 +66,7 @@ const CategoryItem = ({
         </div>
       </td>
 
-      <td>
+      <td className="hover:cursor-pointer" onClick={handleClick}>
         <button className="btn btn-ghost btn-xs">
           {category.name ? category.name : null}
         </button>
