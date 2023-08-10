@@ -2,7 +2,7 @@
 import { Beer } from "@/app/types/beer";
 import { Category } from "@/app/types/category";
 import { Beer as BeerMug, Check, Flame, LogIn, Scissors } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type Props = {
   category: Category;
@@ -10,6 +10,7 @@ type Props = {
   isChecked: boolean;
   handleCheckbox: (beerId: string, isChecked: boolean) => void;
   setAlertOpen: React.Dispatch<React.SetStateAction<boolean | string>>;
+  setMoveAlertOpen: React.Dispatch<React.SetStateAction<boolean | string>>;
 };
 
 const CategoryItem = ({
@@ -18,9 +19,15 @@ const CategoryItem = ({
   handleCheckbox,
   isChecked,
   setAlertOpen,
+  setMoveAlertOpen,
 }: Props) => {
   const isInMultipleCategories = beer.category && beer.category.length > 1;
   const [checked, setChecked] = useState(isChecked);
+
+  // Update the local state if the isChecked prop changes
+  useEffect(() => {
+    setChecked(isChecked);
+  }, [isChecked]);
 
   // detect source of click
   const handleClick = (
@@ -39,16 +46,18 @@ const CategoryItem = ({
   };
 
   return (
-    <tr className="relative">
+    <tr className={`relative  ${checked ? "bg-indigo-200" : ""}`}>
       <th></th>
       <td className="hover:cursor-pointer" onClick={handleClick}>
         <div className="flex items-center space-x-3 ">
-          <label className=" swap btn btn-circle">
+          <label
+            className={`swap btn btn-circle ${checked ? "bg-teal-200" : ""}`}
+          >
             <input type="checkbox" checked={checked} />
 
-            <BeerMug size={24} className="swap-off " />
+            <BeerMug size={24} strokeWidth={1} className="swap-off " />
 
-            <Check size={24} className=" swap-on" />
+            <Check size={24} strokeWidth={1} className=" swap-on" />
           </label>
           <div>
             <div className="font-bold flex">
@@ -80,18 +89,18 @@ const CategoryItem = ({
             } `}
           >
             <span title="Remove from Category">
-              <Scissors size={20} />
+              <Scissors strokeWidth={1} size={20} />
             </span>
           </button>
         )}
         <button
-          onClick={() => setAlertOpen(beer._id)}
+          onClick={() => setMoveAlertOpen(true)}
           className={`btn btn-circle ml-2 ${
             isChecked ? "btn-warning" : "btn-disabled"
           } `}
         >
           <span title="Move to different Category">
-            <LogIn size={20} />
+            <LogIn size={20} strokeWidth={1} />
           </span>
         </button>
       </th>
