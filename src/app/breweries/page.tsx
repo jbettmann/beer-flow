@@ -7,6 +7,7 @@ import { Brewery } from "../types/brewery";
 import getBreweries from "@/lib/getBreweries";
 import { redirect } from "next/dist/server/api-utils";
 import BackArrow from "@/components/Buttons/BackArrow";
+import SetBreweryIdStorage from "@/components/Buttons/SetBreweryIdStorage";
 
 // export async function generateMetadata({
 //   params,
@@ -46,9 +47,10 @@ const BreweriesPage = async () => {
             return (
               <>
                 <p key={brewery._id}>
-                  <Link href={`/breweries/${brewery._id}`}>
-                    {brewery.companyName}
-                  </Link>
+                  <SetBreweryIdStorage
+                    brewery={brewery}
+                    href={`/breweries/${brewery._id}`}
+                  />
                 </p>
               </>
             );
