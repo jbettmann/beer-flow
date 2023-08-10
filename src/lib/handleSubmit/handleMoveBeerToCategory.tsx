@@ -22,10 +22,6 @@ const handleMoveBeerToCategory = async ({
   updatedCategory,
 }: Props) => {
   try {
-    console.log(
-      { brewery, beerId, accessToken, updatedCategory },
-      values.category
-    );
     // Function to get category ID, creating a new category if necessary
 
     // Converting brewery categories to a Map for O(1) lookup times

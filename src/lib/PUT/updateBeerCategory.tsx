@@ -4,7 +4,7 @@ type pageProps = {
   updatedCategory: string[];
   accessToken: string | undefined;
   breweryId: string | undefined;
-  beerId: string;
+  beerId: string | null;
 };
 
 export default async function updateBeerCategory({
@@ -13,8 +13,7 @@ export default async function updateBeerCategory({
   beerId,
   accessToken,
 }: pageProps) {
-  if (accessToken) {
-    console.log({ updatedCategory, breweryId, beerId, accessToken });
+  if (accessToken && breweryId && beerId) {
     try {
       const response = await fetch(
         `https://beer-bible-api.vercel.app/breweries/${breweryId}/beers/${beerId}/category`,
