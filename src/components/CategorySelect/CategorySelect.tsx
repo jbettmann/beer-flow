@@ -4,10 +4,10 @@ import CreatableSelect from "react-select/creatable";
 import { FormValues } from "../CreateBeerForm/types";
 
 type Props = {
-  selectedValues: Option[];
+  selectedValues: Option[] | null;
   setValues: (values: FormValues) => void;
   categories: Option[];
-  handleBlur?: (field: keyof FormValues) => (e: any) => void;
+  handleBlur: (field: keyof FormValues) => (e: any) => void | null;
 };
 
 interface Option {
@@ -27,8 +27,9 @@ const CategorySelect = ({
   handleBlur,
 }: Props) => {
   const [options, setOptions] = React.useState<Option[]>(categories);
-  const [selectedOptions, setSelectedOptions] =
-    React.useState<Option[]>(selectedValues);
+  const [selectedOptions, setSelectedOptions] = React.useState<Option[] | null>(
+    selectedValues
+  );
 
   // // sets selectedOptions to selectedValues from localSession
   useEffect(() => {
