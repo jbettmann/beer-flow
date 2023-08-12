@@ -1,61 +1,43 @@
 "use client";
 import { Category } from "@/app/types/category";
 import { useBreweryContext } from "@/context/brewery-beer";
-import {
-  Check,
-  Library,
-  LogIn,
-  Move,
-  Scissors,
-  BookMarked,
-} from "lucide-react";
+import updateBeerCategory from "@/lib/PUT/updateBeerCategory";
+import { BookMarked, Check, LogIn, Scissors, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import RemoveBeerFromCategory from "../Alerts/RemoveBeerFromCategory";
 import CategoryItem from "./CategoryItem";
-import updateBeerCategory from "@/lib/PUT/updateBeerCategory";
 
-import MoveBeerToCategory from "../Alerts/MoveBeerToCategory";
 import handleMoveBeerToCategory from "@/lib/handleSubmit/handleMoveBeerToCategory";
+import MoveBeerToCategory from "../Alerts/MoveBeerToCategory";
 import { FormValues } from "../CreateBeerForm/types";
-import getBreweryBeers from "@/lib/getBreweryBeers";
-import getSingleBrewery from "@/lib/getSingleBrewery";
-import useSWR from "swr";
+
 type Props = {
   category: Category;
   index: number;
   isOpen: boolean;
   handleOpen: (index: number) => void;
+  selectAll: boolean;
+  handleEmptyCategory: (categoryId: string, isEmpty: boolean) => void;
+  handleCategoryCheckbox: (categoryId: string, isChecked: boolean) => void;
 };
 
-const CategoryRow = ({ category, index, isOpen, handleOpen }: Props) => {
+const CategoryRow = ({
+  category,
+  index,
+  isOpen,
+  handleOpen,
+  selectAll,
+  handleEmptyCategory,
+  handleCategoryCheckbox,
+}: Props) => {
   const [toContinue, setToContinue] = useState(false);
   const [toMoveContinue, setToMoveContinue] = useState(false);
+
   const [alertOpen, setAlertOpen] = useState(false);
   const [moveAlertOpen, setMoveAlertOpen] = useState<boolean>(false);
-  const { data: session } = useSession();
 
-  const {
-    selectedBeers,
-    selectedBrewery,
-    setSelectedBeers,
-    setSelectedBrewery,
-  } = useBreweryContext();
-  const { mutate: beerMutate } = useSWR(
-    [
-      `https://beer-bible-api.vercel.app/breweries/${selectedBrewery?._id}/beers`,
-      session?.user.accessToken,
-    ],
-    getBreweryBeers
-  );
-
-  const { mutate: breweryMutate } = useSWR(
-    [
-      `https://beer-bible-api.vercel.app/breweries/${selectedBrewery?._id}`,
-      session?.user.accessToken,
-    ],
-    getSingleBrewery
-  );
+  const [moveCategory, setMoveCategory] = useState<FormValues | []>([]);
 
   const [checkedBeers, setCheckedBeers] = useState<
     Record<string, Record<string, boolean>>
@@ -64,9 +46,44 @@ const CategoryRow = ({ category, index, isOpen, handleOpen }: Props) => {
     Record<string, number>
   >({});
 
-  const [moveCategory, setMoveCategory] = useState<FormValues | []>([]);
+  const [categoryCheckBox, setCategoryCheckBox] = useState<boolean>(false);
 
-  const handleCheckbox = (
+  const { data: session } = useSession();
+
+  const {
+    selectedBeers,
+    selectedBrewery,
+    setSelectedBeers,
+    setSelectedBrewery,
+  } = useBreweryContext();
+
+  // Filter the beers that belong to this category
+  const beersInCategory = useMemo(() => {
+    return selectedBeers?.filter((beer) => {
+      return beer.category
+        ? beer.category.some((cat) => cat.name === category.name)
+        : false;
+    });
+  }, [selectedBeers, category.name]);
+
+  const [isEmpty, setIsEmpty] = useState(
+    !beersInCategory || beersInCategory.length === 0
+  );
+
+  const calculateIsEmpty = () =>
+    !beersInCategory || beersInCategory.length === 0;
+
+  useEffect(() => {
+    setIsEmpty(calculateIsEmpty());
+  }, [selectedBeers]);
+
+  const handleCategoryCheck = () => {
+    const newCheckedState = !categoryCheckBox;
+    setCategoryCheckBox(newCheckedState);
+    handleCategoryCheckbox(category._id, newCheckedState);
+  };
+
+  const handleBeerCheckbox = (
     categoryId: string,
     beerId: string,
     isChecked: boolean
@@ -120,15 +137,6 @@ const CategoryRow = ({ category, index, isOpen, handleOpen }: Props) => {
     return { isMoveAllButtonVisible, isRemoveAllButtonVisible };
   };
 
-  useEffect(() => {
-    if (toContinue) {
-      removeBeersFromCategory(category._id);
-    }
-    if (toMoveContinue) {
-      moveBeerToCategory(category._id);
-    }
-  }, [toContinue, toMoveContinue]);
-
   const beersToUpdate = () => {
     // Identify the beers that need to be moved
     const beerIdsToMove = Object.keys(checkedBeers[category._id] || {}).filter(
@@ -143,7 +151,7 @@ const CategoryRow = ({ category, index, isOpen, handleOpen }: Props) => {
   const removeBeersFromCategory = async (categoryId: string) => {
     try {
       // Determine which beers to update
-   
+
       const beerIdsToUpdate = beersToUpdate() || [];
 
       // Prepare the updated categories for each beer by removing the specified category
@@ -156,7 +164,7 @@ const CategoryRow = ({ category, index, isOpen, handleOpen }: Props) => {
           const updatedCategoryIds = beer.category
             .filter((cat) => cat._id !== categoryId)
             .map((cat) => cat._id);
-        
+
           return updateBeerCategory({
             beerId,
             updatedCategory: updatedCategoryIds,
@@ -165,10 +173,10 @@ const CategoryRow = ({ category, index, isOpen, handleOpen }: Props) => {
           });
         })
         .filter(Boolean);
-     
+
       // Call the `updateBeerCategory` function for each updated beer
-      const removedBeers = await Promise.all(updatedBeersRequests);
-     
+      await Promise.all(updatedBeersRequests);
+
       // Update the client state
       setSelectedBeers((prevSelectedBeers) => {
         // Iterate over the previous selected beers and create a new array
@@ -199,6 +207,7 @@ const CategoryRow = ({ category, index, isOpen, handleOpen }: Props) => {
       // Optionally, show an error message to the user
     } finally {
       setToContinue(false);
+      setIsEmpty(!beersInCategory || beersInCategory.length === 0);
     }
   };
 
@@ -207,7 +216,6 @@ const CategoryRow = ({ category, index, isOpen, handleOpen }: Props) => {
       // Determine which beers to update
       const beerIdsToMove = beersToUpdate() || [];
 
-      console.log({ beerIdsToMove });
       const updatedBeersRequests = beerIdsToMove
         .map((beerId) => {
           const beer = selectedBeers?.find((b) => b._id === beerId);
@@ -218,7 +226,6 @@ const CategoryRow = ({ category, index, isOpen, handleOpen }: Props) => {
             .filter((cat) => cat._id !== category._id) // Exclude current category
             .map((cat) => cat._id);
 
-          console.log({ updatedCategoryIds });
           return handleMoveBeerToCategory({
             values: moveCategory,
             beerId,
@@ -231,8 +238,6 @@ const CategoryRow = ({ category, index, isOpen, handleOpen }: Props) => {
 
       // Update the beers with the new category
       const updatedBeers = await Promise.all(updatedBeersRequests);
-      console.log({ updatedBeers });
-      console.log({ selectedBrewery });
 
       // Extract all unique category IDs from the updated beers
       const updatedCategoryIds = new Set(
@@ -254,6 +259,7 @@ const CategoryRow = ({ category, index, isOpen, handleOpen }: Props) => {
         }
       });
 
+      // NEED updatedBeers to return the updated beers with the new category
       // If there are new categories, update the selectedBrewery
       if (newCategories.length > 0) {
         setSelectedBrewery((prevBrewery) => ({
@@ -285,15 +291,10 @@ const CategoryRow = ({ category, index, isOpen, handleOpen }: Props) => {
       // Optionally, show an error message to the user
     } finally {
       setMoveAlertOpen(false);
+      setIsEmpty(!beersInCategory || beersInCategory.length === 0);
     }
   };
 
-  // Filter the beers that belong to this category
-  const beersInCategory = selectedBeers?.filter((beer) => {
-    return beer.category
-      ? beer.category.some((cat) => cat.name === category.name)
-      : false;
-  });
   // Get the state for the buttons specific to this category
   const { isMoveAllButtonVisible, isRemoveAllButtonVisible } = getButtonsState(
     category._id
@@ -326,6 +327,32 @@ const CategoryRow = ({ category, index, isOpen, handleOpen }: Props) => {
 
   const categoriesNotInCheckedBeers = getCategoriesNotInCheckedBeers();
 
+  useEffect(() => {
+    handleEmptyCategory(category._id, isEmpty);
+  }, [isEmpty]);
+
+  // Call Remove or Move Beer to Category
+  useEffect(() => {
+    if (toContinue) {
+      removeBeersFromCategory(category._id);
+    }
+    if (toMoveContinue) {
+      moveBeerToCategory(category._id);
+    }
+  }, [toContinue, toMoveContinue]);
+
+  // Update the categoryCheckBox state when selectAll changes
+  useEffect(() => {
+    setCategoryCheckBox(selectAll);
+    handleEmptyCategory(category._id, isEmpty);
+    handleCategoryCheckbox(category._id, selectAll);
+  }, [selectAll]);
+
+  // Closes category if category checkbox is checked
+  useEffect(() => {
+    if (isOpen && categoryCheckBox) handleOpen(index);
+  }, [categoryCheckBox]);
+
   return (
     <>
       {alertOpen && (
@@ -346,20 +373,30 @@ const CategoryRow = ({ category, index, isOpen, handleOpen }: Props) => {
         />
       )}
       <tr
-        className="hover:bg-accent hover:bg-opacity-30 hover:cursor-pointer"
-        onClick={() => handleOpen(index)}
+        className={`hover:bg-indigo-300 hover:bg-opacity-80  ${
+          isOpen ? " bg-slate-200" : "shadow-sm"
+        } ${categoryCheckBox ? "bg-indigo-200" : ""}`}
         key={index}
       >
         <th></th>
-        <td>
+        <td
+          className={` hover:cursor-pointer`}
+          onClick={() => handleOpen(index)}
+        >
           <div className="flex items-center space-x-3 ">
-            <label className=" swap btn btn-circle">
-              <input type="checkbox" className="hover:checked" />
+            <label className=" swap btn btn-circle ">
+              <input type="checkbox" onClick={handleCategoryCheck} />
 
               {/* this hidden checkbox controls the state */}
-              <BookMarked size={24} className="swap-off " strokeWidth={1} />
+              {!selectAll ? (
+                <>
+                  <BookMarked size={24} className="swap-off" strokeWidth={1} />
 
-              <Check size={24} className=" swap-on" strokeWidth={1} />
+                  <Check size={24} className=" swap-on" strokeWidth={1} />
+                </>
+              ) : (
+                <Check size={24} className=" swap-off" strokeWidth={1} />
+              )}
             </label>
             <div>
               <div className="font-bold ">
@@ -371,7 +408,10 @@ const CategoryRow = ({ category, index, isOpen, handleOpen }: Props) => {
             </div>
           </div>
         </td>
-        <td>
+        <td
+          className={` hover:cursor-pointer`}
+          onClick={() => handleOpen(index)}
+        >
           <button
             className="btn btn-ghost btn-xs"
             // onClick={() => handleOpen(index)}
@@ -381,14 +421,24 @@ const CategoryRow = ({ category, index, isOpen, handleOpen }: Props) => {
           </button>
         </td>
 
-        <th>details</th>
+        <th>
+          {categoryCheckBox &&
+          (!beersInCategory || beersInCategory.length === 0) ? (
+            <button
+              onClick={() => console.log("Delete")}
+              className="btn btn-circle bg-transparent border-none hover:bg-transparent"
+            >
+              <Trash2 size={24} strokeWidth={1} />
+            </button>
+          ) : (
+            "details"
+          )}
+        </th>
       </tr>
-      <tr className="bg-base-200">
+      <tr className={`${isOpen ? "bg-slate-100" : ""}`}>
         <td colSpan={4}>
           <div
-            className={`collapse transition-all duration-300 overflow-hidden ${
-              isOpen ? "max-h-[500px]" : "max-h-0"
-            } `}
+            className={`collapse transition-all duration-300 overflow-hidden `}
           >
             <input type="checkbox" checked={isOpen} className="hidden" />
 
@@ -448,7 +498,7 @@ const CategoryRow = ({ category, index, isOpen, handleOpen }: Props) => {
                       beer={beer}
                       category={category}
                       handleCheckbox={(beerId, isChecked) =>
-                        handleCheckbox(category._id, beerId, isChecked)
+                        handleBeerCheckbox(category._id, beerId, isChecked)
                       }
                       setAlertOpen={setAlertOpen}
                       setMoveAlertOpen={setMoveAlertOpen}
