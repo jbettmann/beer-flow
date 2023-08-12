@@ -38,13 +38,13 @@ const CategoryList = (props: Props) => {
 
   const [creatingNewCategory, setCreatingNewCategory] = useState(false);
 
-  const handleSaveNewCategory = (newCategoryName: string) => {
+  const handleSaveNewCategory = async (newCategoryName: string) => {
     if (newCategoryName.trim() === "") {
       setCreatingNewCategory(false);
       return;
     }
     if (newCategoryName && selectedBrewery) {
-      const newCategoryId = handleCreateNewCategory({
+      const newCategoryId = await handleCreateNewCategory({
         categoryName: newCategoryName,
         brewery: selectedBrewery,
         accessToken: session?.user.accessToken || "",
@@ -158,10 +158,16 @@ const CategoryList = (props: Props) => {
     setCategories(selectedBrewery?.categories || []);
   }, [selectedBrewery]);
 
+  useEffect(() => {
+    setAnyCategoriesChecked(
+      Object.values(checkedCategories).some((isChecked) => isChecked) ||
+        selectAll
+    );
+  }, [checkedCategories, selectAll]);
   console.log({ categories });
-  const anyCategoriesChecked =
-    Object.values(checkedCategories).some((isChecked) => isChecked) ||
-    selectAll;
+  const [anyCategoriesChecked, setAnyCategoriesChecked] = useState(
+    Object.values(checkedCategories).some((isChecked) => isChecked) || selectAll
+  );
 
   return (
     <div className="overflow-x-auto">

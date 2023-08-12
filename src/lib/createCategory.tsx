@@ -31,7 +31,7 @@ export default async function createCategory({
       }
 
       const responseData: Category = await response.json();
-      console.log(responseData);
+
       return responseData;
     } catch (err) {
       console.error(err);

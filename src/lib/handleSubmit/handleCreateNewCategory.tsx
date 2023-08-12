@@ -42,7 +42,7 @@ const handleCreateNewCategory = async ({
         return createdCategory._id;
       }
     };
-    await getCategoryId(categoryName);
+    return await getCategoryId(categoryName);
   } catch (error) {
     console.error(error);
   }
