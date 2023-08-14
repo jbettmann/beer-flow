@@ -3,6 +3,7 @@ import { twMerge } from "tailwind-merge";
 import { supabase } from "./supabase";
 import { v4 as uuidv4 } from "uuid";
 import { Beer } from "@/app/types/beer";
+import { Category } from "@/app/types/category";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -88,4 +89,12 @@ const manageLocalStorageSize = () => {
     // Store the new object back in local storage
     localStorage.setItem("viewedBeers", JSON.stringify(shortenedViewBeersList));
   }
+};
+
+export const beerInCategory = (beers: Beer[] | null, category: Category) => {
+  return beers?.filter((beer) => {
+    return beer.category
+      ? beer.category.some((cat) => cat.name === category.name)
+      : false;
+  });
 };
