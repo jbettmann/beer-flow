@@ -1,18 +1,17 @@
 "use client";
-import React, {
-  createContext,
-  useState,
-  useContext,
-  FC,
-  use,
-  useEffect,
-} from "react";
 import { Beer } from "@/app/types/beer";
 import { Brewery } from "@/app/types/brewery";
-import useSWR from "swr";
-import { useSession } from "next-auth/react";
 import getBreweryBeers from "@/lib/getBreweryBeers";
 import getSingleBrewery from "@/lib/getSingleBrewery";
+import { useSession } from "next-auth/react";
+import React, {
+  FC,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import useSWR from "swr";
 
 type BreweryContextProps = {
   selectedBrewery: Brewery | null;
