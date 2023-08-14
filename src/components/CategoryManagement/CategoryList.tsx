@@ -4,18 +4,30 @@ import { useBreweryContext } from "@/context/brewery-beer";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import CategoryRow from "./CategoryRow";
-import { Trash2 } from "lucide-react";
+import {
+  ArrowDown01,
+  ArrowDown10,
+  ArrowDownAZ,
+  ArrowDownZA,
+  ArrowUp10,
+  ArrowUpAZ,
+  ArrowUpZA,
+  Trash2,
+} from "lucide-react";
 import OnlyEmptyCategoryDelete from "../Alerts/OnlyEmptyCategoryDelete";
 import deleteCategory from "@/lib/DELETE/deleteCategory";
 import CreateNewCategoryRow from "./CreateNewCategoryRow";
 import handleCreateNewCategory from "@/lib/handleSubmit/handleCreateNewCategory";
 import { set } from "mongoose";
+import { beerInCategory } from "@/lib/utils";
+import { Beer } from "@/app/types/beer";
 
 type Props = {};
 
 const CategoryList = (props: Props) => {
   const { data: session } = useSession();
-  const { selectedBrewery, setSelectedBrewery } = useBreweryContext();
+  const { selectedBeers, selectedBrewery, setSelectedBrewery } =
+    useBreweryContext();
 
   const [categories, setCategories] = useState<Category[]>(
     selectedBrewery?.categories || []
@@ -35,8 +47,44 @@ const CategoryList = (props: Props) => {
   const [checkedCategories, setCheckedCategories] = useState<
     Record<string, boolean>
   >({});
-
+  const [anyCategoriesChecked, setAnyCategoriesChecked] = useState(
+    Object.values(checkedCategories).some((isChecked) => isChecked) || selectAll
+  );
   const [creatingNewCategory, setCreatingNewCategory] = useState(false);
+
+  // State to hold the sort order (true for ascending, false for descending)
+  const [sortMethod, setSortMethod] = useState<string>("NAME");
+  const [isAscending, setIsAscending] = useState(true);
+  const [isNumberAscending, setIsNumberAscending] = useState(true);
+  const [beersInCategory, setBeersInCategory] = useState<Beer[][]>([]);
+  // sort the categories alphabetically
+  const updateSortedCategories = () => {
+    type CategoryWithBeers = {
+      category: Category;
+      beers: Beer[];
+    };
+    const categoriesWithBeers: CategoryWithBeers[] = categories.map(
+      (category) => ({
+        category,
+        beers: beerInCategory(selectedBeers, category),
+      })
+    );
+
+    categoriesWithBeers.sort((a, b) => {
+      if (sortMethod === "NUMBER") {
+        return isNumberAscending
+          ? a.beers.length - b.beers.length
+          : b.beers.length - a.beers.length;
+      }
+      // Default to name sorting
+      return isAscending
+        ? a.category.name.localeCompare(b.category.name)
+        : b.category.name.localeCompare(a.category.name);
+    });
+
+    setBeersInCategory(categoriesWithBeers.map((item) => item.beers));
+    setCategories(categoriesWithBeers.map((item) => item.category));
+  };
 
   const handleSaveNewCategory = async (newCategoryName: string) => {
     if (newCategoryName.trim() === "") {
@@ -149,13 +197,29 @@ const CategoryList = (props: Props) => {
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
   };
+  // useEffect to call sortAlphabetically when isAscending changes
+  useEffect(() => {
+    updateSortedCategories();
+  }, [isAscending, isNumberAscending]);
 
   useEffect(() => {
     setCategories(selectedBrewery?.categories || []);
   }, [selectedBrewery]);
 
   useEffect(() => {
-    setCategories(selectedBrewery?.categories || []);
+    // Logging to check the initial data
+
+    if (selectedBrewery) {
+      // Update categories
+      const updatedCategories = selectedBrewery.categories || [];
+      setCategories(updatedCategories);
+
+      // Calculate beersInCategory for each category
+      const updatedBeersInCategory = updatedCategories.map((category) =>
+        beerInCategory(selectedBeers, category)
+      );
+      setBeersInCategory(updatedBeersInCategory);
+    }
   }, [selectedBrewery]);
 
   useEffect(() => {
@@ -164,10 +228,6 @@ const CategoryList = (props: Props) => {
         selectAll
     );
   }, [checkedCategories, selectAll]);
-  console.log({ categories });
-  const [anyCategoriesChecked, setAnyCategoriesChecked] = useState(
-    Object.values(checkedCategories).some((isChecked) => isChecked) || selectAll
-  );
 
   return (
     <div className="overflow-x-auto">
@@ -192,8 +252,42 @@ const CategoryList = (props: Props) => {
                 />
               </label>
             </th>
-            <th>Name</th>
-            <th>Beers Under Category</th>
+            <th>
+              Name
+              <span>
+                <button
+                  className="ml-2 "
+                  onClick={() => {
+                    setIsAscending(!isAscending);
+                    setSortMethod("NAME");
+                  }}
+                >
+                  {isAscending ? (
+                    <ArrowDownAZ size={15} />
+                  ) : (
+                    <ArrowUpZA size={15} />
+                  )}
+                </button>
+              </span>
+            </th>
+            <th>
+              Beers Under Category{" "}
+              <span>
+                <button
+                  className="ml-2 "
+                  onClick={() => {
+                    setIsNumberAscending(!isNumberAscending);
+                    setSortMethod("NUMBER");
+                  }}
+                >
+                  {isNumberAscending ? (
+                    <ArrowDown01 size={15} />
+                  ) : (
+                    <ArrowUp10 size={15} />
+                  )}
+                </button>
+              </span>
+            </th>
             <th>
               <button
                 className="btn btn-accent"
@@ -227,7 +321,8 @@ const CategoryList = (props: Props) => {
               return (
                 <CategoryRow
                   category={category}
-                  key={index}
+                  beersInCategory={beersInCategory[index]}
+                  key={category._id}
                   index={index}
                   isOpen={isOpen[index]}
                   selectAll={selectAll}
@@ -239,15 +334,6 @@ const CategoryList = (props: Props) => {
             })}
         </tbody>
         {/* foot */}
-        <tfoot>
-          <tr>
-            <th></th>
-            <th>Name</th>
-            <th>Beers Under Category</th>
-
-            <th></th>
-          </tr>
-        </tfoot>
       </table>
     </div>
   );
