@@ -4,10 +4,11 @@ import { useBreweryContext } from "@/context/brewery-beer";
 import updateBeerCategory from "@/lib/PUT/updateBeerCategory";
 import { BookMarked, Check, LogIn, Scissors, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import RemoveBeerFromCategory from "../Alerts/RemoveBeerFromCategory";
 import CategoryItem from "./CategoryItem";
 
+import { Beer } from "@/app/types/beer";
 import handleMoveBeerToCategory from "@/lib/handleSubmit/handleMoveBeerToCategory";
 import MoveBeerToCategory from "../Alerts/MoveBeerToCategory";
 import { FormValues } from "../CreateBeerForm/types";
@@ -20,6 +21,7 @@ type Props = {
   selectAll: boolean;
   handleEmptyCategory: (categoryId: string, isEmpty: boolean) => void;
   handleCategoryCheckbox: (categoryId: string, isChecked: boolean) => void;
+  beersInCategory: Beer[];
 };
 
 const CategoryRow = ({
@@ -30,6 +32,8 @@ const CategoryRow = ({
   selectAll,
   handleEmptyCategory,
   handleCategoryCheckbox,
+
+  beersInCategory,
 }: Props) => {
   const [toContinue, setToContinue] = useState(false);
   const [toMoveContinue, setToMoveContinue] = useState(false);
@@ -57,15 +61,6 @@ const CategoryRow = ({
     setSelectedBrewery,
   } = useBreweryContext();
 
-  // Filter the beers that belong to this category
-  const beersInCategory = useMemo(() => {
-    return selectedBeers?.filter((beer) => {
-      return beer.category
-        ? beer.category.some((cat) => cat.name === category.name)
-        : false;
-    });
-  }, [selectedBeers, category.name]);
-
   const [isEmpty, setIsEmpty] = useState(
     !beersInCategory || beersInCategory.length === 0
   );
@@ -81,6 +76,7 @@ const CategoryRow = ({
     const newCheckedState = !categoryCheckBox;
     setCategoryCheckBox(newCheckedState);
     handleCategoryCheckbox(category._id, newCheckedState);
+    console.log("handleCategoryCheck", categoryCheckBox);
   };
 
   const handleBeerCheckbox = (
@@ -346,6 +342,7 @@ const CategoryRow = ({
     setCategoryCheckBox(selectAll);
     handleEmptyCategory(category._id, isEmpty);
     handleCategoryCheckbox(category._id, selectAll);
+    console.log("selectAll changed", selectAll);
   }, [selectAll]);
 
   // Closes category if category checkbox is checked
@@ -381,21 +378,19 @@ const CategoryRow = ({
         <th></th>
         <td
           className={` hover:cursor-pointer`}
-          onClick={() => handleOpen(index)}
+          onClick={(e) => {
+            handleOpen(index), e.stopPropagation();
+          }}
         >
           <div className="flex items-center space-x-3 ">
-            <label className=" swap btn btn-circle ">
+            <label className="swap btn btn-circle ">
               <input type="checkbox" onClick={handleCategoryCheck} />
 
               {/* this hidden checkbox controls the state */}
-              {!selectAll ? (
-                <>
-                  <BookMarked size={24} className="swap-off" strokeWidth={1} />
-
-                  <Check size={24} className=" swap-on" strokeWidth={1} />
-                </>
+              {categoryCheckBox ? (
+                <Check size={24} className="" strokeWidth={1} />
               ) : (
-                <Check size={24} className=" swap-off" strokeWidth={1} />
+                <BookMarked size={24} className="" strokeWidth={1} />
               )}
             </label>
             <div>
@@ -434,9 +429,10 @@ const CategoryRow = ({
             "details"
           )}
         </th>
+        <th></th>
       </tr>
       <tr className={`${isOpen ? "bg-slate-100" : ""}`}>
-        <td colSpan={4}>
+        <td colSpan={5}>
           <div
             className={`collapse transition-all duration-300 overflow-hidden `}
           >
