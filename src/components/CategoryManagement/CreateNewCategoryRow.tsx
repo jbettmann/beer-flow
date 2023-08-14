@@ -24,7 +24,8 @@ const CreateNewCategoryRow = ({
             <div className="font-bold ">
               <input
                 type="text"
-                className="input"
+                className="input input-bordered input-accent"
+                autoFocus
                 placeholder="Enter category name"
                 onBlur={(e) => handleSaveNewCategory(e.target.value)}
               />
