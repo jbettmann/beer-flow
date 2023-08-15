@@ -15,12 +15,12 @@ import { Brewery } from "@/app/types/brewery";
 import { on } from "events";
 
 type Props = {
-  category: Category;
-  beers: Beer[];
+  category: Category | { name: string };
+  beers: Beer[] | undefined;
   isOpen: boolean;
   onClick: () => void;
-  breweryId: string;
-  setSelectedBrewery: React.Dispatch<React.SetStateAction<Brewery>>;
+  breweryId: string | undefined;
+  setSelectedBrewery: (brewery: Brewery) => void;
 };
 
 // in BeerCategory.tsx
@@ -74,37 +74,37 @@ export default function BeerCategory({
     return groupedBeers;
   };
 
-  const renderAllBeers = (beers: Beer[]) => {
-    const groupedBeers = groupBeersByCategory(beers);
+  // const renderAllBeers = (beers: Beer[]) => {
+  //   const groupedBeers = groupBeersByCategory(beers);
 
-    return Object.entries(groupedBeers).map(
-      ([categoryName, beersInCategory]) => {
-        // Check if any beer in the category is new
+  //   return Object.entries(groupedBeers).map(
+  //     ([categoryName, beersInCategory]) => {
+  //       // Check if any beer in the category is new
 
-        return (
-          <div
-            key={categoryName}
-            className={`collapse collapse-arrow  bg-base-200`}
-          >
-            <input type="checkbox" />
-            <div className="collapse-title text-xl font-medium">
-              <p>{category.name}</p>
-            </div>
-            <div className="collapse-content">
-              {beersInCategory.map((beer) => (
-                <Link
-                  href={`/breweries/${breweryId}/beers/${beer._id}`}
-                  key={beer._id}
-                >
-                  {beer.name}
-                </Link>
-              ))}
-            </div>
-          </div>
-        );
-      }
-    );
-  };
+  //       return (
+  //         <div
+  //           key={categoryName}
+  //           className={`collapse collapse-arrow  bg-base-200`}
+  //         >
+  //           <input type="checkbox" />
+  //           <div className="collapse-title text-xl font-medium">
+  //             <p>{category.name}</p>
+  //           </div>
+  //           <div className="collapse-content">
+  //             {beersInCategory.map((beer) => (
+  //               <Link
+  //                 href={`/breweries/${breweryId}/beers/${beer._id}`}
+  //                 key={beer._id}
+  //               >
+  //                 {beer.name}
+  //               </Link>
+  //             ))}
+  //           </div>
+  //         </div>
+  //       );
+  //     }
+  //   );
+  // };
 
   const renderArchivedBeers = () => {
     if (!beers) return null;
