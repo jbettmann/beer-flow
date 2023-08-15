@@ -247,7 +247,7 @@ const NavBar = ({
                   </li>
                   <li>
                     <Link
-                      href={"/account/management/staff"}
+                      href={`/breweries/${selectedBrewery?._id}/staff`}
                       className="flex flex-row items-center"
                     >
                       <Staff size={24} />
