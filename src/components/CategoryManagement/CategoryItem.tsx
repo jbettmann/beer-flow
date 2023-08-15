@@ -1,7 +1,15 @@
 "use client";
 import { Beer } from "@/app/types/beer";
 import { Category } from "@/app/types/category";
-import { Beer as BeerMug, Check, Flame, LogIn, Scissors } from "lucide-react";
+import { beerInCategory, convertDate } from "@/lib/utils";
+import {
+  Beer as BeerMug,
+  Check,
+  Flame,
+  LogIn,
+  Scissors,
+  Skull,
+} from "lucide-react";
 import { useState, useEffect } from "react";
 
 type Props = {
@@ -51,7 +59,7 @@ const CategoryItem = ({
       <td className="hover:cursor-pointer" onClick={handleClick}>
         <div className="flex items-center space-x-3 ">
           <label
-            className={`swap btn btn-circle ${checked ? "bg-teal-200" : ""}`}
+            className={`swap btn btn-circle ${checked ? "bg-teal-200" : ""} `}
           >
             <input type="checkbox" checked={checked} />
 
@@ -67,7 +75,7 @@ const CategoryItem = ({
                   className="ml-2 text-gray-600 cursor-pointer"
                   title={`Beer is in more than one category`}
                 >
-                  <Flame size={12} />
+                  <Skull size={12} strokeWidth={2} />
                 </span>
               )}
             </div>
@@ -76,9 +84,13 @@ const CategoryItem = ({
       </td>
 
       <td className="hover:cursor-pointer" onClick={handleClick}>
-        <button className="btn btn-ghost btn-xs">
-          {category.name ? category.name : null}
-        </button>
+        <div>{category.name ? category.name : null}</div>
+      </td>
+      <td className="hover:cursor-pointer" onClick={handleClick}>
+        <div>{beer.releasedOn ? convertDate(beer.releasedOn) : null}</div>
+      </td>
+      <td className="hover:cursor-pointer" onClick={handleClick}>
+        <div>{beer.updatedAt ? convertDate(beer.updatedAt) : null}</div>
       </td>
       <th className="absolute right-0">
         {isInMultipleCategories && (
