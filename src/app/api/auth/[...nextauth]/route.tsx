@@ -10,6 +10,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 import getUser from "@/lib/getUser";
 import User from "../../../../../models/user";
 import { Brewery } from "@/app/types/brewery";
+import updateUserInfo from "@/lib/PUT/updateUserInfoDBDirect";
+import updateUserInfoDBDirect from "@/lib/PUT/updateUserInfoDBDirect";
 
 export const authOptions: NextAuthOptions = {
   // pages: {
@@ -118,6 +120,7 @@ export const authOptions: NextAuthOptions = {
       // Get the user's name and email either from the 'user' object or the 'profile' object
       const name = user.name ?? profile?.name;
       const email = user.email ?? profile?.email;
+      const picture = profile?.picture ?? user.image;
 
       // Connect to MongoDB
       // const client = await db.user.findFirst();
@@ -136,19 +139,32 @@ export const authOptions: NextAuthOptions = {
       }
 
       if (existingUser) {
+        if (existingUser.image !== picture) {
+          console.log("Existing Image", existingUser.image, { picture });
+          try {
+            const updatedUser = await updateUserInfoDBDirect({
+              userId: existingUser._id,
+              updatedUserInfo: { image: picture },
+            });
+            console.log({ updatedUser });
+          } catch (error) {
+            console.error("Error updating user info:", error.message);
+          }
+        }
         // User exists in your DB
         user.id = existingUser.id.toString(); // or whatever the field for the user id is
         user.breweries = existingUser.breweries; // add breweries to user
+
         return true;
       } else if (name && email) {
         try {
           // User does not exist, create the user
-
           // Create a new user with Mongoose
           const newUser = new User({
             fullName: name,
             email: email,
             breweries: [],
+            image: picture,
           });
 
           const savedUser = await newUser.save();

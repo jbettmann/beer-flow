@@ -11,6 +11,7 @@ declare module "next-auth" {
     email: string;
     breweries: string[];
     __v: number;
+    image: string;
     accessToken: string;
     refreshToken: string;
   }

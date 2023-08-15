@@ -6,6 +6,7 @@ export type Users = {
   email: string;
   breweries: string[];
   __v: number;
+  image: string;
   accessToken: string;
   refreshToken: string;
 };

@@ -7,6 +7,7 @@ const userSchema = new Schema({
   breweries: [
     { type: mongoose.Schema.Types.ObjectId, ref: "Brewery", default: [] },
   ],
+  image: String,
 });
 const User = mongoose.models?.User || mongoose.model("User", userSchema);
 
