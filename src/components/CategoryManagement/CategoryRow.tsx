@@ -383,7 +383,11 @@ const CategoryRow = ({
           }}
         >
           <div className="flex items-center space-x-3 ">
-            <label className="swap btn btn-circle ">
+            <label
+              className={`swap btn btn-circle ${
+                categoryCheckBox ? "bg-teal-200" : ""
+              }`}
+            >
               <input type="checkbox" onClick={handleCategoryCheck} />
 
               {/* this hidden checkbox controls the state */}
@@ -446,6 +450,8 @@ const CategoryRow = ({
                   </th>
                   <th>Beer</th>
                   <th>Category</th>
+                  <th>Release Date</th>
+                  <th>Last Updated</th>
                   <th className="w-64 p-8"></th>
                   <th className="absolute right-0 top-0">
                     {isMoveAllButtonVisible && (
