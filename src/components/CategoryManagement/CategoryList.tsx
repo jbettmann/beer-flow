@@ -134,13 +134,13 @@ const CategoryList = (props: Props) => {
     const hasBeerInCheckedCategory = checkedCategoryKeys.some(
       (key) => emptyCategories[key] === false
     );
-
+    console.log({ checkedCategoryKeys, hasBeerInCheckedCategory });
     if (hasBeerInCheckedCategory) {
       // If any of the checked categories have beers, set the alert
       setOnlyEmptyAlert(true);
     } else {
       // If none of the checked categories have beers, handle deleting all categories
-      handleDeleteAllCategories();
+      handleDeleteSelectedCategories();
     }
   };
 
@@ -148,11 +148,11 @@ const CategoryList = (props: Props) => {
   useEffect(() => {
     console.log("deleteConfirm changed:", deleteConfirm); // Debugging
     if (deleteConfirm) {
-      handleDeleteAllCategories();
+      handleDeleteSelectedCategories();
     }
   }, [deleteConfirm]);
 
-  const handleDeleteAllCategories = () => {
+  const handleDeleteSelectedCategories = () => {
     // Find all the checked categories
     const checkedCategoryIds = Object.keys(checkedCategories).filter(
       (key) => checkedCategories[key] === true

@@ -87,7 +87,12 @@ export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
     setSelectedBrewery(brewery);
   }, [beers, brewery]);
 
-  console.log("From BreweryContext", { brewery, beers });
+  console.log("From BreweryContext", {
+    brewery,
+    beers,
+    breweryError,
+    beersError,
+  });
 
   return (
     <BreweryContext.Provider
