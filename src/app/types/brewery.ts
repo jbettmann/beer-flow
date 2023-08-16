@@ -1,13 +1,14 @@
 import { Category } from "./category";
+import { Users } from "./users";
 
 export type Brewery = {
   _id: string;
   companyName: string;
   image: string;
-  owner: number;
-  admin: string[];
-  staff: string[];
-  categories: Category[];
+  owner: string | Users | number;
+  admin: string[] | Users[];
+  staff: string[] | Users[];
+  categories: string[] | Category[];
 };
 
 export type NewBrewery = {
