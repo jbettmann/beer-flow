@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from "react";
 import Modal from "../Modal";
 
 type Props = {
-  category: Category;
   setAlertOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setToContinue: React.Dispatch<React.SetStateAction<boolean>>;
   alertOpen: boolean;
