@@ -64,16 +64,25 @@ const NavBar = ({
   }, [breweries]);
 
   // set user admin status
+  // set user admin status
   useEffect(() => {
-    if (selectedBrewery && selectedBrewery.admin) {
-      if (typeof selectedBrewery.admin[0] === "string") {
-        // If admin is an array of string IDs
-        setAdminAllowed(selectedBrewery.admin.includes(user?.user.id));
-      } else if (typeof selectedBrewery.admin[0] === "object") {
-        // If admin is an array of objects
-        setAdminAllowed(
-          selectedBrewery.admin.some((admin) => admin._id === user?.user.id)
-        );
+    if (selectedBrewery) {
+      // Check if the user is the owner
+      const isOwner = selectedBrewery.owner?._id === user?.user.id;
+
+      if (selectedBrewery.admin) {
+        if (typeof selectedBrewery.admin[0] === "string") {
+          // If admin is an array of string IDs
+          setAdminAllowed(
+            isOwner || selectedBrewery.admin.includes(user?.user.id)
+          );
+        } else if (typeof selectedBrewery.admin[0] === "object") {
+          // If admin is an array of objects
+          setAdminAllowed(
+            isOwner ||
+              selectedBrewery.admin.some((admin) => admin._id === user?.user.id)
+          );
+        }
       }
     }
   }, [selectedBrewery]);
