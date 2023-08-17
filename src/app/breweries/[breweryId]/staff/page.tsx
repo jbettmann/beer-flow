@@ -1,13 +1,17 @@
+import StaffManagementTableLS from "@/components/LoadingSkeleton/StaffManagementTableLS";
 import StaffContainer from "@/components/StaffManagement/StaffContainer";
 import StaffTable from "@/components/StaffManagement/StaffContainer";
+import { Suspense } from "react";
 
 type Props = {};
 
 const BreweryStaffPage = (props: Props) => {
   return (
     <div className="p-8">
-      {/* @ts-expect-error Server Component */}
-      <StaffContainer />
+      <Suspense fallback={<StaffManagementTableLS />}>
+        {/* @ts-expect-error Server Component */}
+        <StaffContainer />
+      </Suspense>
     </div>
   );
 };
