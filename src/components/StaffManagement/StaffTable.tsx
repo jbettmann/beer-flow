@@ -20,11 +20,20 @@ const StaffTable = ({ viewFilter, brewery }: Props) => {
   const [checkedStaffIds, setCheckedStaffIds] = useState<Set<string>>(
     new Set()
   );
+  const [selectAll, setSelectAll] = useState<boolean>(false);
 
   const adminIds = useMemo(
     () => new Set(brewery?.admin.map((admin) => admin._id)),
     [brewery]
   );
+
+  const handleSelectAllStaff = () => {
+    if (selectAll) {
+      const newCheckedStaffIds = new Set<string>(staff.map((s) => s._id));
+
+      setCheckedStaffIds(newCheckedStaffIds);
+    } else setCheckedStaffIds(new Set());
+  };
 
   const handleCheckboxChange = (id: string) => {
     const newCheckedStaffIds = new Set(checkedStaffIds);
@@ -50,6 +59,10 @@ const StaffTable = ({ viewFilter, brewery }: Props) => {
     }
   }, [viewFilter]);
 
+  useEffect(() => {
+    handleSelectAllStaff();
+  }, [selectAll]);
+
   console.log({ checkedStaffIds });
 
   return (
@@ -61,7 +74,11 @@ const StaffTable = ({ viewFilter, brewery }: Props) => {
             <tr>
               <th>
                 <label>
-                  <input type="checkbox" className="checkbox" />
+                  <input
+                    type="checkbox"
+                    className="checkbox"
+                    onChange={() => setSelectAll(!selectAll)}
+                  />
                 </label>
               </th>
               <th>Name</th>
@@ -85,6 +102,7 @@ const StaffTable = ({ viewFilter, brewery }: Props) => {
                     staff={s}
                     role={role}
                     admin={adminIds.has(s._id)}
+                    breweryId={brewery._id}
                     handleCheckboxChange={handleCheckboxChange}
                     checkedStaffIds={checkedStaffIds}
                   />
