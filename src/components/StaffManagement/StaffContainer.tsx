@@ -14,10 +14,19 @@ const StaffContainer = (props: Props) => {
   console.log(session?.user);
   return (
     selectedBrewery?.staff && (
-      <div className="flex flex-col w-full lg:flex-row">
-        <StaffDashboard setViewFilter={setViewFilter} viewFilter={viewFilter} />
-        <StaffTable viewFilter={viewFilter} brewery={selectedBrewery} />
-      </div>
+      <>
+        {/* <h1 className="text-left">{selectedBrewery.companyName} Staff</h1>
+        <div className="text-sm opacity-50">
+          Owner {selectedBrewery.owner.fullName || ""}
+        </div> */}
+        <div className="flex flex-col w-full lg:flex-row">
+          <StaffDashboard
+            setViewFilter={setViewFilter}
+            viewFilter={viewFilter}
+          />
+          <StaffTable viewFilter={viewFilter} brewery={selectedBrewery} />
+        </div>
+      </>
     )
   );
 };
