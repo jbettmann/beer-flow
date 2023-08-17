@@ -1,12 +1,19 @@
 "use client";
 import { Users } from "@/app/types/users";
-import { PencilLine, Trash } from "lucide-react";
+import { useBreweryContext } from "@/context/brewery-beer";
+import updateBreweryAdmin from "@/lib/PATCH/updateBreweryAdmin";
+import { PencilLine, SkullIcon, Trash } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import SaveButton from "../Buttons/SaveButton";
+import { useOutsideClick } from "@/lib/utils";
+import { set } from "mongoose";
 
 type Props = {
   staff: Users;
   role: string;
+  breweryId: string;
   checkedStaffIds: Set<string>;
   handleCheckboxChange: (id: string) => void;
   admin: boolean;
@@ -18,10 +25,57 @@ const StaffMemberRow = ({
   checkedStaffIds,
   handleCheckboxChange,
   admin,
+  breweryId,
 }: Props) => {
+  const { data: session } = useSession();
+  const { setSelectedBrewery } = useBreweryContext();
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isChecked, setIsChecked] = useState(checkedStaffIds.has(staff._id));
   const [isAdmin, setIsAdmin] = useState<boolean>(admin);
+  const [initialIsAdmin, setInitialIsAdmin] = useState(admin); // compare to isAdmin for change
+
+  const rowRef = useRef(null);
+  // update if user is admin or not of Brewery
+  const handleAdminChange = async () => {
+    if (initialIsAdmin !== isAdmin) {
+      setIsLoading(true);
+      const action = isAdmin ? "add" : "remove";
+
+      try {
+        if (breweryId && session?.user.accessToken) {
+          const updatedAdmin = await updateBreweryAdmin({
+            userId: staff._id,
+            breweryId,
+            action,
+            accessToken: session?.user.accessToken,
+          });
+
+          console.log(updatedAdmin.message);
+          alert(updatedAdmin.message);
+          setSelectedBrewery(updatedAdmin.brewery);
+
+          // After successfully updating, set the initialIsAdmin to the current isAdmin value
+          setInitialIsAdmin(isAdmin);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsEdit(false);
+        setIsLoading(false);
+      }
+    } else {
+      // If the isAdmin value hasn't changed, simply close the edit without making an API call
+      setIsEdit(false);
+    }
+  };
+
+  //  close edit mode when clicking outside of row
+  useOutsideClick(rowRef, () => {
+    if (isEdit) {
+      setIsEdit(false);
+    }
+  });
 
   // update isChecked when checkedStaffIds changes
   useEffect(() => {
@@ -32,6 +86,7 @@ const StaffMemberRow = ({
   return (
     <tr
       key={staff._id}
+      ref={rowRef}
       className={`transition-all rounded-lg hover:shadow-lg hover:cursor-pointer ${
         isChecked ? "bg-indigo-200" : ""
       }`}
@@ -90,21 +145,40 @@ const StaffMemberRow = ({
           role
         )}
       </td>
+      {/* If owner, skull */}
       <td className="flex justify-end z-[1]">
-        <button
-          className="btn btn-circle btn-ghost"
-          onClick={(e) => {
-            e.stopPropagation(), setIsEdit(!isEdit);
-          }}
-        >
-          {isEdit ? "Save" : <PencilLine size={24} strokeWidth={1} />}
-        </button>
-        {isChecked && (
+        {role === "Owner" ? (
+          <div className="btn btn-circle btn-ghost">
+            <SkullIcon size={26} strokeWidth={1} />
+          </div>
+        ) : (
+          // If not owner, edit and delete
           <>
-            <div className="divider divider-horizontal"></div>
-            <button className="btn btn-circle btn-ghost hover:bg-error">
-              <Trash size={24} strokeWidth={1} />
-            </button>
+            {isEdit ? (
+              <SaveButton
+                onClick={(e) => {
+                  e.stopPropagation(), handleAdminChange();
+                }}
+                isLoading={isLoading}
+              />
+            ) : (
+              <button
+                className={`btn btn-circle btn-ghost`}
+                onClick={(e) => {
+                  e.stopPropagation(), setIsEdit(true);
+                }}
+              >
+                <PencilLine size={24} strokeWidth={1} />
+              </button>
+            )}
+            {isChecked && (
+              <>
+                <div className="divider divider-horizontal"></div>
+                <button className="btn btn-circle btn-ghost hover:bg-error">
+                  <Trash size={24} strokeWidth={1} />
+                </button>
+              </>
+            )}
           </>
         )}
       </td>
