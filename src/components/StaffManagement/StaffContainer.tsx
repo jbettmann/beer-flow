@@ -11,7 +11,7 @@ const StaffContainer = (props: Props) => {
   const { data: session } = useSession();
   const { selectedBrewery } = useBreweryContext();
   const [viewFilter, setViewFilter] = useState<string>("All Staff");
-  console.log(session?.user);
+
   return (
     selectedBrewery?.staff && (
       <>
