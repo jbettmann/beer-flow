@@ -1,4 +1,5 @@
 "use client";
+import { Brewery } from "@/app/types/brewery";
 import { useBreweryContext } from "@/context/brewery-beer";
 import { acceptInvite } from "@/lib/POST/acceptInvite";
 import getSingleBrewery from "@/lib/getSingleBrewery";
@@ -18,8 +19,16 @@ const AcceptInvite = (props: Props) => {
   const [message, setMessage] = useState("");
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const { setSelectedBrewery } = useBreweryContext();
+
   const { data: session, update } = useSession();
+
+  const handleBreweryToStorage = (brewery: Brewery) => {
+    localStorage.setItem("selectedBreweryId", brewery._id);
+    // Create a new event
+    const selectedBreweryChangedEvent = new Event("selectedBreweryChanged");
+    // Dispatch the event
+    window.dispatchEvent(selectedBreweryChangedEvent);
+  };
 
   const fetchInvite = async (token: string) => {
     setLoading(true);
@@ -31,16 +40,16 @@ const AcceptInvite = (props: Props) => {
           accessToken: session?.user.accessToken,
         });
 
-        console.log({ response });
-
         if (response.message === "Invitation accepted.") {
           setMessage(response.message);
           alert(
             `You have successfully joined ${response.brewery.companyName}!`
           );
-          localStorage.setItem("selectedBreweryId", response.brewery._id);
-          setSelectedBrewery(response.brewery);
+          console.log(response.brewery);
+
           await update({ newBreweryId: response.brewery._id });
+          handleBreweryToStorage(response.brewery);
+      
           router.push(`/breweries/${response.brewery._id}`);
         } else {
           setMessage(response.message);
