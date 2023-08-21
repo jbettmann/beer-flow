@@ -4,8 +4,9 @@ import { useBreweryContext } from "@/context/brewery-beer";
 import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { Brewery } from "@/app/types/brewery";
-import { PencilLine } from "lucide-react";
+import { MoveDown, MoveUp, PencilLine } from "lucide-react";
 import StaffMemberRow from "./StaffMemberRow";
+import { set } from "mongoose";
 
 type Props = {
   viewFilter: string;
@@ -13,19 +14,31 @@ type Props = {
 };
 
 const StaffTable = ({ viewFilter, brewery }: Props) => {
-  const [staff, setStaff] = useState<Users[] | string[] | number | any>(
-    brewery?.staff
-  );
+  const [staff, setStaff] = useState<Users[] | string[] | number | any>([
+    ...brewery?.staff,
+    brewery?.owner,
+  ]);
 
   const [checkedStaffIds, setCheckedStaffIds] = useState<Set<string>>(
     new Set()
   );
   const [selectAll, setSelectAll] = useState<boolean>(false);
 
+  const [isAlphabetical, setIsAlphabetical] = useState<boolean>(false);
+
   const adminIds = useMemo(
     () => new Set(brewery?.admin.map((admin) => admin._id)),
     [brewery]
   );
+
+  const handleAlphabetizeName = () => {
+    setIsAlphabetical(!isAlphabetical);
+    if (isAlphabetical) {
+      setStaff(staff.sort((a, b) => b.fullName.localeCompare(a.fullName)));
+    } else {
+      setStaff(staff.sort((a, b) => a.fullName.localeCompare(b.fullName)));
+    }
+  };
 
   const handleSelectAllStaff = () => {
     if (selectAll) {
@@ -63,7 +76,12 @@ const StaffTable = ({ viewFilter, brewery }: Props) => {
     handleSelectAllStaff();
   }, [selectAll]);
 
-  console.log({ checkedStaffIds });
+  // resets staff when brewery changes (staff deleted, added, etc.)
+  useEffect(() => {
+    setStaff([...brewery?.staff, brewery?.owner]);
+  }, [brewery]);
+
+  console.log({ isAlphabetical, brewery });
 
   return (
     brewery && (
@@ -81,7 +99,18 @@ const StaffTable = ({ viewFilter, brewery }: Props) => {
                   />
                 </label>
               </th>
-              <th>Name</th>
+              <th>
+                Name{" "}
+                <span>
+                  <button className="ml-2 " onClick={handleAlphabetizeName}>
+                    {isAlphabetical ? (
+                      <MoveDown size={15} />
+                    ) : (
+                      <MoveUp size={15} />
+                    )}
+                  </button>
+                </span>
+              </th>
               <th>Role</th>
 
               <th className="text-right">Manage</th>
