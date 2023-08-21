@@ -17,6 +17,7 @@ import {
   Beer,
 } from "lucide-react";
 import { Session } from "next-auth";
+import { set } from "mongoose";
 
 const NavBar = ({
   breweries,
@@ -26,9 +27,7 @@ const NavBar = ({
   user: Session;
 }) => {
   const { selectedBrewery, setSelectedBrewery } = useBreweryContext();
-  const [adminAllowed, setAdminAllowed] = useState(
-    selectedBrewery?.admin?.includes(user?.user.id)
-  );
+  const [adminAllowed, setAdminAllowed] = useState(false);
   const [open, setOpen] = useState(false);
 
   // Reference to the drawer div
@@ -63,27 +62,32 @@ const NavBar = ({
     };
   }, [breweries]);
 
-  // set user admin status
+  const isUserAdmin = (brewery: Brewery, userId: string) => {
+    if (brewery.admin) {
+      if (typeof brewery.admin[0] === "string") {
+        return brewery.admin.includes(userId);
+      } else if (typeof brewery.admin[0] === "object") {
+        return brewery.admin.some((admin) => admin._id === userId);
+      }
+    }
+    return false;
+  };
+
+  const isUserOwner = (brewery: Brewery, userId: string) => {
+    if (typeof brewery.owner === "string") {
+      return brewery.owner === userId;
+    } else if (brewery.owner && typeof brewery.owner === "object") {
+      return brewery.owner._id === userId;
+    }
+    return false;
+  };
   // set user admin status
   useEffect(() => {
     if (selectedBrewery) {
-      // Check if the user is the owner
-      const isOwner = selectedBrewery.owner?._id === user?.user.id;
+      const isAdmin = isUserAdmin(selectedBrewery, user?.user.id || "");
+      const isOwner = isUserOwner(selectedBrewery, user?.user.id || "");
 
-      if (selectedBrewery.admin) {
-        if (typeof selectedBrewery.admin[0] === "string") {
-          // If admin is an array of string IDs
-          setAdminAllowed(
-            isOwner || selectedBrewery.admin.includes(user?.user.id)
-          );
-        } else if (typeof selectedBrewery.admin[0] === "object") {
-          // If admin is an array of objects
-          setAdminAllowed(
-            isOwner ||
-              selectedBrewery.admin.some((admin) => admin._id === user?.user.id)
-          );
-        }
-      }
+      setAdminAllowed(isAdmin || isOwner);
     }
   }, [selectedBrewery]);
 

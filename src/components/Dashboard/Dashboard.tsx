@@ -3,7 +3,7 @@ import { Brewery } from "@/app/types/brewery";
 import { useBreweryContext } from "@/context/brewery-beer";
 import { Session } from "next-auth";
 import Link from "next/link";
-import React, { use, useEffect } from "react";
+import React, { use, useEffect, useState } from "react";
 
 type Props = {
   breweries: Brewery[];
@@ -12,21 +12,34 @@ type Props = {
 
 const Dashboard = ({ breweries, user }: Props) => {
   const { selectedBrewery } = useBreweryContext();
-  const [adminAllowed, setAdminAllowed] = React.useState(
-    selectedBrewery?.admin?.includes(user?.user.id)
-  );
+  const [adminAllowed, setAdminAllowed] = useState(false);
 
-  useEffect(() => {
-    if (selectedBrewery && selectedBrewery.admin) {
-      if (typeof selectedBrewery.admin[0] === "string") {
-        // If admin is an array of string IDs
-        setAdminAllowed(selectedBrewery.admin.includes(user?.user.id));
-      } else if (typeof selectedBrewery.admin[0] === "object") {
-        // If admin is an array of objects
-        setAdminAllowed(
-          selectedBrewery.admin.some((admin) => admin._id === user?.user.id)
-        );
+  const isUserAdmin = (brewery: Brewery, userId: string) => {
+    if (brewery.admin) {
+      if (typeof brewery.admin[0] === "string") {
+        return brewery.admin.includes(userId);
+      } else if (typeof brewery.admin[0] === "object") {
+        return brewery.admin.some((admin) => admin._id === userId);
       }
+    }
+    return false;
+  };
+
+  const isUserOwner = (brewery: Brewery, userId: string) => {
+    if (typeof brewery.owner === "string") {
+      return brewery.owner === userId;
+    } else if (brewery.owner && typeof brewery.owner === "object") {
+      return brewery.owner._id === userId;
+    }
+    return false;
+  };
+  // set user admin status
+  useEffect(() => {
+    if (selectedBrewery) {
+      const isAdmin = isUserAdmin(selectedBrewery, user?.user.id || "");
+      const isOwner = isUserOwner(selectedBrewery, user?.user.id || "");
+
+      setAdminAllowed(isAdmin || isOwner);
     }
   }, [selectedBrewery]);
 
