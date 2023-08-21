@@ -9,6 +9,8 @@ import { useEffect, useRef, useState } from "react";
 import SaveButton from "../Buttons/SaveButton";
 import { useOutsideClick } from "@/lib/utils";
 import { set } from "mongoose";
+import deleteStaffMember from "@/lib/DELETE/deleteStaffMemeber";
+import TrashCanIcon from "../Buttons/TrashCanIcon";
 
 type Props = {
   staff: Users;
@@ -70,6 +72,27 @@ const StaffMemberRow = ({
     }
   };
 
+  const handleDeleteStaff = async () => {
+    setIsLoading(true);
+    try {
+      if (!isChecked || !breweryId || !session?.user.accessToken) return;
+      const result = await deleteStaffMember({
+        breweryId,
+        userId: staff._id,
+        accessToken: session?.user.accessToken,
+      });
+      console.log(result.message, result.updatedBrewery);
+      alert(result.message);
+      setSelectedBrewery(result.updatedBrewery);
+      // Display success message from the result
+    } catch (err) {
+      console.error(err);
+      alert(err.message); // Displaying the error message as an alert on the client side
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   //  close edit mode when clicking outside of row
   useOutsideClick(rowRef, () => {
     if (isEdit) {
@@ -82,7 +105,6 @@ const StaffMemberRow = ({
     setIsChecked(checkedStaffIds.has(staff._id));
   }, [checkedStaffIds]);
 
-  console.log(staff.email, { isChecked });
   return (
     <tr
       key={staff._id}
@@ -174,9 +196,13 @@ const StaffMemberRow = ({
             {isChecked && (
               <>
                 <div className="divider divider-horizontal"></div>
-                <button className="btn btn-circle btn-ghost hover:bg-error">
-                  <Trash size={24} strokeWidth={1} />
-                </button>
+
+                <TrashCanIcon
+                  onClick={(e) => {
+                    e.stopPropagation(), handleDeleteStaff();
+                  }}
+                  isLoading={isLoading}
+                />
               </>
             )}
           </>
