@@ -2,7 +2,14 @@
 import { Category } from "@/app/types/category";
 import { useBreweryContext } from "@/context/brewery-beer";
 import updateBeerCategory from "@/lib/PUT/updateBeerCategory";
-import { BookMarked, Check, LogIn, Scissors, Trash2 } from "lucide-react";
+import {
+  BookMarked,
+  Check,
+  LogIn,
+  PencilLine,
+  Scissors,
+  Trash2,
+} from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import RemoveBeerFromCategory from "../Alerts/RemoveBeerFromCategory";
@@ -370,38 +377,35 @@ const CategoryRow = ({
         />
       )}
       <tr
-        className={`hover:bg-indigo-300 hover:bg-opacity-80  ${
-          isOpen ? " bg-slate-200" : "shadow-sm"
-        } ${categoryCheckBox ? "bg-indigo-200" : ""}`}
+        className={`table-row  ${isOpen ? " bg-slate-200" : "shadow-sm"} ${
+          categoryCheckBox ? "table-row__checked" : ""
+        }`}
         key={index}
       >
-        <th></th>
+        <th className="rounded-l-lg">
+          <label>
+            <input
+              type="checkbox"
+              className="checkbox"
+              onChange={handleCategoryCheck}
+              checked={categoryCheckBox}
+            />
+          </label>
+        </th>
         <td
-          className={` hover:cursor-pointer`}
+          className={` hover:cursor-pointer p-6`}
           onClick={(e) => {
             handleOpen(index), e.stopPropagation();
           }}
         >
           <div className="flex items-center space-x-3 ">
-            <label
-              className={`swap btn btn-circle ${
-                categoryCheckBox ? "bg-teal-200" : ""
-              }`}
-            >
-              <input type="checkbox" onClick={handleCategoryCheck} />
+            <BookMarked size={24} className="" strokeWidth={1} />
 
-              {/* this hidden checkbox controls the state */}
-              {categoryCheckBox ? (
-                <Check size={24} className="" strokeWidth={1} />
-              ) : (
-                <BookMarked size={24} className="" strokeWidth={1} />
-              )}
-            </label>
             <div>
               <div className="font-bold ">
                 {category.name}{" "}
-                <span className="text-sm opacity-50">
-                  ({beersInCategory?.length || 0})
+                <span className=" badge badge-ghost text-xs opacity-50">
+                  {beersInCategory?.length || 0}
                 </span>
               </div>
             </div>
@@ -411,13 +415,9 @@ const CategoryRow = ({
           className={` hover:cursor-pointer`}
           onClick={() => handleOpen(index)}
         >
-          <button
-            className="btn btn-ghost btn-xs"
-            // onClick={() => handleOpen(index)}
-          >
-            {" "}
+          <div className="badge badge-md badge-outline">
             {beersInCategory?.length || 0}
-          </button>
+          </div>
         </td>
 
         <th>
@@ -430,7 +430,14 @@ const CategoryRow = ({
               <Trash2 size={24} strokeWidth={1} />
             </button>
           ) : (
-            "details"
+            <button
+              className={`btn btn-circle btn-ghost`}
+              onClick={(e) => {
+                e.stopPropagation(), handleOpen(index);
+              }}
+            >
+              <PencilLine size={24} strokeWidth={1} />
+            </button>
           )}
         </th>
         <th></th>
