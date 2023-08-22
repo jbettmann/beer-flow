@@ -1,10 +1,18 @@
-import CategoryList from "@/components/CategoryManagement/CategoryList";
-import { SelectContainer } from "react-select/dist/declarations/src/components/containers";
+import CategoryContainer from "@/components/CategoryManagement/CategoryContainer";
+import StaffManagementTableLS from "@/components/LoadingSkeleton/StaffManagementTableLS";
+import { Suspense } from "react";
 
 type Props = {};
 
 const CategoriesManagementPage = (props: Props) => {
-  return <CategoryList />;
+  return (
+    <div className="p-8">
+      <Suspense fallback={<StaffManagementTableLS />}>
+        {/* @ts-expect-error Server Component */}
+        <CategoryContainer />
+      </Suspense>
+    </div>
+  );
 };
 
 export default CategoriesManagementPage;
