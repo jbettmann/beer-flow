@@ -38,15 +38,8 @@ const CategoryItem = ({
   }, [isChecked]);
 
   // detect source of click
-  const handleClick = (
-    e: React.MouseEvent<HTMLTableRowElement, MouseEvent>
-  ) => {
+  const handleClick = () => {
     // Ignore clicks on input or label elements
-    if (
-      e.target instanceof HTMLInputElement ||
-      e.target instanceof HTMLLabelElement
-    )
-      return;
 
     const newChecked = !checked;
     setChecked(newChecked);
@@ -54,19 +47,21 @@ const CategoryItem = ({
   };
 
   return (
-    <tr className={`relative  ${checked ? "bg-indigo-200" : ""}`}>
-      <th></th>
-      <td className="hover:cursor-pointer" onClick={handleClick}>
+    <tr className={`relative ${checked ? "table-row__checked" : ""}`}>
+      <th className="rounded-l-lg">
+        <label>
+          <input
+            type="checkbox"
+            className="checkbox"
+            onClick={handleClick}
+            checked={checked}
+          />
+        </label>
+      </th>
+      <td className="hover:cursor-pointer p-6" onClick={handleClick}>
         <div className="flex items-center space-x-3 ">
-          <label
-            className={`swap btn btn-circle ${checked ? "bg-teal-200" : ""} `}
-          >
-            <input type="checkbox" checked={checked} />
+          <BeerMug size={24} strokeWidth={1} className="" />
 
-            <BeerMug size={24} strokeWidth={1} className="swap-off " />
-
-            <Check size={24} strokeWidth={1} className=" swap-on" />
-          </label>
           <div>
             <div className="font-bold flex">
               {beer.name}{" "}
@@ -75,7 +70,7 @@ const CategoryItem = ({
                   className="ml-2 text-gray-600 cursor-pointer"
                   title={`Beer is in more than one category`}
                 >
-                  <Skull size={12} strokeWidth={2} />
+                  <Flame size={12} strokeWidth={2} />
                 </span>
               )}
             </div>
@@ -97,7 +92,7 @@ const CategoryItem = ({
           <button
             onClick={() => setAlertOpen(true)}
             className={`btn btn-circle ${
-              isChecked ? "btn-error" : "btn-disabled"
+              isChecked ? "btn-error " : "btn-disabled"
             } `}
           >
             <span title="Remove from Category">
