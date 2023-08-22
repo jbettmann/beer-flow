@@ -29,9 +29,8 @@ export default async function Layout(props: {
     <html lang="en">
       <Provider>
         <body className={inter.className}>
-          {/* @ts-expect-error Server Component */}
           {session && <NavBar breweries={breweries} user={session} />}
-          <Dashboard breweries={breweries} user={session} />
+
           {/* <Chat /> */}
           {props.children}
           {props.modal}
