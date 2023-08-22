@@ -1,30 +1,29 @@
 "use client";
+import { Beer } from "@/app/types/beer";
 import { Category } from "@/app/types/category";
 import { useBreweryContext } from "@/context/brewery-beer";
-import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
-import CategoryRow from "./CategoryRow";
-import {
-  ArrowDown01,
-  ArrowDown10,
-  ArrowDownAZ,
-  ArrowDownZA,
-  ArrowUp10,
-  ArrowUpAZ,
-  ArrowUpZA,
-  Trash2,
-} from "lucide-react";
-import OnlyEmptyCategoryDelete from "../Alerts/OnlyEmptyCategoryDelete";
 import deleteCategory from "@/lib/DELETE/deleteCategory";
-import CreateNewCategoryRow from "./CreateNewCategoryRow";
 import handleCreateNewCategory from "@/lib/handleSubmit/handleCreateNewCategory";
-import { set } from "mongoose";
 import { beerInCategory } from "@/lib/utils";
-import { Beer } from "@/app/types/beer";
+import { MoveDown, MoveUp, Trash2 } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useEffect, useMemo, useState } from "react";
+import OnlyEmptyCategoryDelete from "../Alerts/OnlyEmptyCategoryDelete";
+import CategoryRow from "./CategoryRow";
+import CreateNewCategoryRow from "./CreateNewCategoryRow";
+import { set } from "mongoose";
 
-type Props = {};
+type Props = {
+  createNewCategory: boolean;
+  setCreateNewCategory: React.Dispatch<React.SetStateAction<boolean>>;
+  viewFilter: string;
+};
 
-const CategoryList = (props: Props) => {
+const CategoryList = ({
+  createNewCategory,
+  setCreateNewCategory,
+  viewFilter,
+}: Props) => {
   const { data: session } = useSession();
   const { selectedBeers, selectedBrewery, setSelectedBrewery } =
     useBreweryContext();
@@ -50,45 +49,46 @@ const CategoryList = (props: Props) => {
   const [anyCategoriesChecked, setAnyCategoriesChecked] = useState(
     Object.values(checkedCategories).some((isChecked) => isChecked) || selectAll
   );
-  const [creatingNewCategory, setCreatingNewCategory] = useState(false);
 
   // State to hold the sort order (true for ascending, false for descending)
-  const [sortMethod, setSortMethod] = useState<string>("NAME");
-  const [isAscending, setIsAscending] = useState(true);
-  const [isNumberAscending, setIsNumberAscending] = useState(true);
+  const [sortMethod, setSortMethod] = useState<string>("");
+  const [isAlphabetical, setIsAlphabetical] = useState(false);
+  const [isNumberAscending, setIsNumberAscending] = useState(false);
   const [beersInCategory, setBeersInCategory] = useState<Beer[][]>([]);
   // sort the categories alphabetically
+
+  // useMemo for expensive calculations
+  const categoriesWithBeers = useMemo(() => {
+    return categories.map((category) => ({
+      category,
+      beers: beerInCategory(selectedBeers, category),
+    }));
+  }, [categories, selectedBeers]);
+
   const updateSortedCategories = () => {
-    type CategoryWithBeers = {
-      category: Category;
-      beers: Beer[];
-    };
-    const categoriesWithBeers: CategoryWithBeers[] = categories.map(
-      (category) => ({
-        category,
-        beers: beerInCategory(selectedBeers, category),
-      })
-    );
-
-    categoriesWithBeers.sort((a, b) => {
-      if (sortMethod === "NUMBER") {
-        return isNumberAscending
+    let sortedCategoriesWithBeers = [...categoriesWithBeers];
+    if (sortMethod === "NUMBER") {
+      if (isAlphabetical) setIsAlphabetical(false);
+      sortedCategoriesWithBeers.sort((a, b) =>
+        isNumberAscending
           ? a.beers.length - b.beers.length
-          : b.beers.length - a.beers.length;
-      }
-      // Default to name sorting
-      return isAscending
-        ? a.category.name.localeCompare(b.category.name)
-        : b.category.name.localeCompare(a.category.name);
-    });
-
-    setBeersInCategory(categoriesWithBeers.map((item) => item.beers));
-    setCategories(categoriesWithBeers.map((item) => item.category));
+          : b.beers.length - a.beers.length
+      );
+    } else {
+      if (isNumberAscending) setIsNumberAscending(false);
+      sortedCategoriesWithBeers.sort((a, b) =>
+        isAlphabetical
+          ? a.category.name.localeCompare(b.category.name)
+          : b.category.name.localeCompare(a.category.name)
+      );
+    }
+    setBeersInCategory(sortedCategoriesWithBeers.map((item) => item.beers));
+    setCategories(sortedCategoriesWithBeers.map((item) => item.category));
   };
 
   const handleSaveNewCategory = async (newCategoryName: string) => {
     if (newCategoryName.trim() === "") {
-      setCreatingNewCategory(false);
+      setCreateNewCategory(false);
       return;
     }
     if (newCategoryName && selectedBrewery) {
@@ -106,7 +106,7 @@ const CategoryList = (props: Props) => {
         ],
       }));
     }
-    setCreatingNewCategory(false);
+    setCreateNewCategory(false);
   };
 
   const handleCategoryCheckbox = (categoryId: string, isChecked: boolean) => {
@@ -143,14 +143,6 @@ const CategoryList = (props: Props) => {
       handleDeleteSelectedCategories();
     }
   };
-
-  // Call Remove or Move Beer to Category
-  useEffect(() => {
-    console.log("deleteConfirm changed:", deleteConfirm); // Debugging
-    if (deleteConfirm) {
-      handleDeleteSelectedCategories();
-    }
-  }, [deleteConfirm]);
 
   const handleDeleteSelectedCategories = () => {
     // Find all the checked categories
@@ -197,30 +189,42 @@ const CategoryList = (props: Props) => {
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
   };
-  // useEffect to call sortAlphabetically when isAscending changes
+
+  useEffect(() => {
+    if (selectedBrewery) {
+      let newCategories = [];
+      let newBeersInCategory = [];
+
+      if (viewFilter === "All Categories") {
+        newCategories = selectedBrewery.categories || [];
+        newBeersInCategory = newCategories.map((category) =>
+          beerInCategory(selectedBeers, category)
+        );
+      } else if (viewFilter === "Empty Categories") {
+        newCategories = selectedBrewery.categories.filter(
+          (category) => beerInCategory(selectedBeers, category).length === 0
+        );
+        newBeersInCategory = newCategories;
+      }
+
+      setCategories(newCategories);
+      setBeersInCategory(newBeersInCategory);
+    }
+  }, [viewFilter, selectedBeers, selectedBrewery]);
+
+  console.log({ emptyCategories, categories, beersInCategory });
+
+  // Call Remove or Move Beer to Category
+  useEffect(() => {
+    if (deleteConfirm) {
+      handleDeleteSelectedCategories();
+    }
+  }, [deleteConfirm]);
+
+  // useEffect to call sortAlphabetically when isAlphabetical changes
   useEffect(() => {
     updateSortedCategories();
-  }, [isAscending, isNumberAscending]);
-
-  useEffect(() => {
-    setCategories(selectedBrewery?.categories || []);
-  }, [selectedBrewery]);
-
-  useEffect(() => {
-    // Logging to check the initial data
-
-    if (selectedBrewery) {
-      // Update categories
-      const updatedCategories = selectedBrewery.categories || [];
-      setCategories(updatedCategories);
-
-      // Calculate beersInCategory for each category
-      const updatedBeersInCategory = updatedCategories.map((category) =>
-        beerInCategory(selectedBeers, category)
-      );
-      setBeersInCategory(updatedBeersInCategory);
-    }
-  }, [selectedBrewery]);
+  }, [isAlphabetical, isNumberAscending]);
 
   useEffect(() => {
     setAnyCategoriesChecked(
@@ -230,7 +234,7 @@ const CategoryList = (props: Props) => {
   }, [checkedCategories, selectAll]);
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto flex-auto lg:pl-8">
       {onlyEmptyAlert && (
         <OnlyEmptyCategoryDelete
           alertOpen={onlyEmptyAlert}
@@ -258,14 +262,14 @@ const CategoryList = (props: Props) => {
                 <button
                   className="ml-2 "
                   onClick={() => {
-                    setIsAscending(!isAscending);
+                    setIsAlphabetical(!isAlphabetical);
                     setSortMethod("NAME");
                   }}
                 >
-                  {isAscending ? (
-                    <ArrowDownAZ size={15} />
+                  {isAlphabetical ? (
+                    <MoveDown size={15} />
                   ) : (
-                    <ArrowUpZA size={15} />
+                    <MoveUp size={15} />
                   )}
                 </button>
               </span>
@@ -281,21 +285,15 @@ const CategoryList = (props: Props) => {
                   }}
                 >
                   {isNumberAscending ? (
-                    <ArrowDown01 size={15} />
+                    <MoveDown size={15} />
                   ) : (
-                    <ArrowUp10 size={15} />
+                    <MoveUp size={15} />
                   )}
                 </button>
               </span>
             </th>
-            <th>
-              <button
-                className="btn btn-accent"
-                onClick={() => setCreatingNewCategory(true)}
-              >
-                + New Category
-              </button>
-            </th>
+            <th>Manage</th>
+
             <th>
               {anyCategoriesChecked && (
                 <button
@@ -310,10 +308,10 @@ const CategoryList = (props: Props) => {
         </thead>
         <tbody>
           {/* row 1 */}
-          {creatingNewCategory && (
+          {createNewCategory && (
             <CreateNewCategoryRow
               handleSaveNewCategory={handleSaveNewCategory}
-              setCreatingNewCategory={setCreatingNewCategory}
+              setCreateNewCategory={setCreateNewCategory}
             />
           )}
           {categories &&
