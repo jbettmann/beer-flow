@@ -109,9 +109,7 @@ const StaffMemberRow = ({
     <tr
       key={staff._id}
       ref={rowRef}
-      className={`transition-all rounded-lg hover:shadow-lg hover:cursor-pointer ${
-        isChecked ? "bg-indigo-200" : ""
-      }`}
+      className={` table-row ${isChecked ? "table-row__checked" : ""}`}
       onClick={() => {
         handleCheckboxChange(staff._id);
       }}
