@@ -3,11 +3,11 @@ import React from "react";
 
 type Props = {
   handleSaveNewCategory: (categoryName: string) => void;
-  setCreatingNewCategory: (creatingNewCategory: boolean) => void;
+  setCreateNewCategory: (creatingNewCategory: boolean) => void;
 };
 
 const CreateNewCategoryRow = ({
-  setCreatingNewCategory,
+  setCreateNewCategory,
   handleSaveNewCategory,
 }: Props) => {
   return (
@@ -38,7 +38,7 @@ const CreateNewCategoryRow = ({
       <th>
         <button
           className="btn btn-outline btn-error"
-          onClick={() => setCreatingNewCategory(false)}
+          onClick={() => setCreateNewCategory(false)}
         >
           Cancel
         </button>
