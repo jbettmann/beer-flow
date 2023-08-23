@@ -39,7 +39,6 @@ const CategoryRow = ({
   selectAll,
   handleEmptyCategory,
   handleCategoryCheckbox,
-
   beersInCategory,
 }: Props) => {
   const [toContinue, setToContinue] = useState(false);
@@ -456,8 +455,8 @@ const CategoryRow = ({
                     <label></label>
                   </th>
                   <th>Beer</th>
-                  <th>Category</th>
-                  <th>Release Date</th>
+                  <th>Style</th>
+                  <th>ABV%</th>
                   <th>Last Updated</th>
                   <th className="w-64 p-8"></th>
                   <th className="absolute right-0 top-0">
