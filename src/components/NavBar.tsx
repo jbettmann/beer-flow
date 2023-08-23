@@ -2,10 +2,10 @@
 import { Brewery } from "@/app/types/brewery";
 import { Users } from "@/app/types/users";
 import { useBreweryContext } from "@/context/brewery-beer";
-import { signIn, signOut } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import ImageDisplay from "./ImageDisplay/ImageDisplay";
 import {
   Settings,
@@ -16,10 +16,13 @@ import {
   Users as Staff,
   Beer,
   Factory,
+  X,
 } from "lucide-react";
 import { Session } from "next-auth";
 import { set } from "mongoose";
 import { usePathname, useRouter } from "next/navigation";
+import getBreweryBeers from "@/lib/getBreweryBeers";
+import useSWR from "swr";
 
 const NavBar = ({
   breweries,
@@ -28,9 +31,62 @@ const NavBar = ({
   breweries: Brewery[];
   user: Session;
 }) => {
-  const { selectedBrewery, setSelectedBrewery } = useBreweryContext();
+  const {
+    selectedBeers,
+    setSelectedBeers,
+    selectedBrewery,
+    setSelectedBrewery,
+  } = useBreweryContext();
   const [adminAllowed, setAdminAllowed] = useState(false);
   const [open, setOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  // const { data: beers, error: beersError } = useSWR(
+  //   [
+  //     `https://beer-bible-api.vercel.app/breweries/${selectedBrewery?._id}/beers`,
+  //     user?.user.accessToken,
+  //   ],
+  //   getBreweryBeers
+  // );
+  const originalSelectedBeers = useRef(selectedBeers);
+
+  const debounceDelay = 300; // 300ms
+  const debounceTimeout = useRef<number | undefined>();
+
+  // Filter beers by search term
+  useEffect(() => {
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
+    }
+
+    debounceTimeout.current = setTimeout(() => {
+      if (!searchTerm) {
+        setSelectedBeers(originalSelectedBeers.current);
+        return;
+      }
+
+      const filteredBeers = originalSelectedBeers.current?.filter((beer) => {
+        const { name, style, hops, malt } = beer;
+        const searchStr = `${name} ${style} ${hops.join(" ")} ${malt.join(
+          " "
+        )}`.toLowerCase();
+        return searchStr.includes(searchTerm.toLowerCase());
+      });
+
+      setSelectedBeers(filteredBeers);
+    }, debounceDelay);
+
+    // Clear timeout on unmount
+    return () => {
+      if (debounceTimeout.current) {
+        clearTimeout(debounceTimeout.current);
+      }
+    };
+  }, [searchTerm]);
+
+  // Set the state original beer state when search is cleared
+  useEffect(() => {
+    originalSelectedBeers.current = selectedBeers;
+  }, [selectedBrewery]);
 
   // Reference to the drawer div
   const drawerRef = useRef<HTMLDivElement>(null);
@@ -38,7 +94,6 @@ const NavBar = ({
   const pathname = usePathname();
 
   const isActive = (path: string) => {
-    console.log(pathname, path);
     return pathname === path;
   };
 
@@ -246,12 +301,22 @@ const NavBar = ({
           )}
         </Link>
         <div className="flex-none gap-2">
-          <div className="form-control">
+          <div className="form-control relative">
             <input
               type="text"
               placeholder="Search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="input input-bordered w-24 md:w-auto"
             />
+            {searchTerm && (
+              <span
+                className="absolute top-1/4 right-2 opacity-50 cursor-pointer"
+                onClick={() => setSearchTerm("")}
+              >
+                <X size={20} />
+              </span>
+            )}
           </div>
           <div className="dropdown dropdown-end ">
             <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
