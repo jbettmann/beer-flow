@@ -117,3 +117,5 @@ export function useOutsideClick(
     };
   }, [ref, callback]);
 }
+
+// prevent search boncing
