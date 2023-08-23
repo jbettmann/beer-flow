@@ -204,7 +204,7 @@ const CategoryList = ({
         newCategories = selectedBrewery.categories.filter(
           (category) => beerInCategory(selectedBeers, category).length === 0
         );
-        newBeersInCategory = newCategories;
+        newBeersInCategory = newCategories.length;
       }
 
       setCategories(newCategories);
