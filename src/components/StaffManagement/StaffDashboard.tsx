@@ -11,7 +11,7 @@ const StaffDashboard = ({ viewFilter, setViewFilter }: Props) => {
   return (
     <>
       {/* Large screen side dashboard menu */}
-      <div className="hidden lg:flex-initial lg:w-48 lg:card lg:bg-base-100 lg:shadow-md lg:space-y-2">
+      <div className="hidden lg:flex-initial lg:w-48 lg:h-[65vh] lg:min-h-full lg:card lg:bg-base-100 lg:shadow-md lg:space-y-2">
         {menuButtons.map((button) => (
           <button
             className="btn btn-ghost justify-start"
