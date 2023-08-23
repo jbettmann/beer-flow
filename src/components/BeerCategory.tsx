@@ -194,8 +194,8 @@ export default function BeerCategory({
           isOpen ? "collapse-open" : ""
         } collapse-arrow my-8  bg-base-200`}
       >
-        <div className="collapse-title text-xl font-medium inline-flex justify-between ">
-          <p>{category.name}</p>
+        <div className="collapse-title after:left-5 text-xl font-medium inline-flex justify-between ">
+          <p className="ml-8">{category.name}</p>
           {isCategoryNew && <p className="tag-new">NEW</p>}
         </div>
         <div className="collapse-content">
