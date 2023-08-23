@@ -79,10 +79,10 @@ const CategoryItem = ({
       </td>
 
       <td className="hover:cursor-pointer" onClick={handleClick}>
-        <div>{category.name ? category.name : null}</div>
+        <div>{beer.style ? beer.style : null}</div>
       </td>
       <td className="hover:cursor-pointer" onClick={handleClick}>
-        <div>{beer.releasedOn ? convertDate(beer.releasedOn) : null}</div>
+        <div>{beer.abv ? beer.abv + "%" : null} </div>
       </td>
       <td className="hover:cursor-pointer" onClick={handleClick}>
         <div>{beer.updatedAt ? convertDate(beer.updatedAt) : null}</div>
