@@ -1,11 +1,6 @@
 "use client";
 import { useBreweryContext } from "@/context/brewery-beer";
-import { useSession } from "next-auth/react";
-import React, { useState } from "react";
-import StaffDashboard from "./StaffDashboard";
-import StaffTable from "./StaffTable";
-import Link from "next/link";
-import { UserPlus } from "lucide-react";
+import { useState } from "react";
 import CategoryDashboard from "./CategoryDashboard";
 import CategoryList from "./CategoryList";
 
