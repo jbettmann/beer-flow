@@ -23,6 +23,7 @@ import { set } from "mongoose";
 import { usePathname, useRouter } from "next/navigation";
 import getBreweryBeers from "@/lib/getBreweryBeers";
 import useSWR from "swr";
+import { getInitials } from "@/lib/utils";
 
 const NavBar = ({
   breweries,
@@ -132,28 +133,6 @@ const NavBar = ({
     // Close the drawer
     setOpen(false);
   };
-
-  // create default mark for brewery with no image/logo
-  function getInitials(name: string) {
-    // Exclude any signs like &,$,/,@,$
-    name = name.replace(/[&$/@]/g, "");
-
-    const words = name.split(" ");
-    // Filter out the words you want to exclude
-    const filteredWords = words.filter(
-      (word) =>
-        !["at", "the", "and", "of", "to", ""].includes(word.toLowerCase())
-    );
-
-    // If there are two or more words, return the first letter of the first two words
-    if (filteredWords.length >= 2) {
-      return (
-        filteredWords[0][0].toUpperCase() + filteredWords[1][0].toUpperCase()
-      );
-    } else {
-      return filteredWords[0][0].toUpperCase();
-    }
-  }
 
   // clear local storage when sign out
   const handleSignOut = () => {
