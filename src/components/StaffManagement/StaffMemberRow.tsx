@@ -5,7 +5,7 @@ import updateBreweryAdmin from "@/lib/PATCH/updateBreweryAdmin";
 import { PencilLine, SkullIcon, Trash } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import SaveButton from "../Buttons/SaveButton";
 import { useOutsideClick } from "@/lib/utils";
 import { set } from "mongoose";
@@ -91,6 +91,24 @@ const StaffMemberRow = ({
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const useOutsideClick = (
+    ref: RefObject<HTMLDivElement>,
+    callback: () => void
+  ) => {
+    useEffect(() => {
+      function handleClickOutside(event: Event) {
+        if (ref.current && !ref.current.contains(event.target)) {
+          callback();
+        }
+      }
+
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, [ref, callback]);
   };
 
   //  close edit mode when clicking outside of row
