@@ -124,7 +124,7 @@ const CategoryList = ({
     }));
   };
 
-  const handleAlert = () => {
+  const handleDeleteAlert = () => {
     // Find all the checked categories
     const checkedCategoryKeys = Object.keys(checkedCategories).filter(
       (key) => checkedCategories[key] === true
@@ -242,7 +242,7 @@ const CategoryList = ({
           setToContinue={setDeleteConfirm}
         />
       )}
-      <table className="table relative">
+      <table className="table border-separate border-spacing-y-0 p-3 relative">
         {/* head */}
         <thead>
           <tr>
@@ -297,7 +297,7 @@ const CategoryList = ({
             <th>
               {anyCategoriesChecked && (
                 <button
-                  onClick={() => handleAlert()}
+                  onClick={() => handleDeleteAlert()}
                   className="btn btn-circle bg-transparent border-none hover:bg-transparent"
                 >
                   <Trash2 size={24} strokeWidth={1} />
@@ -327,6 +327,7 @@ const CategoryList = ({
                   handleEmptyCategory={handleEmptyCategory}
                   handleCategoryCheckbox={handleCategoryCheckbox}
                   handleOpen={handleOpen}
+                  handleDeleteAlert={handleDeleteAlert}
                 />
               );
             })}
