@@ -29,6 +29,7 @@ type Props = {
   handleEmptyCategory: (categoryId: string, isEmpty: boolean) => void;
   handleCategoryCheckbox: (categoryId: string, isChecked: boolean) => void;
   beersInCategory: Beer[];
+  handleDeleteAlert: () => void;
 };
 
 const CategoryRow = ({
@@ -40,6 +41,7 @@ const CategoryRow = ({
   handleEmptyCategory,
   handleCategoryCheckbox,
   beersInCategory,
+  handleDeleteAlert,
 }: Props) => {
   const [toContinue, setToContinue] = useState(false);
   const [toMoveContinue, setToMoveContinue] = useState(false);
@@ -381,7 +383,7 @@ const CategoryRow = ({
         }`}
         key={index}
       >
-        <th className="rounded-l-lg">
+        <th className={`${isOpen ? "rounded-tl-lg" : "rounded-l-lg"}`}>
           <label>
             <input
               type="checkbox"
@@ -423,7 +425,7 @@ const CategoryRow = ({
           {categoryCheckBox &&
           (!beersInCategory || beersInCategory.length === 0) ? (
             <button
-              onClick={() => console.log("Delete")}
+              onClick={() => handleDeleteAlert()}
               className="btn btn-circle bg-transparent border-none hover:bg-transparent"
             >
               <Trash2 size={24} strokeWidth={1} />
@@ -439,10 +441,10 @@ const CategoryRow = ({
             </button>
           )}
         </th>
-        <th></th>
+        <th className={`${isOpen ? "rounded-tr-lg" : "rounded-r-lg"}`}></th>
       </tr>
-      <tr className={`${isOpen ? "bg-slate-100" : ""}`}>
-        <td colSpan={5}>
+      <tr className={`${isOpen ? "bg-slate-100 " : ""}`}>
+        <td colSpan={5} className="rounded-b-lg">
           <div
             className={`collapse transition-all duration-300 overflow-hidden `}
           >
