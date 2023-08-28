@@ -4,7 +4,7 @@ import { supabase } from "./supabase";
 import { v4 as uuidv4 } from "uuid";
 import { Beer } from "@/app/types/beer";
 import { Category } from "@/app/types/category";
-import { RefObject, useEffect } from "react";
+
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -100,22 +100,26 @@ export const beerInCategory = (beers: Beer[] | null, category: Category) => {
   });
 };
 
-export function useOutsideClick(
-  ref: RefObject<HTMLDivElement>,
-  callback: () => void
-) {
-  useEffect(() => {
-    function handleClickOutside(event: Event) {
-      if (ref.current && !ref.current.contains(event.target)) {
-        callback();
-      }
-    }
+// create default mark for brewery with no image/logo
+export function getInitials(name: string) {
+  // Exclude any signs like &,$,/,@,$
+  name = name.replace(/[&$/@]/g, "");
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [ref, callback]);
+  const words = name.split(" ");
+  // Filter out the words you want to exclude
+  const filteredWords = words.filter(
+    (word) => !["at", "the", "and", "of", "to", ""].includes(word.toLowerCase())
+  );
+
+  // If there are two or more words, return the first letter of the first two words
+  if (filteredWords.length >= 2) {
+    return (
+      filteredWords[0][0].toUpperCase() + filteredWords[1][0].toUpperCase()
+    );
+  } else {
+    return filteredWords[0][0].toUpperCase();
+  }
 }
 
+ 
 // prevent search boncing
