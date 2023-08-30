@@ -5,6 +5,7 @@ export type Users = {
   password: string;
   email: string;
   breweries: string[];
+  notifications: object;
   __v: number;
   image: string;
   accessToken: string;
