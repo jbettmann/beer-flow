@@ -14,6 +14,7 @@ declare module "next-auth" {
     image: string;
     accessToken: string;
     refreshToken: string;
+    notifications: Notifications;
   }
   interface Session {
     user: User;
