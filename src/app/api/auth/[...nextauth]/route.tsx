@@ -8,10 +8,12 @@ import { signJwtAccessToken, signJwtRefreshToken } from "@/lib/jwt";
 import type { NextAuthOptions } from "next-auth";
 import { NextApiRequest, NextApiResponse } from "next";
 import getUser from "@/lib/getUser";
-import User from "../../../../../models/user";
+
 import { Brewery } from "@/app/types/brewery";
 import updateUserInfo from "@/lib/PUT/updateUserInfoDBDirect";
 import updateUserInfoDBDirect from "@/lib/PUT/updateUserInfoDBDirect";
+import User from "../../../../../models/user";
+import { Notifications } from "@/app/types/notifications";
 
 export const authOptions: NextAuthOptions = {
   // pages: {
@@ -85,6 +87,7 @@ export const authOptions: NextAuthOptions = {
         return {
           ...token,
           breweries: user.breweries,
+          notifications: user.notifications,
           accessToken: accessToken,
           refreshToken: refreshToken,
         };
@@ -139,6 +142,7 @@ export const authOptions: NextAuthOptions = {
       }
 
       if (existingUser) {
+        console.log(existingUser);
         if (existingUser.image !== picture) {
           console.log("Existing Image", existingUser.image, { picture });
           try {
@@ -154,6 +158,7 @@ export const authOptions: NextAuthOptions = {
         // User exists in your DB
         user.id = existingUser.id.toString(); // or whatever the field for the user id is
         user.breweries = existingUser.breweries; // add breweries to user
+        user.notifications = existingUser.notifications; // add notifications to user
 
         return true;
       } else if (name && email) {
@@ -165,12 +170,24 @@ export const authOptions: NextAuthOptions = {
             email: email,
             breweries: [],
             image: picture,
+            notifications: {
+              allow: true,
+              newBeerRelease: {
+                email: true,
+                push: true,
+              },
+              beerUpdate: {
+                email: true,
+                push: true,
+              },
+            },
           });
 
           const savedUser = await newUser.save();
           if (savedUser) {
             user.id = savedUser.id.toString(); // Add the new user's id to the user object so it will be included in the JWT
             user.breweries = savedUser.breweries; // breweries for new user
+            user.notifications = savedUser.notifications; // notifications for new user
             return true;
           }
         } catch (err) {
@@ -186,8 +203,8 @@ export const authOptions: NextAuthOptions = {
         session.user.accessToken = token.accessToken as string; // sets users accessToken for API authorization
 
         session.user.breweries = token.breweries as string[]; // sets user's breweries
+        session.user.notifications = token.notifications as Notifications; // sets user's notifications
       }
-
       return session;
     },
   },
