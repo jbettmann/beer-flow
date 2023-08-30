@@ -1,15 +1,9 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import DeleteAccount from "@/components/Settings/DeleteAccount";
-import { getServerSession } from "next-auth/next";
-import React from "react";
-import Image from "next/image";
-import getBreweries from "@/lib/getBreweries";
 import { Brewery } from "@/app/types/brewery";
-import Link from "next/link";
 import ImageDisplay from "@/components/ImageDisplay/ImageDisplay";
 import { getInitials } from "@/lib/utils";
 import { ChevronRight } from "lucide-react";
 import { Session } from "next-auth";
+import Link from "next/link";
 
 type Props = {
   brewery: Brewery;
