@@ -35,6 +35,23 @@ p {
   @apply w-64 h-64 bg-transparent
 }
 
+
+/* styles.css or any other CSS file you're using */
+.bottom-drawer {
+  position: fixed;
+  bottom: -100%; /* start off the screen */
+  left: 0;
+  width: 100%;
+  height: 95vh; /* or whatever height you prefer */
+  background-color: #fff;
+  transition: bottom 0.5s ease-in-out;
+}
+
+.bottom-drawer.open {
+  bottom: 0; /* move it into view */
+}
+
+
 .error {
   @apply text-red-500 text-sm
 }
@@ -58,9 +75,12 @@ p {
 
 
 
+
 .date-create {
   @apply text-sm italic
 }
+
+
 
 .gray-text {
   @apply opacity-50
@@ -72,6 +92,10 @@ p {
 
 .logo__default {
   @apply flex h-16 bg-gray-800 justify-center items-center text-accent font-bold text-2xl
+}
+
+.logo__settings {
+  @apply w-32 h-fit rounded-2xl
 }
 
 .form {
@@ -116,6 +140,10 @@ p {
 
 .settings-profile__info {
   @apply flex justify-between items-center
+}
+
+.delete-remove-btn__text {
+  @apply my-2 text-xs opacity-50
 }
 
 
