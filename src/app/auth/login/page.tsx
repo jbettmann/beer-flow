@@ -1,17 +1,8 @@
 "use client";
-import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { signIn, useSession } from "next-auth/react";
-import TextareaAutosize from "react-textarea-autosize";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import {
-  redirect,
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from "next/navigation";
-import path from "path";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 
 type Props = {};
 
