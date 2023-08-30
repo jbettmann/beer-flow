@@ -1,5 +1,6 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import DeleteAccount from "@/components/Settings/DeleteAccount";
+
 import { getServerSession } from "next-auth/next";
 import React from "react";
 
@@ -19,7 +20,7 @@ const SettingsPage = async () => {
       </div>
       <div className="settings-account__info">
         <p>Membership Plan</p>
-        <p className="gray-text"> Standard*</p>
+        <p className="gray-text"> Free*</p>
       </div>
       <div className="divider"></div>
       {/* Delete Account */}
