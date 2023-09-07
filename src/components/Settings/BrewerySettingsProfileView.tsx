@@ -13,14 +13,17 @@ import { Users } from "@/app/types/users";
 import BottomDrawer from "../BottomDrawer/BottomDrawer";
 import EditBreweryProfile from "./EditBreweryProfile";
 import DeleteOrRemoveButton from "../Buttons/DeleteOrRemoveButton";
+import { useBreweryContext } from "@/context/brewery-beer";
+import removeBreweryFromUser from "@/lib/DELETE/removeBreweryFromUser";
 
 type Props = {
   breweryId: string;
 };
 
 const BrewerySettingsProfileView = ({ breweryId }: Props) => {
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
   const router = useRouter();
+  const { selectedBrewery, setSelectedBrewery } = useBreweryContext();
   const { data: brewery, error: breweryError } = useSWR(
     [
       `https://beer-bible-api.vercel.app/breweries/${breweryId}`,
@@ -40,6 +43,40 @@ const BrewerySettingsProfileView = ({ breweryId }: Props) => {
   );
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [buttonLoading, setButtonLoading] = useState<string | null>(null);
+
+  const handleStaffMemberClick = () => {
+    setSelectedBrewery(brewery);
+    router.push(`/breweries/${breweryId}/staff`);
+  };
+
+  const handleRemoveAccess = async (buttonLoadingName: string) => {
+    // Set isLoading to true to show loading indicator
+    setButtonLoading(buttonLoadingName);
+
+    try {
+      await removeBreweryFromUser({
+        breweryId,
+        userId: session?.user.id,
+        accessToken: session?.user.accessToken,
+      });
+
+      await update({ removeBreweryId: breweryId });
+      // Alert the user after successfully removing the brewery
+      alert("Brewery successfully removed");
+      router.push("/settings/breweries");
+    } catch (error) {
+      // Handle any errors by showing a message to the user
+      alert(error.message);
+      console.error(error);
+    } finally {
+      // Set isLoading back to false once operation is complete
+      setButtonLoading(null);
+      if (breweryId === selectedBrewery?._id) {
+        localStorage.setItem("selectedBreweryId", session?.user.breweries[0]);
+      }
+    }
+  };
 
   useEffect(() => {
     if (brewery) {
@@ -80,15 +117,15 @@ const BrewerySettingsProfileView = ({ breweryId }: Props) => {
               Owner {owner ? "You" : brewery.owner.fullName}
             </p>
             {owner || admin ? (
-              <Link
-                href={`/breweries/${brewery._id}/staff`}
+              <button
+                onClick={handleStaffMemberClick}
                 className="badge badge-ghost"
               >
-                {brewery.staff?.length} Staff Members
-              </Link>
+                {brewery.staff?.length + 1} Staff Members
+              </button>
             ) : (
               <div className="badge badge-ghost">
-                {brewery.staff?.length} Staff Members
+                {brewery.staff?.length + 1} Staff Members
               </div>
             )}
           </div>
@@ -110,30 +147,38 @@ const BrewerySettingsProfileView = ({ breweryId }: Props) => {
                 {/* Transfer Ownership */}
                 <DeleteOrRemoveButton
                   icon={<Repeat2 />}
-                  onClick={() => console.log("Transfer Ownership")}
+                  onClick={() => handleRemoveAccess("transfer-ownership")}
                   buttonClassName="btn btn-success btn-outline"
                   title="Transfer Ownership"
                   description={`Transfer your ownership to another staff member.`}
                   descriptionClassName="delete-remove-btn__text"
+                  buttonId="transfer-ownership"
+                  isLoading={buttonLoading}
                 />
-                {/* Transfer Ownership */}
+                {/* Delete Brewery */}
                 <DeleteOrRemoveButton
                   icon={<Trash2 strokeWidth={2} />}
-                  onClick={() => console.log("Delete Brewery")}
+                  onClick={() => handleRemoveAccess("delete-brewery")}
                   buttonClassName="btn btn-error btn-outline"
                   title="Delete Brewery"
                   description={`This will permanently delete brewery`}
                   descriptionClassName="delete-remove-btn__text"
+                  buttonId="delete-brewery"
+                  isLoading={buttonLoading}
                 />
               </>
             ) : (
               <DeleteOrRemoveButton
-                onClick={() => console.log("Remove Access")}
+                onClick={() => handleRemoveAccess("remove-access")}
                 buttonClassName="btn btn-error btn-outline"
                 title="Remove Access"
-                description={` This will remove your access to 
-                ${brewery ? brewery.companyName : "this brewery"}.`}
-                descriptionClassName="mx-1 text-sm opacity-50"
+                description={` Remove
+                ${
+                  brewery ? brewery.companyName : "this brewery"
+                } from breweries.`}
+                descriptionClassName="delete-remove-btn__text"
+                buttonId="remove-access"
+                isLoading={buttonLoading}
               />
             )}
           </div>
