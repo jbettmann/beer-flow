@@ -75,8 +75,19 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user, trigger, session }) {
       // Persist the OAuth access_token and or the user id to the token right after signin
 
-      if (trigger === "update" && session.newBreweryId) {
-        token.breweries.push(session.newBreweryId) as string;
+      if (trigger === "update") {
+        if (session.newBreweryId) {
+          token.breweries.push(session.newBreweryId) as string;
+        }
+        if (session.removeBreweryId) {
+          token.breweries = token.breweries.filter(
+            (breweryId: string) =>
+              breweryId !== (session.removeBreweryId as string)
+          );
+        }
+        if (session.updatedNotifications) {
+          token.notifications = session.updatedNotifications as Notifications;
+        }
         return token;
       }
 
