@@ -9,6 +9,8 @@ type Props = {
   description: string;
   buttonClassName: string;
   descriptionClassName: string;
+  buttonId?: string;
+  isLoading?: boolean | string | null;
 };
 
 const DeleteOrRemoveButton = ({
@@ -18,12 +20,21 @@ const DeleteOrRemoveButton = ({
   description,
   buttonClassName,
   descriptionClassName,
+  isLoading,
+  buttonId,
 }: Props) => {
+  const isThisButtonLoading = isLoading === true || isLoading === buttonId;
   return (
     <div>
       <button onClick={onClick} className={buttonClassName}>
-        {icon}
-        {title}
+        {isLoading ? (
+          <span className="loading loading-spinner text-black"></span>
+        ) : (
+          <>
+            {icon}
+            {title}
+          </>
+        )}
       </button>
       <p className={descriptionClassName}>{description}</p>
     </div>
