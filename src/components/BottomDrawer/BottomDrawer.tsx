@@ -6,7 +6,7 @@ type Props = {
 function BottomDrawer({ isOpen, children }) {
   return (
     <div className={`bottom-drawer ${isOpen ? "open" : ""}`}>
-      <div className="bg-white h-1/2">{children}</div>
+      <div className="bg-white h-full">{children}</div>
     </div>
   );
 }
