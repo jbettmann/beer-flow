@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { FC, ReactNode } from "react";
 import { SessionProvider } from "next-auth/react";
 import { BreweryProvider } from "@/context/brewery-beer";
+import { ToastProvider } from "@/context/toast";
 
 interface ProviderProps {
   children: ReactNode;
@@ -15,9 +16,11 @@ const Provider: FC<ProviderProps> = ({ children }) => {
   return (
     <SessionProvider>
       <BreweryProvider>
-        <QueryClientProvider client={queryClient}>
-          <MessagesProvider>{children}</MessagesProvider>
-        </QueryClientProvider>
+        <ToastProvider>
+          <QueryClientProvider client={queryClient}>
+            <MessagesProvider>{children}</MessagesProvider>
+          </QueryClientProvider>
+        </ToastProvider>
       </BreweryProvider>
     </SessionProvider>
   );
