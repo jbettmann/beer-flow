@@ -17,7 +17,9 @@ const NotificationSettings = () => {
 
   // Get the keys from the notifications object
   const [notificationKeys, setNotificationKeys] = useState<object>(
-    Object.keys(session?.user.notifications).filter((key) => key !== "allow")
+    Object.keys(session?.user.notifications).filter(
+      (key) => key !== "allow" && key !== "_id"
+    )
   );
 
   console.log(notifications);
