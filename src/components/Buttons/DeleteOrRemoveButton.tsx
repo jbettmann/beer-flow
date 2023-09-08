@@ -27,7 +27,7 @@ const DeleteOrRemoveButton = ({
   return (
     <div>
       <button onClick={onClick} className={buttonClassName}>
-        {isLoading ? (
+        {isThisButtonLoading ? (
           <span className="loading loading-spinner text-black"></span>
         ) : (
           <>
