@@ -15,6 +15,11 @@ import EditBreweryProfile from "./EditBreweryProfile";
 import DeleteOrRemoveButton from "../Buttons/DeleteOrRemoveButton";
 import { useBreweryContext } from "@/context/brewery-beer";
 import removeBreweryFromUser from "@/lib/DELETE/removeBreweryFromUser";
+import AlertDialog from "../Alerts/AlertDialog";
+import { set } from "mongoose";
+import ToastAlert from "../Alerts/ToastAlert";
+import { useToast } from "@/context/toast";
+import deleteBrewery from "@/lib/DELETE/deleteBrewery";
 
 type Props = {
   breweryId: string;
@@ -23,6 +28,7 @@ type Props = {
 const BrewerySettingsProfileView = ({ breweryId }: Props) => {
   const { data: session, update } = useSession();
   const router = useRouter();
+  const { addToast } = useToast();
   const { selectedBrewery, setSelectedBrewery } = useBreweryContext();
   const { data: brewery, error: breweryError } = useSWR(
     [
@@ -41,40 +47,65 @@ const BrewerySettingsProfileView = ({ breweryId }: Props) => {
       session?.user.id
     )
   );
-
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [buttonLoading, setButtonLoading] = useState<string | null>(null);
 
+  const [isAccessAlertOpen, setIsAccessAlertOpen] = useState<boolean>(false);
+  const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState<boolean>(false);
+
+  // redirect to brewery staff page
   const handleStaffMemberClick = () => {
     setSelectedBrewery(brewery);
     router.push(`/breweries/${breweryId}/staff`);
   };
 
-  const handleRemoveAccess = async (buttonLoadingName: string) => {
+  // Deletes Brewery or Removes User Access from Brewery
+  const handleAction = async (buttonLoadingName: string) => {
     // Set isLoading to true to show loading indicator
     setButtonLoading(buttonLoadingName);
 
     try {
-      await removeBreweryFromUser({
+      let result;
+      const commonProps = {
         breweryId,
-        userId: session?.user.id,
         accessToken: session?.user.accessToken,
-      });
+      };
+      // Remove Access
+      if (buttonLoadingName === "remove-access") {
+        result = await removeBreweryFromUser({
+          ...commonProps,
+          userId: session?.user.id,
+        });
+      } else {
+        // Delete Brewery
+        result = await deleteBrewery(commonProps);
+      }
+      const updated = await update({ removeBreweryId: breweryId });
 
-      await update({ removeBreweryId: breweryId });
       // Alert the user after successfully removing the brewery
-      alert("Brewery successfully removed");
-      router.push("/settings/breweries");
+      if (result && updated) {
+        addToast(result.message, "success");
+        router.push("/settings/breweries");
+
+        // If the brewery is the selected brewery, set the selected brewery to the first brewery in the user's breweries array
+        if (breweryId === selectedBrewery?._id) {
+          if (session?.user.breweries && session?.user.breweries.length > 0) {
+            localStorage.setItem(
+              "selectedBreweryId",
+              session?.user.breweries[0]
+            );
+            window.dispatchEvent(new CustomEvent("selectedBreweryChanged"));
+          } else {
+            router.push("/breweries");
+          }
+        }
+        router.refresh();
+      }
     } catch (error) {
-      // Handle any errors by showing a message to the user
-      alert(error.message);
+      addToast(error.message, "error");
       console.error(error);
     } finally {
-      // Set isLoading back to false once operation is complete
       setButtonLoading(null);
-      if (breweryId === selectedBrewery?._id) {
-        localStorage.setItem("selectedBreweryId", session?.user.breweries[0]);
-      }
     }
   };
 
@@ -93,6 +124,44 @@ const BrewerySettingsProfileView = ({ breweryId }: Props) => {
   return (
     brewery && (
       <div>
+        {/* Remove Access Alert */}
+        <AlertDialog
+          title=""
+          isOpen={isAccessAlertOpen}
+          onClose={() => setIsAccessAlertOpen(false)}
+          onConfirm={() => {
+            // Logic to remove access to brewery
+            handleAction("remove-access");
+            setIsAccessAlertOpen(false);
+          }}
+          message={
+            <>
+              Are you sure you want to remove your access to
+              <br />
+              {brewery.companyName}?
+            </>
+          }
+        />
+        {/* Delete Brewery */}
+        <AlertDialog
+          title=""
+          isOpen={isDeleteAlertOpen}
+          onClose={() => setIsDeleteAlertOpen(false)}
+          onConfirm={() => {
+            // Logic to remove access to brewery
+            handleAction("delete-brewery");
+            setIsDeleteAlertOpen(false);
+          }}
+          message={
+            <>
+              Are you sure you want to delete
+              <br />
+              {brewery.companyName} brewery?
+            </>
+          }
+          confirmButtonText="Delete Brewery"
+        />
+
         <MoveLeft
           size={24}
           strokeWidth={1}
@@ -114,7 +183,7 @@ const BrewerySettingsProfileView = ({ breweryId }: Props) => {
 
           <div>
             <p className="badge badge-ghost">
-              Owner {owner ? "You" : brewery.owner.fullName}
+              Owner {owner ? "You" : brewery?.owner?.fullName}
             </p>
             {owner || admin ? (
               <button
@@ -147,7 +216,7 @@ const BrewerySettingsProfileView = ({ breweryId }: Props) => {
                 {/* Transfer Ownership */}
                 <DeleteOrRemoveButton
                   icon={<Repeat2 />}
-                  onClick={() => handleRemoveAccess("transfer-ownership")}
+                  onClick={() => console.log("transfer-ownership")}
                   buttonClassName="btn btn-success btn-outline"
                   title="Transfer Ownership"
                   description={`Transfer your ownership to another staff member.`}
@@ -158,10 +227,10 @@ const BrewerySettingsProfileView = ({ breweryId }: Props) => {
                 {/* Delete Brewery */}
                 <DeleteOrRemoveButton
                   icon={<Trash2 strokeWidth={2} />}
-                  onClick={() => handleRemoveAccess("delete-brewery")}
+                  onClick={() => setIsDeleteAlertOpen(true)}
                   buttonClassName="btn btn-error btn-outline"
                   title="Delete Brewery"
-                  description={`This will permanently delete brewery`}
+                  description={`This will permanently delete this brewery and all of its data.`}
                   descriptionClassName="delete-remove-btn__text"
                   buttonId="delete-brewery"
                   isLoading={buttonLoading}
@@ -169,7 +238,7 @@ const BrewerySettingsProfileView = ({ breweryId }: Props) => {
               </>
             ) : (
               <DeleteOrRemoveButton
-                onClick={() => handleRemoveAccess("remove-access")}
+                onClick={() => setIsAccessAlertOpen(true)}
                 buttonClassName="btn btn-error btn-outline"
                 title="Remove Access"
                 description={` Remove
@@ -184,7 +253,10 @@ const BrewerySettingsProfileView = ({ breweryId }: Props) => {
           </div>
         </div>
         <BottomDrawer isOpen={isOpen}>
-          <EditBreweryProfile onClose={() => setIsOpen(false)} />
+          <EditBreweryProfile
+            brewery={brewery}
+            onClose={() => setIsOpen(false)}
+          />
         </BottomDrawer>
       </div>
     )
