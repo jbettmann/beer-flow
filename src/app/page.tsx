@@ -18,7 +18,7 @@ export default async function Home() {
     redirect(`/breweries/${savedBreweryId}`);
   }
 
-  if (session?.user && !savedBreweryId && session.user.breweries.length < 1) {
+  if (session?.user && !savedBreweryId && session.user.breweries.length > 0) {
     redirect(`/breweries`);
   }
 
