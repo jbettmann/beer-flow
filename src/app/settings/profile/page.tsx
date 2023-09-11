@@ -36,7 +36,7 @@ const ActualProfilePage = async (props: Props) => {
         </div>
       </div>
 
-      <div className="divider"></div>
+      <div className="divider border-gray-50"></div>
       {/* Breweries */}
       <div>
         <h4>Breweries</h4>

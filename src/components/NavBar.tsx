@@ -17,6 +17,9 @@ import {
   Beer,
   Factory,
   X,
+  UserPlus,
+  LayoutList,
+  Home,
 } from "lucide-react";
 import { Session } from "next-auth";
 import { set } from "mongoose";
@@ -185,7 +188,7 @@ const NavBar = ({
   return (
     <>
       <div className="navbar justify-between">
-        <div className="drawer w-fit p-3">
+        <div className="drawer w-fit p-3 z-50">
           <input id="menu-drawer" type="checkbox" className="drawer-toggle" />
           <div className={`flex flex-row justify-between drawer-content`}>
             <div className="text-xl font-medium" ref={drawerRef}>
@@ -369,7 +372,9 @@ const NavBar = ({
           </div>
         </div>
       </div>
-      <div className=" lg:hidden btm-nav z-40">
+
+      {/* Bottom Menu Nav */}
+      <div className=" lg:hidden btm-nav z-40 bg-third-color">
         <button
           className={
             isActive(`/breweries/${selectedBrewery?._id}`) ? "active" : ""
@@ -378,66 +383,99 @@ const NavBar = ({
           <Link
             href={`/breweries/${selectedBrewery?._id}`}
             data-tip="Home"
-            className="flex flex-col items-center text-sm"
+            className="flex flex-col items-center text-xs"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-              />
-            </svg>
+            <Home
+              size={24}
+              strokeWidth={1}
+              className={
+                isActive(`/breweries/${selectedBrewery?._id}`)
+                  ? "fill-accent text-primary"
+                  : ""
+              }
+            />
             Home
           </Link>
         </button>
         <button className={isActive("/breweries") ? "active" : ""}>
           <Link
             href={"/breweries"}
-            className="flex flex-col items-center text-sm"
+            className="flex flex-col items-center text-xs"
             data-tip="Breweries"
           >
-            <Factory size={20} />
+            <Factory
+              size={24}
+              strokeWidth={1}
+              className={
+                isActive("/breweries") ? "fill-accent text-primary" : ""
+              }
+            />
             Breweries
           </Link>
         </button>
-        {adminAllowed && (
-          <button
-            className={
-              isActive(`/breweries/${selectedBrewery?._id}/invite`)
-                ? "active"
-                : ""
-            }
-          >
-            <Link
-              href={`/breweries/${selectedBrewery?._id}/invite`}
-              className="flex flex-col items-center text-sm"
-              data-tip="Invite New Staff"
+        {adminAllowed ? (
+          <>
+            <button
+              className={
+                isActive(`/breweries/${selectedBrewery?._id}/categories`)
+                  ? "active"
+                  : ""
+              }
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+              <Link
+                href={`/breweries/${selectedBrewery?._id}/categories`}
+                className="flex flex-col items-center text-xs"
+                data-tip="Brewery Categories Management"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                <LayoutList
+                  size={24}
+                  strokeWidth={1}
+                  className={
+                    isActive(`/breweries/${selectedBrewery?._id}/categories`)
+                      ? "fill-accent  text-accent"
+                      : ""
+                  }
                 />
-              </svg>
-              Invite
-            </Link>
-          </button>
-        )}
+                Categories
+              </Link>
+            </button>
+            <button
+              className={
+                isActive(`/breweries/${selectedBrewery?._id}/staff`)
+                  ? "active"
+                  : ""
+              }
+            >
+              <Link
+                href={`/breweries/${selectedBrewery?._id}/staff`}
+                className="flex flex-col items-center text-xs"
+                data-tip="Brewery Staff Management"
+              >
+                <Staff
+                  size={24}
+                  strokeWidth={1}
+                  className={
+                    isActive(`/breweries/${selectedBrewery?._id}/staff`)
+                      ? "fill-accent  text-accent"
+                      : ""
+                  }
+                />
+                Staff
+              </Link>
+            </button>
+          </>
+        ) : null}
+        <Link href={`/settings`}>
+          <label tabIndex={0} className="btn btn-ghost avatar">
+            <Image
+              src={user.user.picture}
+              alt={`profile picture of ${user.user.name}`}
+              className="rounded-full"
+              width={50}
+              height={50}
+            />
+          </label>
+        </Link>
       </div>
     </>
   );

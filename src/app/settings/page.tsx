@@ -9,7 +9,7 @@ const SettingsPage = async () => {
   console.log(session);
   return (
     // Account info
-    <div>
+    <div >
       <div className="settings-account__info">
         <p>Name</p>
         <p className="gray-text">{session?.user.name}</p>

@@ -24,7 +24,7 @@ const SettingTabs = (props: Props) => {
   return (
     <div className="m-6  lg:w-3/4">
       <h2>Settings</h2>
-      <div className="tabs mt-14 w-full ">
+      <div className="tabs mt-14 w-full  ">
         <Link
           href={`/settings`}
           className={`tab tab-bordered  ${
@@ -58,7 +58,7 @@ const SettingTabs = (props: Props) => {
           Breweries
         </Link>
         <div
-          className={` h-[2px] flex-1 bg-[#1f2937] opacity-20 hover:cursor-default `}
+          className={` h-[2px] flex-1 bg-gray-400 opacity-20 hover:cursor-default `}
         ></div>
       </div>
     </div>

@@ -42,14 +42,17 @@ export default function Modal({
   return (
     <div
       ref={overlay}
-      className="fixed z-10 left-0 right-0 top-0 bottom-0 mx-auto bg-black/60  overflow-y-scroll"
+      className="fixed z-10 left-0 right-0 top-0 bottom-0 mx-auto bg-black/60  overflow-y-scroll mb-16 lg:mb-0 pb-6"
       onClick={onClick}
     >
       <div
         ref={wrapper}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full sm:w-10/12 md:w-8/12 lg:w-1/2 p-6 h-5/6"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full sm:w-10/12 md:w-8/12 lg:w-1/2 p-6 h-5/6 "
       >
-        <button className="close-btn " onClick={onDismiss}>
+        <button
+          className="close-btn absolute p-6 top-4 right-4 z-10"
+          onClick={onDismiss}
+        >
           {/* X Close Button SVG */}
           <svg
             xmlns="http://www.w3.org/2000/svg"

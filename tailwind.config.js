@@ -7,6 +7,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        "sf-pro": ["SF Pro", "sans-serif"],
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
@@ -25,6 +28,13 @@ module.exports = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+      },
+      colors: {
+        primary: "#2B2B2B",
+        secondary: "accent",
+        "third-color": "#202020",
+        "fourth-color": "#343434",
+        "main-text-color": "text-gray-50",
       },
     },
   },

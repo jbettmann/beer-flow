@@ -13,7 +13,6 @@ const NotificationSettings = () => {
   const [hasChanges, setHasChanges] = useState(false); // To track if there are unsaved changes
   const saveTimeout = useRef(null); // Reference to the timeout
   const isInitialRender = useRef(true);
-  console.log(notifications);
 
   // Get the keys from the notifications object
   const [notificationKeys, setNotificationKeys] = useState<object>(
@@ -22,7 +21,7 @@ const NotificationSettings = () => {
     )
   );
 
-  console.log(notifications);
+  console.log({ notifications, notificationKeys });
   const saveChanges = async () => {
     if (hasChanges) {
       try {
@@ -88,7 +87,7 @@ const NotificationSettings = () => {
 
   return (
     notificationKeys && (
-      <div className="w-full">
+      <div className="w-full ">
         {/* <h3>Notification Preferences</h3> */}
         <div className="flex flex-col w-full  ">
           <div className=" flex items-center justify-between">
@@ -112,7 +111,7 @@ const NotificationSettings = () => {
               />
             </label>
           </div>
-          <div className="w-11/12 mx-auto">
+          <div className="w-11/12 mx-auto ">
             {notifications.allow &&
               notificationKeys.map((key) => (
                 <>
@@ -126,12 +125,16 @@ const NotificationSettings = () => {
                         : "Beer Updates"}
                     </div>
                     <label className="cursor-pointer label w-fit">
-                      <div className="label-text mr-1">
-                        {notifications[key] ? "On" : "Off"}
+                      <div
+                        className={`label-text mr-1 ${
+                          notifications[key].email ? "" : "text-opacity-50"
+                        }`}
+                      >
+                        {notifications[key].email ? "On" : "Off"}
                       </div>
                       <input
                         type="checkbox"
-                        className="toggle toggle-accent"
+                        className="toggle toggle-accent bg-[#252525]"
                         onChange={(e) => {
                           const checked = e.currentTarget.checked;
                           setNotification((prev) => ({
