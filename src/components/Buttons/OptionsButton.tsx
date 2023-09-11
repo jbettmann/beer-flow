@@ -17,7 +17,7 @@ type Props = {
 
 const OptionsButton = ({ handleOptions, className, options }: Props) => {
   return (
-    <div className="dropdown absolute right-5 top-5">
+    <div className="dropdown absolute right-5 top-[10%]">
       <label tabIndex={0}>
         <button onClick={handleOptions} className={className}>
           <svg

@@ -13,6 +13,7 @@ import { mutate } from "swr";
 import { set } from "mongoose";
 import { Brewery } from "@/app/types/brewery";
 import { on } from "events";
+import { ChevronRight, Sparkles } from "lucide-react";
 
 type Props = {
   category: Category | { name: string };
@@ -118,16 +119,18 @@ export default function BeerCategory({
         return (
           <div
             key={categoryName}
-            className={`collapse ${isOpen ? "collapse-open" : ""} bg-base-200 `}
+            className={`collapse category-container ${
+              isOpen ? "collapse-open" : ""
+            } bg-base-200 `}
             onClick={(e) => {
               setIsArchivedOpen(isOpen ? null : categoryName),
                 e.stopPropagation();
             }}
           >
-            <div className="collapse-title text-xl font-medium">
+            <div className="collapse-title category-container__title">
               <p>{categoryName}</p>
             </div>
-            <div className="collapse-content pb-0">
+            <div className="collapse-content category-container__content pb-0">
               {beersInCategory.map((beer) => (
                 <Link
                   className="flex items-center justify-between"
@@ -190,16 +193,16 @@ export default function BeerCategory({
     <div className="relative">
       <div
         onClick={onClick}
-        className={`collapse  ${
-          isOpen ? "collapse-open" : ""
-        } collapse-arrow my-8  bg-base-200`}
+        className={`collapse category-container ${
+          isOpen ? "collapse-open bg-accent" : ""
+        } bg-teal-400 collapse-arrow my-4 `}
       >
-        <div className="collapse-title after:left-5 text-xl font-medium inline-flex justify-between ">
+        <div className="collapse-title category-container__title">
           <p className="ml-8">{category.name}</p>
           {isCategoryNew && <p className="tag-new">NEW</p>}
         </div>
-        <div className="collapse-content">
-          <div className="flex flex-col">
+        <div className="collapse-content ">
+          <div className="flex flex-col category-container__content">
             {category.name === "Archived"
               ? renderArchivedBeers()
               : filteredBeers.map((beer) => (
@@ -221,7 +224,25 @@ export default function BeerCategory({
                       )}
                       {beer.name}
                     </div>
-                    {isNew(beer) && <p className="tag-new">NEW</p>}
+                    <div className="inline-flex justify-center items-center ">
+                      {isNew(beer) && (
+                        <>
+                          <div className=" relative ">
+                            <p className="hidden md:block md:indicator-item md:badge md:bg-indigo-300  ">
+                              NEW
+                            </p>
+                            <Sparkles
+                              size={20}
+                              strokeWidth={1}
+                              color="#a5b4fc"
+                              className="md:absolute md:top-2 md:right-0"
+                            />
+                          </div>
+                        </>
+                      )}
+
+                      <ChevronRight size={24} strokeWidth={1} />
+                    </div>
                   </Link>
                 ))}
           </div>

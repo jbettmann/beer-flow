@@ -2,11 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --primary: #2B2B2B;
+  --menu-drawer: #343434;
+  --text-main: @apply text-gray-50;
+}
 
+html {
+  @apply bg-[var(--primary)] 
+}
+body {
+  @apply p-5 w-screen h-screen bg-[var(--primary)] text-gray-50
+}
 
 h1 {
   @apply text-4xl font-bold text-center
 }
+
 h2 {
   @apply text-3xl font-bold 
 }
@@ -16,6 +28,10 @@ h3 {
 }
 h4 {
   @apply text-xl font-bold 
+}
+
+h5 {
+  @apply text-lg font-bold text-center
 }
 
 h6 {
@@ -51,6 +67,17 @@ p {
   bottom: 0; /* move it into view */
 }
 
+.category-container {
+  @apply bg-[#202020] text-gray-50 border border-gray-500
+}
+
+.category-container__title {
+  @apply  flex h-14 py-0 px-5 items-center gap-5 self-stretch after:left-5 text-xl font-medium 
+}
+
+.category-container__content {
+  @apply mt-4
+}
 
 .error {
   @apply text-red-500 text-sm
@@ -65,15 +92,11 @@ p {
   
 }
 
-
-
 /* Create New Beer Form */
 
 .container-create__form {
   @apply flex flex-col m-3
 }
-
-
 
 
 .date-create {
@@ -124,6 +147,9 @@ p {
   @apply h-36 w-fit rounded-2xl
 }
 
+.menu-drawer {
+  @apply bg-[var(--menu-drawer)]
+}
 .ReactTags__selected {
   @apply m-4
 }
@@ -166,7 +192,7 @@ p {
 
 
 .tag-new {
-  @apply indicator-item badge badge-primary
+  @apply indicator-item badge bg-indigo-300
 }
 
 .table-row {

@@ -70,9 +70,9 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
 
   return (
     selectedBeers && (
-      <section className="w-1/2 m-auto">
+      <section className="md:w-1/2 mt-10 m-auto">
         <Suspense fallback={<BreweryProfileSkeleton />}>
-          <h1>{selectedBrewery?.companyName}</h1>
+          <h3>Categories</h3>
 
           <div>
             {beersForCategory &&

@@ -208,8 +208,10 @@ const NavBar = ({
           </div>
           <div className="drawer-side z-10 ">
             <label htmlFor="menu-drawer" className="drawer-overlay "></label>
-            <div className="h-full flex flex-col justify-between bg-base-200">
-              <div className="menu p-4 w-80 h-full">
+            <div className="h-full flex flex-col justify-between menu-drawer">
+              <div className="menu p-6 w-80 h-full">
+                <h4 className="py-4">Breweries</h4>
+
                 {breweries.map((brewery: Brewery) => (
                   <li key={brewery._id}>
                     <Link
