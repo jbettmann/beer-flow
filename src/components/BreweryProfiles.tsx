@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import BeerCategory from "./BeerCategory";
 import BreweryProfileSkeleton from "./LoadingSkeleton/BreweryProfileLS";
+import { Beer, Plus } from "lucide-react";
 
 type pageProps = {
   breweryId: string;
@@ -70,7 +71,7 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
 
   return (
     selectedBeers && (
-      <section className="md:w-1/2 mt-10 m-auto">
+      <section className="md:w-1/2 mt-10 mx-auto py-3">
         <Suspense fallback={<BreweryProfileSkeleton />}>
           <h3>Categories</h3>
 
@@ -103,13 +104,14 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
             </div>
           </div>
 
-          <div className="w-full h-full flex justify-center">
+          <div className="fixed right-5 bottom-20 lg:static flex justify-center lg:w-full gap-2 items-center p-1">
             <Link
               href={`/create/${selectedBrewery?._id}/beer`}
-              className="btn btn-accent"
+              className="btn btn-circle btn-lg btn-accent"
             >
-              Create A Beer
+              <Plus size={30} />
             </Link>
+            <p className="hidden m-0 text-lg lg:flex">Beer</p>
           </div>
         </Suspense>
       </section>

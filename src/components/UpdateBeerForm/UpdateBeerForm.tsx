@@ -30,6 +30,7 @@ type pageProps = {
   brewery: Brewery;
   beer: Beer;
   setBeer: (beer: Beer) => void;
+  isEditing: boolean;
   setIsEditing: (isEditing: boolean) => void;
 };
 
@@ -38,19 +39,20 @@ const UpdateBeerForm = ({
   beer,
   setBeer,
   setIsEditing,
+  isEditing,
 }: pageProps) => {
   const { data: session } = useSession();
   const router = useRouter();
   const { mutate: beerMutate } = useSWR(
     [
-      `https://beer-bible-api.vercel.app/breweries/${brewery._id}/beers`,
+      `https://beer-bible-api.vercel.app/breweries/${brewery?._id}/beers`,
       session?.user.accessToken,
     ],
     getBreweryBeers
   );
   const { mutate: breweryMutate } = useSWR(
     [
-      `https://beer-bible-api.vercel.app/breweries/${brewery._id}`,
+      `https://beer-bible-api.vercel.app/breweries/${brewery?._id}`,
       session?.user.accessToken,
     ],
     getSingleBrewery
@@ -246,11 +248,19 @@ const UpdateBeerForm = ({
       isSubmitting.current = false;
     }
   };
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = 0;
+    }
+  }, []);
 
   return (
     <form
       onSubmit={handleSubmit}
-      className=" p-4 form flex flex-col justify-between mx-auto rounded-lg shadow-2xl text-white"
+      className={` p-4 form flex flex-col justify-between mx-auto rounded-lg bg-third-color`}
+      ref={containerRef}
     >
       <div className="flex justify-around">
         {/* Name */}
@@ -273,7 +283,7 @@ const UpdateBeerForm = ({
           {/*  Existing Beer Image */}
           {beer?.image && !previewImage && (
             <div>
-              <ImageDisplay className="beer-card__image " item={beer} />
+              <ImageDisplay className="w-16" item={beer} />
             </div>
           )}
           {/* Preview of new image */}

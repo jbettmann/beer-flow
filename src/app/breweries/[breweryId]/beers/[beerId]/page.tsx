@@ -23,9 +23,9 @@ export default async function SingleBeerPage({
 
   if (!beerId) return notFound();
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full ">
       <h2>
-        <Link href="/">
+        <Link href={`/breweries/${breweryId}`}>
           <BackArrow width={"60"} height={"30"} />
         </Link>
       </h2>

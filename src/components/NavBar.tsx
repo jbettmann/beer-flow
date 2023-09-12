@@ -20,6 +20,8 @@ import {
   UserPlus,
   LayoutList,
   Home,
+  Skull,
+  Search as SearchIcon,
 } from "lucide-react";
 import { Session } from "next-auth";
 import { set } from "mongoose";
@@ -27,6 +29,8 @@ import { usePathname, useRouter } from "next/navigation";
 import getBreweryBeers from "@/lib/getBreweryBeers";
 import useSWR from "swr";
 import { getInitials } from "@/lib/utils";
+import SideDrawer from "./Drawers/SideDrawer";
+import { Search } from "./Search/Search";
 
 const NavBar = ({
   breweries,
@@ -35,62 +39,11 @@ const NavBar = ({
   breweries: Brewery[];
   user: Session;
 }) => {
-  const {
-    selectedBeers,
-    setSelectedBeers,
-    selectedBrewery,
-    setSelectedBrewery,
-  } = useBreweryContext();
+  const { selectedBrewery, setSelectedBrewery } = useBreweryContext();
   const [adminAllowed, setAdminAllowed] = useState(false);
   const [open, setOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  // const { data: beers, error: beersError } = useSWR(
-  //   [
-  //     `https://beer-bible-api.vercel.app/breweries/${selectedBrewery?._id}/beers`,
-  //     user?.user.accessToken,
-  //   ],
-  //   getBreweryBeers
-  // );
-  const originalSelectedBeers = useRef(selectedBeers);
 
-  const debounceDelay = 300; // 300ms
-  const debounceTimeout = useRef<number | undefined>();
-
-  // Filter beers by search term
-  useEffect(() => {
-    if (debounceTimeout.current) {
-      clearTimeout(debounceTimeout.current);
-    }
-
-    debounceTimeout.current = setTimeout(() => {
-      if (!searchTerm) {
-        setSelectedBeers(originalSelectedBeers.current);
-        return;
-      }
-
-      const filteredBeers = originalSelectedBeers.current?.filter((beer) => {
-        const { name, style, hops, malt } = beer;
-        const searchStr = `${name} ${style} ${hops.join(" ")} ${malt.join(
-          " "
-        )}`.toLowerCase();
-        return searchStr.includes(searchTerm.toLowerCase());
-      });
-
-      setSelectedBeers(filteredBeers);
-    }, debounceDelay);
-
-    // Clear timeout on unmount
-    return () => {
-      if (debounceTimeout.current) {
-        clearTimeout(debounceTimeout.current);
-      }
-    };
-  }, [searchTerm]);
-
-  // Set the state original beer state when search is cleared
-  useEffect(() => {
-    originalSelectedBeers.current = selectedBeers;
-  }, [selectedBrewery]);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   // Reference to the drawer div
   const drawerRef = useRef<HTMLDivElement>(null);
@@ -187,8 +140,12 @@ const NavBar = ({
 
   return (
     <>
+      <SideDrawer isOpen={isSearchOpen}>
+        <Search isOpen={isSearchOpen} setIsOpen={setIsSearchOpen} />
+      </SideDrawer>
+
       <div className="navbar justify-between">
-        <div className="drawer w-fit p-3 z-50">
+        <div className="drawer w-fit p-3 ">
           <input id="menu-drawer" type="checkbox" className="drawer-toggle" />
           <div className={`flex flex-row justify-between drawer-content`}>
             <div className="text-xl font-medium" ref={drawerRef}>
@@ -209,7 +166,7 @@ const NavBar = ({
               </label>
             </div>
           </div>
-          <div className="drawer-side z-10 ">
+          <div className="drawer-side z-50 ">
             <label htmlFor="menu-drawer" className="drawer-overlay "></label>
             <div className="h-full flex flex-col justify-between menu-drawer">
               <div className="menu p-6 w-80 h-full">
@@ -285,24 +242,14 @@ const NavBar = ({
           )}
         </Link>
         <div className="flex-none gap-2">
-          <div className="form-control relative">
-            <input
-              type="text"
-              placeholder="Search"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="input input-bordered w-24 md:w-auto"
-            />
-            {searchTerm && (
-              <span
-                className="absolute top-1/4 right-2 opacity-50 cursor-pointer"
-                onClick={() => setSearchTerm("")}
-              >
-                <X size={20} />
-              </span>
-            )}
+          <div
+            className="form-control relative"
+            onClick={() => setIsSearchOpen(true)}
+          >
+            <SearchIcon size={24} strokeWidth={2} />
           </div>
-          <div className="dropdown dropdown-end ">
+          {/* Profile Photo with Option Dropdown */}
+          <div className="hidden lg:block dropdown dropdown-end">
             <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
               <Image
                 src={user.user.picture}
@@ -465,17 +412,23 @@ const NavBar = ({
             </button>
           </>
         ) : null}
-        <Link href={`/settings`}>
-          <label tabIndex={0} className="btn btn-ghost avatar">
-            <Image
-              src={user.user.picture}
-              alt={`profile picture of ${user.user.name}`}
-              className="rounded-full"
-              width={50}
-              height={50}
+        <button className={isActive(`/settings`) ? "active" : ""}>
+          <Link
+            href={`/settings`}
+            className="flex flex-col items-center text-xs"
+            data-tip="You"
+          >
+            <Skull
+              size={24}
+              strokeWidth={1}
+              color={isActive(`/settings`) ? "#1cdcbc" : "#fff"}
+              // className={
+              //   isActive(`/settings`) ? "fill-accent  text-primary" : ""
+              // }
             />
-          </label>
-        </Link>
+            You
+          </Link>
+        </button>
       </div>
     </>
   );

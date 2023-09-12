@@ -15,10 +15,10 @@
 } */
 
 html {
-  @apply w-screen h-screen bg-primary 
+  @apply w-screen h-screen bg-primary mb-14 lg:mb-0
 }
 body {
-  @apply h-full p-5 bg-primary text-gray-50 mb-auto
+  @apply h-full p-5 bg-primary text-gray-50  mb-14 lg:mb-0
 }
 
 h1 {
@@ -80,14 +80,17 @@ p {
   bottom: -100%; /* start off the screen */
   left: 0;
   width: 100%;
-  height: 95vh; /* or whatever height you prefer */
-  background-color: #fff;
-  transition: bottom 0.5s ease-in-out;
+  height: 9vh;
+  visibility: hidden; /* set to hidden initially */
+  transition: all 0.5s ease-in-out;
 }
 
 .bottom-drawer.open {
   bottom: 0; /* move it into view */
+  visibility: visible; /* make it visible */
 }
+
+
 
 .category-container {
   @apply bg-third-color text-gray-50 border border-gray-500
@@ -134,7 +137,7 @@ p {
 
 
 .form {
-  @apply bg-zinc-800 h-fit
+  @apply  h-fit
 }
 
 .form__input {
@@ -211,6 +214,29 @@ p {
   background-color: '#f7fafc';
   background-color: rgba(247, 250, 253, var(--bg-opacity));
 }
+
+.side-drawer {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 100%;
+  height: 100%;
+ 
+  transition: right 0.3s ease-in-out;
+}
+
+.side-drawer.open {
+  right: 0;
+}
+
+.side-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  gap: 1rem;
+}
+
 
 
 .tag-new {

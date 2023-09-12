@@ -85,8 +85,8 @@ const EditBreweryProfile = ({ brewery, onClose, onSave }: Props) => {
     }
   };
   return (
-    <div className="flex flex-col justify-center items-center z-50">
-      <div className="flex w-full justify-between items-center">
+    <div className="flex flex-col justify-center items-center z-50 text-gray-50">
+      <div className="flex w-full h-full justify-between items-center">
         {" "}
         <button onClick={onClose} className="btn m-4">
           <X size={24} />
@@ -98,7 +98,7 @@ const EditBreweryProfile = ({ brewery, onClose, onSave }: Props) => {
           isLoading={isLoading}
         />
       </div>
-      <div className="flex flex-col items-center pt-7 ">
+      <div className="flex flex-col items-center p-6 pt-7 w-full">
         <div className="flex flex-col items-center">
           <div className="flex flex-col  items-center">
             {/*  Existing Beer Image */}
@@ -159,7 +159,7 @@ const EditBreweryProfile = ({ brewery, onClose, onSave }: Props) => {
           <input
             type="text"
             id="fileUpload"
-            className="font-bold text-2xl text-center border-b-2 border-gray-400 focus:outline-none focus:border-accent "
+            className="input w-full font-bold text-2xl text-primary text-center border-b-2 border-gray-400 focus:outline-none focus:border-accent "
             value={companyName}
             onChange={(e) => setCompanyName(e.target.value)}
           />

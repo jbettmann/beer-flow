@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import RemoveAccess from "../Buttons/RemoveAccess";
 import { Users } from "@/app/types/users";
-import BottomDrawer from "../BottomDrawer/BottomDrawer";
+import BottomDrawer from "../Drawers/BottomDrawer";
 import EditBreweryProfile from "./EditBreweryProfile";
 import DeleteOrRemoveButton from "../Buttons/DeleteOrRemoveButton";
 import { useBreweryContext } from "@/context/brewery-beer";

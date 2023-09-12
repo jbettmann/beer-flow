@@ -12,6 +12,7 @@ import { useSession } from "next-auth/react";
 import useSWR from "swr";
 import ToggleButton from "./Buttons/ToggleButton";
 import { Hop, Sparkles, Wheat } from "lucide-react";
+import BottomDrawer from "./Drawers/BottomDrawer";
 
 type Props = {
   beerId: string;
@@ -34,12 +35,14 @@ const BeerCard = ({ beerId }: Props) => {
       <div className=" card w-full beer-card shadow-xl p-5">
         <div className="flex w-full justify-start">
           <button
-            className={`ink link-hover text-gray-50`}
+            className={`link link-hover text-gray-50`}
             onClick={() => setIsEditing(!isEditing)}
           >
             {isEditing ? "Cancel" : "Edit"}
           </button>
         </div>
+
+        {/* Beer Image and Name */}
         <div className="">
           {isEditing ? (
             <UpdateBeerForm
@@ -135,16 +138,14 @@ const BeerCard = ({ beerId }: Props) => {
                     </div>
 
                     {/* Malts */}
-                    <div className="flex justify-between w-full">
-                      <div>
-                        <h5 className="beer-card__item">
-                          {beer?.malt?.map((malt) => malt).join(", ")}
-                        </h5>
-                        <p className="beer-card__title">
-                          <Wheat size={15} strokeWidth={1} />
-                          <span className="ml-1"> Malt</span>
-                        </p>
-                      </div>
+                    <div className="flex flex-col items-start w-full">
+                      <h5 className="beer-card__item text-left">
+                        {beer?.malt?.map((malt) => malt).join(", ")}
+                      </h5>
+                      <p className="beer-card__title">
+                        <Wheat size={15} strokeWidth={1} />
+                        <span className="ml-1"> Malt</span>
+                      </p>
                     </div>
                   </>
                 ) : (
@@ -152,14 +153,14 @@ const BeerCard = ({ beerId }: Props) => {
                     {/* DETAILS */}
                     {/* Release Date & Last Updated */}
                     <div className="flex justify-between w-full">
-                      {isEditing && (
+                      {/* {isEditing && (
                         <div>
                           <h4 className="beer-card__item">
                             {convertDate(beer?.createdAt)}
                           </h4>
                           <p className="beer-card__title">Created On</p>
                         </div>
-                      )}
+                      )} */}
                       <div>
                         <h4 className="beer-card__item">
                           {" "}
@@ -180,7 +181,7 @@ const BeerCard = ({ beerId }: Props) => {
                       <p className="beer-card__description">{beer?.notes}</p>
                       <p className="beer-card__title">Notes</p>
                     </div>
-                    <div lassName="w-full">
+                    <div className="w-full">
                       <p className="beer-card__description">{beer?.nameSake}</p>
                       <p className="beer-card__title">Name Sake</p>
                     </div>
