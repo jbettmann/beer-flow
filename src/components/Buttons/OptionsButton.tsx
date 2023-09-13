@@ -32,7 +32,7 @@ const OptionsButton = ({ handleOptions, className, options }: Props) => {
         {options.map(
           (option, index) =>
             option.name === "Edit Category" ? (
-              <li>
+              <li key={index}>
                 <Link
                   key={index}
                   href={option.href}

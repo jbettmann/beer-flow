@@ -7,7 +7,10 @@ const StaffManagementTable = (props: Props) => {
     <div className="flex flex-col w-full lg:flex-row">
       <div className="hidden lg:flex-initial lg:w-48 lg:card lg:bg-base-100  lg:space-y-2  bg-gray-200 animate-pulse  p-4">
         {[...Array(3)].map((_, idx) => (
-          <div className="w-full h-8 rounded-md bg-gray-200 animate-pulse"></div>
+          <div
+            key={idx}
+            className="w-full h-8 rounded-md bg-gray-200 animate-pulse"
+          ></div>
         ))}
       </div>
 

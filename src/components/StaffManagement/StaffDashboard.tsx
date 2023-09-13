@@ -14,6 +14,7 @@ const StaffDashboard = ({ viewFilter, setViewFilter }: Props) => {
       <div className="hidden lg:flex-initial lg:w-48 lg:h-[65vh] lg:min-h-full lg:card lg:bg-base-100 lg:shadow-md lg:space-y-2">
         {menuButtons.map((button) => (
           <button
+            key={button}
             className="btn btn-ghost justify-start"
             onClick={() => setViewFilter(button)}
           >
@@ -32,7 +33,7 @@ const StaffDashboard = ({ viewFilter, setViewFilter }: Props) => {
           className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
         >
           {menuButtons.map((button) => (
-            <li>
+            <li key={button}>
               <button
                 className="btn btn-ghost "
                 onClick={() => setViewFilter(button)}

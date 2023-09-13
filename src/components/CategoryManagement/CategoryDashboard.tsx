@@ -12,8 +12,9 @@ const CategoryDashboard = ({ viewFilter, setViewFilter }: Props) => {
     <>
       {/* Large screen side dashboard menu */}
       <div className="hidden lg:flex-initial lg:w-48 lg:h-[65vh] lg:card lg:bg-base-100 lg:shadow-md lg:space-y-2">
-        {menuButtons.map((button) => (
+        {menuButtons.map((button, i) => (
           <button
+            key={i}
             className="btn btn-ghost justify-start"
             onClick={() => setViewFilter(button)}
           >
