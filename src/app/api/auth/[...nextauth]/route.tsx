@@ -15,7 +15,7 @@ import updateUserInfoDBDirect from "@/lib/PUT/updateUserInfoDBDirect";
 import User from "../../../../../models/user";
 import { Notifications } from "@/app/types/notifications";
 import { JWT } from "next-auth/jwt";
-import { Users } from "@/app/types/users";
+import { User as NextAuthUser } from "next-auth";
 import { AdapterUser } from "next-auth/adapters";
 
 interface MyToken extends JWT {
@@ -92,11 +92,10 @@ export const authOptions: NextAuthOptions = {
       session,
     }: {
       token: MyToken;
-      user: Users | AdapterUser;
-      account: Account | null;
-      profile?: Profile;
+      user: AdapterUser | NextAuthUser;
+
       trigger?: "signIn" | "signUp" | "update";
-      isNewUser?: boolean;
+
       session?: any;
     }) {
       // Persist the OAuth access_token and or the user id to the token right after signin
@@ -156,11 +155,17 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
 
-    async signIn({ user, profile }) {
+    async signIn({
+      user,
+      profile,
+    }: {
+      user: AdapterUser | NextAuthUser;
+      profile?: Profile | undefined;
+    }) {
       // Get the user's name and email either from the 'user' object or the 'profile' object
-      const name = user.name ?? profile?.name;
-      const email = user.email ?? profile?.email;
-      const picture = profile?.picture ?? user.image;
+      const name = user?.name ?? profile?.name;
+      const email = user?.email ?? profile?.email;
+      const picture = profile?.picture ?? user?.image;
 
       // Connect to MongoDB
       // const client = await db.user.findFirst();
