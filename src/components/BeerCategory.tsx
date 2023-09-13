@@ -1,19 +1,17 @@
 "use client";
 import { Beer } from "@/app/types/beer";
-import { Category } from "@/app/types/category";
-import Link from "next/link";
-import ImageDisplay from "./ImageDisplay/ImageDisplay";
-import { handleBeerView, isNew } from "@/lib/utils";
-import OptionsButton from "./Buttons/OptionsButton";
-import { useEffect, useMemo, useState } from "react";
-import { handleDeleteCategory } from "@/lib/handleSubmit/handleDeleteCategory";
-import { useBreweryContext } from "@/context/brewery-beer";
-import { useSession } from "next-auth/react";
-import { mutate } from "swr";
-import { set } from "mongoose";
 import { Brewery } from "@/app/types/brewery";
-import { on } from "events";
+import { Category } from "@/app/types/category";
+import { useBreweryContext } from "@/context/brewery-beer";
+import { handleDeleteCategory } from "@/lib/handleSubmit/handleDeleteCategory";
+import { handleBeerView, isNew } from "@/lib/utils";
 import { ChevronRight, Sparkles } from "lucide-react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { useMemo, useState } from "react";
+import OptionsButton from "./Buttons/OptionsButton";
+import ImageDisplay from "./ImageDisplay/ImageDisplay";
+import BeerMugBadge from "./Badges/BeerMugBadge";
 
 type Props = {
   category: Category | { name: string };
@@ -193,12 +191,15 @@ export default function BeerCategory({
     <div className="relative">
       <div
         onClick={onClick}
-        className={`collapse category-container ${
-          isOpen ? "collapse-open bg-accent" : ""
-        } bg-teal-400 collapse-arrow my-4 `}
+        className={`collapse category-container  ${
+          isOpen ? "collapse-open open" : ""
+        } collapse-arrow my-4 `}
       >
         <div className="collapse-title category-container__title">
           <p className="ml-8">{category.name}</p>
+          {beersInCategory.length > 0 && (
+            <BeerMugBadge beerCount={beersInCategory.length} />
+          )}
           {isCategoryNew && <p className="tag-new">NEW</p>}
         </div>
         <div className="collapse-content ">
