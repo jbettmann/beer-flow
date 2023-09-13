@@ -1,21 +1,19 @@
 import NextAuth from "next-auth/next";
-import GoogleProvider from "next-auth/providers/google";
-import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GitHubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
 
-import jwt, { JwtPayload } from "jsonwebtoken";
-import { signJwtAccessToken, signJwtRefreshToken } from "@/lib/jwt";
-import type { Account, NextAuthOptions, Profile } from "next-auth";
-import { NextApiRequest, NextApiResponse } from "next";
 import getUser from "@/lib/getUser";
+import { signJwtAccessToken, signJwtRefreshToken } from "@/lib/jwt";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import { NextApiRequest, NextApiResponse } from "next";
+import type { NextAuthOptions, Profile } from "next-auth";
 
-import { Brewery } from "@/app/types/brewery";
-import updateUserInfo from "@/lib/PUT/updateUserInfoDBDirect";
-import updateUserInfoDBDirect from "@/lib/PUT/updateUserInfoDBDirect";
-import User from "../../../../../models/user";
 import { Notifications } from "@/app/types/notifications";
-import { JWT } from "next-auth/jwt";
+import updateUserInfoDBDirect from "@/lib/PUT/updateUserInfoDBDirect";
 import { User as NextAuthUser } from "next-auth";
+import { JWT } from "next-auth/jwt";
+import User from "../../../../../models/user";
 
 import { AdapterUser } from "next-auth/adapters";
 
