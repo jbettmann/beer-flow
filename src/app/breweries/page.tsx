@@ -34,21 +34,21 @@ const BreweriesPage = async () => {
   const breweries = await breweryData;
 
   return (
-    <section className="w-full">
+    <section className="w-full ">
       {/* <h2>
         <Link href={``}>
           <BackArrow width={"60"} height={"30"} />
         </Link>
       </h2> */}
       <br />
-      <div className="flex flex-col justify-center items-center">
+      <div className="flex flex-col justify-center items-center w-[80%] mx-auto text-center">
         {breweries.length > 0 &&
           breweries.map((brewery) => {
             return (
               <>
                 <p
                   key={brewery._id}
-                  className="bg-indigo-500 text-white p-6 rounded-xl border-2 border-white transition-all hover:cursor-pointer hover:bg-white hover:text-black "
+                  className="category-container w-full rounded-xl p-6"
                 >
                   <SetBreweryIdStorage
                     brewery={brewery}
@@ -58,10 +58,7 @@ const BreweriesPage = async () => {
               </>
             );
           })}
-        <Link
-          href={"/create/brewery"}
-          className="btn btn-accent text-indigo-900"
-        >
+        <Link href={"/create/brewery"} className="create-btn mt-10">
           Create A Brewery
         </Link>
       </div>
