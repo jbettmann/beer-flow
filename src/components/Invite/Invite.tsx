@@ -10,37 +10,34 @@ type Props = {
 
 const Invite = ({ invitee, handleChange, className, error }: Props) => {
   return (
-    <div className="flex justify-centeritems-center">
-      <div className="text-center relative">
-        <input
-          type="email"
-          placeholder="Email"
-          className={`${className} form__input mb-6 `}
-          value={invitee.email}
-          onChange={(e) => handleChange("email", e.target.value)}
-        />
-        {error && <p className="error absolute right-12 top-9 ">{error}</p>}
-      </div>
-      <div className="form-control">
-        <label className="cursor-pointer label w-fit">
-          <span className="label-text text-white mr-2">Make Admin</span>
+    <div className="flex justify-center items-center mb-6">
+      <div className="text-left flex relative">
+        <div className="flex-1">
+          <label htmlFor="email" className="label-text m-1">
+            Email Address
+          </label>
+          <input
+            type="email"
+            id="email"
+            placeholder="Email"
+            className={`${className} form__input w-full `}
+            value={invitee.email}
+            onChange={(e) => handleChange("email", e.target.value)}
+          />
+          {error && <p className="error absolute right-12 top-9 ">{error}</p>}
+        </div>
+        <div className="flex-none px-3 text-center ">
+          <label className="cursor-pointer label label-text text-gray-50 ">
+            Admin{" "}
+          </label>
           <input
             type="checkbox"
-            className="toggle toggle-accent"
+            className="checkbox checkbox-accent"
             onChange={(e) => handleChange("isAdmin", e.target.checked)}
             checked={invitee.isAdmin}
           />
-        </label>
+        </div>
       </div>
-
-      {/* <div className="flex justify-center items-center pb-7">
-        <input
-          type="checkbox"
-          checked={invitee.isAdmin}
-          onChange={(e) => handleChange("isAdmin", e.target.checked)}
-        />
-        <label className="text-white ml-2">Admin?</label>
-      </div> */}
     </div>
   );
 };
