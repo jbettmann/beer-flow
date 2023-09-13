@@ -11,14 +11,14 @@
   --primary: #2B2B2B;
   --secondary: bg-teal-300;
   --third-color: #343434;
-  --text-main: @apply text-gray-50;
+  --text-main: #73e5b7;
 } */
 
 html {
-  @apply w-screen h-screen bg-primary mb-14 lg:mb-0
+  @apply h-screen   bg-primary mb-14 lg:mb-0
 }
 body {
-  @apply h-full p-5 bg-primary text-gray-50  mb-14 lg:mb-0
+  @apply p-5 pb-16 bg-primary text-gray-50 mb-14  lg:mb-0
 }
 
 h1 {
@@ -80,9 +80,10 @@ p {
   bottom: -100%; /* start off the screen */
   left: 0;
   width: 100%;
-  height: 9vh;
+  height: 95vh;
   visibility: hidden; /* set to hidden initially */
   transition: all 0.5s ease-in-out;
+  z-index: 2;
 }
 
 .bottom-drawer.open {
@@ -93,7 +94,10 @@ p {
 
 
 .category-container {
-  @apply bg-third-color text-gray-50 border border-gray-500
+  @apply bg-third-color text-gray-50 border border-gray-500  hover:shadow-lg transition-all duration-300 ease-in-out
+}
+.category-container.open {
+  @apply bg-fourth-color text-gray-50 border border-accent shadow-lg
 }
 
 .category-container__title {
@@ -109,7 +113,7 @@ p {
 }
 
 .create-btn {
-  @apply btn btn-accent
+  @apply btn btn-accent rounded-full
 }
 
 .close-btn {
@@ -141,7 +145,7 @@ p {
 }
 
 .form__input {
-  @apply input text-black
+  @apply input bg-primary text-gray-50 border-gray-400 
 }
 
 .form__input-textarea {
@@ -157,11 +161,11 @@ p {
 }
 
 .logo {
-  @apply w-16 h-fit rounded-2xl 
+  @apply w-12 h-12 rounded-2xl bg-slate-50 p-[.5] object-contain
 }
 
 .logo__default {
-  @apply flex h-16 bg-gray-800 justify-center items-center text-accent font-bold text-2xl
+  @apply flex p-3 bg-accent justify-center items-center text-third-color font-bold text-xl rounded-2xl
 }
 
 .logo__settings {
@@ -213,6 +217,16 @@ p {
   --bg-opacity: 1;
   background-color: '#f7fafc';
   background-color: rgba(247, 250, 253, var(--bg-opacity));
+}
+.search-result__container {
+  @apply flex flex-col w-full
+}
+.search-result__item {
+  @apply bg-primary my-2 w-full flex items-center justify-between rounded-md shadow-md transition-all hover:shadow-xl hover:text-accent
+}
+
+.search-result__icon-name {
+  @apply flex items-center gap-2
 }
 
 .side-drawer {
