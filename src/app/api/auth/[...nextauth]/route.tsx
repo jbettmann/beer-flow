@@ -14,6 +14,15 @@ import updateUserInfo from "@/lib/PUT/updateUserInfoDBDirect";
 import updateUserInfoDBDirect from "@/lib/PUT/updateUserInfoDBDirect";
 import User from "../../../../../models/user";
 import { Notifications } from "@/app/types/notifications";
+import { JWT } from "next-auth/jwt";
+
+interface MyToken extends JWT {
+  id?: string;
+  breweries?: string[];
+  notifications?: Notifications;
+  accessToken?: string;
+  refreshToken?: string;
+}
 
 export const authOptions: NextAuthOptions = {
   // pages: {
@@ -72,15 +81,25 @@ export const authOptions: NextAuthOptions = {
   //   jwt: true,
   // },
   callbacks: {
-    async jwt({ token, user, trigger, session }) {
+    async jwt({
+      token,
+      user,
+      trigger,
+      session,
+    }: {
+      token: MyToken;
+      user: any;
+      trigger: string;
+      session: any;
+    }) {
       // Persist the OAuth access_token and or the user id to the token right after signin
 
       if (trigger === "update") {
         if (session.newBreweryId) {
-          token.breweries.push(session.newBreweryId) as string;
+          (token.breweries as string[]).push(session.newBreweryId);
         }
         if (session.removeBreweryId) {
-          token.breweries = token.breweries.filter(
+          token.breweries = (token.breweries as string[]).filter(
             (breweryId: string) =>
               breweryId !== (session.removeBreweryId as string)
           );
