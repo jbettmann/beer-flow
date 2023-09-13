@@ -8,7 +8,7 @@ export default async function BreweriesLayout(props: {
   modal: React.ReactNode;
 }) {
   return (
-    <div>
+    <div className="h-screen">
       {props.children}
       {props.modal}
     </div>
