@@ -148,7 +148,7 @@ export const authOptions: NextAuthOptions = {
             const newAccessToken = signJwtAccessToken(rest);
 
             token.accessToken = newAccessToken;
-          } catch (err) {
+          } catch (err: string | any) {
             console.error("Error refreshing access token", err);
 
             return { ...token, error: "RefreshAccessTokenError" };
@@ -183,7 +183,7 @@ export const authOptions: NextAuthOptions = {
       let existingUser;
       try {
         existingUser = await getUser(email);
-      } catch (err) {
+      } catch (err: string | any) {
         console.error(err);
       }
 
@@ -196,8 +196,7 @@ export const authOptions: NextAuthOptions = {
               userId: existingUser._id,
               updatedUserInfo: { image: picture },
             });
-            console.log({ updatedUser });
-          } catch (error) {
+          } catch (error: string | any) {
             console.error("Error updating user info:", error.message);
           }
         }
