@@ -2,6 +2,8 @@
 import React, { useState, useEffect, useRef, FC, ChangeEvent } from "react";
 import {
   Beer as BeerGlass,
+  ChevronRight,
+  ExternalLink,
   Hop,
   Search as SearchIcon,
   Wheat,
@@ -127,48 +129,52 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
   }, [isOpen]);
 
   return (
-    <div className="mx-auto w-full h-full lg:w-1/2 ">
+    <div className="mx-auto w-full lg:w-1/2 mb-16 lg:mb-0 pt-6">
       <div className="side-header">
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => handleSearch(e.target.value)}
-          onKeyDown={handleKeyPress}
-          placeholder="Search"
-          className=" input input-bordered w-auto text-primary relative"
-        />
-        {searchTerm && (
-          <span
-            className="absolute top-1/4 right-2 opacity-50 cursor-pointer"
-            onClick={() => {
-              setSearchTerm(""), handleSearch("");
-            }}
-          >
-            <X size={20} color="#000" />
-          </span>
-        )}
-
-        <button className="btn btn-outline btn-accent" onClick={onClose}>
+        <div className="relative">
+          {/* Input with padding on the right */}
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => handleSearch(e.target.value)}
+            onKeyDown={handleKeyPress}
+            placeholder="Search"
+            className="input input-bordered w-auto text-primary pr-8"
+          />
+          {searchTerm && (
+            <button
+              aria-label="Clear input"
+              className="absolute inset-y-0 right-2 flex items-center opacity-50 cursor-pointer focus:outline-none"
+              onClick={() => {
+                setSearchTerm(""), handleSearch("");
+              }}
+            >
+              <X size={20} color="#000" />
+            </button>
+          )}
+        </div>
+        <button className="btn btn-outline btn-accent ml-2" onClick={onClose}>
           Cancel
         </button>
       </div>
+      {/* Recent Searches  */}
       {!searchTerm && (
-        <div className="flex  p-5 justify-between items-start ">
-          <div className="flex flex-col">
+        <div className="flex p-4 justify-between items-start">
+          <div className="search-result__container">
             <h4>Recent Searches</h4>
-            <div className="flex flex-col ml-2 mt-2 gap-1">
+            <div className="flex flex-col ml-2 mt-2 gap-1 ">
               {recentSearches.map((search, idx) => (
                 <div
                   key={idx}
                   onClick={() => {
                     setSearchTerm(search), handleSearch(search);
                   }}
-                  className="flex items-center gap-2 p-2"
+                  className=" p-4 search-result__item hover:cursor-pointer"
                 >
-                  <BeerGlass size={20} strokeWidth={1} />
                   <p className="m-0" key={idx}>
                     {search}
                   </p>
+                  <SearchIcon size={20} strokeWidth={1} />
                 </div>
               ))}
             </div>
@@ -182,7 +188,7 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
 
       {/* // Search Beer Results */}
       {searchBeerResult && searchBeerResult.length > 0 && (
-        <div className="flex flex-col p-4">
+        <div className="p-4 search-result__container">
           <h5 className="text-left text-gray-50 text-opacity-80">Beer</h5>
           {isLoading ? (
             <span className="loading loading-bars loading-xs text-accent mx-auto"></span>
@@ -196,10 +202,14 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
                   onClose();
                 }}
                 href={`/breweries/${selectedBrewery?._id}/beers/${beer._id}`}
-                className="flex items-center gap-2 p-4"
+                className=" p-4 search-result__item "
               >
-                <BeerGlass size={20} strokeWidth={1} />{" "}
-                <p className="m-0">{beer.name}</p>
+                {" "}
+                <div className="search-result__icon-name">
+                  <BeerGlass size={20} strokeWidth={1} />{" "}
+                  <p className="m-0">{beer.name}</p>
+                </div>
+                <ChevronRight size={24} strokeWidth={1} />
               </Link>
             ))
           )}
@@ -213,7 +223,7 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
       {searchHopResult && searchHopResult.length > 0 && (
         <>
           <div className="divider px-5"></div>
-          <div className="flex flex-col p-4">
+          <div className="p-4 search-result__container">
             <h5 className="text-left text-gray-50 text-opacity-80">Hops</h5>
             {searchHopResult.map((hop) => (
               <a
@@ -225,10 +235,14 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
                 }}
                 target="_blank"
                 href={`https://www.beermaverick.com/hop/${hop.id}`}
-                className="flex items-center gap-2 p-4"
+                className=" p-4 search-result__item "
               >
-                <Hop size={20} strokeWidth={1} />
-                <p className="m-0">{hop.name}</p>
+                {" "}
+                <div className="search-result__icon-name">
+                  <Hop size={20} strokeWidth={1} />
+                  <p className="m-0">{hop.name}</p>
+                </div>
+                <ExternalLink size={20} strokeWidth={1} />
               </a>
             ))}
           </div>
@@ -239,7 +253,7 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
       {searchMaltResult && searchMaltResult.length > 0 && (
         <>
           <div className="divider px-5"></div>
-          <div className="flex flex-col p-4">
+          <div className=" p-4 search-result__container">
             <h5 className="text-left text-gray-50 text-opacity-80">Malts</h5>
             {searchMaltResult.map((malt) => (
               <a
@@ -251,10 +265,13 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
                 }}
                 target="_blank"
                 href={`https://www.google.com/search?q=${malt.id}+malt`}
-                className="flex items-center gap-2 p-4"
+                className=" p-4 search-result__item"
               >
-                <Wheat size={20} strokeWidth={1} />
-                <p className="m-0">{malt.name}</p>
+                <div className="search-result__icon-name">
+                  <Wheat size={20} strokeWidth={1} />
+                  <p className="m-0">{malt.name}</p>
+                </div>
+                <ExternalLink size={20} strokeWidth={1} />
               </a>
             ))}
           </div>
