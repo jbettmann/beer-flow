@@ -6,11 +6,14 @@ import StaffDashboard from "./StaffDashboard";
 import StaffTable from "./StaffTable";
 import Link from "next/link";
 import { UserPlus } from "lucide-react";
+import BottomDrawer from "../Drawers/BottomDrawer";
+import MultipleInvites from "../Invite/MultipuleInvites";
 
 type Props = {};
 
 const StaffContainer = (props: Props) => {
   const { selectedBrewery } = useBreweryContext();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [viewFilter, setViewFilter] = useState<string>("All Staff");
 
   return (
@@ -23,12 +26,9 @@ const StaffContainer = (props: Props) => {
               Owner {selectedBrewery.owner.fullName || ""}
             </div>
           </div>
-          <Link
-            href={`/breweries/${selectedBrewery?._id}/invite`}
-            className="btn btn-accent"
-          >
+          <button onClick={() => setIsOpen(true)} className="btn btn-accent">
             Invite <UserPlus size={20} />
-          </Link>
+          </button>
         </div>
         <div className="flex flex-col w-full lg:flex-row p-5">
           <StaffDashboard
@@ -37,6 +37,12 @@ const StaffContainer = (props: Props) => {
           />
           <StaffTable viewFilter={viewFilter} brewery={selectedBrewery} />
         </div>
+        <BottomDrawer isOpen={isOpen}>
+          <MultipleInvites
+            breweryId={selectedBrewery._id}
+            setIsOpen={setIsOpen}
+          />
+        </BottomDrawer>
       </>
     )
   );
