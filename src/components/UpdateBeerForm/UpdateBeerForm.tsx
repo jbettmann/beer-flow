@@ -108,6 +108,7 @@ const UpdateBeerForm = ({
   // Create a map that connects field names to their refs
   const fieldRefs: RefsType = {
     name: useRef<HTMLInputElement>(null),
+    malt: useRef<HTMLInputElement>(null),
     abv: useRef<HTMLInputElement>(null),
     category: useRef<HTMLInputElement>(null),
     style: useRef<HTMLInputElement>(null),
@@ -248,19 +249,19 @@ const UpdateBeerForm = ({
       isSubmitting.current = false;
     }
   };
-  const containerRef = useRef(null);
 
   useEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.scrollTop = 0;
+    if (isEditing) {
+      if (fieldRefs.name.current) {
+        fieldRefs.name.current.focus();
+      }
     }
-  }, []);
+  }, [isEditing]);
 
   return (
     <form
       onSubmit={handleSubmit}
       className={` p-4 form flex flex-col justify-between mx-auto rounded-lg bg-third-color`}
-      ref={containerRef}
     >
       <div className="flex justify-around">
         {/* Name */}
