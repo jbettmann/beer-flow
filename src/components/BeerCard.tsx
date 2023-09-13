@@ -32,7 +32,7 @@ const BeerCard = ({ beerId }: Props) => {
 
   return (
     beer && (
-      <div className=" card w-full beer-card shadow-xl p-5">
+      <div className=" card w-full lg:mx-auto beer-card shadow-xl p-5">
         <div className="flex w-full justify-start">
           <button
             className={`link link-hover text-gray-50`}
@@ -49,6 +49,7 @@ const BeerCard = ({ beerId }: Props) => {
               beer={beer}
               brewery={selectedBrewery}
               setIsEditing={setIsEditing}
+              isEditing={isEditing}
               setBeer={setBeer}
             />
           ) : (
