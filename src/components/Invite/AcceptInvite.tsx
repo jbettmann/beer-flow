@@ -1,24 +1,22 @@
 "use client";
 import { Brewery } from "@/app/types/brewery";
-import { useBreweryContext } from "@/context/brewery-beer";
+import { useToast } from "@/context/toast";
 import { acceptInvite } from "@/lib/POST/acceptInvite";
-import getSingleBrewery from "@/lib/getSingleBrewery";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import path from "path";
-import React, { useEffect, useState } from "react";
-import useSWR from "swr";
+import { useEffect, useState } from "react";
 
 type Props = {};
 
 const AcceptInvite = (props: Props) => {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(`Accepting Invite... `);
   const searchParams = useSearchParams();
   const pathname = usePathname();
+  const { addToast } = useToast();
 
   const { data: session, update } = useSession();
 
@@ -42,22 +40,24 @@ const AcceptInvite = (props: Props) => {
 
         if (response.message === "Invitation accepted.") {
           setMessage(response.message);
-          alert(
-            `You have successfully joined ${response.brewery.companyName}!`
+          addToast(
+            `You have successfully joined ${response.brewery.companyName}!`,
+            "success"
           );
-          console.log(response.brewery);
 
           await update({ newBreweryId: response.brewery._id });
           handleBreweryToStorage(response.brewery);
-      
+
           router.push(`/breweries/${response.brewery._id}`);
         } else {
+          addToast(response.message, "error");
           setMessage(response.message);
         }
       } else {
         // router.push("/"); // Redirect to the home page if the user is not authenticate
       }
     } catch (err) {
+      addToast(err.message, "error");
       setMessage(err.message);
     } finally {
       setLoading(false);
@@ -75,23 +75,32 @@ const AcceptInvite = (props: Props) => {
   }, [pathname, session]);
 
   return (
-    <div>
-      {loading ? (
-        <span className="loading loading-spinner loading-lg">Loading...</span>
-      ) : (
-        <div>
-          <p>{message}</p>
-          <Link className="create-btn" href={"/"}>
-            Home
-          </Link>
-          <button
-            className="btn btn-outline btn-primary"
-            onClick={() => router.refresh()}
-          >
-            Try Again
-          </button>
-        </div>
-      )}
+    <div className="mx-auto w-full h-full text-center">
+      <div className=" w-full h-[80%] flex flex-col justify-center items-center ">
+        {loading ? (
+          <>
+            <p>{message}</p>
+            <span className="loading loading-spinner loading-lg">
+              Loading...
+            </span>
+          </>
+        ) : (
+          <div className="flex flex-col justify-center items-center">
+            <p>{message}</p>
+            <div className="flex gap-3">
+              <Link className="create-btn" href={"/"}>
+                Home
+              </Link>
+              <button
+                className="btn btn-outline btn-primary"
+                onClick={() => router.refresh()}
+              >
+                Try Again
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
