@@ -5,7 +5,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { signJwtAccessToken, signJwtRefreshToken } from "@/lib/jwt";
-import type { NextAuthOptions } from "next-auth";
+import type { Account, NextAuthOptions, Profile } from "next-auth";
 import { NextApiRequest, NextApiResponse } from "next";
 import getUser from "@/lib/getUser";
 
@@ -15,6 +15,8 @@ import updateUserInfoDBDirect from "@/lib/PUT/updateUserInfoDBDirect";
 import User from "../../../../../models/user";
 import { Notifications } from "@/app/types/notifications";
 import { JWT } from "next-auth/jwt";
+import { Users } from "@/app/types/users";
+import { AdapterUser } from "next-auth/adapters";
 
 interface MyToken extends JWT {
   id?: string;
@@ -84,17 +86,22 @@ export const authOptions: NextAuthOptions = {
     async jwt({
       token,
       user,
+
       trigger,
+
       session,
     }: {
       token: MyToken;
-      user: any;
-      trigger: string;
-      session: any;
+      user: Users | AdapterUser;
+      account: Account | null;
+      profile?: Profile;
+      trigger?: "signIn" | "signUp" | "update";
+      isNewUser?: boolean;
+      session?: any;
     }) {
       // Persist the OAuth access_token and or the user id to the token right after signin
 
-      if (trigger === "update") {
+      if (trigger && trigger === "update") {
         if (session.newBreweryId) {
           (token.breweries as string[]).push(session.newBreweryId);
         }
