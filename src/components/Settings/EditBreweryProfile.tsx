@@ -107,7 +107,7 @@ const EditBreweryProfile = ({ brewery, onClose, onSave }: Props) => {
             ) : (
               editBrewery?.companyName &&
               !previewImage && (
-                <div className="logo logo__default m-3">
+                <div className=" logo__default m-3">
                   {getInitials(editBrewery.companyName || "")}
                 </div>
               )
