@@ -1,5 +1,6 @@
+import db from "@/lib/db";
 import { signJwtAccessToken } from "@/lib/jwt";
-import { db } from "@/lib/db";
+
 import * as bcyrpt from "bcrypt";
 
 interface RequestBody {
