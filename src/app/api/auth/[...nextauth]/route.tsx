@@ -5,7 +5,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { signJwtAccessToken, signJwtRefreshToken } from "@/lib/jwt";
-import type { Account, NextAuthOptions, Profile, User } from "next-auth";
+import type { Account, NextAuthOptions, Profile } from "next-auth";
 import { NextApiRequest, NextApiResponse } from "next";
 import getUser from "@/lib/getUser";
 
