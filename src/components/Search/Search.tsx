@@ -204,9 +204,8 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
                 href={`/breweries/${selectedBrewery?._id}/beers/${beer._id}`}
                 className=" p-4 search-result__item "
               >
-                {" "}
                 <div className="search-result__icon-name">
-                  <BeerGlass size={20} strokeWidth={1} />{" "}
+                  <BeerGlass size={20} strokeWidth={1} />
                   <p className="m-0">{beer.name}</p>
                 </div>
                 <ChevronRight size={24} strokeWidth={1} />
@@ -237,7 +236,6 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
                 href={`https://www.beermaverick.com/hop/${hop.id}`}
                 className=" p-4 search-result__item "
               >
-                {" "}
                 <div className="search-result__icon-name">
                   <Hop size={20} strokeWidth={1} />
                   <p className="m-0">{hop.name}</p>
