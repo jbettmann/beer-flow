@@ -56,7 +56,7 @@ const AcceptInvite = (props: Props) => {
       } else {
         // router.push("/"); // Redirect to the home page if the user is not authenticate
       }
-    } catch (err) {
+    } catch (err: string | any) {
       addToast(err.message, "error");
       setMessage(err.message);
     } finally {

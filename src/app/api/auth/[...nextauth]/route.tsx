@@ -5,7 +5,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { signJwtAccessToken, signJwtRefreshToken } from "@/lib/jwt";
-import type { Account, NextAuthOptions, Profile } from "next-auth";
+import type { Account, NextAuthOptions, Profile, User } from "next-auth";
 import { NextApiRequest, NextApiResponse } from "next";
 import getUser from "@/lib/getUser";
 
@@ -25,6 +25,11 @@ interface MyToken extends JWT {
   notifications?: Notifications;
   accessToken?: string;
   refreshToken?: string;
+}
+
+interface Profiles extends Profile {
+  picture?: string;
+  // ... other properties ...
 }
 
 export const authOptions: NextAuthOptions = {
@@ -161,7 +166,7 @@ export const authOptions: NextAuthOptions = {
       profile,
     }: {
       user: AdapterUser | NextAuthUser;
-      profile?: Profile | undefined;
+      profile?: Profiles | undefined;
     }): Promise<boolean> {
       // Get the user's name and email either from the 'user' object or the 'profile' object
       const name = user?.name ?? profile?.name;
