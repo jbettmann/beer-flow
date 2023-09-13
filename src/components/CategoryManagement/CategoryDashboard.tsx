@@ -32,8 +32,8 @@ const CategoryDashboard = ({ viewFilter, setViewFilter }: Props) => {
           tabIndex={0}
           className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
         >
-          {menuButtons.map((button) => (
-            <li>
+          {menuButtons.map((button, i) => (
+            <li key={i}>
               <button
                 className="btn btn-ghost "
                 onClick={() => setViewFilter(button)}
