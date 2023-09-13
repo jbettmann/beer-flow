@@ -173,7 +173,7 @@ const BrewerySettingsProfileView = ({ breweryId }: Props) => {
             <ImageDisplay item={brewery} className="logo__settings" />
           ) : (
             brewery?.companyName && (
-              <div className="logo logo__default ">
+              <div className=" logo__default ">
                 {getInitials(brewery.companyName || "")}
               </div>
             )

@@ -17,7 +17,7 @@ const ImageDisplay = ({
 
   useEffect(() => {
     async function fetchUrl() {
-      const url = await getImagePublicURL(item.image);
+      const url = getImagePublicURL(item.image);
       setImageUrl(url);
     }
 
