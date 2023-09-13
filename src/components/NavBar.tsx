@@ -22,6 +22,7 @@ import {
   Home,
   Skull,
   Search as SearchIcon,
+  LayoutGrid,
 } from "lucide-react";
 import { Session } from "next-auth";
 import { set } from "mongoose";
@@ -41,17 +42,21 @@ const NavBar = ({
 }) => {
   const { selectedBrewery, setSelectedBrewery } = useBreweryContext();
   const [adminAllowed, setAdminAllowed] = useState(false);
-  const [open, setOpen] = useState(false);
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   // Reference to the drawer div
   const drawerRef = useRef<HTMLDivElement>(null);
+  const checkBoxRef = useRef<HTMLInputElement>(null);
 
   const pathname = usePathname();
 
   const isActive = (path: string) => {
     return pathname === path;
+  };
+
+  const closeDrawer = () => {
+    checkBoxRef.current?.click();
   };
 
   const isUserAdmin = (brewery: Brewery, userId: string) => {
@@ -87,7 +92,7 @@ const NavBar = ({
     setSelectedBrewery(brewery);
 
     // Close the drawer
-    setOpen(false);
+    closeDrawer();
   };
 
   // clear local storage when sign out
@@ -109,25 +114,8 @@ const NavBar = ({
         setSelectedBrewery(savedBrewery);
       }
     }
-
-    // Function to handle outside click
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        drawerRef.current &&
-        !drawerRef.current.contains(event.target as Node)
-      ) {
-        setOpen(false);
-      }
-    }
-
-    // Add the outside click handler
-    document.addEventListener("mousedown", handleClickOutside);
-
-    // Cleanup function
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
   }, [breweries]);
+
   // set user admin status
   useEffect(() => {
     if (selectedBrewery) {
@@ -146,22 +134,29 @@ const NavBar = ({
 
       <div className="navbar justify-between">
         <div className="drawer w-fit p-3 ">
-          <input id="menu-drawer" type="checkbox" className="drawer-toggle" />
+          <input
+            id="menu-drawer"
+            type="checkbox"
+            className="drawer-toggle"
+            ref={checkBoxRef}
+          />
           <div className={`flex flex-row justify-between drawer-content`}>
             <div className="text-xl font-medium" ref={drawerRef}>
               <label
                 htmlFor="menu-drawer"
                 className="drawer-button flex flex-row items-center"
               >
-                {selectedBrewery?.image ? (
-                  <ImageDisplay item={selectedBrewery} className="logo" />
-                ) : (
-                  selectedBrewery?.companyName && (
-                    <div className="logo logo__default ">
-                      {getInitials(selectedBrewery.companyName || "")}
-                    </div>
-                  )
-                )}
+                <div>
+                  {selectedBrewery?.image ? (
+                    <ImageDisplay item={selectedBrewery} className="logo" />
+                  ) : (
+                    selectedBrewery?.companyName && (
+                      <div className=" logo__default ">
+                        {getInitials(selectedBrewery.companyName || "")}
+                      </div>
+                    )
+                  )}
+                </div>
                 <h6 className="pl-3 text-sm">{selectedBrewery?.companyName}</h6>
               </label>
             </div>
@@ -169,34 +164,36 @@ const NavBar = ({
           <div className="drawer-side z-50 ">
             <label htmlFor="menu-drawer" className="drawer-overlay "></label>
             <div className="h-full flex flex-col justify-between menu-drawer">
-              <div className="menu p-6 w-80 h-full">
+              <div className="menu p-6 w-80 h-full gap-3">
                 <h4 className="py-4">Breweries</h4>
 
                 {breweries.map((brewery: Brewery) => (
-                  <li key={brewery._id}>
+                  <li
+                    key={brewery._id}
+                    className="category-container rounded-xl p-2"
+                  >
                     <Link
                       key={brewery._id}
                       href={`/breweries/${brewery._id}`}
-                      className="flex flex-row"
-                      onClick={(e) => {
-                        handleBreweryClick(brewery);
-                      }}
+                      className="flex flex-row items-center text-left"
+                      onClick={() => handleBreweryClick(brewery)}
                     >
                       {brewery.image ? (
                         <ImageDisplay item={brewery} className="logo" />
                       ) : (
-                        <div className="logo logo__default">
+                        <div className="logo__default">
                           {getInitials(brewery.companyName)}
                         </div>
                       )}
-                      <h6 className="pl-3">{brewery.companyName}</h6>
+                      <h6 className="pl-3 text-left text-xs">
+                        {brewery.companyName}
+                      </h6>
                     </Link>
                   </li>
                 ))}
               </div>
               <div className="flex flex-col justify-center border-t-2 p-3 menu">
-                <li>
-                  {" "}
+                <li onClick={closeDrawer}>
                   <Link
                     href={"/create/brewery"}
                     className="  flex flex-row items-center"
@@ -206,7 +203,7 @@ const NavBar = ({
                   </Link>
                 </li>
 
-                <li>
+                <li onClick={closeDrawer}>
                   <Link
                     href={"/settings"}
                     className="  flex flex-row items-center"
@@ -216,7 +213,7 @@ const NavBar = ({
                   </Link>
                 </li>
 
-                <li>
+                <li onClick={closeDrawer}>
                   <Link href={"/help"} className=" flex flex-row items-center">
                     <HelpCircle size={24} />
                     <h6 className="pl-3">Help</h6>
@@ -235,7 +232,7 @@ const NavBar = ({
             <ImageDisplay item={selectedBrewery} className="logo" />
           ) : (
             selectedBrewery?.companyName && (
-              <div className="logo logo__default ">
+              <div className=" logo__default ">
                 {getInitials(selectedBrewery.companyName || "")}
               </div>
             )
@@ -274,7 +271,7 @@ const NavBar = ({
                         href={`/breweries/${selectedBrewery?._id}/categories`}
                         className="flex flex-row items-center"
                       >
-                        <ListFilter size={24} />
+                        <LayoutGrid size={24} />
                         <h6 className="pl-3">Categories</h6>
                       </Link>
                     </li>
@@ -374,7 +371,7 @@ const NavBar = ({
                 className="flex flex-col items-center text-xs"
                 data-tip="Brewery Categories Management"
               >
-                <LayoutList
+                <LayoutGrid
                   size={24}
                   strokeWidth={1}
                   className={
