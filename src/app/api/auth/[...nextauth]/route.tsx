@@ -16,6 +16,7 @@ import User from "../../../../../models/user";
 import { Notifications } from "@/app/types/notifications";
 import { JWT } from "next-auth/jwt";
 import { User as NextAuthUser } from "next-auth";
+
 import { AdapterUser } from "next-auth/adapters";
 
 interface MyToken extends JWT {
@@ -161,7 +162,7 @@ export const authOptions: NextAuthOptions = {
     }: {
       user: AdapterUser | NextAuthUser;
       profile?: Profile | undefined;
-    }) {
+    }): Promise<boolean> {
       // Get the user's name and email either from the 'user' object or the 'profile' object
       const name = user?.name ?? profile?.name;
       const email = user?.email ?? profile?.email;
@@ -238,6 +239,7 @@ export const authOptions: NextAuthOptions = {
 
         return false;
       }
+      return false;
     },
     async session({ session, token, user }) {
       if (token.accessToken) {
