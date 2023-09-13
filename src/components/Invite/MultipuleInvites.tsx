@@ -6,14 +6,19 @@ import { validateEmail } from "@/lib/validators/email";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useBreweryContext } from "@/context/brewery-beer";
+import { Plus, X } from "lucide-react";
+import { useToast } from "@/context/toast";
+import { set } from "mongoose";
 
 type pageProps = {
   breweryId: string;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const MultipleInvites = ({ breweryId }: pageProps) => {
+const MultipleInvites = ({ breweryId, setIsOpen }: pageProps) => {
   const { data: session } = useSession();
   const router = useRouter();
+  const { addToast } = useToast();
   const [invitees, setInvitees] = useState([
     { email: "", isAdmin: false, error: "" },
   ]);
@@ -70,19 +75,33 @@ const MultipleInvites = ({ breweryId }: pageProps) => {
           .map((result, index) => invitees[index].email);
 
         if (successEmails.length) {
-          alert(
-            `${successEmails.join(", ")} invitations were successfully sent`
+          addToast(
+            `${successEmails.join(", ")} ${
+              successEmails.length > 1 ? "invitations" : "invitation"
+            } were successfully sent`,
+            "success"
           );
+
           setInvitees([{ email: "", isAdmin: false, error: "" }]);
           router.back();
         }
         if (failedEmails.length) {
-          alert(`Failed to send invitations to: ${failedEmails.join(", ")}`);
+          addToast(
+            `Failed to send invitation to: ${failedEmails.join(", ")}`,
+            "error"
+          );
         }
       }
+      onClose();
     } catch (error) {
+      addToast(error.message, "error");
       console.error("Error sending invites:", error);
     }
+  };
+
+  const onClose = () => {
+    setIsOpen(false);
+    setInvitees([{ email: "", isAdmin: false, error: "" }]);
   };
 
   const handleChange = (
@@ -102,45 +121,68 @@ const MultipleInvites = ({ breweryId }: pageProps) => {
 
   return (
     <>
+      <div className="flex w-full justify-between items-center">
+        {" "}
+        <button onClick={onClose} className="btn btn-ghost m-2 ">
+          <X size={24} />
+        </button>
+        <h3>Invite</h3>
+        <button
+          onClick={onClose}
+          className="btn btn-ghost btn-disabled invisible m-2 "
+        >
+          <X size={24} />
+        </button>
+      </div>
+
       {selectedBrewery && (
-        <h1>Invite New Staff to {selectedBrewery.companyName} </h1>
-      )}
-      <form
-        onSubmit={handleSubmit}
-        className="form flex flex-col w-1/2 mt-8 p-5 rounded-lg mx-auto"
-      >
-        <div className="flex justify-between">
-          <div className="flex flex-col ">
-            {invitees.map((invitee, index) => (
-              <div className="py-3 flex" key={index}>
-                {index !== 0 && (
+        <form
+          onSubmit={handleSubmit}
+          className="form flex flex-col w-full lg:w-1/2 mt-8 rounded-lg mx-auto"
+        >
+          <div className="flex flex-col items-center">
+            <div className="flex justify-between">
+              <div className="flex flex-col ">
+                {invitees.map((invitee, index) => (
+                  <div className="p-3 flex items-center" key={index}>
+                    {index !== 0 && (
+                      <button
+                        type="button"
+                        className="btn btn-outline btn-error rounded-full w-5 h-9 min-w-0 min-h-fit mr-3"
+                        onClick={() => removeInvitee(index)}
+                      >
+                        -
+                      </button>
+                    )}
+                    <Invite
+                      invitee={invitee}
+                      className={""}
+                      handleChange={(field, value) =>
+                        handleChange(index, field, value)
+                      }
+                      error={invitee.error}
+                    />
+                  </div>
+                ))}
+                <div className="flex justify-end items-center pr-6 gap-2">
                   <button
                     type="button"
-                    className="btn btn-outline btn-error mr-3"
-                    onClick={() => removeInvitee(index)}
+                    className="create-btn"
+                    onClick={addInvitee}
                   >
-                    -
+                    <Plus size={18} strokeWidth={2} />
                   </button>
-                )}
-                <Invite
-                  invitee={invitee}
-                  className={`${index === 0 && "ml-16"} mx-3`}
-                  handleChange={(field, value) =>
-                    handleChange(index, field, value)
-                  }
-                  error={invitee.error}
-                />
+                  <h5>Add</h5>
+                </div>
               </div>
-            ))}
+            </div>
+
+            <button className="create-btn mx-auto mt-10" type="submit">
+              Send Invites
+            </button>
           </div>
-          <button type="button" className="create-btn" onClick={addInvitee}>
-            +
-          </button>
-        </div>
-        <button className="create-btn mx-auto" type="submit">
-          Send Invites
-        </button>
-      </form>
+        </form>
+      )}
     </>
   );
 };
