@@ -34,7 +34,7 @@ const BreweriesPage = async () => {
   const breweries = await breweryData;
 
   return (
-    <section className="w-full ">
+    <section className="w-full h-screen">
       {/* <h2>
         <Link href={``}>
           <BackArrow width={"60"} height={"30"} />
