@@ -12,7 +12,7 @@ const LoginPage = () => {
   const searchParams = useSearchParams();
   const { data: session } = useSession();
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const acceptInviteUrl = searchParams.get("next");
   console.log({ acceptInviteUrl });
   const onSignIn = async () => {
