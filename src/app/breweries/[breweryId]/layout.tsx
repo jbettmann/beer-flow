@@ -3,7 +3,7 @@ export default async function BreweriesIdLayout(props: {
   createBeerModal: React.ReactNode;
 }) {
   return (
-    <div>
+    <div className="h-full">
       {props.children}
       {props.createBeerModal}
     </div>

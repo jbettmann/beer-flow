@@ -25,7 +25,7 @@ export default async function SingleBreweryPage({
 
   if (!breweryId) return notFound();
   return (
-    <main className="w-full h-full">
+    <main className="w-full h-screen">
       <BreweryProfiles breweryId={breweryId} />
     </main>
   );
