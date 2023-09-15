@@ -2,14 +2,7 @@
 import { Category } from "@/app/types/category";
 import { useBreweryContext } from "@/context/brewery-beer";
 import updateBeerCategory from "@/lib/PUT/updateBeerCategory";
-import {
-  BookMarked,
-  Check,
-  LogIn,
-  PencilLine,
-  Scissors,
-  Trash2,
-} from "lucide-react";
+import { BookMarked, LogIn, PencilLine, Scissors, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import RemoveBeerFromCategory from "../Alerts/RemoveBeerFromCategory";
@@ -46,7 +39,7 @@ const CategoryRow = ({
   const [toContinue, setToContinue] = useState(false);
   const [toMoveContinue, setToMoveContinue] = useState(false);
 
-  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertOpen, setAlertOpen] = useState<boolean>(false);
   const [moveAlertOpen, setMoveAlertOpen] = useState<boolean>(false);
 
   const [moveCategory, setMoveCategory] = useState<FormValues | []>([]);
@@ -182,7 +175,7 @@ const CategoryRow = ({
       await Promise.all(updatedBeersRequests);
 
       // Update the client state
-      setSelectedBeers((prevSelectedBeers) => {
+      setSelectedBeers((prevSelectedBeers: Beer[]) => {
         // Iterate over the previous selected beers and create a new array
         return prevSelectedBeers?.map((beer) => {
           if (beerIdsToUpdate.includes(beer._id)) {
@@ -377,8 +370,9 @@ const CategoryRow = ({
           setAlertOpen={setMoveAlertOpen}
         />
       )}
+
       <tr
-        className={`table-row  ${isOpen ? " bg-slate-200" : "shadow-sm"} ${
+        className={`lg:table-row  ${isOpen ? " bg-slate-200" : "shadow-sm"} ${
           categoryCheckBox ? "table-row__checked" : ""
         }`}
         key={index}

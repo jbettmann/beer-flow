@@ -12,6 +12,8 @@ import OnlyEmptyCategoryDelete from "../Alerts/OnlyEmptyCategoryDelete";
 import CategoryRow from "./CategoryRow";
 import CreateNewCategoryRow from "./CreateNewCategoryRow";
 import { set } from "mongoose";
+import { Brewery } from "@/app/types/brewery";
+import TableListMobile from "../CardCategory/CardCategory";
 
 type Props = {
   createNewCategory: boolean;
@@ -98,7 +100,7 @@ const CategoryList = ({
         accessToken: session?.user.accessToken || "",
       });
       console.log(newCategoryName);
-      setSelectedBrewery((prev) => ({
+      setSelectedBrewery((prev: Brewery) => ({
         ...prev,
         categories: [
           { _id: newCategoryId, name: newCategoryName },
@@ -234,7 +236,7 @@ const CategoryList = ({
   }, [checkedCategories, selectAll]);
 
   return (
-    <div className="overflow-x-auto flex-auto lg:pl-8">
+    <div className="overflow-x-auto flex-auto lg:pl-8 text-gray-50">
       {onlyEmptyAlert && (
         <OnlyEmptyCategoryDelete
           alertOpen={onlyEmptyAlert}
@@ -242,7 +244,7 @@ const CategoryList = ({
           setToContinue={setDeleteConfirm}
         />
       )}
-      <table className="table border-separate border-spacing-y-0 p-3 relative">
+      <table className="hidden lg:table border-separate border-spacing-y-0 p-3 relative">
         {/* head */}
         <thead>
           <tr>
@@ -275,7 +277,7 @@ const CategoryList = ({
               </span>
             </th>
             <th>
-              Beers Under Category{" "}
+              Beers Under Category
               <span>
                 <button
                   className="ml-2 "
@@ -334,6 +336,90 @@ const CategoryList = ({
         </tbody>
         {/* foot */}
       </table>
+      <div className=" lg:hidden flex flex-col p-3 relative">
+        <div className="flex">
+          <label>
+            <input
+              type="checkbox"
+              className="checkbox"
+              onChange={handleSelectAll}
+              checked={selectAll}
+            />
+          </label>
+
+          <div className="flex justify-center items-center">
+            <p>Name</p>
+            <span>
+              <button
+                className="ml-2 "
+                onClick={() => {
+                  setIsAlphabetical(!isAlphabetical);
+                  setSortMethod("NAME");
+                }}
+              >
+                {isAlphabetical ? <MoveDown size={15} /> : <MoveUp size={15} />}
+              </button>
+            </span>
+          </div>
+
+          <div className="flex justify-center items-center">
+            <p>Beers Under Category</p>
+            <span>
+              <button
+                className="ml-2 "
+                onClick={() => {
+                  setIsNumberAscending(!isNumberAscending);
+                  setSortMethod("NUMBER");
+                }}
+              >
+                {isNumberAscending ? (
+                  <MoveDown size={15} />
+                ) : (
+                  <MoveUp size={15} />
+                )}
+              </button>
+            </span>
+          </div>
+          <p>Manage</p>
+
+          <div className="flex justify-center items-center">
+            {anyCategoriesChecked && (
+              <button
+                onClick={() => handleDeleteAlert()}
+                className="btn btn-circle bg-transparent border-none hover:bg-transparent"
+              >
+                <Trash2 size={24} strokeWidth={1} />
+              </button>
+            )}
+          </div>
+        </div>
+        <div>
+          {/* row 1 */}
+          {createNewCategory && (
+            <CreateNewCategoryRow
+              handleSaveNewCategory={handleSaveNewCategory}
+              setCreateNewCategory={setCreateNewCategory}
+            />
+          )}
+          {categories &&
+            categories.map((category, index) => {
+              return (
+                <TableListMobile
+                  category={category}
+                  beersInCategory={beersInCategory[index]}
+                  key={category._id}
+                  index={index}
+                  isOpen={isOpen[index]}
+                  selectAll={selectAll}
+                  handleEmptyCategory={handleEmptyCategory}
+                  handleCategoryCheckbox={handleCategoryCheckbox}
+                  handleOpen={handleOpen}
+                  handleDeleteAlert={handleDeleteAlert}
+                />
+              );
+            })}
+        </div>
+      </div>
     </div>
   );
 };
