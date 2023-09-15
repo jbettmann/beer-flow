@@ -11,7 +11,7 @@ const EditCategories = async ({
   params: { breweryId, categoryId },
 }: pageProps) => {
   return (
-    <div className="w-1/2 m-auto">
+    <div className="w-1/2 h-full m-auto">
       <UpdateCategory breweryId={breweryId} categoryId={categoryId} />
     </div>
   );
