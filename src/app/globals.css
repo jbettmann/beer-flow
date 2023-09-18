@@ -7,18 +7,21 @@
 /* ... continue for other styles/weights if you have them ... */
 
 
-/* :root {
+:root {
   --primary: #2B2B2B;
-  --secondary: bg-teal-300;
-  --third-color: #343434;
-  --text-main: #73e5b7;
-} */
+  --accent: #1fcdbc;
+  --third-color: #202020;
+  --fourth-color: #343434;
+  --the-gray: #494949;
+  --indigo: #a5b4fc;
+
+} 
 
 html {
-  @apply h-screen   bg-primary mb-14 lg:mb-0
+  @apply h-screen bg-gradient-to-bl from-primary to-[#0f0f0f]   mb-14 lg:mb-0
 }
 body {
-  @apply p-5 pb-16 bg-primary text-gray-50 mb-14  lg:mb-0
+  @apply p-5 pb-16 bg-gradient-to-bl from-primary to-[#0f0f0f]  text-gray-50 mb-14  lg:mb-0
 }
 
 h1 {
@@ -108,12 +111,26 @@ p {
   @apply mt-4
 }
 
+.category-card {
+  @apply card shadow-lg py-10;
+
+  
+  
+}
+
+.category-card__checked {
+
+  background: linear-gradient(to bottom left, var(--indigo) 40%, #7988cf 100%)
+  /* background: linear-gradient(to bottom left, var(--accent) 20%, var(--fourth-color) 100%) */
+}
+
 .error {
   @apply text-red-500 text-sm
 }
 
 .create-btn {
-  @apply btn btn-accent rounded-full
+  @apply btn btn-accent border-none rounded-full;
+  
 }
 
 .close-btn {
