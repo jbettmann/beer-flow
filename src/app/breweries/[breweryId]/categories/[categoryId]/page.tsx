@@ -7,7 +7,7 @@ type pageProps = {
   };
 };
 
-const EditCategories = async ({
+const CategoriesPage = async ({
   params: { breweryId, categoryId },
 }: pageProps) => {
   return (
@@ -17,4 +17,4 @@ const EditCategories = async ({
   );
 };
 
-export default EditCategories;
+export default CategoriesPage;
