@@ -34,6 +34,7 @@ module.exports = {
         secondary: "accent",
         "third-color": "#202020",
         "fourth-color": "#343434",
+        "the-gray": "#494949",
         "main-text-color": "text-gray-50",
       },
     },
