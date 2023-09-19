@@ -11,7 +11,7 @@ const CategoryDashboard = ({ viewFilter, setViewFilter }: Props) => {
   return (
     <>
       {/* Large screen side dashboard menu */}
-      <div className="hidden lg:flex-initial lg:w-48 lg:h-[65vh] lg:card lg:bg-base-100 lg:shadow-md lg:space-y-2">
+      <div className="hidden lg:flex-initial lg:w-48 lg:h-[65vh] lg:card bg-third-color lg:shadow-md lg:space-y-2">
         {menuButtons.map((button, i) => (
           <button
             key={i}
@@ -24,13 +24,13 @@ const CategoryDashboard = ({ viewFilter, setViewFilter }: Props) => {
       </div>
 
       {/* Small screen dropdown menu */}
-      <div className="lg:hidden flex-initial w-48 z-[1] lg:z-0 card bg-base-100 shadow-md space-y-2 dropdown ">
+      <div className="lg:hidden flex-initial w-48 z-[1] lg:z-0 card bg-third-color  shadow-md space-y-2 dropdown ">
         <label className="btn btn-ghost w-full" tabIndex={0}>
           {viewFilter}
         </label>
         <ul
           tabIndex={0}
-          className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
+          className="dropdown-content menu p-2 shadow bg-fourth-color rounded-box w-52"
         >
           {menuButtons.map((button, i) => (
             <li key={i}>
