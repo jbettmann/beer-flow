@@ -67,7 +67,7 @@ const CategoryItem = ({
               {beer.name}{" "}
               {isInMultipleCategories && (
                 <span
-                  className="ml-2 text-gray-600 cursor-pointer"
+                  className="ml-2  cursor-pointer"
                   title={`Beer is in more than one category`}
                 >
                   <Flame size={12} strokeWidth={2} />
