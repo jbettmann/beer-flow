@@ -13,15 +13,17 @@
   --third-color: #202020;
   --fourth-color: #343434;
   --the-gray: #494949;
-  --indigo: #a5b4fc;
+  --indigo: rgb(165, 180, 252);
+  --selected: linear-gradient(to bottom left, var(--accent) 40%, #05afa0 100%);
+  --indigo-selected: linear-gradient(to bottom left, var(--indigo) 40%, #7988cf 100%);
 
 } 
 
 html {
-  @apply h-screen bg-gradient-to-bl from-primary to-[#0f0f0f]   mb-14 lg:mb-0
+  @apply h-screen bg-primary   mb-14 lg:mb-0
 }
 body {
-  @apply p-5 pb-16 bg-gradient-to-bl from-primary to-[#0f0f0f]  text-gray-50 mb-14  lg:mb-0
+  @apply p-5 pb-16 min-h-full bg-primary  text-gray-50 mb-14  lg:mb-0
 }
 
 h1 {
@@ -112,17 +114,17 @@ p {
 }
 
 .category-card {
-  @apply card shadow-lg py-10;
+  @apply card shadow-lg py-10   transition-colors duration-300;
 
-  
-  
+
 }
-
 .category-card__checked {
 
   background: linear-gradient(to bottom left, var(--indigo) 40%, #7988cf 100%)
   /* background: linear-gradient(to bottom left, var(--accent) 20%, var(--fourth-color) 100%) */
 }
+
+
 
 .error {
   @apply text-red-500 text-sm
@@ -218,6 +220,14 @@ p {
 
 .settings-profile__info {
   @apply flex justify-between items-center
+}
+
+.selected { 
+  background: linear-gradient(to bottom left, rgb(184 251 245 / 42%) 40%, rgb(205 255 251 / 12%) 100%);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  
+  @apply shadow-lg
 }
 
 .delete-remove-btn__text {
@@ -318,3 +328,6 @@ p {
   @apply text-accent border-accent
 }
  }
+
+
+ 
