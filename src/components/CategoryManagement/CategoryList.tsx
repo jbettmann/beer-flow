@@ -11,9 +11,12 @@ import { useEffect, useMemo, useState } from "react";
 import OnlyEmptyCategoryDelete from "../Alerts/OnlyEmptyCategoryDelete";
 import CategoryRow from "./CategoryRow";
 import CreateNewCategoryRow from "./CreateNewCategoryRow";
-import { set } from "mongoose";
+
 import { Brewery } from "@/app/types/brewery";
-import TableListMobile from "../CardCategory/CardCategory";
+import CardCategory from "../CardCategory/CardCategory";
+import { useDrag } from "@use-gesture/react";
+import { animated, useSpring } from "react-spring";
+import Slider from "../Slider/Slider";
 
 type Props = {
   createNewCategory: boolean;
@@ -29,6 +32,8 @@ const CategoryList = ({
   const { data: session } = useSession();
   const { selectedBeers, selectedBrewery, setSelectedBrewery } =
     useBreweryContext();
+
+  const [isEdit, setIsEdit] = useState<boolean>(false);
 
   const [categories, setCategories] = useState<Category[]>(
     selectedBrewery?.categories || []
@@ -117,6 +122,19 @@ const CategoryList = ({
       [categoryId]: isChecked,
     }));
   };
+
+  //  Deselect All selected categories when cancel button clicked in edit view
+  const handleDeselectedAllCategories = () => {
+    if (Object.values(checkedCategories).some((value) => value)) {
+      const updatedCheckCats = Object.fromEntries(
+        Object.keys(checkedCategories).map((key) => [key, false])
+      );
+      setCheckedCategories(updatedCheckCats);
+    }
+    setIsEdit(false);
+  };
+
+  console.log({ checkedCategories });
 
   // Function to handle the information from child component
   const handleEmptyCategory = (categoryId: string, isEmpty: boolean) => {
@@ -214,7 +232,7 @@ const CategoryList = ({
     }
   }, [viewFilter, selectedBeers, selectedBrewery]);
 
-  console.log({ emptyCategories, categories, beersInCategory });
+  console.log({ beersInCategory });
 
   // Call Remove or Move Beer to Category
   useEffect(() => {
@@ -244,11 +262,12 @@ const CategoryList = ({
           setToContinue={setDeleteConfirm}
         />
       )}
-      <table className="hidden lg:table border-separate border-spacing-y-0 p-3 relative">
+      {/* Large Screen Table Layout  */}
+      <table className="hidden lg:table  border-separate border-spacing-y-0 p-3 relative">
         {/* head */}
         <thead>
           <tr>
-            <th>
+            <th className="text-gray-400">
               <label>
                 <input
                   type="checkbox"
@@ -258,7 +277,7 @@ const CategoryList = ({
                 />
               </label>
             </th>
-            <th>
+            <th className="text-gray-400">
               Name
               <span>
                 <button
@@ -276,7 +295,7 @@ const CategoryList = ({
                 </button>
               </span>
             </th>
-            <th>
+            <th className="text-gray-400">
               Beers Under Category
               <span>
                 <button
@@ -294,9 +313,9 @@ const CategoryList = ({
                 </button>
               </span>
             </th>
-            <th>Manage</th>
+            <th className="text-gray-400">Manage</th>
 
-            <th>
+            <th className="text-gray-400">
               {anyCategoriesChecked && (
                 <button
                   onClick={() => handleDeleteAlert()}
@@ -336,64 +355,39 @@ const CategoryList = ({
         </tbody>
         {/* foot */}
       </table>
+
+      {/* Small Screen Card Layout*/}
       <div className=" lg:hidden flex flex-col p-3 relative">
-        <div className="flex">
-          <label>
-            <input
-              type="checkbox"
-              className="checkbox"
-              onChange={handleSelectAll}
-              checked={selectAll}
-            />
-          </label>
-
-          <div className="flex justify-center items-center">
-            <p>Name</p>
-            <span>
+        <div className={`flex ${isEdit ? "justify-between" : "justify-end"}`}>
+          {isEdit ? (
+            <>
+              <label className="flex items-center ">
+                <input
+                  type="checkbox"
+                  className="checkbox checkbox-accent  ml-1 mr-2 "
+                  onChange={handleSelectAll}
+                  checked={selectAll}
+                />
+                Select All
+              </label>
               <button
-                className="ml-2 "
-                onClick={() => {
-                  setIsAlphabetical(!isAlphabetical);
-                  setSortMethod("NAME");
-                }}
+                className={`btn btn-circle btn-ghost text-accent`}
+                onClick={handleDeselectedAllCategories}
               >
-                {isAlphabetical ? <MoveDown size={15} /> : <MoveUp size={15} />}
+                Cancel
               </button>
-            </span>
-          </div>
-
-          <div className="flex justify-center items-center">
-            <p>Beers Under Category</p>
-            <span>
-              <button
-                className="ml-2 "
-                onClick={() => {
-                  setIsNumberAscending(!isNumberAscending);
-                  setSortMethod("NUMBER");
-                }}
-              >
-                {isNumberAscending ? (
-                  <MoveDown size={15} />
-                ) : (
-                  <MoveUp size={15} />
-                )}
-              </button>
-            </span>
-          </div>
-          <p>Manage</p>
-
-          <div className="flex justify-center items-center">
-            {anyCategoriesChecked && (
-              <button
-                onClick={() => handleDeleteAlert()}
-                className="btn btn-circle bg-transparent border-none hover:bg-transparent"
-              >
-                <Trash2 size={24} strokeWidth={1} />
-              </button>
-            )}
-          </div>
+            </>
+          ) : (
+            <button
+              className={`btn btn-circle btn-ghost text-accent`}
+              onClick={(e) => setIsEdit(true)}
+            >
+              Edit
+            </button>
+          )}
         </div>
-        <div>
+
+        <div className="flex flex-col gap-2">
           {/* row 1 */}
           {createNewCategory && (
             <CreateNewCategoryRow
@@ -401,14 +395,16 @@ const CategoryList = ({
               setCreateNewCategory={setCreateNewCategory}
             />
           )}
-          {categories &&
+          {categories.length > 0 && categories ? (
             categories.map((category, index) => {
               return (
-                <TableListMobile
+                <CardCategory
                   category={category}
                   beersInCategory={beersInCategory[index]}
+                  isChecked={checkedCategories[category._id]}
                   key={category._id}
                   index={index}
+                  isEdit={isEdit}
                   isOpen={isOpen[index]}
                   selectAll={selectAll}
                   handleEmptyCategory={handleEmptyCategory}
@@ -417,7 +413,12 @@ const CategoryList = ({
                   handleDeleteAlert={handleDeleteAlert}
                 />
               );
-            })}
+            })
+          ) : (
+            <div className="mx-auto text-gray-50 text-opacity-50">
+              There are no empty categories
+            </div>
+          )}
         </div>
       </div>
     </div>
