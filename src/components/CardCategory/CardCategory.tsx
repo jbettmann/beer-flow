@@ -3,12 +3,12 @@ import { Category } from "@/app/types/category";
 import { useBreweryContext } from "@/context/brewery-beer";
 import updateBeerCategory from "@/lib/PUT/updateBeerCategory";
 import {
-  BookMarked,
   Check,
+  CheckCircle,
+  LayoutGrid,
   LogIn,
   PencilLine,
   Scissors,
-  Table,
   Trash2,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -19,9 +19,13 @@ import { Beer } from "@/app/types/beer";
 import handleMoveBeerToCategory from "@/lib/handleSubmit/handleMoveBeerToCategory";
 import MoveBeerToCategory from "../Alerts/MoveBeerToCategory";
 import { FormValues } from "../CreateBeerForm/types";
+import BeerMugBadge from "../Badges/BeerMugBadge";
+import CategoryItem from "../CategoryManagement/CategoryItem";
+import CardItem from "./CardItem";
 
 type Props = {
   category: Category;
+  isEdit: boolean;
   index: number;
   isOpen: boolean;
   handleOpen: (index: number) => void;
@@ -30,12 +34,15 @@ type Props = {
   handleCategoryCheckbox: (categoryId: string, isChecked: boolean) => void;
   beersInCategory: Beer[];
   handleDeleteAlert: () => void;
+  isChecked: boolean;
 };
 
 const CardCategory = ({
   category,
   index,
+  isEdit,
   isOpen,
+  isChecked,
   handleOpen,
   selectAll,
   handleEmptyCategory,
@@ -58,8 +65,6 @@ const CardCategory = ({
     Record<string, number>
   >({});
 
-  const [categoryCheckBox, setCategoryCheckBox] = useState<boolean>(false);
-
   const { data: session } = useSession();
 
   const {
@@ -81,10 +86,10 @@ const CardCategory = ({
   }, [selectedBeers]);
 
   const handleCategoryCheck = () => {
-    const newCheckedState = !categoryCheckBox;
-    setCategoryCheckBox(newCheckedState);
+    const newCheckedState = !isChecked;
+    newCheckedState;
     handleCategoryCheckbox(category._id, newCheckedState);
-    console.log("handleCategoryCheck", categoryCheckBox);
+    console.log("handleCategoryCheck", isChecked);
   };
 
   const handleBeerCheckbox = (
@@ -245,18 +250,18 @@ const CardCategory = ({
 
       // Extract all unique category IDs from the updated beers
       const updatedCategoryIds = new Set(
-        updatedBeers.flatMap((beer) => beer.category.map((cat) => cat._id))
+        updatedBeers.flatMap((beer) => beer?.category.map((cat) => cat._id))
       );
 
       // Identify the new categories that are not in the selectedBrewery.categories
       const newCategories: Category[] = [];
       updatedCategoryIds.forEach((categoryId) => {
         if (
-          !selectedBrewery?.categories.some((cat) => cat._id === categoryId)
+          !selectedBrewery?.categories.some((cat) => cat?._id === categoryId)
         ) {
           const newCategory = updatedBeers
-            .flatMap((beer) => beer.category)
-            .find((cat) => cat._id === categoryId);
+            .flatMap((beer) => beer?.category)
+            .find((cat) => cat?._id === categoryId);
           if (newCategory) {
             newCategories.push(newCategory);
           }
@@ -345,9 +350,9 @@ const CardCategory = ({
     }
   }, [toContinue, toMoveContinue]);
 
-  // Update the categoryCheckBox state when selectAll changes
+  // Update the isCheckedstate when selectAll changes
   useEffect(() => {
-    setCategoryCheckBox(selectAll);
+    selectAll;
     handleEmptyCategory(category._id, isEmpty);
     handleCategoryCheckbox(category._id, selectAll);
     console.log("selectAll changed", selectAll);
@@ -355,8 +360,10 @@ const CardCategory = ({
 
   // Closes category if category checkbox is checked
   useEffect(() => {
-    if (isOpen && categoryCheckBox) handleOpen(index);
-  }, [categoryCheckBox]);
+    if (isOpen && isChecked) handleOpen(index);
+    if (isOpen && isEdit) handleOpen(index);
+  }, [isChecked, isEdit, isOpen]);
+
   return (
     <>
       {alertOpen && (
@@ -376,151 +383,108 @@ const CardCategory = ({
           setAlertOpen={setMoveAlertOpen}
         />
       )}
+
       <div
-        className={`lg:hidden table-row text-gray-50  ${
-          isOpen ? " bg-fourth-color" : "shadow-sm"
-        } ${categoryCheckBox ? "table-row__checked" : ""}`}
+        className={`category-card  relative transition-all duration-75 bg-gradient-to-r ${
+          isOpen
+            ? "  from-accent to-[#05afa0] text-primary"
+            : " from-third-color to-third-color  shadow-sm"
+        } ${isChecked ? "selected" : ""}`}
         key={index}
       >
-        <div className={`${isOpen ? "rounded-tl-lg" : "rounded-l-lg"}`}>
-          <label>
-            <input
-              type="checkbox"
-              className="checkbox"
-              onChange={handleCategoryCheck}
-              checked={categoryCheckBox}
-            />
-          </label>
-        </div>
-        <div
-          className={` hover:cursor-pointer p-6`}
-          onClick={(e) => {
-            handleOpen(index), e.stopPropagation();
-          }}
-        >
-          <div className="flex items-center space-x-3 ">
-            <BookMarked size={24} className="" strokeWidth={1} />
-
-            <div>
-              <div className="font-bold ">
-                {category.name}{" "}
-                <span className=" badge badge-ghost text-xs opacity-50">
-                  {beersInCategory?.length || 0}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          className={` hover:cursor-pointer`}
-          onClick={() => handleOpen(index)}
-        >
-          <div className="badge badge-md badge-outline">
-            {beersInCategory?.length || 0}
-          </div>
-        </div>
-
-        <div>
-          {categoryCheckBox &&
-          (!beersInCategory || beersInCategory.length === 0) ? (
+        <div className="absolute right-0 top-0 p-1">
+          {isChecked && (!beersInCategory || beersInCategory.length === 0) && (
             <button
               onClick={() => handleDeleteAlert()}
               className="btn btn-circle bg-transparent border-none hover:bg-transparent"
             >
-              <Trash2 size={24} strokeWidth={1} />
-            </button>
-          ) : (
-            <button
-              className={`btn btn-circle btn-ghost`}
-              onClick={(e) => {
-                e.stopPropagation(), handleOpen(index);
-              }}
-            >
-              <PencilLine size={24} strokeWidth={1} />
+              <Trash2 size={20} strokeWidth={1} />
             </button>
           )}
         </div>
-        <div className={`${isOpen ? "rounded-tr-lg" : "rounded-r-lg"}`}></div>
-      </div>
-      <div className={`${isOpen ? "bg-fourth-color text-gray-50 " : ""}`}>
-        <div className="rounded-b-lg">
+
+        <div className={`flex justify-between hover:cursor-pointer p-6 `}>
+          <div className="flex justify-center items-center space-x-3">
+            <label className="flex items-center relative h-8 w-8 overflow-hidden">
+              {/* Adjust the height and width based on your requirements */}
+              {/* Checkbox */}
+              <input
+                type="checkbox"
+                className={`checkbox outline-accent checkbox-accent  absolute transition-transform duration-300 ${
+                  isEdit
+                    ? "translate-y-0 opacity-100"
+                    : "translate-y-full opacity-0 disabled"
+                }`}
+                onClick={handleCategoryCheck}
+                checked={isChecked}
+                disabled={isEdit ? false : true}
+              />
+
+              {/* LayoutGrid */}
+              <LayoutGrid
+                size={24}
+                className={`absolute transition-transform duration-300 ${
+                  isEdit
+                    ? "-translate-y-full opacity-0"
+                    : "translate-y-0 opacity-100"
+                }`}
+                strokeWidth={1}
+              />
+            </label>
+
+            <div
+              className="font-bold flex justify-center items-center w-full "
+              onClick={(e) => {
+                handleOpen(index), e.stopPropagation();
+              }}
+            >
+              {category.name}
+              <span className=" inline-flex  justify-center items-center p-1 text-xs ">
+                <BeerMugBadge beerCount={beersInCategory?.length || 0} />
+              </span>
+            </div>
+          </div>
+          {isChecked && (
+            <button
+              onClick={handleDeleteAlert}
+              className="btn btn-outline border-none hover:bg-transparent"
+            >
+              <Trash2 size={28} color="#f9fafb" />
+            </button>
+          )}
+        </div>
+
+        <div className="text-primary relative">
           <div
             className={`collapse transition-all duration-300 overflow-hidden `}
           >
             <input type="checkbox" checked={isOpen} className="hidden" />
 
-            <div className="collapse-content table  relative">
-              <div>
-                <div className="">
-                  <p>
-                    <label></label>
-                  </p>
-                  <p>Beer</p>
-                  <p>Style</p>
-                  <p>ABV%</p>
-                  <p>Last Updated</p>
-                  <p className="w-64 p-8"></p>
-                  <div className="absolute right-0 top-0">
-                    {isMoveAllButtonVisible && (
-                      <button
-                        className="btn btn-warning"
-                        onClick={() => setMoveAlertOpen(true)}
-                      >
-                        <div
-                          className="flex items-center"
-                          title="Move beers to different Category"
-                        >
-                          <LogIn size={20} strokeWidth={1} />
-                          <span className="inline-flex items-center">
-                            <p className="m-1">Move</p>(
-                            {checkedBeersCount[category._id] || 0})
-                          </span>
-                        </div>
-                      </button>
-                    )}
-
-                    {isRemoveAllButtonVisible && (
-                      <button
-                        className={`btn btn-error ml-2`}
-                        onClick={() => setAlertOpen(true)}
-                      >
-                        <div
-                          className="flex items-center"
-                          title="Remove beers from Category"
-                        >
-                          <Scissors size={20} strokeWidth={1} />
-                          <span className="inline-flex items-center">
-                            <p className="m-1">Remove</p>(
-                            {checkedBeersCount[category._id] || 0})
-                          </span>
-                        </div>
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div>
-                {beersInCategory && beersInCategory.length > 0 ? (
+            <div className="collapse-content  ">
+              <div className="absolute right-0 bottom-0 inline-flex items-center"></div>
+              <div className="py-2">
+                {beersInCategory?.length > 0 ? (
                   beersInCategory?.map((beer, i) => (
-                    // <CategoryItem
-                    //   key={beer._id}
-                    //   beer={beer}
-                    //   category={category}
-                    //   handleCheckbox={(beerId, isChecked) =>
-                    //     handleBeerCheckbox(category._id, beerId, isChecked)
-                    //   }
-                    //   setAlertOpen={setAlertOpen}
-                    //   setMoveAlertOpen={setMoveAlertOpen}
-                    //   isChecked={
-                    //     checkedBeers[category._id]?.[beer._id] || false
-                    //   }
-                    // />
-                    <p key={i}>{beer.name}</p>
+                    <>
+                      <CardItem
+                        key={beer._id}
+                        beer={beer}
+                        category={category}
+                        handleCheckbox={(beerId, isChecked) =>
+                          handleBeerCheckbox(category._id, beerId, isChecked)
+                        }
+                        setAlertOpen={setAlertOpen}
+                        setMoveAlertOpen={setMoveAlertOpen}
+                        isChecked={
+                          checkedBeers[category._id]?.[beer._id] || false
+                        }
+                      />
+                    </>
                   ))
                 ) : (
                   <div>
                     <div>
-                      <div className="flex items-center justify-center w-full h-20 text-gray-500">
+                      <div className="flex items-center justify-center w-full h-20 text-gray-50">
                         <p className="text-xl font-bold text-center">
                           No beers in this category
                         </p>
