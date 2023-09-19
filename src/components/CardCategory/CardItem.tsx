@@ -48,13 +48,14 @@ const CardItem = ({
 
   return (
     <div
-      className={`flex justify-around items-center relative ${
-        checked ? "category-card__checked " : ""
+      className={`flex justify-between items-center relative my-2 p-2 transition-all  ${
+        checked ? "selected rounded-lg" : ""
       }`}
+      onClick={handleClick}
     >
-      <div className="hover:cursor-pointer px-2 py-6" onClick={handleClick}>
+      <div className="hover:cursor-pointer px-2 py-6">
         <div className="flex items-center space-x-3 ">
-          <label onChange={handleClick}>
+          <label>
             <input type="checkbox" className="hidden" checked={checked} />
             {checked ? (
               <div className=" bg-primary rounded-full p-1">
@@ -78,10 +79,7 @@ const CardItem = ({
               )}
             </div>
 
-            <div
-              className="hover:cursor-pointer text-xs "
-              onClick={handleClick}
-            >
+            <div className="hover:cursor-pointer text-xs ">
               <div>{beer.style ? beer.style : null}</div>
             </div>
           </div>
