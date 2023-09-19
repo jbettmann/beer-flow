@@ -2,7 +2,7 @@
 import { Category } from "@/app/types/category";
 import { useBreweryContext } from "@/context/brewery-beer";
 import updateBeerCategory from "@/lib/PUT/updateBeerCategory";
-import { BookMarked, LogIn, PencilLine, Scissors, Trash2 } from "lucide-react";
+import { LayoutGrid, LogIn, PencilLine, Scissors, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import RemoveBeerFromCategory from "../Alerts/RemoveBeerFromCategory";
@@ -248,8 +248,8 @@ const CategoryRow = ({
           !selectedBrewery?.categories.some((cat) => cat._id === categoryId)
         ) {
           const newCategory = updatedBeers
-            .flatMap((beer) => beer.category)
-            .find((cat) => cat._id === categoryId);
+            .flatMap((beer) => beer?.category)
+            .find((cat) => cat?._id === categoryId);
           if (newCategory) {
             newCategories.push(newCategory);
           }
@@ -394,7 +394,7 @@ const CategoryRow = ({
           }}
         >
           <div className="flex items-center space-x-3 ">
-            <BookMarked size={24} className="" strokeWidth={1} />
+            <LayoutGrid size={24} className="" strokeWidth={1} />
 
             <div>
               <div className="font-bold ">
