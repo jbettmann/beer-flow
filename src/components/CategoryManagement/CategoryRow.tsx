@@ -11,7 +11,8 @@ import CategoryItem from "./CategoryItem";
 import { Beer } from "@/app/types/beer";
 import handleMoveBeerToCategory from "@/lib/handleSubmit/handleMoveBeerToCategory";
 import MoveBeerToCategory from "../Alerts/MoveBeerToCategory";
-import { FormValues } from "../CreateBeerForm/types";
+import { FormValues } from "../UpdateCategory/types";
+import AlertDialog from "../Alerts/AlertDialog";
 
 type Props = {
   category: Category;
@@ -374,9 +375,9 @@ const CategoryRow = ({
       />
 
       <tr
-        className={`lg:table-row  ${isOpen ? " bg-slate-200" : "shadow-sm"} ${
-          categoryCheckBox ? "table-row__checked" : ""
-        }`}
+        className={`lg:table-row  ${
+          isOpen ? " category-card__open" : "shadow-sm"
+        } ${categoryCheckBox ? "table-row__checked" : ""}`}
         key={index}
       >
         <th className={`${isOpen ? "rounded-tl-lg" : "rounded-l-lg"}`}>
@@ -439,14 +440,14 @@ const CategoryRow = ({
         </th>
         <th className={`${isOpen ? "rounded-tr-lg" : "rounded-r-lg"}`}></th>
       </tr>
-      <tr className={`${isOpen ? "bg-slate-100 " : ""}`}>
+      <tr className={`${isOpen ? "category-card__open " : ""}`}>
         <td colSpan={5} className="rounded-b-lg">
           <div
             className={`collapse transition-all duration-300 overflow-hidden `}
           >
             <input type="checkbox" checked={isOpen} className="hidden" />
 
-            <div className="collapse-content table  relative">
+            <table className="collapse-content  border-separate border-spacing-y-6 relative">
               <thead>
                 <tr className="">
                   <th>
@@ -457,10 +458,10 @@ const CategoryRow = ({
                   <th>ABV%</th>
                   <th>Last Updated</th>
                   <th className="w-64 p-8"></th>
-                  <th className="absolute right-0 top-0">
+                  <th className="absolute right-0 top-0 p-0">
                     {isMoveAllButtonVisible && (
                       <button
-                        className="btn btn-warning"
+                        className="btn btn-warning "
                         onClick={() => setMoveAlertOpen(true)}
                       >
                         <div
@@ -478,7 +479,7 @@ const CategoryRow = ({
 
                     {isRemoveAllButtonVisible && (
                       <button
-                        className={`btn btn-error ml-2`}
+                        className={`btn btn-error  ml-2`}
                         onClick={() => setAlertOpen(true)}
                       >
                         <div
@@ -525,7 +526,7 @@ const CategoryRow = ({
                   </tr>
                 )}
               </tbody>
-            </div>
+            </table>
           </div>
         </td>
       </tr>
