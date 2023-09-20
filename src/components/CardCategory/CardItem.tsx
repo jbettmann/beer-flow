@@ -17,8 +17,8 @@ type Props = {
   beer: Beer;
   isChecked: boolean;
   handleCheckbox: (beerId: string, isChecked: boolean) => void;
-  setAlertOpen: React.Dispatch<React.SetStateAction<boolean | string>>;
-  setMoveAlertOpen: React.Dispatch<React.SetStateAction<boolean | string>>;
+  setAlertOpen: (value: boolean) => void;
+  setMoveAlertOpen: (value: boolean) => void;
 };
 
 const CardItem = ({
@@ -49,7 +49,7 @@ const CardItem = ({
   return (
     <div
       className={`flex justify-between items-center relative my-2 p-2 transition-all  ${
-        checked ? "selected rounded-lg" : ""
+        checked ? "category-card__selected rounded-lg" : ""
       }`}
       onClick={handleClick}
     >
@@ -90,7 +90,10 @@ const CardItem = ({
         <div className="inline-flex justify-center items-center">
           {isInMultipleCategories && (
             <button
-              onClick={() => setAlertOpen(true)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setAlertOpen(true);
+              }}
               className={`btn btn-circle ${
                 isChecked ? "btn-error " : "btn-disabled"
               } `}
@@ -101,7 +104,10 @@ const CardItem = ({
             </button>
           )}
           <button
-            onClick={() => setMoveAlertOpen(true)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setMoveAlertOpen(true);
+            }}
             className={`btn btn-circle ml-2 ${
               isChecked ? "btn-warning" : "btn-disabled"
             } `}
