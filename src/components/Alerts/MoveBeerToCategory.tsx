@@ -7,60 +7,46 @@ import { FormValues } from "../UpdateCategory/types";
 import { useBreweryContext } from "@/context/brewery-beer";
 
 type Props = {
-  category: Category;
-  setAlertOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setToMoveContinue: React.Dispatch<React.SetStateAction<boolean>>;
-  alertOpen: boolean;
-  setValues: (values: FormValues) => void;
+  title?: string;
+  message: string | JSX.Element;
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  confirmButtonText?: string;
+  cancelButtonText?: string;
+
+  setValues: (value: FormValues) => void;
   checkedBeers: Category[];
 };
 
 const MoveBeerToCategory = ({
-  alertOpen,
-  setToMoveContinue,
-  setAlertOpen,
+  title = "Alert",
+  message,
+  isOpen,
+  onClose,
+  onConfirm,
+  confirmButtonText = "Confirm",
+  cancelButtonText = "Cancel",
   setValues,
+
   checkedBeers,
 }: Props) => {
   const modalRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
-    if (alertOpen) {
-      if (modalRef.current) {
-        modalRef.current.showModal();
-      }
-    }
-    console.log({ modalRef });
-  }, [alertOpen]);
-
-  const closeModal = () => {
-    if (modalRef.current) {
+    if (isOpen && modalRef.current) {
+      modalRef.current.showModal();
+    } else if (modalRef.current) {
       modalRef.current.close();
-      setAlertOpen(false);
     }
-  };
-
+  }, [isOpen]);
+  console.log({ isOpen, modalRef });
   return (
-    <dialog
-      ref={modalRef}
-      id="my_modal_1"
-      className="modal modal-bottom sm:modal-middle"
-    >
-      <form method="dialog" className="modal-box p-0">
-        <div className="p-6 flex flex-col alert">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="stroke-current shrink-0 h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-            />
-          </svg>
+    <dialog ref={modalRef} id="alert_modal" className="modal modal-middle ">
+      <form method="dialog" className="modal-box p-0 rounded-md">
+        <div className="p-6 flex text-center flex-col alert">
+          <h2>{title}</h2>
+          <span>{message}</span>
           <CategorySelect
             setValues={setValues}
             selectedValues={null}
@@ -72,23 +58,11 @@ const MoveBeerToCategory = ({
           />
 
           <div>
-            <button
-              className="btn btn-sm"
-              onClick={() => {
-                setToMoveContinue(false);
-                closeModal();
-              }}
-            >
-              Cancel
+            <button className="btn btn-sm" onClick={onClose}>
+              {cancelButtonText}
             </button>
-            <button
-              className="ml-2 btn btn-sm btn-accent"
-              onClick={() => {
-                setToMoveContinue(true);
-                closeModal();
-              }}
-            >
-              Move
+            <button className="ml-2 btn btn-sm btn-accent" onClick={onConfirm}>
+              {confirmButtonText}
             </button>
           </div>
         </div>
