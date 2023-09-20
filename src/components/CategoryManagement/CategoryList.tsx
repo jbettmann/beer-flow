@@ -5,7 +5,7 @@ import { useBreweryContext } from "@/context/brewery-beer";
 import deleteCategory from "@/lib/DELETE/deleteCategory";
 import handleCreateNewCategory from "@/lib/handleSubmit/handleCreateNewCategory";
 import { beerInCategory } from "@/lib/utils";
-import { MoveDown, MoveUp, Trash2 } from "lucide-react";
+import { MoveDown, MoveUp, Trash2, ListFilter } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useMemo, useState } from "react";
 import OnlyEmptyCategoryDelete from "../Alerts/OnlyEmptyCategoryDelete";
@@ -14,9 +14,6 @@ import CreateNewCategoryRow from "./CreateNewCategoryRow";
 
 import { Brewery } from "@/app/types/brewery";
 import CardCategory from "../CardCategory/CardCategory";
-import { useDrag } from "@use-gesture/react";
-import { animated, useSpring } from "react-spring";
-import Slider from "../Slider/Slider";
 
 type Props = {
   createNewCategory: boolean;
@@ -58,10 +55,63 @@ const CategoryList = ({
   );
 
   // State to hold the sort order (true for ascending, false for descending)
-  const [sortMethod, setSortMethod] = useState<string>("");
+  const [sortMethod, setSortMethod] = useState<string>("NAME");
   const [isAlphabetical, setIsAlphabetical] = useState(false);
   const [isNumberAscending, setIsNumberAscending] = useState(false);
   const [beersInCategory, setBeersInCategory] = useState<Beer[][]>([]);
+
+  // Filter menu options for small screen
+  const menuButtons = [
+    {
+      title: "A-Z",
+      setFilterState: (sort: string) => {
+        if (sort === sortMethod) {
+          setIsAlphabetical(true);
+          return;
+        }
+        setSortMethod(sort);
+        setIsAlphabetical(true);
+      },
+      type: "NAME",
+    },
+    {
+      title: "Z-A",
+      setFilterState: (sort: string) => {
+        if (sort === sortMethod) {
+          setIsAlphabetical(false);
+          return;
+        }
+        setSortMethod(sort);
+        setIsAlphabetical(false);
+      },
+      type: "NAME",
+    },
+
+    {
+      title: "More Beer",
+      setFilterState: (sort: string) => {
+        if (sort === sortMethod) {
+          setIsNumberAscending(false);
+          return;
+        }
+        setSortMethod(sort);
+        setIsNumberAscending(false);
+      },
+      type: "NUMBER",
+    },
+    {
+      title: "Less Beer",
+      setFilterState: (sort: string) => {
+        if (sort === sortMethod) {
+          setIsNumberAscending(true);
+          return;
+        }
+        setSortMethod(sort);
+        setIsNumberAscending(true);
+      },
+      type: "NUMBER",
+    },
+  ];
   // sort the categories alphabetically
 
   // useMemo for expensive calculations
@@ -134,8 +184,6 @@ const CategoryList = ({
     setIsEdit(false);
   };
 
-  console.log({ checkedCategories });
-
   // Function to handle the information from child component
   const handleEmptyCategory = (categoryId: string, isEmpty: boolean) => {
     setEmptyCategories((prev) => ({
@@ -175,7 +223,6 @@ const CategoryList = ({
       (key) => emptyCategories[key] === true
     );
 
-    console.log("Checked and empty categories: ", checkedAndEmptyCategoryIds);
     if (checkedAndEmptyCategoryIds && selectedBrewery) {
       try {
         checkedAndEmptyCategoryIds.forEach(async (categoryId) => {
@@ -231,8 +278,6 @@ const CategoryList = ({
       setBeersInCategory(newBeersInCategory);
     }
   }, [viewFilter, selectedBeers, selectedBrewery]);
-
-  console.log({ beersInCategory });
 
   // Call Remove or Move Beer to Category
   useEffect(() => {
@@ -358,7 +403,7 @@ const CategoryList = ({
 
       {/* Small Screen Card Layout*/}
       <div className=" lg:hidden flex flex-col p-3 relative">
-        <div className={`flex ${isEdit ? "justify-between" : "justify-end"}`}>
+        <div className={`flex justify-between`}>
           {isEdit ? (
             <>
               <label className="flex items-center ">
@@ -378,12 +423,34 @@ const CategoryList = ({
               </button>
             </>
           ) : (
-            <button
-              className={`btn btn-circle btn-ghost text-accent`}
-              onClick={(e) => setIsEdit(true)}
-            >
-              Edit
-            </button>
+            <>
+              <button
+                className={`btn btn-circle btn-ghost text-accent`}
+                onClick={(e) => setIsEdit(true)}
+              >
+                Edit
+              </button>
+              <div className="lg:hidden flex-initial z-[1] shadow-md dropdown dropdown-end ">
+                <label className="btn btn-ghost w-full" tabIndex={0}>
+                  <ListFilter size={20} />
+                </label>
+                <ul
+                  tabIndex={0}
+                  className="dropdown-content menu p-2 shadow bg-fourth-color rounded-box "
+                >
+                  {menuButtons.map((button, i) => (
+                    <li key={i}>
+                      <button
+                        className="btn btn-ghost "
+                        onClick={() => button.setFilterState(button.type)}
+                      >
+                        {button.title}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </>
           )}
         </div>
 
