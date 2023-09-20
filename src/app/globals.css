@@ -12,7 +12,8 @@
   --accent: #1fcdbc;
   --third-color: #202020;
   --fourth-color: #343434;
-  --the-gray: #494949;
+  --the-gray: #5e5e5e;
+  --our-black: #0e0e0e;
   --indigo: rgb(165, 180, 252);
   --selected: linear-gradient(to bottom left, var(--accent) 40%, #05afa0 100%);
   --indigo-selected: linear-gradient(to bottom left, var(--indigo) 40%, #7988cf 100%);
@@ -20,10 +21,10 @@
 } 
 
 html {
-  @apply h-screen bg-primary   mb-14 lg:mb-0
+  @apply h-screen  bg-gradient-to-bl bg-primary  mb-14 lg:mb-0
 }
 body {
-  @apply p-5 pb-16 min-h-full bg-primary  text-gray-50 mb-14  lg:mb-0
+  @apply p-5 pb-16 min-h-full  bg-gradient-to-bl bg-primary text-gray-50 mb-14  lg:mb-0
 }
 
 h1 {
@@ -98,31 +99,40 @@ p {
 
 
 
-.category-container {
-  @apply bg-third-color text-gray-50 border border-gray-500  hover:shadow-lg transition-all duration-300 ease-in-out
-}
-.category-container.open {
-  @apply bg-fourth-color text-gray-50 border border-accent shadow-lg
+
+.category-card.open {
+  @apply bg-fourth-color text-primary border border-accent shadow-lg
 }
 
-.category-container__title {
+.category-card__title {
   @apply  flex h-14 py-0 px-5 items-center  self-stretch after:left-5 text-xl font-medium 
 }
 
-.category-container__content {
+.category-card__content {
   @apply mt-4
 }
 
 .category-card {
-  @apply card shadow-lg py-10   transition-colors duration-300;
-
+  @apply  bg-gradient-to-bl  from-third-color to-our-black shadow-sm hover:shadow-lg 
 
 }
-.category-card__checked {
 
+.category-card__selected { 
+  background: linear-gradient(to bottom left, rgb(184 251 245 / 42%) 40%, rgb(205 255 251 / 12%) 100%);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  
+  @apply shadow-lg
+}
+
+.category-card__open {
+  @apply bg-gradient-to-bl from-[#1fcdbc] to-[#05afa0] text-primary
+}
+
+/* .category-card__checked {
   background: linear-gradient(to bottom left, var(--indigo) 40%, #7988cf 100%)
-  /* background: linear-gradient(to bottom left, var(--accent) 20%, var(--fourth-color) 100%) */
-}
+  /* background: linear-gradient(to bottom left, var(--accent) 20%, var(--fourth-color) 100%) 
+}*/
 
 
 
@@ -198,6 +208,8 @@ p {
 .menu-drawer {
   @apply bg-fourth-color
 }
+
+
 .ReactTags__selected {
   @apply m-4
 }
@@ -222,13 +234,8 @@ p {
   @apply flex justify-between items-center
 }
 
-.selected { 
-  background: linear-gradient(to bottom left, rgb(184 251 245 / 42%) 40%, rgb(205 255 251 / 12%) 100%);
-  -webkit-backdrop-filter: blur(20px);
-  backdrop-filter: blur(20px);
-  
-  @apply shadow-lg
-}
+
+
 
 .delete-remove-btn__text {
   @apply my-2 text-xs opacity-50
@@ -289,7 +296,7 @@ p {
 }
 
 .table-row__checked {
-  @apply bg-indigo-200
+  @apply category-card__selected rounded-lg
 }
 
 @layer components {
