@@ -48,7 +48,7 @@ const CategoryItem = ({
 
   return (
     <tr className={`relative ${checked ? "table-row__checked" : ""}`}>
-      <th className="rounded-l-lg">
+      <th className="rounded-l-lg !py-6">
         <label>
           <input
             type="checkbox"
@@ -58,7 +58,7 @@ const CategoryItem = ({
           />
         </label>
       </th>
-      <td className="hover:cursor-pointer p-6" onClick={handleClick}>
+      <td className="hover:cursor-pointer " onClick={handleClick}>
         <div className="flex items-center space-x-3 ">
           <BeerMug size={24} strokeWidth={1} className="" />
 
@@ -87,7 +87,7 @@ const CategoryItem = ({
       <td className="hover:cursor-pointer" onClick={handleClick}>
         <div>{beer.updatedAt ? convertDate(beer.updatedAt) : null}</div>
       </td>
-      <th className="absolute right-0">
+      <th className="absolute right-0  ">
         {isInMultipleCategories && (
           <button
             onClick={() => setAlertOpen(true)}

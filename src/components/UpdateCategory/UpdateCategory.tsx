@@ -13,6 +13,8 @@ import deleteCategory from "@/lib/DELETE/deleteCategory";
 import DeleteBeerButton from "../Buttons/DeleteBeerButton";
 import { handleDeleteCategory } from "@/lib/handleSubmit/handleDeleteCategory";
 import { Brewery } from "@/app/types/brewery";
+import { Category } from "@/app/types/category";
+import handleUpdateCategory from "@/lib/handleSubmit/handleUpdateCategory";
 // import createBeer from "@/lib/createBeer";
 
 type pageProps = {
@@ -31,7 +33,7 @@ const UpdateCategory = ({ breweryId, categoryId }: pageProps) => {
     setSelectedBeers,
   } = useBreweryContext();
 
-  const [values, setValues] = useState<FormValues>({
+  const [values, setValues] = useState<Category>({
     __v: undefined,
     _id: "",
     name: "",
@@ -65,7 +67,6 @@ const UpdateCategory = ({ breweryId, categoryId }: pageProps) => {
         name: selectedCat?.name,
       });
     }
-    console.log({ selectedCat });
   }, [selectedBrewery]);
 
   // Handle form submission
@@ -95,47 +96,22 @@ const UpdateCategory = ({ breweryId, categoryId }: pageProps) => {
     setIsLoading(true); // Set loading state to true
 
     try {
-      let updatedCategory: FormValues = values;
+      let updatedCategory: Category = values;
 
-      const updatedCatRes = await updateCategory({
-        updatedCategory,
+      await handleUpdateCategory({
         categoryId,
+        updatedCategory,
         accessToken: session?.user?.accessToken,
+        setBreweryState: {
+          selectedBeers,
+          selectedBrewery,
+          setSelectedBeers,
+          setSelectedBrewery,
+        },
       });
 
-      //  update brewery with new category
-      if (updatedCatRes && selectedBrewery) {
-        const updatedBrewery = { ...selectedBrewery };
-        const catIndex = updatedBrewery.categories.findIndex(
-          (b) => b._id === updatedCategory._id
-        );
-        updatedBrewery.categories[catIndex] = updatedCatRes;
-
-        console.log({ updatedCatRes, updatedCategory, updatedBrewery });
-
-        setSelectedBrewery(updatedBrewery);
-      }
-
-      //  update beers with new category
-      if (updatedCatRes && selectedBeers) {
-        const updatedBeers = selectedBeers.map((beer) => {
-          const updatedCategories = beer.category.map((cat) => {
-            if (cat._id === updatedCatRes._id) {
-              return updatedCatRes; // Replace the category with the updated one
-            }
-            return cat; // If not this category, return the category as is
-          });
-
-          return {
-            ...beer,
-            category: updatedCategories, // Assign the updated categories back to the beer
-          };
-        });
-
-        setSelectedBeers(updatedBeers);
-      }
       router.back();
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
       setSubmitError(err.message);
     } finally {
@@ -153,18 +129,19 @@ const UpdateCategory = ({ breweryId, categoryId }: pageProps) => {
     isSubmitting.current = true;
     setIsLoading(true); // Set loading state to true
     try {
-      const updatedBreweryCat = await handleDeleteCategory({
-        categoryId,
-        breweryId,
-        selectedBeers,
-        selectedBrewery,
-        token: session?.user?.accessToken,
-      });
-
-      router.back();
-      // if !updatedBreweryCat then state doesnt get set
-      if (updatedBreweryCat) setSelectedBrewery(updatedBreweryCat as Brewery);
-    } catch (err) {
+      if (selectedBeers && selectedBrewery && session) {
+        const updatedBreweryCat = await handleDeleteCategory({
+          categoryId,
+          breweryId,
+          selectedBeers,
+          selectedBrewery,
+          token: session?.user?.accessToken,
+        });
+        router.back();
+        // if !updatedBreweryCat then state doesnt get set
+        if (updatedBreweryCat) setSelectedBrewery(updatedBreweryCat as Brewery);
+      }
+    } catch (err: any) {
       console.error(err);
       setSubmitError(err.message);
     } finally {

@@ -170,7 +170,7 @@ const NavBar = ({
                 {breweries.map((brewery: Brewery) => (
                   <li
                     key={brewery._id}
-                    className="category-container rounded-xl p-2"
+                    className="category-card rounded-xl p-2"
                   >
                     <Link
                       key={brewery._id}
