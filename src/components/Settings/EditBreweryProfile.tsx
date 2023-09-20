@@ -72,7 +72,7 @@ const EditBreweryProfile = ({ brewery, onClose, onSave }: Props) => {
         mutate(savedBreweryInfo);
         setSelectedBrewery(savedBreweryInfo);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       addToast(error.error || error.message, "error");
     } finally {

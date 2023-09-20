@@ -101,7 +101,7 @@ const BrewerySettingsProfileView = ({ breweryId }: Props) => {
         }
         router.refresh();
       }
-    } catch (error) {
+    } catch (error: any) {
       addToast(error.message, "error");
       console.error(error);
     } finally {

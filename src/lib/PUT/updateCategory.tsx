@@ -1,13 +1,15 @@
 "use server";
 import { Beer } from "@/app/types/beer";
 import { Category } from "@/app/types/category";
+import { FormValues } from "@/components/UpdateCategory/types";
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/dist/server/api-utils";
 
 type pageProps = {
-  updatedCategory: Category;
+  updatedCategory: Category | FormValues;
   categoryId: string;
-  accessToken: string;
+  accessToken: string | undefined;
 };
 
 export default async function updateCategory({
