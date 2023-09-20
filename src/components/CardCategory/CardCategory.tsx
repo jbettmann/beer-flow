@@ -2,26 +2,20 @@
 import { Category } from "@/app/types/category";
 import { useBreweryContext } from "@/context/brewery-beer";
 import updateBeerCategory from "@/lib/PUT/updateBeerCategory";
-import {
-  Check,
-  CheckCircle,
-  LayoutGrid,
-  LogIn,
-  PencilLine,
-  Scissors,
-  Trash2,
-} from "lucide-react";
+import { LayoutGrid, PencilLine, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import RemoveBeerFromCategory from "../Alerts/RemoveBeerFromCategory";
 
 import { Beer } from "@/app/types/beer";
+import { useToast } from "@/context/toast";
 import handleMoveBeerToCategory from "@/lib/handleSubmit/handleMoveBeerToCategory";
+import handleUpdateCategory from "@/lib/handleSubmit/handleUpdateCategory";
+import AlertDialog from "../Alerts/AlertDialog";
 import MoveBeerToCategory from "../Alerts/MoveBeerToCategory";
-import { FormValues } from "../CreateBeerForm/types";
 import BeerMugBadge from "../Badges/BeerMugBadge";
-import CategoryItem from "../CategoryManagement/CategoryItem";
+
 import CardItem from "./CardItem";
+import { FormValues } from "../UpdateCategory/types";
 
 type Props = {
   category: Category;
@@ -65,8 +59,12 @@ const CardCategory = ({
     Record<string, number>
   >({});
 
-  const { data: session } = useSession();
+  // category name change
+  const [changeName, setChangeName] = useState<boolean>(false);
+  const [categoryName, setCategoryName] = useState<string>(category.name);
 
+  const { data: session } = useSession();
+  const { addToast } = useToast();
   const {
     selectedBeers,
     selectedBrewery,
@@ -187,9 +185,9 @@ const CardCategory = ({
       await Promise.all(updatedBeersRequests);
 
       // Update the client state
-      setSelectedBeers((prevSelectedBeers: Beer[]) => {
+      setSelectedBeers((prevSelectedBeers) => {
         // Iterate over the previous selected beers and create a new array
-        return prevSelectedBeers?.map((beer) => {
+        return prevSelectedBeers?.map((beer: Beer) => {
           if (beerIdsToUpdate.includes(beer._id)) {
             // If this beer's ID is in the list of IDs to update, remove the category from its categories
             const updatedCategories = beer.category.filter(
@@ -257,7 +255,9 @@ const CardCategory = ({
       const newCategories: Category[] = [];
       updatedCategoryIds.forEach((categoryId) => {
         if (
-          !selectedBrewery?.categories.some((cat) => cat?._id === categoryId)
+          !selectedBrewery?.categories.some(
+            (cat: Category) => cat?._id === categoryId
+          )
         ) {
           const newCategory = updatedBeers
             .flatMap((beer) => beer?.category)
@@ -336,6 +336,46 @@ const CardCategory = ({
 
   const categoriesNotInCheckedBeers = getCategoriesNotInCheckedBeers();
 
+  // Changes name of category
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCategoryName(e.target.value);
+  };
+  //  Auto save for category name change
+  const handleCategoryNameChange = async () => {
+    if (categoryName !== "" && categoryName !== category.name) {
+      try {
+        let updatedCategory: Category = { ...category, name: categoryName };
+
+        const updateName = await handleUpdateCategory({
+          categoryId: category._id,
+          updatedCategory,
+          accessToken: session?.user.accessToken,
+          setBreweryState: {
+            selectedBeers,
+            selectedBrewery,
+            setSelectedBeers,
+            setSelectedBrewery,
+          },
+        });
+
+        if (updateName) {
+          addToast("Category name has been updated", "success");
+        }
+      } catch (error: any) {
+        console.error(error);
+        addToast(error.error || error.message, "error");
+      }
+    }
+    setChangeName(false);
+  };
+  //  Runs name change save on keydown "Enter"
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      handleCategoryNameChange();
+      event.preventDefault(); // To prevent any default behavior, e.g., form submission
+    }
+  };
+
   useEffect(() => {
     handleEmptyCategory(category._id, isEmpty);
   }, [isEmpty]);
@@ -364,32 +404,33 @@ const CardCategory = ({
     if (isOpen && isEdit) handleOpen(index);
   }, [isChecked, isEdit, isOpen]);
 
+  console.log({ alertOpen, moveAlertOpen });
   return (
     <>
-      {alertOpen && (
-        <RemoveBeerFromCategory
-          alertOpen={alertOpen}
-          category={category}
-          setToContinue={setToContinue}
-          setAlertOpen={setAlertOpen}
-        />
-      )}
-      {moveAlertOpen && (
-        <MoveBeerToCategory
-          alertOpen={moveAlertOpen}
-          checkedBeers={categoriesNotInCheckedBeers}
-          setToMoveContinue={setToMoveContinue}
-          setValues={setMoveCategory}
-          setAlertOpen={setMoveAlertOpen}
-        />
-      )}
+      {/*  Remove Beer From Category */}
+      <AlertDialog
+        title=""
+        message={`Selected beers will be removed from ${category.name}`}
+        isOpen={alertOpen}
+        onClose={() => setAlertOpen(false)}
+        onConfirm={() => setToContinue(true)}
+      />
+
+      {/* Move Beer to Category */}
+      <MoveBeerToCategory
+        title=""
+        message={`Selected beers will be moved to:`}
+        checkedBeers={categoriesNotInCheckedBeers as Category[]}
+        setValues={setMoveCategory}
+        onClose={() => setMoveAlertOpen(false)}
+        onConfirm={() => setToMoveContinue(true)}
+        isOpen={moveAlertOpen}
+      />
 
       <div
-        className={`category-card  relative transition-all duration-75 bg-gradient-to-r ${
-          isOpen
-            ? "  from-accent to-[#05afa0] text-primary"
-            : " from-third-color to-third-color  shadow-sm"
-        } ${isChecked ? "selected" : ""}`}
+        className={`card category-card transition-colors duration-75  relative py-10 ${
+          isOpen ? "  category-card__open" : " "
+        } ${isChecked ? "category-card__selected" : ""}`}
         key={index}
       >
         <div className="absolute right-0 top-0 p-1">
@@ -403,17 +444,23 @@ const CardCategory = ({
           )}
         </div>
 
-        <div className={`flex justify-between hover:cursor-pointer p-6 `}>
+        <div
+          className={`flex justify-between hover:cursor-pointer p-6 `}
+          onClick={(e) => {
+            if (isEdit) return;
+            else handleOpen(index), e.stopPropagation();
+          }}
+        >
           <div className="flex justify-center items-center space-x-3">
-            <label className="flex items-center relative h-8 w-8 overflow-hidden">
+            <label className="flex items-center relative h-8 w-10 overflow-hidden ">
               {/* Adjust the height and width based on your requirements */}
               {/* Checkbox */}
               <input
                 type="checkbox"
-                className={`checkbox outline-accent checkbox-accent  absolute transition-transform duration-300 ${
+                className={`checkbox outline-accent checkbox-accent absolute transition-transform duration-300 ${
                   isEdit
                     ? "translate-y-0 opacity-100"
-                    : "translate-y-full opacity-0 disabled"
+                    : "translate-y-full opacity-0 "
                 }`}
                 onClick={handleCategoryCheck}
                 checked={isChecked}
@@ -432,24 +479,57 @@ const CardCategory = ({
               />
             </label>
 
-            <div
-              className="font-bold flex justify-center items-center w-full "
-              onClick={(e) => {
-                handleOpen(index), e.stopPropagation();
-              }}
-            >
-              {category.name}
-              <span className=" inline-flex  justify-center items-center p-1 text-xs ">
-                <BeerMugBadge beerCount={beersInCategory?.length || 0} />
+            <div className="font-bold flex justify-center items-center w-full ">
+              {changeName ? (
+                <input
+                  type="text"
+                  value={categoryName}
+                  onChange={handleInputChange}
+                  name="name"
+                  id="name"
+                  className="form__input"
+                  autoFocus
+                  onBlur={handleCategoryNameChange}
+                  onKeyDown={handleKeyPress}
+                />
+              ) : (
+                category.name
+              )}
+              <span className=" inline-flex  justify-center items-center p-1 text-xs w-12 h-14 relative overflow-hidden">
+                <BeerMugBadge
+                  beerCount={beersInCategory?.length || 0}
+                  className={`bg-[#e5d773] bg-opacity-80 flex justify-center items-center rounded-full h-1/3 p-1 px-2 absolute transition-transform duration-300 ${
+                    isChecked
+                      ? "-translate-y-full opacity-0"
+                      : "translate-y-0 opacity-100"
+                  }`}
+                />
+
+                {!changeName && (
+                  <button
+                    className="btn btn-ghost disabled:bg-transparent"
+                    onClick={() => setChangeName(true)}
+                    disabled={isEdit ? false : true}
+                  >
+                    <PencilLine
+                      size={20}
+                      className={`absolute  transition-transform duration-300 ${
+                        isChecked
+                          ? "translate-y-0 opacity-100"
+                          : "translate-y-full opacity-0 "
+                      }`}
+                    />
+                  </button>
+                )}
               </span>
             </div>
           </div>
-          {isChecked && (
+          {isChecked && !changeName && (
             <button
               onClick={handleDeleteAlert}
               className="btn btn-outline border-none hover:bg-transparent"
             >
-              <Trash2 size={28} color="#f9fafb" />
+              <Trash2 size={24} color="#f9fafb" />
             </button>
           )}
         </div>
@@ -467,7 +547,7 @@ const CardCategory = ({
                   beersInCategory?.map((beer, i) => (
                     <>
                       <CardItem
-                        key={beer._id}
+                        key={i}
                         beer={beer}
                         category={category}
                         handleCheckbox={(beerId, isChecked) =>
