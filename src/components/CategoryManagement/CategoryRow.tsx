@@ -353,23 +353,25 @@ const CategoryRow = ({
 
   return (
     <>
-      {alertOpen && (
-        <RemoveBeerFromCategory
-          alertOpen={alertOpen}
-          category={category}
-          setToContinue={setToContinue}
-          setAlertOpen={setAlertOpen}
-        />
-      )}
-      {moveAlertOpen && (
-        <MoveBeerToCategory
-          alertOpen={moveAlertOpen}
-          checkedBeers={categoriesNotInCheckedBeers}
-          setToMoveContinue={setToMoveContinue}
-          setValues={setMoveCategory}
-          setAlertOpen={setMoveAlertOpen}
-        />
-      )}
+      {/*  Remove Beer From Category */}
+      <AlertDialog
+        title=""
+        message={`Selected beers will be removed from ${category.name}`}
+        isOpen={alertOpen}
+        onClose={() => setAlertOpen(false)}
+        onConfirm={() => setToContinue(true)}
+      />
+
+      {/* Move Beer to Category */}
+      <MoveBeerToCategory
+        title=""
+        message={`Selected beers will be moved to:`}
+        checkedBeers={categoriesNotInCheckedBeers as Category[]}
+        setValues={setMoveCategory}
+        onClose={() => setMoveAlertOpen(false)}
+        onConfirm={() => setToMoveContinue(true)}
+        isOpen={moveAlertOpen}
+      />
 
       <tr
         className={`lg:table-row  ${isOpen ? " bg-slate-200" : "shadow-sm"} ${
