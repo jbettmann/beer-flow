@@ -117,7 +117,7 @@ export default function BeerCategory({
         return (
           <div
             key={categoryName}
-            className={`collapse category-container ${
+            className={`collapse category-card ${
               isOpen ? "collapse-open" : ""
             } bg-base-200 `}
             onClick={(e) => {
@@ -125,10 +125,14 @@ export default function BeerCategory({
                 e.stopPropagation();
             }}
           >
-            <div className="collapse-title category-container__title">
+            <div
+              className={`collapse-title category-card__title ${
+                isOpen ? "after:text-primary" : ""
+              }`}
+            >
               <p>{categoryName}</p>
             </div>
-            <div className="collapse-content category-container__content pb-0">
+            <div className="collapse-content category-card__content pb-0">
               {beersInCategory.map((beer) => (
                 <Link
                   className="flex items-center justify-between"
@@ -191,11 +195,11 @@ export default function BeerCategory({
     <div className="relative">
       <div
         onClick={onClick}
-        className={`collapse category-container  ${
-          isOpen ? "collapse-open open" : ""
+        className={`collapse category-card  ${
+          isOpen ? "collapse-open category-card__open" : ""
         } collapse-arrow my-4 `}
       >
-        <div className="collapse-title category-container__title">
+        <div className="collapse-title category-card__title">
           <p className="ml-8">{category.name}</p>
           {beersInCategory.length > 0 && (
             <BeerMugBadge beerCount={beersInCategory.length} />
@@ -203,7 +207,7 @@ export default function BeerCategory({
           {isCategoryNew && <p className="tag-new">NEW</p>}
         </div>
         <div className="collapse-content ">
-          <div className="flex flex-col category-container__content">
+          <div className="flex flex-col category-card__content">
             {category.name === "Archived"
               ? renderArchivedBeers()
               : filteredBeers.map((beer) => (
