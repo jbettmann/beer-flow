@@ -24,7 +24,7 @@ const CategoryDashboard = ({ viewFilter, setViewFilter }: Props) => {
       </div>
 
       {/* Small screen dropdown menu */}
-      <div className="lg:hidden flex-initial w-48 z-[1] lg:z-0 card bg-third-color  shadow-md space-y-2 dropdown ">
+      <div className="lg:hidden flex-initial w-48 z-[1] lg:z-0 card bg-third-color  shadow-md space-y-2 dropdown ml-3">
         <label className="btn btn-ghost w-full" tabIndex={0}>
           {viewFilter}
         </label>
