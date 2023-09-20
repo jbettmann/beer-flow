@@ -48,7 +48,7 @@ const BreweriesPage = async () => {
               <>
                 <p
                   key={brewery._id}
-                  className="category-container w-full rounded-xl p-6"
+                  className="category-card w-full rounded-xl p-6"
                 >
                   <SetBreweryIdStorage
                     brewery={brewery}
