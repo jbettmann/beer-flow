@@ -2,7 +2,7 @@ import React, { FC, useEffect, useRef } from "react";
 
 type AlertDialogProps = {
   title?: string;
-  message: string;
+  message: string | JSX.Element;
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
@@ -30,11 +30,7 @@ const AlertDialog: FC<AlertDialogProps> = ({
   }, [isOpen]);
 
   return (
-    <dialog
-      ref={modalRef}
-      id="alert_modal"
-      className="modal modal-bottom sm:modal-middle"
-    >
+    <dialog ref={modalRef} id="alert_modal" className="modal modal-middle">
       <form method="dialog" className="modal-box p-0">
         <div className="p-6 flex text-center flex-col alert">
           <h2>{title}</h2>
