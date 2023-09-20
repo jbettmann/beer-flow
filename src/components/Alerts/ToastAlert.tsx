@@ -11,7 +11,7 @@ type ToastAlertProps = {
 const ToastAlert: FC<ToastAlertProps> = ({
   message,
   type = "success",
-  duration = 2000,
+  duration = 4000,
   isActive,
   onDismissed,
 }) => {
@@ -45,7 +45,7 @@ const ToastAlert: FC<ToastAlertProps> = ({
   };
 
   return (
-    <div className="toast whitespace-normal w-full toast-top toast-center ">
+    <div className="toast whitespace-normal w-full toast-top toast-center z-50">
       <div className={`alert ${getAlertClass()}`}>
         <span>{message}</span>
       </div>
