@@ -40,22 +40,27 @@ const MoveBeerToCategory = ({
       modalRef.current.close();
     }
   }, [isOpen]);
-  console.log({ isOpen, modalRef });
+
   return (
     <dialog ref={modalRef} id="alert_modal" className="modal modal-middle ">
-      <form method="dialog" className="modal-box p-0 rounded-md">
+      <form
+        method="dialog"
+        className="modal-box p-0 rounded-md overflow-visible"
+      >
         <div className="p-6 flex text-center flex-col alert">
           <h2>{title}</h2>
           <span>{message}</span>
-          <CategorySelect
-            setValues={setValues}
-            selectedValues={null}
-            categories={checkedBeers.map((cat) => ({
-              label: cat.name,
-              value: cat.name,
-            }))}
-            handleBlur={() => null}
-          />
+          <div>
+            <CategorySelect
+              setValues={setValues}
+              selectedValues={null}
+              categories={checkedBeers.map((cat) => ({
+                label: cat.name,
+                value: cat.name,
+              }))}
+              handleBlur={() => null}
+            />
+          </div>
 
           <div>
             <button className="btn btn-sm" onClick={onClose}>

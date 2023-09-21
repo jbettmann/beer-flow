@@ -127,7 +127,7 @@ const StaffMemberRow = ({
     <tr
       key={staff._id}
       ref={rowRef}
-      className={` table-row ${isChecked ? "table-row__checked" : ""}`}
+      className={` table-row__effect ${isChecked ? "table-row__checked" : ""}`}
       onClick={() => {
         handleCheckboxChange(staff._id);
       }}

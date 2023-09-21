@@ -1,8 +1,8 @@
 "use client";
-import { Category } from "@/app/types/category";
+import { Category, NewCategory } from "@/app/types/category";
 import { useBreweryContext } from "@/context/brewery-beer";
 import updateBeerCategory from "@/lib/PUT/updateBeerCategory";
-import { LayoutGrid, PencilLine, Trash2 } from "lucide-react";
+import { ChevronDown, LayoutGrid, PencilLine, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
@@ -18,7 +18,7 @@ import CardItem from "./CardItem";
 import { FormValues } from "../UpdateCategory/types";
 
 type Props = {
-  category: Category;
+  category: Category | NewCategory | any;
   isEdit: boolean;
   index: number;
   isOpen: boolean;
@@ -85,9 +85,7 @@ const CardCategory = ({
 
   const handleCategoryCheck = () => {
     const newCheckedState = !isChecked;
-    newCheckedState;
     handleCategoryCheckbox(category._id, newCheckedState);
-    console.log("handleCategoryCheck", isChecked);
   };
 
   const handleBeerCheckbox = (
@@ -306,7 +304,7 @@ const CardCategory = ({
 
   // Get the state for the buttons specific to this category
   const { isMoveAllButtonVisible, isRemoveAllButtonVisible } = getButtonsState(
-    category._id
+    category._id as string
   );
 
   const getCategoriesNotInCheckedBeers = () => {
@@ -328,7 +326,7 @@ const CardCategory = ({
 
     // Find the categories that are not in checkedBeerCategories
     const categoriesNotInCheckedBeers = allCategories.filter(
-      (category) => !checkedBeerCategories.includes(category._id)
+      (category) => !checkedBeerCategories.includes(category._id as string)
     );
 
     return categoriesNotInCheckedBeers;
@@ -344,10 +342,10 @@ const CardCategory = ({
   const handleCategoryNameChange = async () => {
     if (categoryName !== "" && categoryName !== category.name) {
       try {
-        let updatedCategory: Category = { ...category, name: categoryName };
+        let updatedCategory: any = { ...category, name: categoryName };
 
         const updateName = await handleUpdateCategory({
-          categoryId: category._id,
+          categoryId: category._id as string,
           updatedCategory,
           accessToken: session?.user.accessToken,
           setBreweryState: {
@@ -392,7 +390,6 @@ const CardCategory = ({
 
   // Update the isCheckedstate when selectAll changes
   useEffect(() => {
-    selectAll;
     handleEmptyCategory(category._id, isEmpty);
     handleCategoryCheckbox(category._id, selectAll);
     console.log("selectAll changed", selectAll);
@@ -428,7 +425,7 @@ const CardCategory = ({
       />
 
       <div
-        className={`card category-card transition-colors duration-75  relative py-10 ${
+        className={`card category-card transition-colors duration-75  relative py-8 ${
           isOpen ? "  category-card__open" : " "
         } ${isChecked ? "category-card__selected" : ""}`}
         key={index}
@@ -457,7 +454,7 @@ const CardCategory = ({
               {/* Checkbox */}
               <input
                 type="checkbox"
-                className={`checkbox outline-accent checkbox-accent absolute transition-transform duration-300 ${
+                className={`checkbox border-background  absolute transition-transform duration-300 ${
                   isEdit
                     ? "translate-y-0 opacity-100"
                     : "translate-y-full opacity-0 "
@@ -524,13 +521,21 @@ const CardCategory = ({
               </span>
             </div>
           </div>
-          {isChecked && !changeName && (
+          {isChecked && !changeName ? (
             <button
               onClick={handleDeleteAlert}
               className="btn btn-outline border-none hover:bg-transparent"
             >
-              <Trash2 size={24} color="#f9fafb" />
+              <Trash2 size={24} />
             </button>
+          ) : (
+            <span
+              className={`flex items-center transform transition-transform duration-300 ${
+                isOpen ? "rotate-180" : "rotate-0"
+              }`}
+            >
+              <ChevronDown />
+            </span>
           )}
         </div>
 
@@ -564,7 +569,7 @@ const CardCategory = ({
                 ) : (
                   <div>
                     <div>
-                      <div className="flex items-center justify-center w-full h-20 text-gray-50">
+                      <div className="flex items-center justify-center w-full h-20 text-primary">
                         <p className="text-xl font-bold text-center">
                           No beers in this category
                         </p>

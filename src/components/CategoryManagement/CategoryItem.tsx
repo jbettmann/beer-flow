@@ -16,6 +16,7 @@ type Props = {
   category: Category;
   beer: Beer;
   isChecked: boolean;
+  isOpen: boolean;
   handleCheckbox: (beerId: string, isChecked: boolean) => void;
   setAlertOpen: React.Dispatch<React.SetStateAction<boolean | string>>;
   setMoveAlertOpen: React.Dispatch<React.SetStateAction<boolean | string>>;
@@ -24,6 +25,7 @@ type Props = {
 const CategoryItem = ({
   category,
   beer,
+  isOpen,
   handleCheckbox,
   isChecked,
   setAlertOpen,
@@ -31,11 +33,6 @@ const CategoryItem = ({
 }: Props) => {
   const isInMultipleCategories = beer.category && beer.category.length > 1;
   const [checked, setChecked] = useState(isChecked);
-
-  // Update the local state if the isChecked prop changes
-  useEffect(() => {
-    setChecked(isChecked);
-  }, [isChecked]);
 
   // detect source of click
   const handleClick = () => {
@@ -45,6 +42,18 @@ const CategoryItem = ({
     setChecked(newChecked);
     handleCheckbox(beer._id, newChecked);
   };
+  // Update the local state if the isChecked prop changes
+  useEffect(() => {
+    setChecked(isChecked);
+  }, [isChecked]);
+
+  useEffect(() => {
+    if (isOpen) {
+      return;
+    } else {
+      setChecked(false);
+    }
+  }, [isOpen]);
 
   return (
     <tr className={`relative ${checked ? "table-row__checked" : ""}`}>
@@ -90,7 +99,10 @@ const CategoryItem = ({
       <th className="absolute right-0  ">
         {isInMultipleCategories && (
           <button
-            onClick={() => setAlertOpen(true)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setAlertOpen(true);
+            }}
             className={`btn btn-circle ${
               isChecked ? "btn-error " : "btn-disabled"
             } `}
@@ -101,7 +113,10 @@ const CategoryItem = ({
           </button>
         )}
         <button
-          onClick={() => setMoveAlertOpen(true)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setMoveAlertOpen(true);
+          }}
           className={`btn btn-circle ml-2 ${
             isChecked ? "btn-warning" : "btn-disabled"
           } `}

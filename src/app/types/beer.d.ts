@@ -21,6 +21,7 @@ export type Beer = {
 };
 
 export type NewBeer = {
+  _id?: string;
   name: string;
   style: string;
   image: string;

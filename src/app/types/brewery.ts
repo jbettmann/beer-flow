@@ -1,4 +1,4 @@
-import { Category } from "./category";
+import { Category, NewCategory } from "./category";
 import { Users } from "./users";
 
 export type Brewery = {
@@ -8,7 +8,7 @@ export type Brewery = {
   owner: string | Users | number;
   admin: string[] | Users[];
   staff: string[] | Users[];
-  categories: string[] | Category[];
+  categories: NewCategory[] | Category[];
 };
 
 export type NewBrewery = {

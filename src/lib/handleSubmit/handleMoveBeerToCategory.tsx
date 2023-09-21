@@ -7,7 +7,7 @@ import { revalidatePath } from "next/cache";
 import updateBeerCategory from "../PUT/updateBeerCategory";
 
 type Props = {
-  values: FormValues | [];
+  values: FormValues | any;
   beerId: string | null;
   brewery: Brewery | null;
   accessToken: string | undefined;

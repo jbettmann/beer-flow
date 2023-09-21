@@ -3,8 +3,7 @@ import { twMerge } from "tailwind-merge";
 import { supabase } from "./supabase";
 import { v4 as uuidv4 } from "uuid";
 import { Beer } from "@/app/types/beer";
-import { Category } from "@/app/types/category";
-
+import { Category, NewCategory } from "@/app/types/category";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -38,7 +37,7 @@ export const convertDate = (timestamp: string | Date | null) => {
   let date = new Date(timestamp);
   let day = String(date.getDate()).padStart(2, "0");
   let month = String(date.getMonth() + 1).padStart(2, "0"); //Months are zero based
-  let year = date.getFullYear();
+  let year = String(date.getFullYear()).slice(-2); // Gets the last two digits of the year
 
   return month + "/" + day + "/" + year;
 };
@@ -92,7 +91,10 @@ const manageLocalStorageSize = () => {
   }
 };
 
-export const beerInCategory = (beers: Beer[] | null, category: Category) => {
+export const beerInCategory = (
+  beers: Beer[] | null,
+  category: Category | NewCategory
+) => {
   return beers?.filter((beer) => {
     return beer.category
       ? beer.category.some((cat) => cat.name === category.name)
@@ -121,5 +123,4 @@ export function getInitials(name: string) {
   }
 }
 
- 
 // prevent search boncing

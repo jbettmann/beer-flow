@@ -1,6 +1,6 @@
 "use client";
 import { Beer } from "@/app/types/beer";
-import { Category } from "@/app/types/category";
+import { Category, NewCategory } from "@/app/types/category";
 import { useBreweryContext } from "@/context/brewery-beer";
 import deleteCategory from "@/lib/DELETE/deleteCategory";
 import handleCreateNewCategory from "@/lib/handleSubmit/handleCreateNewCategory";
@@ -32,7 +32,7 @@ const CategoryList = ({
 
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
-  const [categories, setCategories] = useState<Category[]>(
+  const [categories, setCategories] = useState<Category[] | NewCategory[]>(
     selectedBrewery?.categories || []
   );
 
@@ -55,9 +55,11 @@ const CategoryList = ({
   );
 
   // State to hold the sort order (true for ascending, false for descending)
-  const [sortMethod, setSortMethod] = useState<string>("NAME");
+  const [sortMethod, setSortMethod] = useState<string>("");
   const [isAlphabetical, setIsAlphabetical] = useState(false);
   const [isNumberAscending, setIsNumberAscending] = useState(false);
+  const [isCreateFilter, setIsCreateFilter] = useState(false);
+
   const [beersInCategory, setBeersInCategory] = useState<Beer[][]>([]);
 
   // Filter menu options for small screen
@@ -111,6 +113,30 @@ const CategoryList = ({
       },
       type: "NUMBER",
     },
+    {
+      title: "Newest",
+      setFilterState: (sort: string) => {
+        if (sort === sortMethod) {
+          setIsCreateFilter(true);
+          return;
+        }
+        setSortMethod(sort);
+        setIsCreateFilter(true);
+      },
+      type: "CREATE",
+    },
+    {
+      title: "Oldest",
+      setFilterState: (sort: string) => {
+        if (sort === sortMethod) {
+          setIsCreateFilter(false);
+          return;
+        }
+        setSortMethod(sort);
+        setIsCreateFilter(false);
+      },
+      type: "CREATE",
+    },
   ];
   // sort the categories alphabetically
 
@@ -126,13 +152,27 @@ const CategoryList = ({
     let sortedCategoriesWithBeers = [...categoriesWithBeers];
     if (sortMethod === "NUMBER") {
       if (isAlphabetical) setIsAlphabetical(false);
+      if (isCreateFilter) setIsCreateFilter(false);
       sortedCategoriesWithBeers.sort((a, b) =>
         isNumberAscending
           ? a.beers.length - b.beers.length
           : b.beers.length - a.beers.length
       );
+    } else if (sortMethod === "CREATE") {
+      if (isAlphabetical) setIsAlphabetical(false);
+      if (isNumberAscending) setIsNumberAscending(false);
+      sortedCategoriesWithBeers.sort((a, b) =>
+        isCreateFilter
+          ? (b.category as Category).createdAt.localeCompare(
+              (a.category as Category).createdAt
+            )
+          : (a.category as Category).createdAt.localeCompare(
+              (b.category as Category).createdAt
+            )
+      );
     } else {
       if (isNumberAscending) setIsNumberAscending(false);
+      if (isCreateFilter) setIsCreateFilter(false);
       sortedCategoriesWithBeers.sort((a, b) =>
         isAlphabetical
           ? a.category.name.localeCompare(b.category.name)
@@ -217,7 +257,7 @@ const CategoryList = ({
     const checkedCategoryIds = Object.keys(checkedCategories).filter(
       (key) => checkedCategories[key] === true
     );
-    console.log("Checked categories: ", checkedCategoryIds);
+
     // Filter the checked categories to include only those that are also marked as empty
     const checkedAndEmptyCategoryIds = checkedCategoryIds.filter(
       (key) => emptyCategories[key] === true
@@ -259,19 +299,19 @@ const CategoryList = ({
 
   useEffect(() => {
     if (selectedBrewery) {
-      let newCategories = [];
+      let newCategories: NewCategory[] = [];
       let newBeersInCategory = [];
 
-      if (viewFilter === "All Categories") {
+      if (viewFilter === "All") {
         newCategories = selectedBrewery.categories || [];
         newBeersInCategory = newCategories.map((category) =>
           beerInCategory(selectedBeers, category)
         );
-      } else if (viewFilter === "Empty Categories") {
+      } else if (viewFilter === "Empty") {
         newCategories = selectedBrewery.categories.filter(
-          (category) => beerInCategory(selectedBeers, category).length === 0
+          (category) => beerInCategory(selectedBeers, category)?.length === 0
         );
-        newBeersInCategory = newCategories.length;
+        newBeersInCategory = newCategories.length as any;
       }
 
       setCategories(newCategories);
@@ -289,7 +329,11 @@ const CategoryList = ({
   // useEffect to call sortAlphabetically when isAlphabetical changes
   useEffect(() => {
     updateSortedCategories();
-  }, [isAlphabetical, isNumberAscending]);
+  }, [isAlphabetical, isNumberAscending, isCreateFilter]);
+
+  useEffect(() => {
+    updateSortedCategories();
+  }, []);
 
   useEffect(() => {
     setAnyCategoriesChecked(
@@ -299,7 +343,7 @@ const CategoryList = ({
   }, [checkedCategories, selectAll]);
 
   return (
-    <div className="overflow-x-auto flex-auto lg:pl-8 text-gray-50">
+    <div className="overflow-x-auto flex-auto lg:pl-8 text-primary">
       {onlyEmptyAlert && (
         <OnlyEmptyCategoryDelete
           alertOpen={onlyEmptyAlert}
@@ -322,7 +366,7 @@ const CategoryList = ({
                 />
               </label>
             </th>
-            <th className="text-gray-400">
+            <th className="text-gray-400  ">
               Name
               <span>
                 <button
@@ -333,15 +377,15 @@ const CategoryList = ({
                   }}
                 >
                   {isAlphabetical ? (
-                    <MoveDown size={15} />
+                    <MoveDown size={13} />
                   ) : (
-                    <MoveUp size={15} />
+                    <MoveUp size={13} />
                   )}
                 </button>
               </span>
             </th>
-            <th className="text-gray-400">
-              Beers Under Category
+            <th className="text-gray-400 ">
+              Amount
               <span>
                 <button
                   className="ml-2 "
@@ -351,14 +395,31 @@ const CategoryList = ({
                   }}
                 >
                   {isNumberAscending ? (
-                    <MoveDown size={15} />
+                    <MoveDown size={13} />
                   ) : (
-                    <MoveUp size={15} />
+                    <MoveUp size={13} />
                   )}
                 </button>
               </span>
             </th>
-            <th className="text-gray-400">Manage</th>
+            <th className="text-gray-400 ">
+              Created
+              <span>
+                <button
+                  className="ml-2 "
+                  onClick={() => {
+                    setIsCreateFilter(!isCreateFilter);
+                    setSortMethod("CREATE");
+                  }}
+                >
+                  {isCreateFilter ? (
+                    <MoveDown size={13} />
+                  ) : (
+                    <MoveUp size={13} />
+                  )}
+                </button>
+              </span>
+            </th>
 
             <th className="text-gray-400">
               {anyCategoriesChecked && (
@@ -384,11 +445,12 @@ const CategoryList = ({
             categories.map((category, index) => {
               return (
                 <CategoryRow
-                  category={category}
+                  category={category as Category}
                   beersInCategory={beersInCategory[index]}
                   key={category._id}
                   index={index}
                   isOpen={isOpen[index]}
+                  isChecked={checkedCategories[category._id as any]}
                   selectAll={selectAll}
                   handleEmptyCategory={handleEmptyCategory}
                   handleCategoryCheckbox={handleCategoryCheckbox}
@@ -409,14 +471,14 @@ const CategoryList = ({
               <label className="flex items-center ">
                 <input
                   type="checkbox"
-                  className="checkbox checkbox-accent  ml-1 mr-2 "
+                  className="checkbox   ml-1 mr-2 "
                   onChange={handleSelectAll}
                   checked={selectAll}
                 />
                 Select All
               </label>
               <button
-                className={`btn btn-circle btn-ghost text-accent`}
+                className={`btn btn-circle btn-ghost text-primary`}
                 onClick={handleDeselectedAllCategories}
               >
                 Cancel
@@ -425,18 +487,18 @@ const CategoryList = ({
           ) : (
             <>
               <button
-                className={`btn btn-circle btn-ghost text-accent`}
+                className={`btn btn-circle btn-ghost`}
                 onClick={(e) => setIsEdit(true)}
               >
                 Edit
               </button>
-              <div className="lg:hidden flex-initial z-[1] shadow-md dropdown dropdown-end ">
-                <label className="btn btn-ghost w-full" tabIndex={0}>
+              <div className="lg:hidden flex-initial z-[1] dropdown dropdown-end bg-transparent ">
+                <label className="btn btn-ghost  w-full" tabIndex={0}>
                   <ListFilter size={20} />
                 </label>
                 <ul
                   tabIndex={0}
-                  className="dropdown-content menu p-2 shadow bg-fourth-color rounded-box "
+                  className="dropdown-content menu p-2 shadow bg-primary text-background rounded-box "
                 >
                   {menuButtons.map((button, i) => (
                     <li key={i}>
@@ -454,7 +516,7 @@ const CategoryList = ({
           )}
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-8">
           {/* row 1 */}
           {createNewCategory && (
             <CreateNewCategoryRow
@@ -468,7 +530,7 @@ const CategoryList = ({
                 <CardCategory
                   category={category}
                   beersInCategory={beersInCategory[index]}
-                  isChecked={checkedCategories[category._id]}
+                  isChecked={checkedCategories[category._id as any]}
                   key={category._id}
                   index={index}
                   isEdit={isEdit}
@@ -482,7 +544,7 @@ const CategoryList = ({
               );
             })
           ) : (
-            <div className="mx-auto text-gray-50 text-opacity-50">
+            <div className="mx-auto text-primary text-opacity-50">
               There are no empty categories
             </div>
           )}

@@ -3,7 +3,7 @@ import { Category, NewCategory } from "@/app/types/category";
 
 type pageProps = {
   newCategory: NewCategory;
-  breweryId: string;
+  breweryId: string | undefined;
   accessToken: string | undefined;
 };
 

@@ -11,7 +11,7 @@ type Props = {};
 const CategoryContainer = (props: Props) => {
   const { selectedBrewery } = useBreweryContext();
   const [createNewCategory, setCreateNewCategory] = useState<boolean>(false);
-  const [viewFilter, setViewFilter] = useState<string>("All Categories");
+  const [viewFilter, setViewFilter] = useState<string>("All");
 
   return (
     selectedBrewery?.staff && (
