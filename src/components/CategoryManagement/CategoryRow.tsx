@@ -2,17 +2,27 @@
 import { Category } from "@/app/types/category";
 import { useBreweryContext } from "@/context/brewery-beer";
 import updateBeerCategory from "@/lib/PUT/updateBeerCategory";
-import { LayoutGrid, LogIn, PencilLine, Scissors, Trash2 } from "lucide-react";
+import {
+  ChevronDown,
+  LayoutGrid,
+  LogIn,
+  PencilLine,
+  Scissors,
+  Trash2,
+} from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import RemoveBeerFromCategory from "../Alerts/RemoveBeerFromCategory";
 import CategoryItem from "./CategoryItem";
 
 import { Beer } from "@/app/types/beer";
+import { useToast } from "@/context/toast";
 import handleMoveBeerToCategory from "@/lib/handleSubmit/handleMoveBeerToCategory";
-import MoveBeerToCategory from "../Alerts/MoveBeerToCategory";
-import { FormValues } from "../UpdateCategory/types";
+import handleUpdateCategory from "@/lib/handleSubmit/handleUpdateCategory";
+import { convertDate } from "@/lib/utils";
 import AlertDialog from "../Alerts/AlertDialog";
+import MoveBeerToCategory from "../Alerts/MoveBeerToCategory";
+import BeerMugBadge from "../Badges/BeerMugBadge";
+import { FormValues } from "../UpdateCategory/types";
 
 type Props = {
   category: Category;
@@ -24,12 +34,14 @@ type Props = {
   handleCategoryCheckbox: (categoryId: string, isChecked: boolean) => void;
   beersInCategory: Beer[];
   handleDeleteAlert: () => void;
+  isChecked: boolean;
 };
 
 const CategoryRow = ({
   category,
   index,
   isOpen,
+  isChecked,
   handleOpen,
   selectAll,
   handleEmptyCategory,
@@ -52,8 +64,11 @@ const CategoryRow = ({
     Record<string, number>
   >({});
 
-  const [categoryCheckBox, setCategoryCheckBox] = useState<boolean>(false);
+  // category name change
 
+  const [changeName, setChangeName] = useState<boolean>(false);
+  const [categoryName, setCategoryName] = useState<string>(category.name);
+  const { addToast } = useToast();
   const { data: session } = useSession();
 
   const {
@@ -75,10 +90,9 @@ const CategoryRow = ({
   }, [selectedBeers]);
 
   const handleCategoryCheck = () => {
-    const newCheckedState = !categoryCheckBox;
-    setCategoryCheckBox(newCheckedState);
+    const newCheckedState = !isChecked;
+
     handleCategoryCheckbox(category._id, newCheckedState);
-    console.log("handleCategoryCheck", categoryCheckBox);
   };
 
   const handleBeerCheckbox = (
@@ -106,6 +120,20 @@ const CategoryRow = ({
         [categoryId]: updatedCategory,
       };
     });
+  };
+
+  // Deselect all beers when the category is closed
+  const deselectAllBeers = () => {
+    if (!isOpen) {
+      setCheckedBeers((prevCheckedBeers) => ({
+        ...prevCheckedBeers,
+        [category._id]: {},
+      }));
+      setCheckedBeersCount((prevCount) => ({
+        ...prevCount,
+        [category._id]: 0,
+      }));
+    }
   };
 
   const getButtonsState = (categoryId: string) => {
@@ -239,7 +267,7 @@ const CategoryRow = ({
 
       // Extract all unique category IDs from the updated beers
       const updatedCategoryIds = new Set(
-        updatedBeers.flatMap((beer) => beer.category.map((cat) => cat._id))
+        updatedBeers.flatMap((beer) => beer?.category.map((cat) => cat._id))
       );
 
       // Identify the new categories that are not in the selectedBrewery.categories
@@ -267,7 +295,7 @@ const CategoryRow = ({
       }
       // Update the client state with the newly updated beers
       setSelectedBeers((prevSelectedBeers) => {
-        return prevSelectedBeers?.map((prevBeer) => {
+        return prevSelectedBeers?.map((prevBeer: Beer[]) => {
           const updatedBeer = updatedBeers.find(
             (beer) => beer?._id === prevBeer._id
           );
@@ -325,6 +353,46 @@ const CategoryRow = ({
 
   const categoriesNotInCheckedBeers = getCategoriesNotInCheckedBeers();
 
+  // Changes name of category
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCategoryName(e.target.value);
+  };
+  //  Auto save for category name change
+  const handleCategoryNameChange = async () => {
+    if (categoryName !== "" && categoryName !== category.name) {
+      try {
+        let updatedCategory: Category = { ...category, name: categoryName };
+
+        const updateName = await handleUpdateCategory({
+          categoryId: category._id,
+          updatedCategory,
+          accessToken: session?.user.accessToken,
+          setBreweryState: {
+            selectedBeers,
+            selectedBrewery,
+            setSelectedBeers,
+            setSelectedBrewery,
+          },
+        });
+
+        if (updateName) {
+          addToast("Category name has been updated", "success");
+        }
+      } catch (error: any) {
+        console.error(error);
+        addToast(error.error || error.message, "error");
+      }
+    }
+    setChangeName(false);
+  };
+  //  Runs name change save on keydown "Enter"
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      handleCategoryNameChange();
+      event.preventDefault(); // To prevent any default behavior, e.g., form submission
+    }
+  };
+
   useEffect(() => {
     handleEmptyCategory(category._id, isEmpty);
   }, [isEmpty]);
@@ -341,7 +409,6 @@ const CategoryRow = ({
 
   // Update the categoryCheckBox state when selectAll changes
   useEffect(() => {
-    setCategoryCheckBox(selectAll);
     handleEmptyCategory(category._id, isEmpty);
     handleCategoryCheckbox(category._id, selectAll);
     console.log("selectAll changed", selectAll);
@@ -349,8 +416,9 @@ const CategoryRow = ({
 
   // Closes category if category checkbox is checked
   useEffect(() => {
-    if (isOpen && categoryCheckBox) handleOpen(index);
-  }, [categoryCheckBox]);
+    if (isOpen && isChecked) handleOpen(index);
+    deselectAllBeers();
+  }, [isChecked, isOpen]);
 
   return (
     <>
@@ -375,9 +443,9 @@ const CategoryRow = ({
       />
 
       <tr
-        className={`lg:table-row  ${
-          isOpen ? " category-card__open" : "shadow-sm"
-        } ${categoryCheckBox ? "table-row__checked" : ""}`}
+        className={` lg:table-row table-row__effect ${
+          isOpen ? " category-card__open hover:shadow-none" : ""
+        } ${isChecked ? "table-row__checked" : ""}`}
         key={index}
       >
         <th className={`${isOpen ? "rounded-tl-lg" : "rounded-l-lg"}`}>
@@ -386,61 +454,108 @@ const CategoryRow = ({
               type="checkbox"
               className="checkbox"
               onChange={handleCategoryCheck}
-              checked={categoryCheckBox}
+              checked={isChecked}
             />
           </label>
         </th>
         <td
           className={` hover:cursor-pointer p-6`}
           onClick={(e) => {
+            if (isChecked) return;
             handleOpen(index), e.stopPropagation();
           }}
         >
           <div className="flex items-center space-x-3 ">
             <LayoutGrid size={24} className="" strokeWidth={1} />
 
-            <div>
-              <div className="font-bold ">
-                {category.name}{" "}
-                <span className=" badge badge-ghost text-xs opacity-50">
-                  {beersInCategory?.length || 0}
-                </span>
-              </div>
+            <div className="font-bold flex justify-start items-center w-full ">
+              {changeName ? (
+                <input
+                  type="text"
+                  value={categoryName}
+                  onChange={handleInputChange}
+                  name="name"
+                  id="name"
+                  className="form__input"
+                  autoFocus
+                  onBlur={handleCategoryNameChange}
+                  onKeyDown={handleKeyPress}
+                />
+              ) : (
+                category.name
+              )}
+              <span className=" inline-flex  justify-center items-center p-1 text-xs w-12 h-14 relative overflow-hidden">
+                {!changeName && (
+                  <button
+                    className="btn btn-ghost disabled:bg-transparent"
+                    onClick={() => setChangeName(true)}
+                    disabled={isChecked ? false : true}
+                  >
+                    <PencilLine
+                      size={20}
+                      className={`absolute transition-transform duration-300 ${
+                        isChecked
+                          ? "translate-y-0 opacity-100"
+                          : "translate-y-full opacity-0 "
+                      }`}
+                    />
+                  </button>
+                )}
+              </span>
             </div>
           </div>
         </td>
         <td
-          className={` hover:cursor-pointer`}
-          onClick={() => handleOpen(index)}
+          className={`  hover:cursor-pointer`}
+          onClick={() => {
+            if (isChecked) return;
+            handleOpen(index);
+          }}
         >
-          <div className="badge badge-md badge-outline">
-            {beersInCategory?.length || 0}
+          <div className="w-1/6">
+            <BeerMugBadge
+              className="h-8 w-10"
+              beerCount={beersInCategory?.length || 0}
+            />
           </div>
         </td>
 
         <th>
-          {categoryCheckBox &&
-          (!beersInCategory || beersInCategory.length === 0) ? (
-            <button
-              onClick={() => handleDeleteAlert()}
-              className="btn btn-circle bg-transparent border-none hover:bg-transparent"
-            >
-              <Trash2 size={24} strokeWidth={1} />
-            </button>
-          ) : (
-            <button
-              className={`btn btn-circle btn-ghost`}
-              onClick={(e) => {
-                e.stopPropagation(), handleOpen(index);
-              }}
-            >
-              <PencilLine size={24} strokeWidth={1} />
-            </button>
-          )}
+          <div>
+            <p className="font-normal">{convertDate(category.createdAt)}</p>
+          </div>
         </th>
-        <th className={`${isOpen ? "rounded-tr-lg" : "rounded-r-lg"}`}></th>
+
+        <th className={`${isOpen ? "rounded-tr-lg" : "rounded-r-lg"}`}>
+          <div className="flex justify-center items-center w-full ">
+            {isChecked && (!beersInCategory || beersInCategory.length === 0) ? (
+              <button
+                onClick={() => handleDeleteAlert()}
+                className="btn btn-circle bg-transparent border-none hover:bg-transparent"
+              >
+                <Trash2 size={24} strokeWidth={1} />
+              </button>
+            ) : (
+              <button
+                onClick={(e) => {
+                  if (isChecked) return;
+                  e.stopPropagation(), handleOpen(index);
+                }}
+                className={`flex items-center transform transition-transform duration-300 ${
+                  isOpen ? "rotate-180" : "rotate-0"
+                }`}
+              >
+                <ChevronDown />
+              </button>
+            )}
+          </div>
+        </th>
       </tr>
-      <tr className={`${isOpen ? "category-card__open " : ""}`}>
+      <tr
+        className={`${
+          isOpen ? "category-card__open shadow-lg rounded-lg" : ""
+        }`}
+      >
         <td colSpan={5} className="rounded-b-lg">
           <div
             className={`collapse transition-all duration-300 overflow-hidden `}
@@ -458,10 +573,10 @@ const CategoryRow = ({
                   <th>ABV%</th>
                   <th>Last Updated</th>
                   <th className="w-64 p-8"></th>
-                  <th className="absolute right-0 top-0 p-0">
+                  <th className="absolute right-0 top-3 p-0">
                     {isMoveAllButtonVisible && (
                       <button
-                        className="btn btn-warning "
+                        className="btn btn-ghost btn-sm text-primary hover:btn-warning"
                         onClick={() => setMoveAlertOpen(true)}
                       >
                         <div
@@ -469,9 +584,11 @@ const CategoryRow = ({
                           title="Move beers to different Category"
                         >
                           <LogIn size={20} strokeWidth={1} />
-                          <span className="inline-flex items-center">
-                            <p className="m-1">Move</p>(
-                            {checkedBeersCount[category._id] || 0})
+                          <span className="flex items-center justify-center text-xs">
+                            <p className=" m-0 ml-1">Move</p>
+                            <p className=" m-0 ml-1">
+                              ({checkedBeersCount[category._id] || 0})
+                            </p>
                           </span>
                         </div>
                       </button>
@@ -479,7 +596,7 @@ const CategoryRow = ({
 
                     {isRemoveAllButtonVisible && (
                       <button
-                        className={`btn btn-error  ml-2`}
+                        className={`btn btn-ghost btn-sm text-primary hover:btn-error  ml-2`}
                         onClick={() => setAlertOpen(true)}
                       >
                         <div
@@ -487,9 +604,11 @@ const CategoryRow = ({
                           title="Remove beers from Category"
                         >
                           <Scissors size={20} strokeWidth={1} />
-                          <span className="inline-flex items-center">
-                            <p className="m-1">Remove</p>(
-                            {checkedBeersCount[category._id] || 0})
+                          <span className="flex items-center justify-center text-xs">
+                            <p className=" m-0 ml-1">Remove</p>
+                            <p className=" m-0 ml-1">
+                              ({checkedBeersCount[category._id] || 0})
+                            </p>
                           </span>
                         </div>
                       </button>
@@ -512,12 +631,13 @@ const CategoryRow = ({
                       isChecked={
                         checkedBeers[category._id]?.[beer._id] || false
                       }
+                      isOpen={isOpen}
                     />
                   ))
                 ) : (
                   <tr>
                     <td colSpan={5}>
-                      <div className="flex items-center justify-center w-full h-20 text-gray-500">
+                      <div className="flex items-center justify-center w-full h-20 text-primary0">
                         <p className="text-xl font-bold text-center">
                           No beers in this category
                         </p>
