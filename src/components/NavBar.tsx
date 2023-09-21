@@ -1,36 +1,28 @@
 "use client";
 import { Brewery } from "@/app/types/brewery";
-import { Users } from "@/app/types/users";
 import { useBreweryContext } from "@/context/brewery-beer";
-import { signIn, signOut, useSession } from "next-auth/react";
-import Image from "next/image";
-import Link from "next/link";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
-import ImageDisplay from "./ImageDisplay/ImageDisplay";
+import { getInitials } from "@/lib/utils";
 import {
-  Settings,
-  PlusCircle,
-  HelpCircle,
-  UserCircle,
-  ListFilter,
-  Users as Staff,
   Beer,
   Factory,
-  X,
-  UserPlus,
-  LayoutList,
+  HelpCircle,
   Home,
-  Skull,
-  Search as SearchIcon,
   LayoutGrid,
+  PlusCircle,
+  Search as SearchIcon,
+  Settings,
+  Skull,
+  Users as Staff,
+  UserCircle,
 } from "lucide-react";
 import { Session } from "next-auth";
-import { set } from "mongoose";
-import { usePathname, useRouter } from "next/navigation";
-import getBreweryBeers from "@/lib/getBreweryBeers";
-import useSWR from "swr";
-import { getInitials } from "@/lib/utils";
+import { signIn, signOut } from "next-auth/react";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import SideDrawer from "./Drawers/SideDrawer";
+import ImageDisplay from "./ImageDisplay/ImageDisplay";
 import { Search } from "./Search/Search";
 
 const NavBar = ({
@@ -318,7 +310,7 @@ const NavBar = ({
       </div>
 
       {/* Bottom Menu Nav */}
-      <div className=" lg:hidden btm-nav z-40 bg-third-color">
+      <div className=" lg:hidden btm-nav z-40 bg-primary text-background">
         <button
           className={
             isActive(`/breweries/${selectedBrewery?._id}`) ? "active" : ""

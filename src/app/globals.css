@@ -10,6 +10,7 @@
 :root {
   --primary: #2B2B2B;
   --accent: #1fcdbc;
+  --background: #f6f1e9;
   --third-color: #202020;
   --fourth-color: #343434;
   --the-gray: #5e5e5e;
@@ -21,10 +22,10 @@
 } 
 
 html {
-  @apply h-screen  bg-gradient-to-bl bg-primary  mb-14 lg:mb-0
+  @apply h-screen    mb-14 lg:mb-0
 }
 body {
-  @apply p-5 pb-16 min-h-full  bg-gradient-to-bl bg-primary text-gray-50 mb-14  lg:mb-0
+  @apply p-5 pb-16 min-h-full  bg-background text-primary mb-14  lg:mb-0
 }
 
 h1 {
@@ -100,9 +101,9 @@ p {
 
 
 
-.category-card.open {
+/* .category-card.open {
   @apply bg-fourth-color text-primary border border-accent shadow-lg
-}
+} */
 
 .category-card__title {
   @apply  flex h-14 py-0 px-5 items-center  self-stretch after:left-5 text-xl font-medium 
@@ -113,12 +114,12 @@ p {
 }
 
 .category-card {
-  @apply  bg-gradient-to-bl  from-third-color to-our-black shadow-sm hover:shadow-lg 
+  @apply  bg-primary bg-opacity-60 shadow-xl text-white hover:shadow-xl 
 
 }
 
 .category-card__selected { 
-  background: linear-gradient(to bottom left, rgb(184 251 245 / 42%) 40%, rgb(205 255 251 / 12%) 100%);
+  @apply bg-primary bg-opacity-10 text-primary;
   -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
   
@@ -126,7 +127,7 @@ p {
 }
 
 .category-card__open {
-  @apply bg-gradient-to-bl from-[#1fcdbc] to-[#05afa0] text-primary
+  @apply bg-none bg-[#fffefa] bg-opacity-70 text-primary 
 }
 
 /* .category-card__checked {
@@ -134,7 +135,9 @@ p {
   /* background: linear-gradient(to bottom left, var(--accent) 20%, var(--fourth-color) 100%) 
 }*/
 
-
+.dashboard__container {
+  @apply  text-background bg-primary shadow-md space-y-2 
+}
 
 .error {
   @apply text-red-500 text-sm
@@ -174,7 +177,7 @@ p {
 }
 
 .form__input {
-  @apply input bg-primary text-gray-50 border-gray-400 
+  @apply input bg-primary text-primary border-gray-400 
 }
 
 .form__input-textarea {
@@ -215,7 +218,7 @@ p {
 }
 
 .ReactTags__tag {
-  @apply p-2 bg-lime-300 rounded-full text-gray-50
+  @apply p-2 bg-lime-300 rounded-full text-primary
 }
 
 .ReactTags__tagInput {
@@ -223,7 +226,7 @@ p {
 }
 
 .ReactTags__tagInputField {
-  @apply min-w-fit w-72 input text-gray-50
+  @apply min-w-fit w-72 input text-primary
 }
 
 .settings-account__info {
@@ -291,7 +294,7 @@ p {
   @apply indicator-item badge bg-indigo-300
 }
 
-.table-row {
+.table-row__effect {
   @apply transition-all rounded-lg hover:shadow-lg hover:cursor-pointer
 }
 
@@ -320,11 +323,11 @@ p {
   }
 
   .label-text {
-    @apply text-gray-50
+    @apply text-primary
   }
 
   .tab {
-    @apply text-gray-50 text-opacity-50 
+    @apply text-primary text-opacity-50 
   }
 
  .tab-bordered {

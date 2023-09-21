@@ -85,7 +85,7 @@ const EditBreweryProfile = ({ brewery, onClose, onSave }: Props) => {
     }
   };
   return (
-    <div className="flex flex-col justify-center items-center z-50 text-gray-50">
+    <div className="flex flex-col justify-center items-center z-50 text-primary">
       <div className="flex w-full h-full justify-between items-center">
         {" "}
         <button onClick={onClose} className="btn m-4">

@@ -189,7 +189,7 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
       {/* // Search Beer Results */}
       {searchBeerResult && searchBeerResult.length > 0 && (
         <div className="p-4 search-result__container">
-          <h5 className="text-left text-gray-50 text-opacity-80">Beer</h5>
+          <h5 className="text-left text-primary text-opacity-80">Beer</h5>
           {isLoading ? (
             <span className="loading loading-bars loading-xs text-accent mx-auto"></span>
           ) : (
@@ -213,7 +213,7 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
             ))
           )}
           {searchBeerResult.length === 0 && (
-            <p className="text-gray-500">No results found for {searchTerm}</p>
+            <p className="text-primary0">No results found for {searchTerm}</p>
           )}
         </div>
       )}
@@ -223,7 +223,7 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
         <>
           <div className="divider px-5"></div>
           <div className="p-4 search-result__container">
-            <h5 className="text-left text-gray-50 text-opacity-80">Hops</h5>
+            <h5 className="text-left text-primary text-opacity-80">Hops</h5>
             {searchHopResult.map((hop) => (
               <a
                 key={hop.id}
@@ -252,7 +252,7 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
         <>
           <div className="divider px-5"></div>
           <div className=" p-4 search-result__container">
-            <h5 className="text-left text-gray-50 text-opacity-80">Malts</h5>
+            <h5 className="text-left text-primary text-opacity-80">Malts</h5>
             {searchMaltResult.map((malt) => (
               <a
                 key={malt.id}
@@ -282,7 +282,7 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
         searchMaltResult.length === 0 &&
         searchTerm !== "" && (
           <div className="w-full md:w-1/2 text-center">
-            <p className="text-gray-500">No results found for {searchTerm}</p>
+            <p className="text-primary0">No results found for {searchTerm}</p>
           </div>
         )}
     </div>

@@ -35,7 +35,7 @@ const BeerCard = ({ beerId }: Props) => {
       <div className=" card w-full lg:mx-auto beer-card shadow-xl p-5">
         <div className="flex w-full justify-start">
           <button
-            className={`link link-hover text-gray-50`}
+            className={`link link-hover text-primary`}
             onClick={() => setIsEditing(!isEditing)}
           >
             {isEditing ? "Cancel" : "Edit"}

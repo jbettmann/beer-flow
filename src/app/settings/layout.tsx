@@ -7,7 +7,7 @@ type Props = {
 
 export default async function BreweriesIdLayout({ children }: Props) {
   return (
-    <div className=" p-3 md:p-8 text-gray-50">
+    <div className=" p-3 md:p-8 text-primary">
       <SettingTabs />
       <div className=" lg:w-3/4 px-10">{children}</div>
     </div>

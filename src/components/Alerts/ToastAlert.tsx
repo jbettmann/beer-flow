@@ -45,9 +45,11 @@ const ToastAlert: FC<ToastAlertProps> = ({
   };
 
   return (
-    <div className="toast whitespace-normal w-full toast-top toast-center z-50">
-      <div className={`alert ${getAlertClass()}`}>
-        <span>{message}</span>
+    <div className="toast whitespace-normal w-full md:w-1/2 toast-top toast-center z-50">
+      <div
+        className={`alert sm:grid-cols-none justify-center ${getAlertClass()}`}
+      >
+        <span className="lg:text-center">{message}</span>
       </div>
     </div>
   );

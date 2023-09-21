@@ -62,6 +62,7 @@ const CategorySelect = ({
   return (
     <>
       <p className="m-0">Category</p>
+
       <CreatableSelect
         className="text-black"
         onBlur={handleBlur("category")}
