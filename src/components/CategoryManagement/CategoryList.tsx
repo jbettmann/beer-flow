@@ -7,13 +7,16 @@ import handleCreateNewCategory from "@/lib/handleSubmit/handleCreateNewCategory"
 import { beerInCategory } from "@/lib/utils";
 import { MoveDown, MoveUp, Trash2, ListFilter } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import OnlyEmptyCategoryDelete from "../Alerts/OnlyEmptyCategoryDelete";
 import CategoryRow from "./CategoryRow";
 import CreateNewCategoryRow from "./CreateNewCategoryRow";
 
 import { Brewery } from "@/app/types/brewery";
 import CardCategory from "../CardCategory/CardCategory";
+import { useOnClickOutside } from "usehooks-ts";
+import cn from "classnames";
+import CreateNewCategoryCard from "../CardCategory/CreateNewCategoryCard";
 
 type Props = {
   createNewCategory: boolean;
@@ -37,6 +40,7 @@ const CategoryList = ({
   );
 
   const [isOpen, setIsOpen] = useState<boolean[]>(categories.map(() => false));
+  const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
 
   const [selectAll, setSelectAll] = useState(false); // select all checkbox
   // State to track categories that are empty (have no beers)
@@ -56,12 +60,22 @@ const CategoryList = ({
 
   // State to hold the sort order (true for ascending, false for descending)
   const [sortMethod, setSortMethod] = useState<string>("");
-  const [isAlphabetical, setIsAlphabetical] = useState(false);
-  const [isNumberAscending, setIsNumberAscending] = useState(false);
-  const [isCreateFilter, setIsCreateFilter] = useState(false);
+  const [isAlphabetical, setIsAlphabetical] = useState<boolean | null>(null);
+  const [isNumberAscending, setIsNumberAscending] = useState<boolean | null>(
+    null
+  );
+  const [isCreateFilter, setIsCreateFilter] = useState<boolean | null>(null);
 
   const [beersInCategory, setBeersInCategory] = useState<Beer[][]>([]);
 
+  //close the dropdown when clicking outside the referenced element
+  const ref = useRef<HTMLDivElement>(null);
+  console.log({
+    sortMethod,
+    isAlphabetical,
+    isNumberAscending,
+    isCreateFilter,
+  });
   // Filter menu options for small screen
   const menuButtons = [
     {
@@ -297,6 +311,13 @@ const CategoryList = ({
     setSelectAll(!selectAll);
   };
 
+  useOnClickOutside(ref, () => setIsFilterOpen(false));
+
+  //onclick handler when clicking a menu item
+  const handleClick = () => {
+    setIsFilterOpen(false);
+  };
+
   useEffect(() => {
     if (selectedBrewery) {
       let newCategories: NewCategory[] = [];
@@ -343,7 +364,7 @@ const CategoryList = ({
   }, [checkedCategories, selectAll]);
 
   return (
-    <div className="overflow-x-auto flex-auto lg:pl-8 text-primary">
+    <div className="lg:overflow-x-auto flex-auto lg:pl-8 text-primary">
       {onlyEmptyAlert && (
         <OnlyEmptyCategoryDelete
           alertOpen={onlyEmptyAlert}
@@ -421,16 +442,7 @@ const CategoryList = ({
               </span>
             </th>
 
-            <th className="text-gray-400">
-              {anyCategoriesChecked && (
-                <button
-                  onClick={() => handleDeleteAlert()}
-                  className="btn btn-circle bg-transparent border-none hover:bg-transparent"
-                >
-                  <Trash2 size={24} strokeWidth={1} />
-                </button>
-              )}
-            </th>
+            <th className="text-gray-400"></th>
           </tr>
         </thead>
         <tbody>
@@ -492,19 +504,38 @@ const CategoryList = ({
               >
                 Edit
               </button>
-              <div className="lg:hidden flex-initial z-[1] dropdown dropdown-end bg-transparent ">
-                <label className="btn btn-ghost  w-full" tabIndex={0}>
+              <div
+                ref={ref}
+                className={`lg:hidden flex-initial z-[1] dropdown-end bg-transparent lg:z-0 ${cn(
+                  {
+                    dropdown: true,
+                    "dropdown-open ": isFilterOpen,
+                  }
+                )}`}
+              >
+                <label
+                  className="btn btn-ghost  w-full"
+                  tabIndex={0}
+                  onClick={() => setIsFilterOpen((prev) => !prev)}
+                >
                   <ListFilter size={20} />
                 </label>
                 <ul
                   tabIndex={0}
-                  className="dropdown-content menu p-2 shadow bg-primary text-background rounded-box "
+                  className={cn({
+                    "dropdown-content menu p-2 shadow rounded-box bg-primary text-background":
+                      true,
+                    hidden: !isFilterOpen,
+                  })}
                 >
                   {menuButtons.map((button, i) => (
                     <li key={i}>
                       <button
                         className="btn btn-ghost "
-                        onClick={() => button.setFilterState(button.type)}
+                        onClick={() => {
+                          handleClick();
+                          button.setFilterState(button.type);
+                        }}
                       >
                         {button.title}
                       </button>
@@ -519,7 +550,7 @@ const CategoryList = ({
         <div className="flex flex-col gap-8">
           {/* row 1 */}
           {createNewCategory && (
-            <CreateNewCategoryRow
+            <CreateNewCategoryCard
               handleSaveNewCategory={handleSaveNewCategory}
               setCreateNewCategory={setCreateNewCategory}
             />

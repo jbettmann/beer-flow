@@ -36,9 +36,9 @@ const CategoryContainer = (props: Props) => {
         <div className="fixed right-5 bottom-20 p-1 z-[2] lg:hidden ">
           <button
             onClick={() => setCreateNewCategory(true)}
-            className="btn btn-circle btn-lg btn-white"
+            className="btn btn-circle btn-white create-btn !btn-lg"
           >
-            <LayoutGrid size={28} color="#2b2b2b" />
+            <LayoutGrid size={28} />
           </button>
           <p className="hidden m-0 text-lg lg:flex">Beer</p>
         </div>

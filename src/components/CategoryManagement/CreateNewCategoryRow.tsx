@@ -1,4 +1,4 @@
-import { BookMarked } from "lucide-react";
+import { LayoutGrid } from "lucide-react";
 import React from "react";
 
 type Props = {
@@ -18,7 +18,7 @@ const CreateNewCategoryRow = ({
           <label className="  btn btn-circle ">
             {/* this hidden checkbox controls the state */}
 
-            <BookMarked size={24} strokeWidth={1} />
+            <LayoutGrid size={24} strokeWidth={1} />
           </label>
           <div>
             <div className="font-bold ">

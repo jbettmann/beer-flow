@@ -129,7 +129,7 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
   }, [isOpen]);
 
   return (
-    <div className="mx-auto w-full lg:w-1/2 mb-16 lg:mb-0 pt-6">
+    <div className="mx-auto w-full lg:w-1/2 mb-16 lg:mb-0 pt-6 text-white">
       <div className="side-header">
         <div className="relative">
           {/* Input with padding on the right */}
@@ -161,7 +161,7 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
       {!searchTerm && (
         <div className="flex p-4 justify-between items-start">
           <div className="search-result__container">
-            <h4>Recent Searches</h4>
+            <h4 className="text-accent">Recent Searches</h4>
             <div className="flex flex-col ml-2 mt-2 gap-1 ">
               {recentSearches.map((search, idx) => (
                 <div
@@ -174,7 +174,7 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
                   <p className="m-0" key={idx}>
                     {search}
                   </p>
-                  <SearchIcon size={20} strokeWidth={1} />
+                  <SearchIcon size={20} strokeWidth={1} color="#1fcdbc" />
                 </div>
               ))}
             </div>
@@ -189,7 +189,7 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
       {/* // Search Beer Results */}
       {searchBeerResult && searchBeerResult.length > 0 && (
         <div className="p-4 search-result__container">
-          <h5 className="text-left text-primary text-opacity-80">Beer</h5>
+          <h5 className="text-left text-accent ">Beer</h5>
           {isLoading ? (
             <span className="loading loading-bars loading-xs text-accent mx-auto"></span>
           ) : (
@@ -205,10 +205,10 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
                 className=" p-4 search-result__item "
               >
                 <div className="search-result__icon-name">
-                  <BeerGlass size={20} strokeWidth={1} />
+                  <BeerGlass size={20} strokeWidth={1} color="#1fcdbc" />
                   <p className="m-0">{beer.name}</p>
                 </div>
-                <ChevronRight size={24} strokeWidth={1} />
+                <ChevronRight size={24} strokeWidth={1} color="#1fcdbc" />
               </Link>
             ))
           )}
@@ -223,7 +223,7 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
         <>
           <div className="divider px-5"></div>
           <div className="p-4 search-result__container">
-            <h5 className="text-left text-primary text-opacity-80">Hops</h5>
+            <h5 className="text-left text-accent ">Hops</h5>
             {searchHopResult.map((hop) => (
               <a
                 key={hop.id}
@@ -237,10 +237,10 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
                 className=" p-4 search-result__item "
               >
                 <div className="search-result__icon-name">
-                  <Hop size={20} strokeWidth={1} />
+                  <Hop size={20} strokeWidth={1} color="#1fcdbc" />
                   <p className="m-0">{hop.name}</p>
                 </div>
-                <ExternalLink size={20} strokeWidth={1} />
+                <ExternalLink size={20} strokeWidth={1} color="#1fcdbc" />
               </a>
             ))}
           </div>
@@ -252,7 +252,7 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
         <>
           <div className="divider px-5"></div>
           <div className=" p-4 search-result__container">
-            <h5 className="text-left text-primary text-opacity-80">Malts</h5>
+            <h5 className="text-left text-accent ">Malts</h5>
             {searchMaltResult.map((malt) => (
               <a
                 key={malt.id}
@@ -266,10 +266,10 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
                 className=" p-4 search-result__item"
               >
                 <div className="search-result__icon-name">
-                  <Wheat size={20} strokeWidth={1} />
+                  <Wheat size={20} strokeWidth={1} color="#1fcdbc" />
                   <p className="m-0">{malt.name}</p>
                 </div>
-                <ExternalLink size={20} strokeWidth={1} />
+                <ExternalLink size={20} strokeWidth={1} color="#1fcdbc" />
               </a>
             ))}
           </div>

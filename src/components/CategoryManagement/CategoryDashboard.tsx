@@ -1,15 +1,32 @@
 "use client";
-import React, { Dispatch, SetStateAction, useState } from "react";
-
+import React, {
+  Dispatch,
+  MutableRefObject,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { useOnClickOutside } from "usehooks-ts";
+import cn from "classnames";
 type Props = {
   viewFilter: string;
   setViewFilter: Dispatch<SetStateAction<string>>;
 };
 
 const CategoryDashboard = ({ viewFilter, setViewFilter }: Props) => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  console.log(isOpen);
   const menuButtons = ["All", "Empty"];
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  //close the dropdown when clicking outside the referenced element
+  const ref = useRef<HTMLDivElement>(null);
+
+  useOnClickOutside(ref, () => setIsOpen(false));
+
+  //onclick handler when clicking a menu item
+  const handleClick = () => {
+    setIsOpen(false);
+  };
+
   return (
     <>
       {/* Large screen side dashboard menu */}
@@ -29,22 +46,38 @@ const CategoryDashboard = ({ viewFilter, setViewFilter }: Props) => {
 
       {/* Small screen dropdown menu */}
       <div
-        className={`lg:hidden flex-initial card dashboard__container w-full z-[1] lg:z-0  dropdown ${
-          isOpen ? "dropdown-open" : ""
-        } ml-3`}
-        onClick={() => setIsOpen(!isOpen)}
+        ref={ref}
+        className={`lg:hidden flex-initial card dashboard__container w-full z-[2] lg:z-0 ${cn(
+          {
+            dropdown: true,
+            "dropdown-open ": isOpen,
+          }
+        )}`}
       >
-        <label className="btn btn-ghost w-full">{viewFilter}</label>
+        <label
+          tabIndex={0}
+          className="btn btn-ghost w-full"
+          onClick={() => setIsOpen((prev) => !prev)}
+        >
+          {viewFilter}
+        </label>
         <ul
-          className={`dropdown-content menu p-2 shadow bg-fourth-color rounded-box w-full`}
+          tabIndex={0}
+          className={cn({
+            "dropdown-content menu p-2 shadow rounded-box  bg-fourth-color w-full":
+              true,
+            hidden: !isOpen,
+          })}
         >
           {menuButtons.map((button, i) => (
             <li key={i}>
               <button
-                className="btn btn-ghost "
+                className={`btn btn-ghost content-center ${
+                  viewFilter === button ? "bg-the-gray  text-accent" : ""
+                } `}
                 onClick={(e) => {
                   e.stopPropagation();
-                  setIsOpen(!isOpen);
+                  handleClick();
                   setViewFilter(button);
                 }}
               >

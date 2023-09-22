@@ -124,7 +124,7 @@ const NavBar = ({
         <Search isOpen={isSearchOpen} setIsOpen={setIsSearchOpen} />
       </SideDrawer>
 
-      <div className="navbar justify-between">
+      <div className="navbar justify-between ">
         <div className="drawer w-fit p-3 ">
           <input
             id="menu-drawer"
@@ -153,7 +153,7 @@ const NavBar = ({
               </label>
             </div>
           </div>
-          <div className="drawer-side z-50 ">
+          <div className="drawer-side z-50 text-background">
             <label htmlFor="menu-drawer" className="drawer-overlay "></label>
             <div className="h-full flex flex-col justify-between menu-drawer">
               <div className="menu p-6 w-80 h-full gap-3">
