@@ -393,6 +393,12 @@ const CategoryRow = ({
     }
   };
 
+  const handleTouchStart = () => {
+    setTimeout(() => {
+      addToast("Only empty categories can be deleted", "error");
+    }, 200); // Show tooltip after 1 second of pressing
+  };
+
   useEffect(() => {
     handleEmptyCategory(category._id, isEmpty);
   }, [isEmpty]);
@@ -528,13 +534,22 @@ const CategoryRow = ({
 
         <th className={`${isOpen ? "rounded-tr-lg" : "rounded-r-lg"}`}>
           <div className="flex justify-center items-center w-full ">
-            {isChecked && (!beersInCategory || beersInCategory.length === 0) ? (
-              <button
-                onClick={() => handleDeleteAlert()}
-                className="btn btn-circle bg-transparent border-none hover:bg-transparent"
-              >
-                <Trash2 size={24} strokeWidth={1} />
-              </button>
+            {isChecked ? (
+              !beersInCategory || beersInCategory.length === 0 ? (
+                <button
+                  title="Delete Category"
+                  onClick={handleDeleteAlert}
+                  className="btn btn-outline border-none hover:bg-transparent"
+                >
+                  <Trash2 size={24} className="text-error" />
+                </button>
+              ) : (
+                <>
+                  <button title="Delete Category" onClick={handleTouchStart}>
+                    <Trash2 size={24} className="text-stone-400" />
+                  </button>
+                </>
+              )
             ) : (
               <button
                 onClick={(e) => {
