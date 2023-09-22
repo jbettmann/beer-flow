@@ -106,7 +106,7 @@ p {
 } */
 
 .category-card__title {
-  @apply  flex h-14 py-0 px-5 items-center  self-stretch after:left-5 text-xl font-medium 
+  @apply  flex h-20 py-0 px-5 items-center  self-stretch after:left-5 text-xl font-medium 
 }
 
 .category-card__content {
@@ -114,7 +114,7 @@ p {
 }
 
 .category-card {
-  @apply  bg-primary bg-opacity-60 shadow-xl text-white hover:shadow-xl 
+  @apply  bg-[#e3d4bf] text-primary shadow-xl hover:shadow-xl 
 
 }
 
@@ -127,7 +127,7 @@ p {
 }
 
 .category-card__open {
-  @apply bg-none bg-[#fffefa] bg-opacity-70 text-primary 
+  @apply bg-none bg-white bg-opacity-70 text-primary 
 }
 
 /* .category-card__checked {
@@ -144,7 +144,7 @@ p {
 }
 
 .create-btn {
-  @apply btn btn-accent border-none rounded-full;
+  @apply btn bg-primary text-background border-none rounded-full;
   
 }
 
@@ -177,7 +177,7 @@ p {
 }
 
 .form__input {
-  @apply input bg-primary text-primary border-gray-400 
+  @apply input bg-primary text-background border-gray-400 focus:input-accent
 }
 
 .form__input-textarea {
