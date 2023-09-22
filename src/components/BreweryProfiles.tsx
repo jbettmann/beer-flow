@@ -107,7 +107,7 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
           <div className="fixed right-5 bottom-20 lg:static flex justify-center lg:w-full gap-2 items-center p-1">
             <Link
               href={`/create/${selectedBrewery?._id}/beer`}
-              className="btn btn-circle btn-lg btn-accent"
+              className="btn btn-circle create-btn !btn-lg"
             >
               <Plus size={30} />
             </Link>
