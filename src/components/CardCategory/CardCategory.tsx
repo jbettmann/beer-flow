@@ -4,7 +4,7 @@ import { useBreweryContext } from "@/context/brewery-beer";
 import updateBeerCategory from "@/lib/PUT/updateBeerCategory";
 import { ChevronDown, LayoutGrid, PencilLine, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Beer } from "@/app/types/beer";
 import { useToast } from "@/context/toast";
@@ -374,6 +374,12 @@ const CardCategory = ({
     }
   };
 
+  const handleTouchStart = () => {
+    setTimeout(() => {
+      addToast("Only empty categories can be deleted", "error");
+    }, 200); // Show tooltip after 1 second of pressing
+  };
+
   useEffect(() => {
     handleEmptyCategory(category._id, isEmpty);
   }, [isEmpty]);
@@ -401,7 +407,6 @@ const CardCategory = ({
     if (isOpen && isEdit) handleOpen(index);
   }, [isChecked, isEdit, isOpen]);
 
-  console.log({ alertOpen, moveAlertOpen });
   return (
     <>
       {/*  Remove Beer From Category */}
@@ -430,17 +435,6 @@ const CardCategory = ({
         } ${isChecked ? "category-card__selected" : ""}`}
         key={index}
       >
-        <div className="absolute right-0 top-0 p-1">
-          {isChecked && (!beersInCategory || beersInCategory.length === 0) && (
-            <button
-              onClick={() => handleDeleteAlert()}
-              className="btn btn-circle bg-transparent border-none hover:bg-transparent"
-            >
-              <Trash2 size={20} strokeWidth={1} />
-            </button>
-          )}
-        </div>
-
         <div
           className={`flex justify-between hover:cursor-pointer p-6 `}
           onClick={(e) => {
@@ -495,7 +489,7 @@ const CardCategory = ({
               <span className=" inline-flex  justify-center items-center p-1 text-xs w-12 h-14 relative overflow-hidden">
                 <BeerMugBadge
                   beerCount={beersInCategory?.length || 0}
-                  className={`bg-[#e5d773] bg-opacity-80 flex justify-center items-center rounded-full h-1/3 p-1 px-2 absolute transition-transform duration-300 ${
+                  className={` absolute transition-transform duration-300 ${
                     isChecked
                       ? "-translate-y-full opacity-0"
                       : "translate-y-0 opacity-100"
@@ -522,12 +516,20 @@ const CardCategory = ({
             </div>
           </div>
           {isChecked && !changeName ? (
-            <button
-              onClick={handleDeleteAlert}
-              className="btn btn-outline border-none hover:bg-transparent"
-            >
-              <Trash2 size={24} />
-            </button>
+            !beersInCategory || beersInCategory.length === 0 ? (
+              <button
+                onClick={handleDeleteAlert}
+                className="btn btn-outline border-none hover:bg-transparent"
+              >
+                <Trash2 size={24} className="text-error" />
+              </button>
+            ) : (
+              <>
+                <button disabled onTouchStart={handleTouchStart}>
+                  <Trash2 size={24} className="text-stone-400" />
+                </button>
+              </>
+            )
           ) : (
             <span
               className={`flex items-center transform transition-transform duration-300 ${
