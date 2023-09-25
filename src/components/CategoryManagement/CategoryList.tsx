@@ -373,11 +373,13 @@ const CategoryList = ({
         />
       )}
       {/* Large Screen Table Layout  */}
-      <table className="hidden lg:table  border-separate border-spacing-y-0 p-3 relative">
+      <table
+        className={`hidden lg:table border-separate border-spacing-y-2 first:border-spacing-y-0 p-3 relative`}
+      >
         {/* head */}
         <thead>
           <tr>
-            <th className="text-gray-400">
+            <th className="text-stone-500">
               <label>
                 <input
                   type="checkbox"
@@ -387,7 +389,7 @@ const CategoryList = ({
                 />
               </label>
             </th>
-            <th className="text-gray-400  ">
+            <th className="text-stone-500  ">
               Name
               <span>
                 <button
@@ -405,7 +407,7 @@ const CategoryList = ({
                 </button>
               </span>
             </th>
-            <th className="text-gray-400 ">
+            <th className="text-stone-500 ">
               Amount
               <span>
                 <button
@@ -423,7 +425,7 @@ const CategoryList = ({
                 </button>
               </span>
             </th>
-            <th className="text-gray-400 ">
+            <th className="text-stone-500 ">
               Created
               <span>
                 <button
@@ -442,7 +444,7 @@ const CategoryList = ({
               </span>
             </th>
 
-            <th className="text-gray-400"></th>
+            <th className="text-stone-500"></th>
           </tr>
         </thead>
         <tbody>
