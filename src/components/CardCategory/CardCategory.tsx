@@ -16,6 +16,8 @@ import BeerMugBadge from "../Badges/BeerMugBadge";
 
 import CardItem from "./CardItem";
 import { FormValues } from "../UpdateCategory/types";
+import EditCategoryCardLS from "../LoadingSkeleton/CategoryManagmentLS/CategoryCardManageLS";
+import CategoryManagementLS from "../LoadingSkeleton/CategoryManagmentLS/CategoryManagementLS";
 
 type Props = {
   category: Category | NewCategory | any;
