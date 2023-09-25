@@ -1,10 +1,12 @@
 "use client";
 import { useBreweryContext } from "@/context/brewery-beer";
-import { LayoutGrid } from "lucide-react";
+import { LayoutGrid, Plus } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import CategoryDashboard from "./CategoryDashboard";
 import CategoryList from "./CategoryList";
+import StaffManagementTable from "../LoadingSkeleton/StaffManagementTableLS";
+import { Brewery } from "@/app/types/brewery";
 
 type Props = {};
 
@@ -26,7 +28,7 @@ const CategoryContainer = (props: Props) => {
           </div>
           <button
             onClick={() => setCreateNewCategory(true)}
-            className="btn btn-accent"
+            className="btn btn-accent create-btn"
           >
             + Category
           </button>
@@ -38,9 +40,8 @@ const CategoryContainer = (props: Props) => {
             onClick={() => setCreateNewCategory(true)}
             className="btn btn-circle btn-white create-btn !btn-lg"
           >
-            <LayoutGrid size={28} />
+            <Plus size={28} />
           </button>
-          <p className="hidden m-0 text-lg lg:flex">Beer</p>
         </div>
         <div className="flex flex-col w-full lg:flex-row py-2 md:p-5">
           <CategoryDashboard
@@ -49,7 +50,6 @@ const CategoryContainer = (props: Props) => {
           />
           <CategoryList
             viewFilter={viewFilter}
-            brewery={selectedBrewery}
             createNewCategory={createNewCategory}
             setCreateNewCategory={setCreateNewCategory}
           />
