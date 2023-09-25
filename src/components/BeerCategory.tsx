@@ -1,7 +1,7 @@
 "use client";
 import { Beer } from "@/app/types/beer";
 import { Brewery } from "@/app/types/brewery";
-import { Category } from "@/app/types/category";
+import { Category, NewCategory } from "@/app/types/category";
 import { useBreweryContext } from "@/context/brewery-beer";
 import { handleDeleteCategory } from "@/lib/handleSubmit/handleDeleteCategory";
 import { handleBeerView, isNew } from "@/lib/utils";
@@ -14,7 +14,7 @@ import ImageDisplay from "./ImageDisplay/ImageDisplay";
 import BeerMugBadge from "./Badges/BeerMugBadge";
 
 type Props = {
-  category: Category | { name: string };
+  category: Category | NewCategory;
   beers: Beer[] | undefined;
   isOpen: boolean;
   onClick: () => void;
@@ -178,11 +178,11 @@ export default function BeerCategory({
       name: "Delete Category",
       onClick: async () => {
         const updateBrewCats = await handleDeleteCategory({
-          categoryId: category._id,
-          breweryId,
-          selectedBeers,
-          selectedBrewery,
-          token: session?.user?.accessToken,
+          categoryId: category._id as any,
+          breweryId: breweryId as any,
+          selectedBeers: selectedBeers as any,
+          selectedBrewery: selectedBrewery as any,
+          token: session?.user?.accessToken as any,
         });
 
         if (updateBrewCats) setSelectedBrewery(updateBrewCats as Brewery);
