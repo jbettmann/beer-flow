@@ -54,7 +54,7 @@ export const handleDeleteCategory = async ({
     // If no beer has the category, delete the category
     const deletedCategory = await deleteCategory({
       breweryId,
-      categoryId,
+      categoryId: categoryId as string,
       token,
     });
 
