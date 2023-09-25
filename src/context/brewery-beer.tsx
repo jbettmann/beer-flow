@@ -3,6 +3,7 @@ import { Beer } from "@/app/types/beer";
 import { Brewery } from "@/app/types/brewery";
 import getBreweryBeers from "@/lib/getBreweryBeers";
 import getSingleBrewery from "@/lib/getSingleBrewery";
+
 import { useSession } from "next-auth/react";
 import React, {
   FC,
@@ -18,6 +19,10 @@ type BreweryContextProps = {
   setSelectedBrewery: (brewery: Brewery) => void;
   selectedBeers: Beer[] | null;
   setSelectedBeers: (beers: Beer[]) => void;
+  beersLoading: boolean | null;
+  setBeersLoading: (loading: boolean) => void;
+  breweryLoading: boolean | null;
+  setBreweryLoading: (loading: boolean) => void;
 };
 
 const BreweryContext = createContext<BreweryContextProps | undefined>(
@@ -30,12 +35,19 @@ type ProviderProps = {
 export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
   const [selectedBrewery, setSelectedBrewery] = useState<Brewery | null>(null);
   const [selectedBeers, setSelectedBeers] = useState<Beer[] | null>(null);
+  const [beersLoading, setBeersLoading] = useState<boolean | null>(null);
+  const [breweryLoading, setBreweryLoading] = useState<boolean | null>(null);
 
   const { data: session } = useSession();
   const [breweryId, setBreweryId] = useState<string | null>(
     localStorage.getItem("selectedBreweryId") || null
   );
-  const { data: beers, error: beersError } = useSWR(
+  const {
+    data: beers,
+    error: beersError,
+
+    isLoading: isBeersLoading,
+  } = useSWR(
     [
       `https://beer-bible-api.vercel.app/breweries/${breweryId}/beers`,
       session?.user.accessToken,
@@ -43,7 +55,12 @@ export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
     getBreweryBeers
   );
 
-  const { data: brewery, error: breweryError } = useSWR(
+  const {
+    data: brewery,
+    error: breweryError,
+
+    isLoading: isBreweryLoading,
+  } = useSWR(
     [
       `https://beer-bible-api.vercel.app/breweries/${breweryId}`,
       session?.user.accessToken,
@@ -85,14 +102,9 @@ export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
   useEffect(() => {
     setSelectedBeers(beers);
     setSelectedBrewery(brewery);
-  }, [beers, brewery]);
-
-  console.log("From BreweryContext", {
-    brewery,
-    beers,
-    breweryError,
-    beersError,
-  });
+    setBeersLoading(isBeersLoading);
+    setBreweryLoading(isBreweryLoading);
+  }, [beers, brewery, isBeersLoading, isBreweryLoading]);
 
   return (
     <BreweryContext.Provider
@@ -101,6 +113,10 @@ export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
         setSelectedBrewery,
         selectedBeers,
         setSelectedBeers,
+        beersLoading,
+        setBeersLoading,
+        breweryLoading,
+        setBreweryLoading,
       }}
     >
       {children}
