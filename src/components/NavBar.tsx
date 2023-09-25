@@ -24,6 +24,7 @@ import { useEffect, useRef, useState } from "react";
 import SideDrawer from "./Drawers/SideDrawer";
 import ImageDisplay from "./ImageDisplay/ImageDisplay";
 import { Search } from "./Search/Search";
+import { Users } from "@/app/types/users";
 
 const NavBar = ({
   breweries,
@@ -54,9 +55,9 @@ const NavBar = ({
   const isUserAdmin = (brewery: Brewery, userId: string) => {
     if (brewery.admin) {
       if (typeof brewery.admin[0] === "string") {
-        return brewery.admin.includes(userId);
+        return brewery.admin.includes(userId as any);
       } else if (typeof brewery.admin[0] === "object") {
-        return brewery.admin.some((admin) => admin._id === userId);
+        return brewery.admin.some((admin: any) => admin._id === userId);
       }
     }
     return false;
@@ -124,7 +125,7 @@ const NavBar = ({
         <Search isOpen={isSearchOpen} setIsOpen={setIsSearchOpen} />
       </SideDrawer>
 
-      <div className="navbar justify-between ">
+      <div className="navbar justify-between  ">
         <div className="drawer w-fit p-3 ">
           <input
             id="menu-drawer"
@@ -219,7 +220,6 @@ const NavBar = ({
           href={`/breweries/${selectedBrewery?._id}`}
           className="hidden lg:block"
         >
-          {" "}
           {selectedBrewery?.image ? (
             <ImageDisplay item={selectedBrewery} className="logo" />
           ) : (
@@ -238,7 +238,7 @@ const NavBar = ({
             <SearchIcon size={24} strokeWidth={2} />
           </div>
           {/* Profile Photo with Option Dropdown */}
-          <div className="hidden lg:block dropdown dropdown-end">
+          <div className="hidden lg:block dropdown dropdown-end ">
             <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
               <Image
                 src={user.user.picture}
@@ -250,7 +250,7 @@ const NavBar = ({
             </label>
             <ul
               tabIndex={0}
-              className="mt-3 z-[1] p-2 shadow menu menu-md dropdown-content bg-base-100 min-w-max w-56 rounded-box "
+              className="mt-3 z-[1] p-2 shadow menu menu-md dropdown-content bg-base-100 text-primary min-w-max w-56 rounded-box "
             >
               {adminAllowed && (
                 <div className="border-b-2">
@@ -290,7 +290,7 @@ const NavBar = ({
               </li>
               <li>
                 <Link
-                  href={"/account"}
+                  href={"/settings"}
                   className="flex flex-row items-center p-3"
                 >
                   <UserCircle size={24} />
