@@ -35,7 +35,7 @@ const CreateNewCategoryCard = ({
             autoFocus
             placeholder="Category name"
             onBlur={(e) => handleSaveNewCategory(e.target.value)}
-            onKeyDown={(e) => handleKeyPress((e.target as any).value)}
+            onKeyDown={handleKeyPress}
           />
         </div>
       </div>
