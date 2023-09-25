@@ -39,6 +39,9 @@ module.exports = {
         "our-black": "#0e0e0e",
         "main-text-color": "text-primary",
       },
+      screens: {
+        xs: "350px",
+      },
     },
   },
   plugins: [
