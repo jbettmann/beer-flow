@@ -1,9 +1,8 @@
-import EditCategoryLS from "@/components/LoadingSkeleton/EditCategoryLS";
+import EditCategoryCardLS from "@/components/LoadingSkeleton/CategoryManagmentLS/CategoryCardManageLS";
+import EditCategoryLS from "@/components/LoadingSkeleton/EditCategoryNameLS";
+import CategoriesManagementPage from "../page";
+import CategoryManagementLS from "@/components/LoadingSkeleton/CategoryManagmentLS/CategoryManagementLS";
 
 export default function Loading() {
-  return (
-    <div className="w-1/2 m-auto">
-      <EditCategoryLS />
-    </div>
-  );
+  return <CategoryManagementLS />;
 }

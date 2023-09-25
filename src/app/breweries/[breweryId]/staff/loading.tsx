@@ -1,4 +1,4 @@
-import EditCategoryLS from "@/components/LoadingSkeleton/EditCategoryLS";
+import EditCategoryLS from "@/components/LoadingSkeleton/EditCategoryNameLS";
 import StaffManagementTableLS from "@/components/LoadingSkeleton/StaffManagementTableLS";
 
 export default function Loading() {
