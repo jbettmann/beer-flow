@@ -8,6 +8,7 @@ import getBreweries from "@/lib/getBreweries";
 import { redirect } from "next/dist/server/api-utils";
 import BackArrow from "@/components/Buttons/BackArrow";
 import SetBreweryIdStorage from "@/components/Buttons/SetBreweryIdStorage";
+import { Plus } from "lucide-react";
 
 // export async function generateMetadata({
 //   params,
@@ -41,26 +42,41 @@ const BreweriesPage = async () => {
         </Link>
       </h2> */}
       <br />
-      <div className="flex flex-col justify-center items-center w-[80%] mx-auto text-center">
+      <div className="flex flex-col justify-center items-center w-[80%] mx-auto text-center gap-6">
         {breweries.length > 0 &&
           breweries.map((brewery) => {
             return (
               <>
-                <p
+                <div
                   key={brewery._id}
-                  className="category-card w-full rounded-xl p-6"
+                  className="category-card w-full md:w-1/2 rounded-xl p-6"
                 >
                   <SetBreweryIdStorage
                     brewery={brewery}
                     href={`/breweries/${brewery._id}`}
                   />
-                </p>
+                </div>
               </>
             );
           })}
-        <Link href={"/create/brewery"} className="create-btn mt-10">
-          Create A Brewery
-        </Link>
+        <div className="fixed right-5 bottom-20 p-1 z-[2] lg:hidden ">
+          <Link
+            href={"/create/brewery"}
+            className="btn btn-circle btn-white create-btn !btn-lg"
+          >
+            <Plus size={28} />
+          </Link>
+          <p className="hidden m-0 text-lg lg:flex">Beer</p>
+        </div>
+        <div className="hidden lg:flex justify-center items-center mt-10 gap-2">
+          <Link
+            href={"/create/brewery"}
+            className=" lg: block btn btn-circle btn-white create-btn !btn-lg "
+          >
+            <Plus size={28} />
+          </Link>
+          <h4> Brewery</h4>
+        </div>
       </div>
     </section>
   );
