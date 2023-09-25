@@ -56,12 +56,14 @@ p {
 }
 
 
+
+
 .beer-category__image {
   @apply rounded-full my-2 mx-4
 }
 
 .beer-card {
-  @apply bg-third-color
+  @apply bg-primary text-background p-1 xs:p-5
 }
 
 .beer-card__description {
@@ -73,7 +75,7 @@ p {
 }
 
 .beer-card__item {
-  @apply ml-1 mb-1 lg:text-xl
+  @apply ml-1 mb-1 text-left lg:text-xl
 }
 
 
