@@ -23,6 +23,7 @@ import AlertDialog from "../Alerts/AlertDialog";
 import MoveBeerToCategory from "../Alerts/MoveBeerToCategory";
 import BeerMugBadge from "../Badges/BeerMugBadge";
 import { FormValues } from "../UpdateCategory/types";
+import CategoryManagementLS from "../LoadingSkeleton/CategoryManagmentLS/CategoryManagementLS";
 
 type Props = {
   category: Category;
@@ -393,7 +394,7 @@ const CategoryRow = ({
     }
   };
 
-  const handleTouchStart = () => {
+  const handleCannotDelete = () => {
     setTimeout(() => {
       addToast("Only empty categories can be deleted", "error");
     }, 200); // Show tooltip after 1 second of pressing
@@ -450,7 +451,7 @@ const CategoryRow = ({
 
       <tr
         className={` lg:table-row table-row__effect ${
-          isOpen ? " category-card__open hover:shadow-none" : ""
+          isOpen ? " category-card__open bg-stone-400 hover:shadow-none" : ""
         } ${isChecked ? "table-row__checked" : ""}`}
         key={index}
       >
@@ -537,7 +538,7 @@ const CategoryRow = ({
             {isChecked ? (
               !beersInCategory || beersInCategory.length === 0 ? (
                 <button
-                  title="Delete Category"
+                  title="Delete category"
                   onClick={handleDeleteAlert}
                   className="btn btn-outline border-none hover:bg-transparent"
                 >
@@ -545,7 +546,11 @@ const CategoryRow = ({
                 </button>
               ) : (
                 <>
-                  <button title="Delete Category" onClick={handleTouchStart}>
+                  <button
+                    className="relative"
+                    title="Only empty categories can be deleted"
+                    onClick={handleCannotDelete}
+                  >
                     <Trash2 size={24} className="text-stone-400" />
                   </button>
                 </>
