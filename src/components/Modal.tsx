@@ -47,10 +47,10 @@ export default function Modal({
     >
       <div
         ref={wrapper}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full sm:w-10/12 md:w-8/12 lg:w-1/2 p-6 h-5/6 "
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full sm:w-10/12 md:w-8/12 lg:w-1/2 p-1 xs:p-6 h-[80%] xs:h-[90%] "
       >
         <button
-          className="close-btn absolute p-6 top-4 right-4 z-10"
+          className="close-btn absolute p-1 xs:p-6 top-2 xs:top-4 right-2 xs:right-4 z-10 text-background"
           onClick={onDismiss}
         >
           {/* X Close Button SVG */}
