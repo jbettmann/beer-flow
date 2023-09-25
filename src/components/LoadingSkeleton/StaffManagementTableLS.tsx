@@ -5,7 +5,7 @@ type Props = {};
 const StaffManagementTable = (props: Props) => {
   return (
     <div className="flex flex-col w-full lg:flex-row">
-      <div className="hidden lg:flex-initial lg:w-48 lg:card lg:bg-base-100  lg:space-y-2  bg-gray-200 animate-pulse  p-4">
+      <div className="hidden lg:flex-initial lg:w-24 mr-4 lg:card lg:bg-base-100  lg:space-y-2  bg-gray-200 animate-pulse  p-4">
         {[...Array(3)].map((_, idx) => (
           <div
             key={idx}
@@ -14,11 +14,8 @@ const StaffManagementTable = (props: Props) => {
         ))}
       </div>
 
-      <div className="lg:hidden flex-initial w-48 z-[1] lg:z-0 card bg-base-100 space-y-2 dropdown  bg-gray-200 animate-pulse  p-4 ">
-        <div className="w-full rounded-md bg-gray-200 animate-pulse"></div>
-      </div>
-      <div className=" flex-grow ">
-        <table className="table l">
+      <div className=" flex-grow border-r-8 border-gray-200 animate-pulse">
+        <table className="table ">
           {/* head */}
           <thead>
             <tr>
@@ -30,9 +27,9 @@ const StaffManagementTable = (props: Props) => {
             </tr>
           </thead>
           <tbody>
-            {[...Array(4)].map((_, idx) => (
+            {[...Array(6)].map((_, idx) => (
               <tr key={idx} className="flex-grow">
-                <th className="w-8 h-8 bg-gray-200 animate-pulse"></th>
+                <th className="w-8 h-2 bg-gray-200 animate-pulse"></th>
                 <td className="flex items-center space-x-3 w-full">
                   <div className="avatar w-12 h-12 bg-gray-200 animate-pulse"></div>
                   <div className="space-y-2">
