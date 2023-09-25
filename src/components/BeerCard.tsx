@@ -32,7 +32,7 @@ const BeerCard = ({ beerId }: Props) => {
 
   return (
     beer && (
-      <div className=" card w-full lg:mx-auto beer-card shadow-xl p-5">
+      <div className=" card w-full lg:mx-auto beer-card shadow-xl ">
         <div className="flex w-full justify-start">
           <button
             className={`link link-hover text-primary`}
@@ -54,11 +54,11 @@ const BeerCard = ({ beerId }: Props) => {
             />
           ) : (
             <>
-              <div className="flex items-center justify-around lg:p-6 relative">
+              <div className="flex items-center justify-around lg:p-6 relative gap-2">
                 {isNew(beer) ? (
                   <>
                     <div className="tag-new absolute top-[-5px] right-5">
-                      NEW{" "}
+                      NEW
                     </div>
                     <Sparkles
                       size={20}
@@ -69,7 +69,7 @@ const BeerCard = ({ beerId }: Props) => {
                   </>
                 ) : null}
                 {/* Beer Image and Name */}
-                <figure className="rounded-lg overflow-hidden relative w-28 h-40 lg:h-56 lg:w-56 p-2">
+                <figure className="rounded-lg overflow-hidden relative flex-auto md:flex-initial h-40 lg:h-56 w-56 p-2">
                   {beer?.image && (
                     <ImageDisplay className="beer-card__image " item={beer} />
                   )}
