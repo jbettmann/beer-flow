@@ -8,6 +8,7 @@ import {
   LogIn,
   PencilLine,
   Scissors,
+  Trash,
   Trash2,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -24,6 +25,7 @@ import MoveBeerToCategory from "../Alerts/MoveBeerToCategory";
 import BeerMugBadge from "../Badges/BeerMugBadge";
 import { FormValues } from "../UpdateCategory/types";
 import CategoryManagementLS from "../LoadingSkeleton/CategoryManagmentLS/CategoryManagementLS";
+import TrashCanIcon from "../Buttons/TrashCanIcon";
 
 type Props = {
   category: Category;
@@ -36,12 +38,14 @@ type Props = {
   beersInCategory: Beer[];
   handleDeleteAlert: () => void;
   isChecked: boolean;
+  isLoading: boolean;
 };
 
 const CategoryRow = ({
   category,
   index,
   isOpen,
+  isLoading,
   isChecked,
   handleOpen,
   selectAll,
@@ -289,14 +293,19 @@ const CategoryRow = ({
       // NEED updatedBeers to return the updated beers with the new category
       // If there are new categories, update the selectedBrewery
       if (newCategories.length > 0) {
-        setSelectedBrewery((prevBrewery) => ({
-          ...prevBrewery,
-          categories: [...(prevBrewery?.categories || []), ...newCategories],
-        }));
+        setSelectedBrewery((prevBrewery) => {
+          if (!prevBrewery) return null;
+          return {
+            ...prevBrewery,
+            categories: [...(prevBrewery?.categories || []), ...newCategories],
+          };
+        });
       }
       // Update the client state with the newly updated beers
       setSelectedBeers((prevSelectedBeers) => {
-        return prevSelectedBeers?.map((prevBeer: Beer[]) => {
+        if (!prevSelectedBeers) return null;
+
+        return prevSelectedBeers?.map((prevBeer: any) => {
           const updatedBeer = updatedBeers.find(
             (beer) => beer?._id === prevBeer._id
           );
@@ -346,7 +355,7 @@ const CategoryRow = ({
 
     // Find the categories that are not in checkedBeerCategories
     const categoriesNotInCheckedBeers = allCategories.filter(
-      (category) => !checkedBeerCategories.includes(category._id)
+      (category) => !checkedBeerCategories.includes(category._id as string)
     );
 
     return categoriesNotInCheckedBeers;
@@ -537,23 +546,25 @@ const CategoryRow = ({
           <div className="flex justify-center items-center w-full ">
             {isChecked ? (
               !beersInCategory || beersInCategory.length === 0 ? (
-                <button
+                <TrashCanIcon
                   title="Delete category"
                   onClick={handleDeleteAlert}
-                  className="btn btn-outline border-none hover:bg-transparent"
-                >
-                  <Trash2 size={24} className="text-error" />
-                </button>
+                  isLoading={isLoading}
+                />
               ) : (
-                <>
+            
                   <button
                     className="relative"
                     title="Only empty categories can be deleted"
                     onClick={handleCannotDelete}
                   >
-                    <Trash2 size={24} className="text-stone-400" />
+                    <Trash2
+                      size={24}
+                      strokeWidth={1}
+                      className="text-stone-400"
+                    />
                   </button>
-                </>
+            
               )
             ) : (
               <button
