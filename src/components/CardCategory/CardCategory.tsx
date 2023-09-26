@@ -18,6 +18,7 @@ import CardItem from "./CardItem";
 import { FormValues } from "../UpdateCategory/types";
 import EditCategoryCardLS from "../LoadingSkeleton/CategoryManagmentLS/CategoryCardManageLS";
 import CategoryManagementLS from "../LoadingSkeleton/CategoryManagmentLS/CategoryManagementLS";
+import TrashCanIcon from "../Buttons/TrashCanIcon";
 
 type Props = {
   category: Category | NewCategory | any;
@@ -31,6 +32,7 @@ type Props = {
   beersInCategory: Beer[];
   handleDeleteAlert: () => void;
   isChecked: boolean;
+  isLoading: boolean;
 };
 
 const CardCategory = ({
@@ -39,6 +41,7 @@ const CardCategory = ({
   isEdit,
   isOpen,
   isChecked,
+  isLoading,
   handleOpen,
   selectAll,
   handleEmptyCategory,
@@ -186,6 +189,7 @@ const CardCategory = ({
 
       // Update the client state
       setSelectedBeers((prevSelectedBeers) => {
+        if (!prevSelectedBeers) return prevSelectedBeers;
         // Iterate over the previous selected beers and create a new array
         return prevSelectedBeers?.map((beer: Beer) => {
           if (beerIdsToUpdate.includes(beer._id)) {
@@ -281,6 +285,7 @@ const CardCategory = ({
       }
       // Update the client state with the newly updated beers
       setSelectedBeers((prevSelectedBeers) => {
+        if (!prevSelectedBeers) return prevSelectedBeers;
         return prevSelectedBeers?.map((prevBeer) => {
           const updatedBeer = updatedBeers.find(
             (beer) => beer?._id === prevBeer._id
@@ -379,7 +384,7 @@ const CardCategory = ({
     }
   };
 
-  const handleTouchStart = () => {
+  const handleCannotDelete = () => {
     setTimeout(() => {
       addToast("Only empty categories can be deleted", "error");
     }, 200); // Show tooltip after 1 second of pressing
@@ -522,18 +527,15 @@ const CardCategory = ({
           </div>
           {isChecked && !changeName ? (
             !beersInCategory || beersInCategory.length === 0 ? (
-              <button
-                onClick={handleDeleteAlert}
-                className="btn btn-outline border-none hover:bg-transparent"
-              >
-                <Trash2 size={24} className="text-error" />
-              </button>
+              <TrashCanIcon onClick={handleDeleteAlert} isLoading={isLoading} />
             ) : (
-              <>
-                <button disabled onTouchStart={handleTouchStart}>
-                  <Trash2 size={24} className="text-stone-400" />
-                </button>
-              </>
+              <button
+                className="relative"
+                title="Only empty categories can be deleted"
+                onClick={handleCannotDelete}
+              >
+                <Trash2 size={24} strokeWidth={1} className="text-stone-400" />
+              </button>
             )
           ) : (
             <span
