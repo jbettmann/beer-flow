@@ -7,7 +7,7 @@ type Props = {};
 
 const BreweryStaffPage = (props: Props) => {
   return (
-    <div className="p-8">
+    <div className="py-3 md:p-8">
       <Suspense fallback={<StaffManagementTableLS />}>
         {/* @ts-expect-error Server Component */}
         <StaffContainer />

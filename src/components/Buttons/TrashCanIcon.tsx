@@ -1,4 +1,4 @@
-import { Trash } from "lucide-react";
+import { Trash, Trash2 } from "lucide-react";
 import React from "react";
 
 type Props = {
@@ -7,16 +7,17 @@ type Props = {
   title?: string | undefined;
 };
 
-const TrashCanIcon = ({ onClick, isLoading }: Props) => {
+const TrashCanIcon = ({ onClick, isLoading, title = undefined }: Props) => {
   return (
     <button
-      className="btn btn-circle btn-ghost hover:bg-error"
+      className=" border-none hover:bg-transparent hover:text-error"
       onClick={onClick}
+      title={title}
     >
       {isLoading ? (
         <span className="loading loading-spinner "></span>
       ) : (
-        <Trash size={24} strokeWidth={1} />
+        <Trash2 size={24} strokeWidth={1} />
       )}
     </button>
   );
