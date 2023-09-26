@@ -2,13 +2,12 @@
 import { Users } from "@/app/types/users";
 import { useBreweryContext } from "@/context/brewery-beer";
 import updateBreweryAdmin from "@/lib/PATCH/updateBreweryAdmin";
-import { PencilLine, SkullIcon, Trash } from "lucide-react";
+import { PencilLine, SkullIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { RefObject, useEffect, useRef, useState } from "react";
 import SaveButton from "../Buttons/SaveButton";
-import { useOutsideClick } from "@/lib/utils";
-import { set } from "mongoose";
+
 import deleteStaffMember from "@/lib/DELETE/deleteStaffMemeber";
 import TrashCanIcon from "../Buttons/TrashCanIcon";
 
@@ -85,7 +84,7 @@ const StaffMemberRow = ({
       alert(result.message);
       setSelectedBrewery(result.updatedBrewery);
       // Display success message from the result
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
       alert(err.message); // Displaying the error message as an alert on the client side
     } finally {
@@ -99,7 +98,7 @@ const StaffMemberRow = ({
   ) => {
     useEffect(() => {
       function handleClickOutside(event: Event) {
-        if (ref.current && !ref.current.contains(event.target)) {
+        if (ref.current && !ref.current.contains(event.target as Node)) {
           callback();
         }
       }

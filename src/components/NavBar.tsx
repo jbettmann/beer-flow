@@ -15,7 +15,7 @@ import {
   Users as Staff,
   UserCircle,
 } from "lucide-react";
-import { Session } from "next-auth";
+import { Session, User } from "next-auth";
 import { signIn, signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -26,13 +26,7 @@ import ImageDisplay from "./ImageDisplay/ImageDisplay";
 import { Search } from "./Search/Search";
 import { Users } from "@/app/types/users";
 
-const NavBar = ({
-  breweries,
-  user,
-}: {
-  breweries: Brewery[];
-  user: Session;
-}) => {
+const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
   const { selectedBrewery, setSelectedBrewery } = useBreweryContext();
   const [adminAllowed, setAdminAllowed] = useState(false);
 
@@ -112,8 +106,8 @@ const NavBar = ({
   // set user admin status
   useEffect(() => {
     if (selectedBrewery) {
-      const isAdmin = isUserAdmin(selectedBrewery, user?.user.id || "");
-      const isOwner = isUserOwner(selectedBrewery, user?.user.id || "");
+      const isAdmin = isUserAdmin(selectedBrewery, user?.id || "");
+      const isOwner = isUserOwner(selectedBrewery, user?.id || "");
 
       setAdminAllowed(isAdmin || isOwner);
     }
@@ -241,8 +235,8 @@ const NavBar = ({
           <div className="hidden lg:block dropdown dropdown-end ">
             <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
               <Image
-                src={user.user.picture}
-                alt={`profile picture of ${user.user.name}`}
+                src={user?.picture}
+                alt={`profile picture of ${user?.name}`}
                 className="beer-category__image"
                 width={50}
                 height={50}

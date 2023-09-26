@@ -123,7 +123,7 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         const accessToken = signJwtAccessToken(user); // creates accessToken for API authorization
         const refreshToken = signJwtRefreshToken(user); // sends for new accessToken after expires
-        token.id = user.id;
+        token.id = user.id as string;
         return {
           ...token,
           breweries: user.breweries,
@@ -188,7 +188,6 @@ export const authOptions: NextAuthOptions = {
       }
 
       if (existingUser) {
-        console.log(existingUser);
         if (existingUser.image !== picture) {
           console.log("Existing Image", existingUser.image, { picture });
           try {

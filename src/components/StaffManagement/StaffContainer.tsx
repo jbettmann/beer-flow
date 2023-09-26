@@ -8,6 +8,7 @@ import Link from "next/link";
 import { UserPlus } from "lucide-react";
 import BottomDrawer from "../Drawers/BottomDrawer";
 import MultipleInvites from "../Invite/MultipuleInvites";
+import { Users } from "@/app/types/users";
 
 type Props = {};
 
@@ -19,18 +20,18 @@ const StaffContainer = (props: Props) => {
   return (
     selectedBrewery?.staff && (
       <>
-        <div className="flex justify-between p-5">
+        <div className="flex justify-between md:p-5">
           <div className="flex flex-col w-fit">
             <h3 className="text-left">{selectedBrewery.companyName} Staff</h3>
             <div className="text-sm badge badge-ghost opacity-50 mt-2">
-              Owner {selectedBrewery.owner.fullName || ""}
+              Owner {(selectedBrewery.owner as Users).fullName || ""}
             </div>
           </div>
           <button onClick={() => setIsOpen(true)} className="btn btn-accent">
             Invite <UserPlus size={20} />
           </button>
         </div>
-        <div className="flex flex-col w-full lg:flex-row p-5">
+        <div className="flex flex-col w-full lg:flex-row md:p-5">
           <StaffDashboard
             setViewFilter={setViewFilter}
             viewFilter={viewFilter}

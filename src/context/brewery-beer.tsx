@@ -16,9 +16,9 @@ import useSWR from "swr";
 
 type BreweryContextProps = {
   selectedBrewery: Brewery | null;
-  setSelectedBrewery: (brewery: Brewery) => void;
+  setSelectedBrewery: React.Dispatch<React.SetStateAction<Brewery | null>>;
   selectedBeers: Beer[] | null;
-  setSelectedBeers: (beers: Beer[]) => void;
+  setSelectedBeers: React.Dispatch<React.SetStateAction<Beer[] | null>>;
   beersLoading: boolean | null;
   setBeersLoading: (loading: boolean) => void;
   breweryLoading: boolean | null;

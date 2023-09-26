@@ -6,12 +6,13 @@ import Brewery from "./brewery";
 
 declare module "next-auth" {
   interface User {
-    _id: number;
+    id: number;
     fullName: string;
     email: string;
     breweries: string[];
     __v: number;
     image: string;
+    picture?: string;
     accessToken: string;
     refreshToken: string;
     notifications: Notifications;

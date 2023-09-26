@@ -2,12 +2,10 @@ import NavBar from "@/components/NavBar";
 import Provider from "@/components/Provider";
 import getBreweries from "@/lib/getBreweries";
 import { Metadata } from "next";
+import { getServerSession } from "next-auth";
 import { Inter } from "next/font/google";
-import "./globals.css";
-import { User, getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/route";
-import Dashboard from "@/components/Dashboard/Dashboard";
-import { Brewery } from "./types/brewery";
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,7 +27,7 @@ export default async function Layout(props: {
     <html lang="en">
       <Provider>
         <body className={inter.className}>
-          {session && <NavBar breweries={breweries} user={session} />}
+          {session && <NavBar breweries={breweries} user={session.user} />}
 
           {/* <Chat /> */}
           {props.children}

@@ -255,7 +255,7 @@ const CardCategory = ({
       const newCategories: Category[] = [];
       updatedCategoryIds.forEach((categoryId) => {
         if (
-          !selectedBrewery?.categories.some(
+          (!selectedBrewery?.categories as any).some(
             (cat: Category) => cat?._id === categoryId
           )
         ) {
@@ -271,10 +271,13 @@ const CardCategory = ({
       // NEED updatedBeers to return the updated beers with the new category
       // If there are new categories, update the selectedBrewery
       if (newCategories.length > 0) {
-        setSelectedBrewery((prevBrewery) => ({
-          ...prevBrewery,
-          categories: [...(prevBrewery?.categories || []), ...newCategories],
-        }));
+        setSelectedBrewery((prevBrewery) => {
+          if (!prevBrewery) return prevBrewery;
+          return {
+            ...prevBrewery,
+            categories: [...(prevBrewery?.categories || []), ...newCategories],
+          };
+        });
       }
       // Update the client state with the newly updated beers
       setSelectedBeers((prevSelectedBeers) => {

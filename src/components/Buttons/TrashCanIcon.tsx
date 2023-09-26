@@ -2,8 +2,9 @@ import { Trash } from "lucide-react";
 import React from "react";
 
 type Props = {
-  onClick: (e: Event) => void;
-  isLoading: boolean;
+  onClick: (e: any) => void;
+  isLoading?: boolean;
+  title?: string | undefined;
 };
 
 const TrashCanIcon = ({ onClick, isLoading }: Props) => {

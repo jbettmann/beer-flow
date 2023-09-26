@@ -17,10 +17,9 @@ import getSingleBrewery from "@/lib/getSingleBrewery";
 type Props = {
   brewery: Brewery;
   onClose: () => void;
-  onSave: () => void;
 };
 
-const EditBreweryProfile = ({ brewery, onClose, onSave }: Props) => {
+const EditBreweryProfile = ({ brewery, onClose }: Props) => {
   const { data: session } = useSession();
   const { addToast } = useToast();
   const { setSelectedBrewery } = useBreweryContext();

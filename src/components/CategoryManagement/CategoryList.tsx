@@ -33,6 +33,8 @@ const CategoryList = ({
   const { selectedBeers, selectedBrewery, setSelectedBrewery } =
     useBreweryContext();
 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
   const [categories, setCategories] = useState<Category[] | NewCategory[]>(
@@ -70,12 +72,7 @@ const CategoryList = ({
 
   //close the dropdown when clicking outside the referenced element
   const ref = useRef<HTMLDivElement>(null);
-  console.log({
-    sortMethod,
-    isAlphabetical,
-    isNumberAscending,
-    isCreateFilter,
-  });
+
   // Filter menu options for small screen
   const menuButtons = [
     {
@@ -169,8 +166,8 @@ const CategoryList = ({
       if (isCreateFilter) setIsCreateFilter(false);
       sortedCategoriesWithBeers.sort((a, b) =>
         isNumberAscending
-          ? a.beers.length - b.beers.length
-          : b.beers.length - a.beers.length
+          ? (a.beers as any).length - (b.beers as any).length
+          : (b.beers as any).length - (a.beers as any).length
       );
     } else if (sortMethod === "CREATE") {
       if (isAlphabetical) setIsAlphabetical(false);
@@ -193,7 +190,9 @@ const CategoryList = ({
           : b.category.name.localeCompare(a.category.name)
       );
     }
-    setBeersInCategory(sortedCategoriesWithBeers.map((item) => item.beers));
+    setBeersInCategory(
+      sortedCategoriesWithBeers.map((item) => item.beers as Beer[])
+    );
     setCategories(sortedCategoriesWithBeers.map((item) => item.category));
   };
 
@@ -208,14 +207,20 @@ const CategoryList = ({
         brewery: selectedBrewery,
         accessToken: session?.user.accessToken || "",
       });
-      console.log(newCategoryName);
-      setSelectedBrewery((prev: Brewery) => ({
-        ...prev,
-        categories: [
-          { _id: newCategoryId, name: newCategoryName },
-          ...prev.categories,
-        ],
-      }));
+
+      setSelectedBrewery((prev) => {
+        if (prev === null) {
+          return null;
+        }
+
+        return {
+          ...prev,
+          categories: [
+            { _id: newCategoryId, name: newCategoryName },
+            ...prev.categories,
+          ],
+        };
+      });
     }
     setCreateNewCategory(false);
   };
@@ -267,6 +272,7 @@ const CategoryList = ({
   };
 
   const handleDeleteSelectedCategories = () => {
+    setIsLoading(true);
     // Find all the checked categories
     const checkedCategoryIds = Object.keys(checkedCategories).filter(
       (key) => checkedCategories[key] === true
@@ -286,17 +292,24 @@ const CategoryList = ({
             token: session?.user.accessToken || "",
           });
         });
-        setSelectedBrewery((prev) => ({
-          ...prev,
-          categories: prev.categories.filter(
-            (category) => !checkedAndEmptyCategoryIds.includes(category._id)
-          ),
-        }));
+        setSelectedBrewery((prev) => {
+          if (prev === null) {
+            return null;
+          }
+          return {
+            ...prev,
+            categories: prev.categories.filter(
+              (category) =>
+                !checkedAndEmptyCategoryIds.includes(category._id as string)
+            ),
+          };
+        });
       } catch (error) {
         console.error(error);
         alert(error);
       }
     }
+    setIsLoading(false);
     setDeleteConfirm(false); // Reset deleteConfirm state
     // Add code here to delete the categories by ID
   };
@@ -460,6 +473,7 @@ const CategoryList = ({
               return (
                 <CategoryRow
                   category={category as Category}
+                  isLoading={isLoading}
                   beersInCategory={beersInCategory[index]}
                   key={category._id}
                   index={index}
@@ -562,6 +576,7 @@ const CategoryList = ({
               return (
                 <CardCategory
                   category={category}
+                  isLoading={isLoading}
                   beersInCategory={beersInCategory[index]}
                   isChecked={checkedCategories[category._id as any]}
                   key={category._id}

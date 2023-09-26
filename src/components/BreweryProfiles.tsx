@@ -30,7 +30,7 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
 
   // watch for change in selected brewery and beer to update categories
   useEffect(() => {
-    setCategories(selectedBrewery?.categories || []);
+    setCategories((selectedBrewery?.categories as Category[]) || []);
   }, [selectedBrewery, selectedBeers]);
 
   // console.log({ brewery, beers, session });
