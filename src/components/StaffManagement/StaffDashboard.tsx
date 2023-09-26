@@ -1,5 +1,7 @@
 "use client";
-import React from "react";
+import React, { useRef, useState } from "react";
+import { useOnClickOutside } from "usehooks-ts";
+import cn from "classnames";
 
 type Props = {
   viewFilter: string;
@@ -8,14 +10,26 @@ type Props = {
 
 const StaffDashboard = ({ viewFilter, setViewFilter }: Props) => {
   const menuButtons = ["All Staff", "Admin", "Crew"];
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  //close the dropdown when clicking outside the referenced element
+  const ref = useRef<HTMLDivElement>(null);
+
+  useOnClickOutside(ref, () => setIsOpen(false));
+
+  //onclick handler when clicking a menu item
+  const handleClick = () => {
+    setIsOpen(false);
+  };
   return (
     <>
       {/* Large screen side dashboard menu */}
-      <div className="hidden lg:flex-initial lg:w-48 lg:h-[65vh] lg:min-h-full lg:card lg:bg-base-100 lg:shadow-md lg:space-y-2">
+      <div className="hidden lg:flex-initial dashboard__container  py-7 px-1 lg:w-fit lg:h-[65vh] lg:card">
         {menuButtons.map((button) => (
           <button
             key={button}
-            className="btn btn-ghost justify-start"
+            className={`btn btn-ghost rounded-sm hover:bg-the-gray hover:text-accent justify-center ${
+              viewFilter === button ? "bg-the-gray  text-accent" : ""
+            }`}
             onClick={() => setViewFilter(button)}
           >
             {button}
@@ -24,19 +38,41 @@ const StaffDashboard = ({ viewFilter, setViewFilter }: Props) => {
       </div>
 
       {/* Small screen dropdown menu */}
-      <div className="lg:hidden flex-initial w-48 z-[1] lg:z-0 card bg-base-100 shadow-md space-y-2 dropdown ">
-        <label className="btn btn-ghost w-full" tabIndex={0}>
+      <div
+        ref={ref}
+        className={`lg:hidden flex-initial card dashboard__container w-full z-[2] lg:z-0 ${cn(
+          {
+            dropdown: true,
+            "dropdown-open ": isOpen,
+          }
+        )}`}
+      >
+        <label
+          className="btn btn-ghost w-full"
+          tabIndex={0}
+          onClick={() => setIsOpen((prev) => !prev)}
+        >
           {viewFilter}
         </label>
         <ul
           tabIndex={0}
-          className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
+          className={cn({
+            "dropdown-content menu p-2 shadow rounded-box  bg-fourth-color w-full":
+              true,
+            hidden: !isOpen,
+          })}
         >
           {menuButtons.map((button) => (
             <li key={button}>
               <button
-                className="btn btn-ghost "
-                onClick={() => setViewFilter(button)}
+                className={`btn btn-ghost content-center ${
+                  viewFilter === button ? "bg-the-gray  text-accent" : ""
+                } `}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleClick();
+                  setViewFilter(button);
+                }}
               >
                 {button}
               </button>
