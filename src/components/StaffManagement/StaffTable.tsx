@@ -137,163 +137,164 @@ const StaffTable = ({ viewFilter, brewery }: Props) => {
 
   return (
     brewery && (
-      <div className="overflow-x-auto flex-auto lg:pl-8">
-        <table className="hidden lg:table border-separate border-spacing-y-6 p-3">
-          {/* head */}
-          <thead>
-            <tr>
-              <th>
-                <label>
-                  <input
-                    type="checkbox"
-                    className="checkbox"
-                    onChange={() => setSelectAll(!selectAll)}
-                  />
-                </label>
-              </th>
-              <th>
-                Name
-                <span>
-                  <button className="ml-2 " onClick={handleAlphabetizeName}>
-                    {isAlphabetical ? (
-                      <MoveDown size={15} />
-                    ) : (
-                      <MoveUp size={15} />
-                    )}
-                  </button>
-                </span>
-              </th>
-              <th>Role</th>
+      <>
+        <div className={`flex justify-between lg:hidden`}>
+          <label className="flex items-center ">
+            <input
+              type="checkbox"
+              className="checkbox   ml-1 mr-2 "
+              onChange={() => setSelectAll(!selectAll)}
+              checked={selectAll}
+            />
+            Select All
+          </label>
 
-              <th className="text-right">Manage</th>
-            </tr>
-          </thead>
-          <tbody className="">
-            {staff && staff.length !== 0 ? (
-              staff.map((s: Users) => {
-                const role =
-                  s._id === (brewery?.owner as Users)._id
-                    ? "Owner"
-                    : adminIds.has(s._id)
-                    ? "Admin"
-                    : "Crew";
-                return (
-                  <StaffMemberRow
-                    key={s._id}
-                    staff={s}
-                    role={role}
-                    admin={adminIds.has(s._id)}
-                    breweryId={brewery._id}
-                    handleCheckboxChange={handleCheckboxChange}
-                    checkedStaffIds={checkedStaffIds}
-                  />
-                );
-              })
-            ) : (
-              <tr>
-                <th></th>
-                <td>
-                  <p>No staff</p>
-                </td>
-                <th></th>
-              </tr>
-            )}
-          </tbody>
-          {/* foot */}
-          <tfoot>
-            <tr>
-              <th></th>
-              <th>Name</th>
-              <th>Role</th>
-
-              <th className="text-right">Manage</th>
-            </tr>
-          </tfoot>
-        </table>
-
-        {/* Small Screen Card Layout*/}
-        <div className=" lg:hidden flex flex-col p-3 relative">
-          <div className={`flex justify-between`}>
-            <label className="flex items-center ">
-              <input
-                type="checkbox"
-                className="checkbox   ml-1 mr-2 "
-                onChange={() => setSelectAll(!selectAll)}
-                checked={selectAll}
-              />
-              Select All
-            </label>
-
-            <div
-              ref={ref}
-              className={`lg:hidden flex-initial z-[1] dropdown-end bg-transparent lg:z-0 ${cn(
-                {
-                  dropdown: true,
-                  "dropdown-open ": isFilterOpen,
-                }
-              )}`}
+          <div
+            ref={ref}
+            className={` flex-initial z-[1] dropdown-end bg-transparent lg:z-0 ${cn(
+              {
+                dropdown: true,
+                "dropdown-open ": isFilterOpen,
+              }
+            )}`}
+          >
+            <label
+              className="btn btn-ghost  w-full"
+              tabIndex={0}
+              onClick={() => setIsFilterOpen((prev) => !prev)}
             >
-              <label
-                className="btn btn-ghost  w-full"
-                tabIndex={0}
-                onClick={() => setIsFilterOpen((prev) => !prev)}
-              >
-                <ListFilter size={20} />
-              </label>
-              <ul
-                tabIndex={0}
-                className={cn({
-                  "dropdown-content menu p-2 shadow rounded-box bg-primary text-background":
-                    true,
-                  hidden: !isFilterOpen,
-                })}
-              >
-                {menuButtons.map((button, i) => (
-                  <li key={i}>
-                    <button
-                      className="btn btn-ghost "
-                      onClick={() => {
-                        button.setFilterState();
-                        handleCloseFilter();
-                      }}
-                    >
-                      {button.title}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-8">
-            {staff.length > 0 && staff ? (
-              staff.map((s: Users) => {
-                const role =
-                  s._id === (brewery?.owner as Users)._id
-                    ? "Owner"
-                    : adminIds.has(s._id)
-                    ? "Admin"
-                    : "Crew";
-                return (
-                  <StaffMemberCard
-                    key={s._id}
-                    staff={s}
-                    role={role}
-                    admin={adminIds.has(s._id)}
-                    breweryId={brewery._id}
-                    handleCheckboxChange={handleCheckboxChange}
-                    checkedStaffIds={checkedStaffIds}
-                  />
-                );
-              })
-            ) : (
-              <div className="mx-auto text-primary text-opacity-50">
-                No staff
-              </div>
-            )}
+              <ListFilter size={20} />
+            </label>
+            <ul
+              tabIndex={0}
+              className={cn({
+                "dropdown-content menu p-2 shadow rounded-box bg-primary text-background":
+                  true,
+                hidden: !isFilterOpen,
+              })}
+            >
+              {menuButtons.map((button, i) => (
+                <li key={i}>
+                  <button
+                    className="btn btn-ghost "
+                    onClick={() => {
+                      button.setFilterState();
+                      handleCloseFilter();
+                    }}
+                  >
+                    {button.title}
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
-      </div>
+        <div className="overflow-x-auto flex-auto lg:pl-8">
+          <table className="hidden lg:table border-separate border-spacing-y-6 p-3">
+            {/* head */}
+            <thead>
+              <tr>
+                <th>
+                  <label>
+                    <input
+                      type="checkbox"
+                      className="checkbox"
+                      onChange={() => setSelectAll(!selectAll)}
+                    />
+                  </label>
+                </th>
+                <th>
+                  Name
+                  <span>
+                    <button className="ml-2 " onClick={handleAlphabetizeName}>
+                      {isAlphabetical ? (
+                        <MoveDown size={15} />
+                      ) : (
+                        <MoveUp size={15} />
+                      )}
+                    </button>
+                  </span>
+                </th>
+                <th>Role</th>
+
+                <th className="text-right">Manage</th>
+              </tr>
+            </thead>
+            <tbody className="">
+              {staff && staff.length !== 0 ? (
+                staff.map((s: Users) => {
+                  const role =
+                    s._id === (brewery?.owner as Users)._id
+                      ? "Owner"
+                      : adminIds.has(s._id)
+                      ? "Admin"
+                      : "Crew";
+                  return (
+                    <StaffMemberRow
+                      key={s._id}
+                      staff={s}
+                      role={role}
+                      admin={adminIds.has(s._id)}
+                      breweryId={brewery._id}
+                      handleCheckboxChange={handleCheckboxChange}
+                      checkedStaffIds={checkedStaffIds}
+                    />
+                  );
+                })
+              ) : (
+                <tr>
+                  <th></th>
+                  <td>
+                    <p>No staff</p>
+                  </td>
+                  <th></th>
+                </tr>
+              )}
+            </tbody>
+            {/* foot */}
+            <tfoot>
+              <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Role</th>
+
+                <th className="text-right">Manage</th>
+              </tr>
+            </tfoot>
+          </table>
+
+          {/* Small Screen Card Layout*/}
+          <div className=" lg:hidden flex flex-col p-3 relative">
+            <div className="flex flex-col gap-8">
+              {staff.length > 0 && staff ? (
+                staff.map((s: Users) => {
+                  const role =
+                    s._id === (brewery?.owner as Users)._id
+                      ? "Owner"
+                      : adminIds.has(s._id)
+                      ? "Admin"
+                      : "Crew";
+                  return (
+                    <StaffMemberCard
+                      key={s._id}
+                      staff={s}
+                      role={role}
+                      admin={adminIds.has(s._id)}
+                      breweryId={brewery._id}
+                      handleCheckboxChange={handleCheckboxChange}
+                      checkedStaffIds={checkedStaffIds}
+                    />
+                  );
+                })
+              ) : (
+                <div className="mx-auto text-primary text-opacity-50">
+                  No staff
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </>
     )
   );
 };
