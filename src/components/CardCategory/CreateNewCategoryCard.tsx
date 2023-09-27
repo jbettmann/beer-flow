@@ -1,61 +1,59 @@
 import { BookMarked, LayoutGrid } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import BeerMugBadge from "../Badges/BeerMugBadge";
+import SaveButton from "../Buttons/SaveButton";
 
 type Props = {
   handleSaveNewCategory: (categoryName: string) => void;
   setCreateNewCategory: (creatingNewCategory: boolean) => void;
+  isLoading: boolean;
 };
 
 const CreateNewCategoryCard = ({
   setCreateNewCategory,
   handleSaveNewCategory,
+  isLoading,
 }: Props) => {
+  const [inputValue, setInputValue] = useState<string>("");
   //  Runs name change save on keydown "Enter"
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
-      const target = event.target as HTMLInputElement;
-      handleSaveNewCategory(target.value);
+      handleSaveNewCategory(inputValue);
       event.preventDefault(); // To prevent any default behavior, e.g., form submission
     }
   };
   return (
-    <div
-      className={`card category-card h-44 py-8 relative border border-primary border-opacity-50 `}
-    >
-      <div className="flex justify-between items-center p-6 ">
+    <div className={`card new-category h-fit py-8 px-6`}>
+      <div className="flex justify-between items-center py-6 ">
         <label className=" ">
-          <LayoutGrid size={28} strokeWidth={1} className="fill-primary " />
+          <LayoutGrid size={28} strokeWidth={1} />
         </label>
 
         <div className=" ">
           <input
             type="text"
-            className="input font-semibold "
+            value={inputValue}
+            className="input rounded-full border-none font-semibold "
             autoFocus
             placeholder="Category name"
-            onBlur={(e) => handleSaveNewCategory(e.target.value)}
+            onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyPress}
           />
         </div>
       </div>
-      <div className="absolute bottom-0 left-0 p-6">
+      <div className="flex justify-end items-center gap-3 ">
         <button
-          className="btn btn-error btn-xs  opacity-70 " // Made the button more visible
+          className="btn btn-ghost text-primary " // Made the button more visible
           onClick={() => setCreateNewCategory(false)}
         >
           Cancel
         </button>
+        <SaveButton
+          isLoading={isLoading}
+          disabled={inputValue === "" ? true : false}
+          onClick={() => handleSaveNewCategory(inputValue)}
+        />
       </div>
-      <div className="absolute bottom-0 right-0 p-6">
-        <button className="btn btn-accent btn-xs  opacity-70">Save</button>
-      </div>
-
-      {/* Optional: Tooltip */}
-      <div
-        className="tooltip tooltip-right tooltip-accent"
-        data-tooltip="Click to add new category"
-      ></div>
     </div>
   );
 };
