@@ -116,37 +116,27 @@ p {
 }
 
 .category-card {
-  @apply  bg-[#e3d4bf] text-primary shadow-xl hover:shadow-xl 
+  @apply  bg-background text-primary border border-stone-400 hover:shadow-xl hover:border-primary  transition-all duration-300 
 
 }
 
 .category-card__selected { 
-  @apply bg-primary bg-opacity-10 text-primary;
-  -webkit-backdrop-filter: blur(20px);
-  backdrop-filter: blur(20px);
-  
-  @apply shadow-lg
+  @apply bg-blue-200 text-primary shadow-xl border-none;
+
 }
 
 .category-card__open {
-  @apply bg-none bg-white bg-opacity-70 text-primary 
+  @apply bg-none bg-[#FEFEFD] text-primary shadow-2xl border-none ;
+
 }
 
-/* .category-card__checked {
-  background: linear-gradient(to bottom left, var(--indigo) 40%, #7988cf 100%)
-  /* background: linear-gradient(to bottom left, var(--accent) 20%, var(--fourth-color) 100%) 
-}*/
+.category-card__edit {
+  @apply bg-none  shadow-2xl border-none ;
 
-.dashboard__container {
-  @apply  text-background bg-primary shadow-md space-y-2 
-}
-
-.error {
-  @apply text-red-500 text-sm
 }
 
 .create-btn {
-  @apply btn bg-primary text-background border-none rounded-full;
+  @apply btn bg-primary text-background border-none rounded-full transition-all duration-300 hover:bg-primary hover:scale-105 hover:shadow-xl;
   
 }
 
@@ -155,11 +145,31 @@ p {
   
 }
 
-/* Create New Beer Form */
 
 .container-create__form {
   @apply flex flex-col m-3
 }
+
+
+
+.dashboard-container {
+  @apply   flex flex-row w-fit mx-auto py-7 px-1 justify-center items-center rounded-full 
+}
+
+.dashboard-button {
+  @apply text-sm md:text-base border border-stone-400 py-4 px-8 font-semibold  first:rounded-l-full last:rounded-r-full hover:border-black  justify-center shadow-lg 
+}
+
+
+.dashboard-button__selected {
+  @apply text-background border-[#181818] bg-primary  shadow-lg;
+  box-shadow: inset -2px -2px 8px #181818, inset 2px 2px 8px #181818;
+}
+
+.error {
+  @apply text-red-500 text-sm
+}
+
 
 
 .date-create {
@@ -179,7 +189,7 @@ p {
 }
 
 .form__input {
-  @apply input bg-primary text-background border-gray-400 focus:input-accent
+  @apply input bg-primary text-background border-stone-500  rounded-full focus:input-accent
 }
 
 .form__input-textarea {
@@ -212,6 +222,10 @@ p {
 
 .menu-drawer {
   @apply bg-fourth-color
+}
+
+.new-category {
+  @apply bg-primary bg-opacity-10 shadow-xl
 }
 
 
@@ -291,13 +305,12 @@ p {
 }
 
 
-
 .tag-new {
   @apply indicator-item badge bg-indigo-300
 }
 
 .table-row__effect {
-  @apply transition-all rounded-lg hover:shadow-lg hover:cursor-pointer
+  @apply transition-all rounded-lg hover:shadow-lg hover:cursor-pointer hover:bg-blue-300 
 }
 
 .table-row__checked {
