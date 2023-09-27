@@ -31,7 +31,7 @@ const StaffContainer = (props: Props) => {
             Invite <UserPlus size={20} />
           </button>
         </div>
-        <div className="flex flex-col w-full lg:flex-row md:p-5">
+        <div className="flex flex-col w-full  md:p-5">
           <StaffDashboard
             setViewFilter={setViewFilter}
             viewFilter={viewFilter}

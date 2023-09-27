@@ -19,7 +19,7 @@ const CategoryContainer = (props: Props) => {
     selectedBrewery?.staff && (
       <>
         {/* Large Screen New Category Button */}
-        <div className="hidden lg:flex justify-between py-5 md:p-5 ">
+        <div className="flex justify-between md:p-5 ">
           <div className="flex flex-col w-fit">
             <h3 className="text-left">Categories</h3>
             {/* <div className="text-sm badge badge-ghost opacity-50 mt-2">
@@ -43,7 +43,7 @@ const CategoryContainer = (props: Props) => {
             <Plus size={28} />
           </button>
         </div>
-        <div className="flex flex-col w-full lg:flex-row py-2 md:p-5">
+        <div className="flex flex-col w-full  md:p-5">
           <CategoryDashboard
             setViewFilter={setViewFilter}
             viewFilter={viewFilter}

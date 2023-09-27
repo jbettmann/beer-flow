@@ -10,7 +10,7 @@ type Props = {
 const TrashCanIcon = ({ onClick, isLoading, title = undefined }: Props) => {
   return (
     <button
-      className=" border-none hover:bg-transparent hover:text-error"
+      className=" border-none transition-all duration-150 hover:bg-transparent hover:scale-105"
       onClick={onClick}
       title={title}
     >
