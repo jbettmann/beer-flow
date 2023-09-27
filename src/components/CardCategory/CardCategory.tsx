@@ -19,6 +19,7 @@ import { FormValues } from "../UpdateCategory/types";
 import EditCategoryCardLS from "../LoadingSkeleton/CategoryManagmentLS/CategoryCardManageLS";
 import CategoryManagementLS from "../LoadingSkeleton/CategoryManagmentLS/CategoryManagementLS";
 import TrashCanIcon from "../Buttons/TrashCanIcon";
+import SaveButton from "../Buttons/SaveButton";
 
 type Props = {
   category: Category | NewCategory | any;
@@ -32,7 +33,6 @@ type Props = {
   beersInCategory: Beer[];
   handleDeleteAlert: () => void;
   isChecked: boolean;
-  isLoading: boolean;
 };
 
 const CardCategory = ({
@@ -41,7 +41,7 @@ const CardCategory = ({
   isEdit,
   isOpen,
   isChecked,
-  isLoading,
+
   handleOpen,
   selectAll,
   handleEmptyCategory,
@@ -52,6 +52,7 @@ const CardCategory = ({
   const [toContinue, setToContinue] = useState(false);
   const [toMoveContinue, setToMoveContinue] = useState(false);
 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [alertOpen, setAlertOpen] = useState<boolean>(false);
   const [moveAlertOpen, setMoveAlertOpen] = useState<boolean>(false);
 
@@ -84,15 +85,6 @@ const CardCategory = ({
   const calculateIsEmpty = () =>
     !beersInCategory || beersInCategory.length === 0;
 
-  useEffect(() => {
-    setIsEmpty(calculateIsEmpty());
-  }, [selectedBeers]);
-
-  const handleCategoryCheck = () => {
-    const newCheckedState = !isChecked;
-    handleCategoryCheckbox(category._id, newCheckedState);
-  };
-
   const handleBeerCheckbox = (
     categoryId: string,
     beerId: string,
@@ -118,6 +110,20 @@ const CardCategory = ({
         [categoryId]: updatedCategory,
       };
     });
+  };
+
+  // Deselect all beers when the category is closed
+  const deselectAllBeers = () => {
+    if (!isOpen) {
+      setCheckedBeers((prevCheckedBeers) => ({
+        ...prevCheckedBeers,
+        [category._id]: {},
+      }));
+      setCheckedBeersCount((prevCount) => ({
+        ...prevCount,
+        [category._id]: 0,
+      }));
+    }
   };
 
   const getButtonsState = (categoryId: string) => {
@@ -351,6 +357,7 @@ const CardCategory = ({
   //  Auto save for category name change
   const handleCategoryNameChange = async () => {
     if (categoryName !== "" && categoryName !== category.name) {
+      setIsLoading(true);
       try {
         let updatedCategory: any = { ...category, name: categoryName };
 
@@ -374,6 +381,7 @@ const CardCategory = ({
         addToast(error.error || error.message, "error");
       }
     }
+    setIsLoading(false);
     setChangeName(false);
   };
   //  Runs name change save on keydown "Enter"
@@ -388,6 +396,18 @@ const CardCategory = ({
     setTimeout(() => {
       addToast("Only empty categories can be deleted", "error");
     }, 200); // Show tooltip after 1 second of pressing
+  };
+
+  useEffect(() => {
+    setIsEmpty(calculateIsEmpty());
+  }, [selectedBeers]);
+
+  const handleCategoryCheck = () => {
+    if (changeName) {
+      setChangeName(false);
+    }
+    const newCheckedState = !isChecked;
+    handleCategoryCheckbox(category._id, newCheckedState);
   };
 
   useEffect(() => {
@@ -408,13 +428,15 @@ const CardCategory = ({
   useEffect(() => {
     handleEmptyCategory(category._id, isEmpty);
     handleCategoryCheckbox(category._id, selectAll);
-    console.log("selectAll changed", selectAll);
+    
   }, [selectAll]);
 
   // Closes category if category checkbox is checked
   useEffect(() => {
     if (isOpen && isChecked) handleOpen(index);
     if (isOpen && isEdit) handleOpen(index);
+    if (!isEdit && changeName) setChangeName(false);
+    deselectAllBeers();
   }, [isChecked, isEdit, isOpen]);
 
   return (
@@ -441,8 +463,10 @@ const CardCategory = ({
 
       <div
         className={`card category-card transition-colors duration-75  relative py-8 ${
-          isOpen ? "  category-card__open" : " "
-        } ${isChecked ? "category-card__selected" : ""}`}
+          isOpen ? "  category-card__open  shadow-2xl" : " "
+        } ${isChecked ? "category-card__selected" : ""} ${
+          changeName ? " pb-14 " : ""
+        } ${isEdit ? "category-card__edit" : ""} `}
         key={index}
       >
         <div
@@ -458,7 +482,7 @@ const CardCategory = ({
               {/* Checkbox */}
               <input
                 type="checkbox"
-                className={`checkbox border-background  absolute transition-transform duration-300 ${
+                className={`checkbox absolute transition-transform duration-300 ${
                   isEdit
                     ? "translate-y-0 opacity-100"
                     : "translate-y-full opacity-0 "
@@ -482,31 +506,46 @@ const CardCategory = ({
 
             <div className="font-bold flex justify-center items-center w-full ">
               {changeName ? (
-                <input
-                  type="text"
-                  value={categoryName}
-                  onChange={handleInputChange}
-                  name="name"
-                  id="name"
-                  className="form__input"
-                  autoFocus
-                  onBlur={handleCategoryNameChange}
-                  onKeyDown={handleKeyPress}
-                />
+                <>
+                  <input
+                    type="text"
+                    value={categoryName}
+                    onChange={handleInputChange}
+                    name="name"
+                    id="name"
+                    className="input rounded-full border-none  font-semibold "
+                    autoFocus
+                    onKeyDown={handleKeyPress}
+                  />
+
+                  <div className="flex gap-3 absolute bottom-4 right-0 px-8 ">
+                    <button
+                      className="btn btn-ghost text-primary " // Made the button more visible
+                      onClick={() => setChangeName(false)}
+                    >
+                      Cancel
+                    </button>
+                    <SaveButton
+                      isLoading={isLoading}
+                      disabled={category.name === categoryName ? true : false}
+                      onClick={handleCategoryNameChange}
+                    />
+                  </div>
+                </>
               ) : (
                 category.name
               )}
-              <span className=" inline-flex  justify-center items-center p-1 text-xs w-12 h-14 relative overflow-hidden">
-                <BeerMugBadge
-                  beerCount={beersInCategory?.length || 0}
-                  className={` absolute transition-transform duration-300 ${
-                    isChecked
-                      ? "-translate-y-full opacity-0"
-                      : "translate-y-0 opacity-100"
-                  }`}
-                />
+              {!changeName && (
+                <span className=" inline-flex  justify-center items-center p-1 text-xs w-12 h-14 relative overflow-hidden">
+                  <BeerMugBadge
+                    beerCount={beersInCategory?.length || 0}
+                    className={` absolute transition-transform duration-300 ${
+                      isEdit
+                        ? "-translate-y-full opacity-0"
+                        : "translate-y-0 opacity-100"
+                    }`}
+                  />
 
-                {!changeName && (
                   <button
                     className="btn btn-ghost disabled:bg-transparent"
                     onClick={() => setChangeName(true)}
@@ -515,14 +554,14 @@ const CardCategory = ({
                     <PencilLine
                       size={20}
                       className={`absolute  transition-transform duration-300 ${
-                        isChecked
+                        isEdit
                           ? "translate-y-0 opacity-100"
                           : "translate-y-full opacity-0 "
                       }`}
                     />
                   </button>
-                )}
-              </span>
+                </span>
+              )}
             </div>
           </div>
           {isChecked && !changeName ? (
@@ -538,13 +577,16 @@ const CardCategory = ({
               </button>
             )
           ) : (
-            <span
-              className={`flex items-center transform transition-transform duration-300 ${
-                isOpen ? "rotate-180" : "rotate-0"
-              }`}
-            >
-              <ChevronDown />
-            </span>
+            !changeName &&
+            !isEdit && (
+              <span
+                className={`flex items-center transform transition-transform duration-300 ${
+                  isOpen ? "rotate-180" : "rotate-0"
+                }`}
+              >
+                <ChevronDown />
+              </span>
+            )
           )}
         </div>
 
