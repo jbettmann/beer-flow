@@ -197,6 +197,7 @@ const CategoryList = ({
   };
 
   const handleSaveNewCategory = async (newCategoryName: string) => {
+    setIsLoading(true);
     if (newCategoryName.trim() === "") {
       setCreateNewCategory(false);
       return;
@@ -222,6 +223,7 @@ const CategoryList = ({
         };
       });
     }
+    setIsLoading(false);
     setCreateNewCategory(false);
   };
 
@@ -261,7 +263,7 @@ const CategoryList = ({
     const hasBeerInCheckedCategory = checkedCategoryKeys.some(
       (key) => emptyCategories[key] === false
     );
-    console.log({ checkedCategoryKeys, hasBeerInCheckedCategory });
+
     if (hasBeerInCheckedCategory) {
       // If any of the checked categories have beers, set the alert
       setOnlyEmptyAlert(true);
@@ -324,6 +326,7 @@ const CategoryList = ({
     setSelectAll(!selectAll);
   };
 
+  // closing the dropdown when clicking outside the dropdown
   useOnClickOutside(ref, () => setIsFilterOpen(false));
 
   //onclick handler when clicking a menu item
@@ -466,6 +469,7 @@ const CategoryList = ({
             <CreateNewCategoryRow
               handleSaveNewCategory={handleSaveNewCategory}
               setCreateNewCategory={setCreateNewCategory}
+              isLoading={isLoading}
             />
           )}
           {categories &&
@@ -473,7 +477,6 @@ const CategoryList = ({
               return (
                 <CategoryRow
                   category={category as Category}
-                  isLoading={isLoading}
                   beersInCategory={beersInCategory[index]}
                   key={category._id}
                   index={index}
@@ -567,6 +570,7 @@ const CategoryList = ({
           {/* row 1 */}
           {createNewCategory && (
             <CreateNewCategoryCard
+              isLoading={isLoading}
               handleSaveNewCategory={handleSaveNewCategory}
               setCreateNewCategory={setCreateNewCategory}
             />
@@ -576,7 +580,6 @@ const CategoryList = ({
               return (
                 <CardCategory
                   category={category}
-                  isLoading={isLoading}
                   beersInCategory={beersInCategory[index]}
                   isChecked={checkedCategories[category._id as any]}
                   key={category._id}

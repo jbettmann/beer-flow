@@ -26,6 +26,7 @@ import BeerMugBadge from "../Badges/BeerMugBadge";
 import { FormValues } from "../UpdateCategory/types";
 import CategoryManagementLS from "../LoadingSkeleton/CategoryManagmentLS/CategoryManagementLS";
 import TrashCanIcon from "../Buttons/TrashCanIcon";
+import SaveButton from "../Buttons/SaveButton";
 
 type Props = {
   category: Category;
@@ -38,14 +39,13 @@ type Props = {
   beersInCategory: Beer[];
   handleDeleteAlert: () => void;
   isChecked: boolean;
-  isLoading: boolean;
 };
 
 const CategoryRow = ({
   category,
   index,
   isOpen,
-  isLoading,
+
   isChecked,
   handleOpen,
   selectAll,
@@ -56,6 +56,7 @@ const CategoryRow = ({
 }: Props) => {
   const [toContinue, setToContinue] = useState(false);
   const [toMoveContinue, setToMoveContinue] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [alertOpen, setAlertOpen] = useState<boolean>(false);
   const [moveAlertOpen, setMoveAlertOpen] = useState<boolean>(false);
@@ -90,11 +91,10 @@ const CategoryRow = ({
   const calculateIsEmpty = () =>
     !beersInCategory || beersInCategory.length === 0;
 
-  useEffect(() => {
-    setIsEmpty(calculateIsEmpty());
-  }, [selectedBeers]);
-
   const handleCategoryCheck = () => {
+    if (changeName) {
+      setChangeName(false);
+    }
     const newCheckedState = !isChecked;
 
     handleCategoryCheckbox(category._id, newCheckedState);
@@ -209,7 +209,8 @@ const CategoryRow = ({
       await Promise.all(updatedBeersRequests);
 
       // Update the client state
-      setSelectedBeers((prevSelectedBeers: Beer[]) => {
+      setSelectedBeers((prevSelectedBeers) => {
+        if (!prevSelectedBeers) return null;
         // Iterate over the previous selected beers and create a new array
         return prevSelectedBeers?.map((beer) => {
           if (beerIdsToUpdate.includes(beer._id)) {
@@ -370,6 +371,7 @@ const CategoryRow = ({
   //  Auto save for category name change
   const handleCategoryNameChange = async () => {
     if (categoryName !== "" && categoryName !== category.name) {
+      setIsLoading(true);
       try {
         let updatedCategory: Category = { ...category, name: categoryName };
 
@@ -393,6 +395,7 @@ const CategoryRow = ({
         addToast(error.error || error.message, "error");
       }
     }
+    setIsLoading(false);
     setChangeName(false);
   };
   //  Runs name change save on keydown "Enter"
@@ -408,6 +411,10 @@ const CategoryRow = ({
       addToast("Only empty categories can be deleted", "error");
     }, 200); // Show tooltip after 1 second of pressing
   };
+
+  useEffect(() => {
+    setIsEmpty(calculateIsEmpty());
+  }, [selectedBeers]);
 
   useEffect(() => {
     handleEmptyCategory(category._id, isEmpty);
@@ -459,12 +466,12 @@ const CategoryRow = ({
       />
 
       <tr
-        className={` lg:table-row table-row__effect ${
-          isOpen ? " category-card__open bg-stone-400 hover:shadow-none" : ""
+        className={` lg:table-row table-row__effect relative ${
+          isOpen ? " category-card__open !shadow-none hover:shadow-none" : ""
         } ${isChecked ? "table-row__checked" : ""}`}
         key={index}
       >
-        <th className={`${isOpen ? "rounded-tl-lg" : "rounded-l-lg"}`}>
+        <th className={` ${isOpen ? "rounded-tl-lg" : "rounded-l-lg"}`}>
           <label>
             <input
               type="checkbox"
@@ -484,7 +491,7 @@ const CategoryRow = ({
           <div className="flex items-center space-x-3 ">
             <LayoutGrid size={24} className="" strokeWidth={1} />
 
-            <div className="font-bold flex justify-start items-center w-full ">
+            <div className="font-bold flex justify-start items-center w-fit ">
               {changeName ? (
                 <input
                   type="text"
@@ -492,9 +499,8 @@ const CategoryRow = ({
                   onChange={handleInputChange}
                   name="name"
                   id="name"
-                  className="form__input"
+                  className="input rounded-full border-none  font-semibold "
                   autoFocus
-                  onBlur={handleCategoryNameChange}
                   onKeyDown={handleKeyPress}
                 />
               ) : (
@@ -521,66 +527,93 @@ const CategoryRow = ({
             </div>
           </div>
         </td>
-        <td
-          className={`  hover:cursor-pointer`}
-          onClick={() => {
-            if (isChecked) return;
-            handleOpen(index);
-          }}
-        >
-          <div className="w-1/6">
-            <BeerMugBadge
-              className="h-8 w-10"
-              beerCount={beersInCategory?.length || 0}
-            />
-          </div>
-        </td>
-
-        <th>
-          <div>
-            <p className="font-normal">{convertDate(category.createdAt)}</p>
-          </div>
-        </th>
-
-        <th className={`${isOpen ? "rounded-tr-lg" : "rounded-r-lg"}`}>
-          <div className="flex justify-center items-center w-full ">
-            {isChecked ? (
-              !beersInCategory || beersInCategory.length === 0 ? (
-                <TrashCanIcon
-                  title="Delete category"
-                  onClick={handleDeleteAlert}
-                  isLoading={isLoading}
+        {!changeName ? (
+          <>
+            <td
+              className={`  hover:cursor-pointer`}
+              onClick={() => {
+                if (isChecked) return;
+                handleOpen(index);
+              }}
+            >
+              <div className="w-1/6">
+                <BeerMugBadge
+                  className="h-8 w-10"
+                  beerCount={beersInCategory?.length || 0}
                 />
-              ) : (
-            
-                  <button
-                    className="relative"
-                    title="Only empty categories can be deleted"
-                    onClick={handleCannotDelete}
-                  >
-                    <Trash2
-                      size={24}
-                      strokeWidth={1}
-                      className="text-stone-400"
+              </div>
+            </td>
+
+            <th
+              onClick={(e) => {
+                if (isChecked) return;
+                handleOpen(index);
+              }}
+            >
+              <div>
+                <p className="font-normal">{convertDate(category.createdAt)}</p>
+              </div>
+            </th>
+
+            <th
+              className={`${isOpen ? "rounded-tr-lg" : "rounded-r-lg"}`}
+              onClick={(e) => {
+                if (isChecked) return;
+                handleOpen(index);
+              }}
+            >
+              <div className="flex justify-center items-center w-full ">
+                {isChecked ? (
+                  !beersInCategory || beersInCategory.length === 0 ? (
+                    <TrashCanIcon
+                      title="Delete category"
+                      onClick={handleDeleteAlert}
+                      isLoading={isLoading}
                     />
+                  ) : (
+                    <button
+                      className="relative"
+                      title="Only empty categories can be deleted"
+                      onClick={handleCannotDelete}
+                    >
+                      <Trash2
+                        size={24}
+                        strokeWidth={1}
+                        className="text-stone-400"
+                      />
+                    </button>
+                  )
+                ) : (
+                  <button
+                    className={`flex items-center transform transition-transform duration-300 ${
+                      isOpen ? "rotate-180" : "rotate-0"
+                    }`}
+                  >
+                    <ChevronDown />
                   </button>
-            
-              )
-            ) : (
+                )}
+              </div>
+            </th>
+          </>
+        ) : (
+          <>
+            <td></td>
+            <td></td>
+            <th className="flex gap-3 !p-4 absolute  right-0 rounded-r-lg">
               <button
-                onClick={(e) => {
-                  if (isChecked) return;
-                  e.stopPropagation(), handleOpen(index);
-                }}
-                className={`flex items-center transform transition-transform duration-300 ${
-                  isOpen ? "rotate-180" : "rotate-0"
-                }`}
+                className="btn btn-ghost text-primary " // Made the button more visible
+                onClick={() => setChangeName(false)}
               >
-                <ChevronDown />
+                Cancel
               </button>
-            )}
-          </div>
-        </th>
+              <SaveButton
+                isLoading={isLoading}
+                disabled={category.name === categoryName ? true : false}
+                onClick={handleCategoryNameChange}
+              />
+            </th>
+          </>
+        )}
       </tr>
       <tr
         className={`${
