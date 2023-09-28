@@ -7,11 +7,16 @@ type Props = {
   disabled?: boolean | undefined;
 };
 
-const SaveButton = ({ isLoading, onClick, className, disabled }: Props) => {
+const SaveButton = ({
+  isLoading,
+  onClick,
+  className = "",
+  disabled,
+}: Props) => {
   return (
     <button
       disabled={disabled || undefined}
-      className={className ? className : "create-btn"}
+      className={`create-btn ${className}`}
       onClick={onClick}
     >
       {isLoading ? <span className="loading loading-spinner"></span> : "Save"}
