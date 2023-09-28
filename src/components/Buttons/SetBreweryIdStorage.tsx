@@ -24,7 +24,7 @@ const SetBreweryIdStorage = ({ href, brewery }: Props) => {
     <Link
       href={href}
       onClick={handleBreweryToStorage}
-      className="flex items-center justify-center gap-3"
+      className="flex flex-wrap  items-center justify-center gap-3"
     >
       {brewery?.image ? (
         <ImageDisplay item={brewery} className="logo" />
