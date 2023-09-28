@@ -10,10 +10,10 @@ type Props = {
 
 const Invite = ({ invitee, handleChange, className, error }: Props) => {
   return (
-    <div className="flex justify-center items-center mb-6">
+    <div className="flex justify-center items-center mb-6 ">
       <div className="text-left flex relative">
         <div className="flex-1">
-          <label htmlFor="email" className="label-text m-1">
+          <label htmlFor="email" className="label-text m-5 text-background">
             Email Address
           </label>
           <input
@@ -27,8 +27,8 @@ const Invite = ({ invitee, handleChange, className, error }: Props) => {
           {error && <p className="error absolute right-12 top-9 ">{error}</p>}
         </div>
         <div className="flex-none px-3 text-center ">
-          <label className="cursor-pointer label label-text text-primary ">
-            Admin{" "}
+          <label className="cursor-pointer label label-text text-background">
+            Admin
           </label>
           <input
             type="checkbox"
