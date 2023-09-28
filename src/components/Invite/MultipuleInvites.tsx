@@ -93,7 +93,7 @@ const MultipleInvites = ({ breweryId, setIsOpen }: pageProps) => {
         }
       }
       onClose();
-    } catch (error) {
+    } catch (error: string | any) {
       addToast(error.message, "error");
       console.error("Error sending invites:", error);
     }
@@ -109,7 +109,7 @@ const MultipleInvites = ({ breweryId, setIsOpen }: pageProps) => {
     field: string,
     value: string | boolean
   ) => {
-    const newInvitees = [...invitees];
+    const newInvitees: any = [...invitees];
     newInvitees[index][field] = value;
 
     // If there's an error and the field is email, clear the error
@@ -122,7 +122,6 @@ const MultipleInvites = ({ breweryId, setIsOpen }: pageProps) => {
   return (
     <>
       <div className="flex w-full justify-between items-center">
-        {" "}
         <button onClick={onClose} className="btn btn-ghost m-2 ">
           <X size={24} />
         </button>
@@ -145,7 +144,7 @@ const MultipleInvites = ({ breweryId, setIsOpen }: pageProps) => {
               <div className="flex flex-col ">
                 {invitees.map((invitee, index) => (
                   <div className="p-3 flex items-center" key={index}>
-                    {index !== 0 && (
+                    {index !== 0 ? (
                       <button
                         type="button"
                         className="btn btn-outline btn-error rounded-full w-5 h-9 min-w-0 min-h-fit mr-3"
@@ -153,6 +152,8 @@ const MultipleInvites = ({ breweryId, setIsOpen }: pageProps) => {
                       >
                         -
                       </button>
+                    ) : (
+                      <div className="w-10 h-9 min-w-9 min-h-fit mr-3"></div>
                     )}
                     <Invite
                       invitee={invitee}
@@ -167,17 +168,16 @@ const MultipleInvites = ({ breweryId, setIsOpen }: pageProps) => {
                 <div className="flex justify-end items-center pr-6 gap-2">
                   <button
                     type="button"
-                    className="create-btn"
+                    className="create-btn inverse"
                     onClick={addInvitee}
                   >
                     <Plus size={18} strokeWidth={2} />
                   </button>
-                  <h5>Add</h5>
                 </div>
               </div>
             </div>
 
-            <button className="create-btn mx-auto mt-10" type="submit">
+            <button className="create-btn inverse mx-auto mt-10" type="submit">
               Send Invites
             </button>
           </div>
