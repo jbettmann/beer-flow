@@ -4,7 +4,13 @@ import { useBreweryContext } from "@/context/brewery-beer";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { Brewery } from "@/app/types/brewery";
-import { ListFilter, MoveDown, MoveUp, PencilLine } from "lucide-react";
+import {
+  ListFilter,
+  MoveDown,
+  MoveUp,
+  PencilLine,
+  UserPlus,
+} from "lucide-react";
 import StaffMemberRow from "./StaffMemberRow";
 import { cn } from "@/lib/utils";
 import { set } from "mongoose";
@@ -13,9 +19,10 @@ import StaffMemberCard from "./StaffMemberCard";
 type Props = {
   viewFilter: string;
   brewery: Brewery | null;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const StaffTable = ({ viewFilter, brewery }: Props) => {
+const StaffTable = ({ viewFilter, brewery, setIsOpen }: Props) => {
   const [staff, setStaff] = useState<Users[] | string[] | number | any>([
     ...(brewery?.staff as Users[]),
     brewery?.owner,
@@ -244,8 +251,18 @@ const StaffTable = ({ viewFilter, brewery }: Props) => {
               ) : (
                 <tr>
                   <th></th>
+                  <th></th>
                   <td>
-                    <p>No staff</p>
+                    <div className="text-primary text-opacity-70 flex flex-col justify-center items-center gap-3">
+                      <h5>No crew members... yet!</h5>
+
+                      <button
+                        onClick={() => setIsOpen(true)}
+                        className="create-btn"
+                      >
+                        Invite members <UserPlus size={20} />
+                      </button>
+                    </div>
                   </td>
                   <th></th>
                 </tr>
@@ -287,8 +304,15 @@ const StaffTable = ({ viewFilter, brewery }: Props) => {
                   );
                 })
               ) : (
-                <div className="mx-auto text-primary text-opacity-50">
-                  No staff
+                <div className="text-primary text-opacity-70 flex flex-col justify-center items-center gap-3 mt-10">
+                  <h5>No crew members... yet!</h5>
+
+                  <button
+                    onClick={() => setIsOpen(true)}
+                    className="create-btn"
+                  >
+                    Invite members <UserPlus size={20} />
+                  </button>
                 </div>
               )}
             </div>
