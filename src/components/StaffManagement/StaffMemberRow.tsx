@@ -10,6 +10,8 @@ import SaveButton from "../Buttons/SaveButton";
 
 import deleteStaffMember from "@/lib/DELETE/deleteStaffMemeber";
 import TrashCanIcon from "../Buttons/TrashCanIcon";
+import AlertDialog from "../Alerts/AlertDialog";
+import { useToast } from "@/context/toast";
 
 type Props = {
   staff: Users;
@@ -32,9 +34,15 @@ const StaffMemberRow = ({
   const { setSelectedBrewery } = useBreweryContext();
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isDeleteLoading, setIsDeleteLoading] = useState<boolean>(false);
   const [isChecked, setIsChecked] = useState(checkedStaffIds.has(staff._id));
   const [isAdmin, setIsAdmin] = useState<boolean>(admin);
   const [initialIsAdmin, setInitialIsAdmin] = useState(admin); // compare to isAdmin for change
+  const [hasChanged, setHasChanged] = useState<boolean>(false);
+  const [deleteStaffMemberAlert, setDeleteStaffMemberAlert] =
+    useState<boolean>(false);
+
+  const { addToast } = useToast();
 
   const rowRef = useRef(null);
   // update if user is admin or not of Brewery
@@ -53,11 +61,12 @@ const StaffMemberRow = ({
           });
 
           console.log(updatedAdmin.message);
-          alert(updatedAdmin.message);
+          addToast(updatedAdmin.message, "success");
           setSelectedBrewery(updatedAdmin.brewery);
 
           // After successfully updating, set the initialIsAdmin to the current isAdmin value
           setInitialIsAdmin(isAdmin);
+          setHasChanged(false);
         }
       } catch (error) {
         console.log(error);
@@ -72,7 +81,7 @@ const StaffMemberRow = ({
   };
 
   const handleDeleteStaff = async () => {
-    setIsLoading(true);
+    setIsDeleteLoading(true);
     try {
       if (!isChecked || !breweryId || !session?.user.accessToken) return;
       const result = await deleteStaffMember({
@@ -80,16 +89,22 @@ const StaffMemberRow = ({
         userId: staff._id,
         accessToken: session?.user.accessToken,
       });
-      console.log(result.message, result.updatedBrewery);
-      alert(result.message);
+
+      addToast(result.message, "success");
       setSelectedBrewery(result.updatedBrewery);
       // Display success message from the result
     } catch (err: any) {
       console.error(err);
-      alert(err.message); // Displaying the error message as an alert on the client side
+      addToast(err.message, "error"); // Displaying the error message as an alert on the client side
     } finally {
-      setIsLoading(false);
+      setIsDeleteLoading(false);
     }
+  };
+
+  const handleCancelEdit = () => {
+    setIsEdit(false);
+    setIsAdmin(initialIsAdmin);
+    setHasChanged(false);
   };
 
   const useOutsideClick = (
@@ -113,7 +128,7 @@ const StaffMemberRow = ({
   //  close edit mode when clicking outside of row
   useOutsideClick(rowRef, () => {
     if (isEdit) {
-      setIsEdit(false);
+      handleCancelEdit();
     }
   });
 
@@ -123,108 +138,136 @@ const StaffMemberRow = ({
   }, [checkedStaffIds]);
 
   return (
-    <tr
-      key={staff._id}
-      ref={rowRef}
-      className={` table-row__effect ${isChecked ? "table-row__checked" : ""}`}
-      onClick={() => {
-        handleCheckboxChange(staff._id);
-      }}
-    >
-      <th className="rounded-l-lg">
-        <label>
-          <input
-            type="checkbox"
-            className="checkbox"
-            value={staff._id}
-            // onChange={handleCheckboxChange}
-            checked={checkedStaffIds.has(staff._id)}
-          />
-        </label>
-      </th>
-      <td>
-        <div className="flex items-center space-x-6">
-          <div className="avatar">
-            <div className="mask mask-squircle w-12 h-12">
-              <Image
-                src={staff.image || ""}
-                alt={`profile picture of ${staff.fullName}`}
-                className=""
-                width={50}
-                height={50}
-              />
+    <>
+      <AlertDialog
+        title="You sure?"
+        message={`Are you sure you want to remove ${staff.fullName} from staff?`}
+        isOpen={deleteStaffMemberAlert}
+        onClose={() => setDeleteStaffMemberAlert(false)}
+        onConfirm={handleDeleteStaff}
+        confirmButtonText="Remove"
+      />
+      <tr
+        key={staff._id}
+        ref={rowRef}
+        className={` table-row__effect ${
+          isChecked ? "table-row__checked" : ""
+        }`}
+        onClick={() => {
+          if (isEdit) return;
+          handleCheckboxChange(staff._id);
+        }}
+      >
+        <th className="rounded-l-lg">
+          <label>
+            <input
+              type="checkbox"
+              className="checkbox"
+              value={staff._id}
+              // onChange={handleCheckboxChange}
+              checked={checkedStaffIds.has(staff._id)}
+            />
+          </label>
+        </th>
+        <td>
+          <div className="flex items-center space-x-6">
+            <div className="avatar">
+              <div className="mask mask-squircle w-12 h-12">
+                <Image
+                  src={staff.image || ""}
+                  alt={`profile picture of ${staff.fullName}`}
+                  className=""
+                  width={50}
+                  height={50}
+                />
+              </div>
+            </div>
+            <div className="space-y-1">
+              <div className="font-bold">{staff.fullName}</div>
+              <div className="text-sm opacity-50">{staff.email}</div>
             </div>
           </div>
-          <div className="space-y-1">
-            <div className="font-bold">{staff.fullName}</div>
-            <div className="text-sm opacity-50">{staff.email}</div>
-          </div>
-        </div>
-      </td>
+        </td>
 
-      <td className="z-[1]">
-        {isEdit ? (
-          <div className="form-control flex flex-col justify-center">
-            <div className="label-text ml-1">Admin</div>
+        <td className="z-[1]">
+          {isEdit ? (
+            <div className="form-control flex flex-col justify-center">
+              <div className="label-text ml-1">Admin</div>
 
-            <label className="cursor-pointer label w-fit">
-              <input
-                type="checkbox"
-                className="toggle toggle-accent"
-                onClick={(e) => {
-                  e.stopPropagation(), setIsAdmin(!isAdmin);
-                }}
-                checked={isAdmin}
-              />
-            </label>
-          </div>
-        ) : (
-          role
-        )}
-      </td>
-      {/* If owner, skull */}
-      <td className="flex justify-end z-[1]">
-        {role === "Owner" ? (
-          <div className="btn btn-circle btn-ghost">
-            <SkullIcon size={26} strokeWidth={1} />
-          </div>
-        ) : (
-          // If not owner, edit and delete
-          <>
-            {isEdit ? (
-              <SaveButton
-                onClick={(e) => {
-                  e.stopPropagation(), handleAdminChange();
-                }}
-                isLoading={isLoading}
-              />
-            ) : (
-              <button
-                className={`btn btn-circle btn-ghost`}
-                onClick={(e) => {
-                  e.stopPropagation(), setIsEdit(true);
-                }}
-              >
-                <PencilLine size={24} strokeWidth={1} />
-              </button>
-            )}
-            {isChecked && (
-              <>
-                <div className="divider divider-horizontal"></div>
-
-                <TrashCanIcon
+              <label className="cursor-pointer label w-fit">
+                <input
+                  type="checkbox"
+                  className="toggle toggle-accent"
                   onClick={(e) => {
-                    e.stopPropagation(), handleDeleteStaff();
+                    e.stopPropagation();
+                    setIsAdmin(!isAdmin);
+                    setHasChanged(true);
                   }}
-                  isLoading={isLoading}
+                  checked={isAdmin}
                 />
+              </label>
+            </div>
+          ) : (
+            role
+          )}
+        </td>
+        {/* If owner, skull */}
+        <td className=" z-[2]">
+          <div className="flex items-center justify-end  z-[2]">
+            {role === "Owner" ? (
+              <div className="btn btn-circle btn-ghost ">
+                <SkullIcon size={26} strokeWidth={1} />
+              </div>
+            ) : (
+              // If not owner, edit and delete
+              <>
+                {isEdit ? (
+                  <div className="flex gap-3 px-4  z-[2]">
+                    <button
+                      className="btn btn-ghost text-primary " // Made the button more visible
+                      onClick={handleCancelEdit}
+                    >
+                      Cancel
+                    </button>
+                    <SaveButton
+                      onClick={(e) => {
+                        e.stopPropagation(), handleAdminChange();
+                      }}
+                      isLoading={isLoading}
+                      disabled={!hasChanged}
+                    />
+                  </div>
+                ) : (
+                  <button
+                    className={`btn btn-circle btn-ghost`}
+                    onClick={(e) => {
+                      e.stopPropagation(), setIsEdit(true);
+                    }}
+                  >
+                    <PencilLine size={24} strokeWidth={1} />
+                  </button>
+                )}
+                {isChecked && (
+                  <>
+                    <div className="divider divider-horizontal"></div>
+
+                    <TrashCanIcon
+                      onClick={(e) => {
+                        e.stopPropagation(), setDeleteStaffMemberAlert(true);
+                      }}
+                      isLoading={isDeleteLoading}
+                      className="btn btn-circle btn-ghost"
+                    />
+                  </>
+                )}
               </>
             )}
-          </>
-        )}
-      </td>
-      <th className="rounded-r-lg"></th>
-    </tr>
+          </div>
+        </td>
+
+        <th className="rounded-r-lg"></th>
+      </tr>
+    </>
   );
 };
 
