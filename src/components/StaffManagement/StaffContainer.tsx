@@ -51,7 +51,11 @@ const StaffContainer = (props: Props) => {
             setViewFilter={setViewFilter}
             viewFilter={viewFilter}
           />
-          <StaffTable viewFilter={viewFilter} brewery={selectedBrewery} />
+          <StaffTable
+            viewFilter={viewFilter}
+            brewery={selectedBrewery}
+            setIsOpen={setIsOpen}
+          />
         </div>
         <BottomDrawer isOpen={isOpen}>
           <MultipleInvites
