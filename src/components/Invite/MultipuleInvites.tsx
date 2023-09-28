@@ -143,17 +143,21 @@ const MultipleInvites = ({ breweryId, setIsOpen }: pageProps) => {
             <div className="flex justify-between">
               <div className="flex flex-col ">
                 {invitees.map((invitee, index) => (
-                  <div className="p-3 flex items-center" key={index}>
+                  <div
+                    className={`p-3 flex flex-col xs:flex-row xs:items-center relative animate-appear `}
+                    key={index}
+                  >
                     {index !== 0 ? (
                       <button
                         type="button"
-                        className="btn btn-outline btn-error rounded-full w-5 h-9 min-w-0 min-h-fit mr-3"
+                        className="btn-link link-error no-underline absolute bottom-2 ml-5 xs:ml-0 xs:mt-2 xs:relative  xs:btn xs:btn-outline xs:text-error xs:rounded-full xs:w-6 xs:h-9 xs:min-w-0 xs:min-h-fit mr-3"
                         onClick={() => removeInvitee(index)}
                       >
-                        -
+                        <span className="hidden xs:flex ">-</span>
+                        <span className="xs:hidden text-sm">Remove</span>
                       </button>
                     ) : (
-                      <div className="w-10 h-9 min-w-9 min-h-fit mr-3"></div>
+                      <div className="btn btn-outline btn-ghost rounded-full w-5 h-9 min-w-5 min-h-fit mr-3"></div>
                     )}
                     <Invite
                       invitee={invitee}
@@ -165,7 +169,7 @@ const MultipleInvites = ({ breweryId, setIsOpen }: pageProps) => {
                     />
                   </div>
                 ))}
-                <div className="flex justify-end items-center pr-6 gap-2">
+                <div className="flex justify-end  items-center pr-6 gap-2">
                   <button
                     type="button"
                     className="create-btn inverse"
