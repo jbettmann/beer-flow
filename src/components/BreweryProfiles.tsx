@@ -73,7 +73,7 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
     selectedBeers && (
       <section className="md:w-1/2 mt-10 mx-auto py-3">
         <Suspense fallback={<BreweryProfileSkeleton />}>
-          <h3>Categories</h3>
+          <h3>Home</h3>
 
           <div>
             {beersForCategory &&
