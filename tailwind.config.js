@@ -28,6 +28,18 @@ module.exports = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        grow: "grow 0.3s ease-out",
+        appear: "appear 0.3s ease-out forwards",
+      },
+      keyframes: {
+        grow: {
+          "0%": { transform: "scale(0.5)" },
+          "100%": { transform: "scale(1)" },
+        },
+        appear: {
+          "0%": { transform: "translateY(100%)", opacity: 0 },
+          "100%": { transform: "translateY(0)", opacity: 1 },
+        },
       },
       colors: {
         primary: "#2B2B2B",
