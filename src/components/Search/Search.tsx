@@ -32,7 +32,7 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const debounceDelay = 300; // 300ms
-  const debounceTimeout = useRef<number | undefined>();
+  const debounceTimeout = useRef<any>();
 
   const handleSearch = (searchItem: string) => {
     const term = searchItem.toLowerCase();
@@ -101,7 +101,7 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
     }
   };
 
-  const handleKeyPress = (e) => {
+  const handleKeyPress = (e: any) => {
     if (e.key === "Enter") {
       saveSearchTerm(searchTerm);
     }
@@ -139,7 +139,7 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
             onChange={(e) => handleSearch(e.target.value)}
             onKeyDown={handleKeyPress}
             placeholder="Search"
-            className="input input-bordered w-auto text-primary pr-8"
+            className="input input-bordered rounded-full w-auto text-primary pr-8"
           />
           {searchTerm && (
             <button
@@ -153,7 +153,10 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
             </button>
           )}
         </div>
-        <button className="btn btn-outline btn-accent ml-2" onClick={onClose}>
+        <button
+          className="btn btn-outline btn-accent rounded-full ml-2"
+          onClick={onClose}
+        >
           Cancel
         </button>
       </div>
