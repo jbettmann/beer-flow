@@ -140,6 +140,12 @@ p {
   
 }
 
+.create-btn.inverse 
+{
+  @apply bg-background text-primary hover:shadow-lg hover:shadow-[#413c33] hover:bg-background hover:scale-105 
+  
+} 
+
 .close-btn {
   @apply float-right;
   
