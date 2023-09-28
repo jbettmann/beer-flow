@@ -163,7 +163,7 @@ p {
 }
 
 .dashboard-button {
-  @apply text-sm md:text-base border border-stone-400 py-4 px-8 font-semibold  first:rounded-l-full last:rounded-r-full hover:border-black  justify-center shadow-lg 
+  @apply text-xs xs:text-sm  border border-stone-400 py-2 px-4 md:py-3 md:px-6 font-semibold  first:rounded-l-full last:rounded-r-full hover:border-black  justify-center shadow-xl 
 }
 
 
@@ -171,6 +171,13 @@ p {
   @apply text-background border-[#181818] bg-primary  shadow-lg;
   box-shadow: inset -2px -2px 8px #181818, inset 2px 2px 8px #181818;
 }
+
+
+.delete-remove-btn__text {
+  @apply my-2 text-xs opacity-50
+}
+
+
 
 .error {
   @apply text-red-500 text-sm
@@ -187,7 +194,6 @@ p {
 .gray-text {
   @apply opacity-50
 }
-
 
 
 .form {
@@ -230,6 +236,10 @@ p {
   @apply bg-fourth-color
 }
 
+.alert-modal {
+  @apply bg-primary text-background bg-opacity-10 rounded-xl border-none
+}
+
 .new-category {
   @apply bg-primary bg-opacity-10 shadow-xl
 }
@@ -260,11 +270,6 @@ p {
 }
 
 
-
-
-.delete-remove-btn__text {
-  @apply my-2 text-xs opacity-50
-}
 
 
 .scrollbar-w-2::-webkit-scrollbar {
