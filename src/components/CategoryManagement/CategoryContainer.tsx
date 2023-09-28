@@ -20,18 +20,20 @@ const CategoryContainer = (props: Props) => {
       <>
         {/* Large Screen New Category Button */}
         <div className="flex justify-between md:p-5 ">
-          <div className="flex flex-col w-fit">
-            <h3 className="text-left">Categories</h3>
+          <div className="flex flex-col w-fit mx-auto lg:m-0 lg:my-auto ">
+            <h3 className="text-center lg:text-left">Category Management</h3>
             {/* <div className="text-sm badge badge-ghost opacity-50 mt-2">
               Owner {selectedBrewery.owner.fullName || ""}
             </div> */}
           </div>
-          <button
-            onClick={() => setCreateNewCategory(true)}
-            className="btn btn-accent create-btn"
-          >
-            + Category
-          </button>
+          <div className="hidden lg:block">
+            <button
+              onClick={() => setCreateNewCategory(true)}
+              className="create-btn"
+            >
+              + Category
+            </button>
+          </div>
         </div>
 
         {/* Small Screen New Category Button */}
