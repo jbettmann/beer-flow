@@ -6,7 +6,7 @@ type Props = {
 function BottomDrawer({ isOpen, children }: Props) {
   return (
     <div className={`bottom-drawer  ${isOpen ? "open" : ""}`}>
-      <div className=" h-screen bg-third-color ">{children}</div>
+      <div className=" h-screen bg-primary text-background ">{children}</div>
     </div>
   );
 }
