@@ -18,7 +18,7 @@ const StaffDashboard = ({ viewFilter, setViewFilter }: Props) => {
         {menuButtons.map((button) => (
           <button
             key={button}
-            className={` text-sm md:text-base border border-stone-400 py-4 px-8 font-semibold  first:rounded-l-full last:rounded-r-full hover:border-black  justify-center shadow-xl ${
+            className={` dashboard-button ${
               viewFilter === button ? "dashboard-button__selected" : ""
             }`}
             onClick={() => setViewFilter(button)}
