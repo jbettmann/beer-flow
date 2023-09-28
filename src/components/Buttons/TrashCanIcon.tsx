@@ -5,12 +5,18 @@ type Props = {
   onClick: (e: any) => void;
   isLoading?: boolean;
   title?: string | undefined;
+  className?: string;
 };
 
-const TrashCanIcon = ({ onClick, isLoading, title = undefined }: Props) => {
+const TrashCanIcon = ({
+  onClick,
+  isLoading,
+  title = undefined,
+  className = "",
+}: Props) => {
   return (
     <button
-      className=" border-none transition-all duration-150 hover:bg-transparent hover:scale-105"
+      className={`border-none transition-all duration-150 hover:bg-transparent hover:scale-105 ${className}`}
       onClick={onClick}
       title={title}
     >
