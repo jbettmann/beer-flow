@@ -25,7 +25,7 @@ const Invite = ({ invitee, handleChange, className, error }: Props) => {
         />
         {error && <p className="error absolute right-12 top-9 ">{error}</p>}
       </div>
-      <div className="flex-none px-1 xs:px-3 text-center ">
+      <div className="flex-none px-1 xxs:px-3 text-center ">
         <label className="cursor-pointer label label-text text-background">
           Admin
         </label>

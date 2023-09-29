@@ -6,7 +6,7 @@ import { validateEmail } from "@/lib/validators/email";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useBreweryContext } from "@/context/brewery-beer";
-import { Plus, X } from "lucide-react";
+import { Plus, Send, X } from "lucide-react";
 import { useToast } from "@/context/toast";
 import { set } from "mongoose";
 
@@ -77,8 +77,8 @@ const MultipleInvites = ({ breweryId, setIsOpen }: pageProps) => {
         if (successEmails.length) {
           addToast(
             `${successEmails.join(", ")} ${
-              successEmails.length > 1 ? "invitations" : "invitation"
-            } were successfully sent`,
+              successEmails.length > 1 ? "invitations were" : "invitation was"
+            } successfully sent`,
             "success"
           );
 
@@ -144,17 +144,17 @@ const MultipleInvites = ({ breweryId, setIsOpen }: pageProps) => {
               <div className="flex flex-col ">
                 {invitees.map((invitee, index) => (
                   <div
-                    className={`p-3 flex flex-col xs:flex-row xs:items-center relative animate-appear `}
+                    className={`p-3 flex flex-col xxs:flex-row xxs:items-center relative animate-appear `}
                     key={index}
                   >
                     {index !== 0 ? (
                       <button
                         type="button"
-                        className="btn-link link-error no-underline absolute bottom-2 ml-5 xs:ml-0 xs:mt-2 xs:relative  xs:btn xs:btn-outline xs:text-error xs:rounded-full xs:w-6 xs:h-9 xs:min-w-0 xs:min-h-fit mr-3"
+                        className="btn-link link-error no-underline absolute bottom-2 ml-5 xxs:ml-0 xxs:mt-2 xxs:relative  xxs:btn xxs:btn-outline xxs:text-error xxs:rounded-full xxs:w-6 xxs:h-9 xxs:min-w-0 xxs:min-h-fit mr-3"
                         onClick={() => removeInvitee(index)}
                       >
-                        <span className="hidden xs:flex ">-</span>
-                        <span className="xs:hidden text-sm">Remove</span>
+                        <span className="hidden xxs:flex ">-</span>
+                        <span className="xxs:hidden text-sm">Remove</span>
                       </button>
                     ) : (
                       <div className="btn btn-outline btn-ghost rounded-full w-5 h-9 min-w-5 min-h-fit mr-3"></div>
@@ -182,7 +182,7 @@ const MultipleInvites = ({ breweryId, setIsOpen }: pageProps) => {
             </div>
 
             <button className="create-btn inverse mx-auto mt-10" type="submit">
-              Send Invites
+              <Send size={22} /> Invite
             </button>
           </div>
         </form>

@@ -135,14 +135,12 @@ const StaffMemberCard = ({
     setIsChecked(checkedStaffIds.has(staff._id));
   }, [checkedStaffIds]);
 
- 
-
   return (
     <div
       key={staff._id}
       ref={rowRef}
-      className={` table-row__effect flex justify-between p-6 relative ${
-        isChecked ? "table-row__checked" : ""
+      className={` table-row__effect flex justify-center xs:justify-between p-6 relative ${
+        isChecked ? "table-row__checked" : " category-card"
       }`}
       onClick={() => {
         if (isEdit) return;
@@ -159,7 +157,7 @@ const StaffMemberCard = ({
       />
 
       <div
-        className={`flex space-x-6 transition-all  ${
+        className={`flex flex-col items-center xs:flex-row space-y-3 xs:space-y-0 xs:space-x-6 transition-all  ${
           isEdit ? "items-start" : ""
         }`}
       >
@@ -174,10 +172,14 @@ const StaffMemberCard = ({
             />
           </div>
         </div>
-        <div className={`space-y-1 transition-all  ${isEdit ? "pb-14" : ""}`}>
-          <div className="font-bold">{staff.fullName}</div>
-          <div className="text-sm opacity-50">{staff.email}</div>
-          <div className="flex items-center">
+        <div
+          className={`xs:space-y-1 transition-all text-center xs:text-left space-y-1 ${
+            isEdit ? "pb-14" : ""
+          }`}
+        >
+          <div className=" font-bold">{staff.fullName}</div>
+          <div className="text-xs xxs:text-sm opacity-50">{staff.email}</div>
+          <div className="flex items-center justify-center xs:justify-start">
             <span
               className={`${
                 isEdit
