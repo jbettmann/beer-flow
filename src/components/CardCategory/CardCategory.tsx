@@ -428,7 +428,6 @@ const CardCategory = ({
   useEffect(() => {
     handleEmptyCategory(category._id, isEmpty);
     handleCategoryCheckbox(category._id, selectAll);
-    
   }, [selectAll]);
 
   // Closes category if category checkbox is checked
@@ -553,6 +552,7 @@ const CardCategory = ({
                   >
                     <PencilLine
                       size={20}
+                      strokeWidth={1}
                       className={`absolute  transition-transform duration-300 ${
                         isEdit
                           ? "translate-y-0 opacity-100"
