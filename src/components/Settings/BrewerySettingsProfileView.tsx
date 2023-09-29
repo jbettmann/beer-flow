@@ -204,7 +204,7 @@ const BrewerySettingsProfileView = ({ breweryId }: Props) => {
               onClick={() => setIsOpen(true)}
               className="btn w-full md:w-1/4"
             >
-              <PencilLine size={24} />
+              <PencilLine size={24} strokeWidth={1} />
               Edit
             </div>
           )}

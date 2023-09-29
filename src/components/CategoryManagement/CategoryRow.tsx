@@ -515,6 +515,7 @@ const CategoryRow = ({
                   >
                     <PencilLine
                       size={20}
+                      strokeWidth={1}
                       className={`absolute transition-transform duration-300 ${
                         isChecked
                           ? "translate-y-0 opacity-100"

@@ -1,20 +1,11 @@
 "use client";
-import { Users } from "@/app/types/users";
-import { useBreweryContext } from "@/context/brewery-beer";
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import Image from "next/image";
 import { Brewery } from "@/app/types/brewery";
-import {
-  ListFilter,
-  MoveDown,
-  MoveUp,
-  PencilLine,
-  UserPlus,
-} from "lucide-react";
-import StaffMemberRow from "./StaffMemberRow";
+import { Users } from "@/app/types/users";
 import { cn } from "@/lib/utils";
-import { set } from "mongoose";
+import { ListFilter, MoveDown, MoveUp, UserPlus } from "lucide-react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import StaffMemberCard from "./StaffMemberCard";
+import StaffMemberRow from "./StaffMemberRow";
 
 type Props = {
   viewFilter: string;
@@ -145,7 +136,9 @@ const StaffTable = ({ viewFilter, brewery, setIsOpen }: Props) => {
   return (
     brewery && (
       <>
-        <div className={`flex justify-between lg:hidden`}>
+        <div
+          className={`flex justify-between mx-auto lg:hidden w-full xxs:w-80 `}
+        >
           <label className="flex items-center ">
             <input
               type="checkbox"
@@ -196,7 +189,7 @@ const StaffTable = ({ viewFilter, brewery, setIsOpen }: Props) => {
             </ul>
           </div>
         </div>
-        <div className="overflow-x-auto flex-auto lg:pl-8">
+        <div className="overflow-x-auto flex-auto flex justify-center   lg:pl-8 ">
           <table className="hidden lg:table border-separate border-spacing-y-6 p-3">
             {/* head */}
             <thead>
@@ -281,8 +274,8 @@ const StaffTable = ({ viewFilter, brewery, setIsOpen }: Props) => {
           </table>
 
           {/* Small Screen Card Layout*/}
-          <div className=" lg:hidden flex flex-col p-3 relative">
-            <div className="flex flex-col gap-8">
+          <div className=" lg:hidden flex flex-col py-3 xxs:p-3  relative">
+            <div className="flex flex-col gap-8 ">
               {staff.length > 0 && staff ? (
                 staff.map((s: Users) => {
                   const role =
