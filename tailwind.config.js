@@ -52,7 +52,8 @@ module.exports = {
         "main-text-color": "text-primary",
       },
       screens: {
-        xs: "350px",
+        xs: "389px",
+        xxs: "350px",
       },
     },
   },
