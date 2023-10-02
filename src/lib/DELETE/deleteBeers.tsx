@@ -1,5 +1,5 @@
 type pageProps = {
-  breweryId: string;
+  breweryId: string | undefined;
   beerId: string;
   token: string;
 };

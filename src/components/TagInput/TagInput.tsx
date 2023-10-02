@@ -2,13 +2,22 @@ import React from "react";
 import { Tag, WithContext as Tags } from "react-tag-input";
 import { FormValues } from "../CreateBeerForm/types";
 
+interface Suggestions {
+  name: string;
+  id: string;
+}
+
 type Props = {
   valueInput: keyof FormValues;
   values: FormValues;
   setValues: (values: FormValues) => void;
   tags: Tag[];
-  suggestions: Tag[] | null;
+  suggestions: Suggestions[] | null;
 };
+
+interface ExtendedTagProps extends Tags {
+  onTagUpdate?: (i: number, newTag: Tag) => void;
+}
 
 const TagInput = ({
   valueInput,
@@ -81,13 +90,12 @@ const TagInput = ({
         handleAddition={handleAddition(valueInput)}
         handleDelete={handleDelete}
         labelField={"name"}
-        onTagUpdate={handleUpdate}
         allowDeleteFromEmptyInput={false}
         inputFieldPosition="inline"
-        editable={true}
         allowDragDrop={false}
         autocomplete={true}
-        suggestions={suggestions ? suggestions : []}
+        suggestions={suggestions ? suggestions : ([] as any)}
+        // onTagUpdate={handleUpdate}
       />
     </div>
   );

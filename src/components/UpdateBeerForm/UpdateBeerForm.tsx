@@ -23,11 +23,12 @@ import DeleteBeerButton from "../Buttons/DeleteBeerButton";
 import { deleteImage } from "@/lib/supabase/deleteImage";
 
 import getSingleBrewery from "@/lib/getSingleBrewery";
+import { useToast } from "@/context/toast";
 
 // import createBeer from "@/lib/createBeer";
 
 type pageProps = {
-  brewery: Brewery;
+  brewery: Brewery | null;
   beer: Beer;
   setBeer: (beer: Beer) => void;
   isEditing: boolean;
@@ -57,6 +58,7 @@ const UpdateBeerForm = ({
     ],
     getSingleBrewery
   );
+  const { addToast } = useToast();
 
   const [values, setValues] = useState<FormValues>({
     _id: beer?._id || "",
@@ -122,7 +124,7 @@ const UpdateBeerForm = ({
   };
 
   useEffect(() => {
-    let date = new Date(beer?.releasedOn);
+    let date = new Date(beer?.releasedOn as Date);
     let formattedDate = `${date.getFullYear()}-${(
       "0" +
       (date.getMonth() + 1)
@@ -181,8 +183,8 @@ const UpdateBeerForm = ({
       let updatedBeer: FormValues = values;
 
       if (beer?.image !== values.image) {
-        const newImage = await updateImage(beer.image, values.image);
-        updatedBeer = { ...values, image: newImage };
+        const newImage = await updateImage(beer.image, values.image as File);
+        updatedBeer = { ...values, image: newImage as any };
       }
       const updateBeerRes = await handleUpdateBeer(
         updatedBeer,
@@ -195,8 +197,8 @@ const UpdateBeerForm = ({
           (b) => b._id === updatedBeer._id
         );
         // Replace the beer at that index with the updated beer
-        const updatedBeers = [...selectedBeers];
-        updatedBeers[beerIndex] = updateBeerRes;
+        const updatedBeers = [...(selectedBeers as Beer[])];
+        updatedBeers[beerIndex as number] = updateBeerRes;
 
         // forced revalidation of the beers
         beerMutate(updatedBeers);
@@ -204,7 +206,7 @@ const UpdateBeerForm = ({
         // set beer to updated beer and edit to false
         updateBeerState(updateBeerRes);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
       setSubmitError(err.message);
     } finally {
@@ -313,8 +315,9 @@ const UpdateBeerForm = ({
                 const file = e.target.files ? e.target.files[0] : null;
                 if (file && file.size > 2 * 1024 * 1024) {
                   // Check if file size is greater than 2MB
-                  alert(
-                    "File is too large. Please select a file less than 2MB."
+                  addToast(
+                    "File is too large. Please select a file less than 2MB.",
+                    "error"
                   );
                   e.target.value = ""; // Clear the selected file
                 } else {
@@ -323,8 +326,8 @@ const UpdateBeerForm = ({
                     image: file,
                   });
                   // Generate a URL for the new image and set it as the preview
-                  const url = URL.createObjectURL(file);
-                  setPreviewImage(url);
+                  const url = URL.createObjectURL(file as Blob);
+                  setPreviewImage(url as any);
                 }
               }}
               disabled={values.name && values.category ? false : true}
@@ -392,11 +395,13 @@ const UpdateBeerForm = ({
       <div ref={fieldRefs.category}>
         <CategorySelect
           setValues={setValues}
-          selectedValues={values.category}
-          categories={brewery?.categories?.map((cat) => ({
-            label: cat.name,
-            value: cat.name,
-          }))}
+          selectedValues={values.category as any}
+          categories={
+            brewery?.categories?.map((cat) => ({
+              label: cat.name,
+              value: cat.name,
+            })) as Option[]
+          }
           handleBlur={handleBlur}
         />
         {touched.category && errors.category && (
@@ -456,7 +461,7 @@ const UpdateBeerForm = ({
           type="date"
           className="form__input"
           placeholder="Beer release date"
-          value={values.releasedOn}
+          value={values.releasedOn as string}
           onChange={(e) => setValues({ ...values, releasedOn: e.target.value })}
         />
       </div>

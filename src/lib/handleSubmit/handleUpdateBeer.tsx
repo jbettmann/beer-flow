@@ -5,17 +5,18 @@ import updateBeer from "../PUT/updateBeer";
 import createCategory from "../createCategory";
 import getSingleBrewery from "../getSingleBrewery";
 import { revalidatePath } from "next/cache";
+import { Beer } from "@/app/types/beer";
 
 // Handle form submission
 const handleUpdateBeer = async (
   values: FormValues,
-  brewery: Brewery,
-  accessToken: string
+  brewery: Brewery | null,
+  accessToken: string | undefined
 ) => {
   try {
     // Converting brewery categories to a Map for O(1) lookup times
     const existingCategories = new Map(
-      brewery.categories.map((cat) => [cat.name, cat._id])
+      brewery?.categories.map((cat) => [cat.name, cat._id])
     );
 
     // Function to get category ID, creating a new category if necessary
@@ -32,7 +33,7 @@ const handleUpdateBeer = async (
         const newCategory = { name: categoryName };
         const createdCategory = await createCategory({
           newCategory,
-          breweryId: brewery._id,
+          breweryId: brewery?._id,
           accessToken,
         });
         if (!createdCategory._id) {
@@ -44,7 +45,7 @@ const handleUpdateBeer = async (
 
     // Map categories to their IDs
     const categoryIds = await Promise.all(
-      values.category.map((category) => getCategoryId(category.value))
+      values.category.map((category: any) => getCategoryId(category.value))
     );
 
     const updatedBeer = {
@@ -56,7 +57,7 @@ const handleUpdateBeer = async (
 
     const updatedBeerRes = await updateBeer({
       updatedBeer,
-      breweryId: brewery._id,
+      breweryId: brewery?._id,
       accessToken,
     });
 

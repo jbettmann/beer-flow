@@ -4,9 +4,9 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/dist/server/api-utils";
 
 type pageProps = {
-  updatedBeer: Beer;
-  breweryId: string;
-  accessToken: string;
+  updatedBeer: Beer | any;
+  breweryId: string | undefined;
+  accessToken: string | undefined;
 };
 
 export default async function updateBeer({
