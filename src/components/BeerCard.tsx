@@ -1,19 +1,14 @@
 "use client";
 import { Beer } from "@/app/types/beer";
-import React, { useEffect, useState } from "react";
-import ImageDisplay from "./ImageDisplay/ImageDisplay";
-import CreateBeerForm from "./CreateBeerForm/CreateBeerForm";
-import UpdateBeerForm from "./UpdateBeerForm/UpdateBeerForm";
-import { convertDate, isNew } from "@/lib/utils";
-import { Brewery } from "@/app/types/brewery";
 import { useBreweryContext } from "@/context/brewery-beer";
-import getBreweryBeers from "@/lib/getBreweryBeers";
-import { useSession } from "next-auth/react";
-import useSWR from "swr";
+import { convertDate, isNew } from "@/lib/utils";
+import { ExternalLink, Hop, Sparkles, Wheat } from "lucide-react";
+import { useEffect, useState } from "react";
 import ToggleButton from "./Buttons/ToggleButton";
-import { Hop, Sparkles, Wheat } from "lucide-react";
-import BottomDrawer from "./Drawers/BottomDrawer";
-
+import ImageDisplay from "./ImageDisplay/ImageDisplay";
+import UpdateBeerForm from "./UpdateBeerForm/UpdateBeerForm";
+import { hopSuggestions, maltSuggestions } from "@/lib/suggestionsDB";
+import Link from "next/link";
 type Props = {
   beerId: string;
 };
@@ -25,7 +20,17 @@ const BeerCard = ({ beerId }: Props) => {
 
   const [beer, setBeer] = useState<Beer | undefined>(undefined);
   const [toggleView, setToggleView] = useState<string>("Overview");
-  console.log({ selectedBrewery, beerId, selectedBeers });
+
+  const handleHopClick = (hop: string) => {
+    const hopDetail = hopSuggestions.find((h) => h.name === hop);
+    return hopDetail?.id;
+  };
+
+  const handleMaltClick = (malt: string) => {
+    const maltDetail = maltSuggestions.find((m) => m.name === malt);
+    return maltDetail?.id;
+  };
+
   useEffect(() => {
     setBeer(selectedBeers?.find((beer) => beer._id === beerId));
   }, [selectedBeers]);
@@ -54,7 +59,7 @@ const BeerCard = ({ beerId }: Props) => {
             />
           ) : (
             <>
-              <div className="flex items-center justify-around lg:p-6 relative gap-2">
+              <div className="flex items-center justify-around lg:p-6 relative gap-2 xs:gap-4 md:gap-6">
                 {isNew(beer) ? (
                   <>
                     <div className="tag-new absolute top-[-5px] right-5">
@@ -69,13 +74,15 @@ const BeerCard = ({ beerId }: Props) => {
                   </>
                 ) : null}
                 {/* Beer Image and Name */}
-                <figure className="rounded-lg overflow-hidden relative flex-auto md:flex-initial h-40 lg:h-56 w-56 p-2">
+                <figure className="rounded-lg overflow-hidden relative flex-initial h-40 lg:h-56 w-36 xs:w-2/5 lg:w-1/2 2xl:w-1/4 p-2">
                   {beer?.image && (
                     <ImageDisplay className="beer-card__image " item={beer} />
                   )}
                 </figure>
                 <div className="flex flex-col justify-start">
-                  <h3 className="card-title lg:text-3xl">{beer?.name}</h3>
+                  <h3 className="card-title justify-start lg:text-3xl">
+                    {beer?.name}
+                  </h3>
 
                   <div>
                     <p className="beer-card__item">
@@ -121,9 +128,25 @@ const BeerCard = ({ beerId }: Props) => {
                     {/* Hops & IBU */}
                     <div className="flex justify-between w-full">
                       <div>
-                        <h5 className="beer-card__item">
-                          {beer?.hops?.map((hop) => hop).join(", ")}
-                        </h5>
+                        <div>
+                          {beer?.hops?.map((hop, i, array) => (
+                            <span className="inline-flex items-center">
+                              <Link
+                                key={i}
+                                href={`https://www.beermaverick.com/hop/${handleHopClick(
+                                  hop
+                                )}`}
+                                target="_blank"
+                                className="flex "
+                              >
+                                <h5 className="beer-card__item links text-left">
+                                  {hop}
+                                </h5>
+                                {i !== array.length - 1 ? ` ,` : ""}
+                              </Link>
+                            </span>
+                          ))}
+                        </div>
                         <p className="beer-card__title ">
                           <Hop size={15} strokeWidth={1} />
                           <span className="ml-1"> Hops</span>
@@ -140,9 +163,25 @@ const BeerCard = ({ beerId }: Props) => {
 
                     {/* Malts */}
                     <div className="flex flex-col items-start w-full">
-                      <h5 className="beer-card__item text-left">
-                        {beer?.malt?.map((malt) => malt).join(", ")}
-                      </h5>
+                      <div>
+                        {beer?.malt?.map((m, i, array) => (
+                          <span className="inline-flex items-center">
+                            <Link
+                              key={i}
+                              href={`https://www.google.com/search?q=${handleMaltClick(
+                                m
+                              )}+malt`}
+                              target="_blank"
+                              className="flex items-center"
+                            >
+                              <h5 className="beer-card__item links text-left">
+                                {m}
+                              </h5>
+                              {i !== array.length - 1 ? ` ,` : ""}
+                            </Link>
+                          </span>
+                        ))}
+                      </div>
                       <p className="beer-card__title">
                         <Wheat size={15} strokeWidth={1} />
                         <span className="ml-1"> Malt</span>
