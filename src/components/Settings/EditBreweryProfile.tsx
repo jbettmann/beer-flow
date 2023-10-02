@@ -43,8 +43,11 @@ const EditBreweryProfile = ({ brewery, onClose }: Props) => {
     let updatedBrewery: Brewery | null = { ...editBrewery };
 
     if (brewery?.image !== editBrewery.image) {
-      const newLogo = await updateImage(brewery.image, editBrewery.image);
-      updatedBrewery.image = newLogo;
+      const newLogo = await updateImage(
+        brewery.image,
+        editBrewery.image as any
+      );
+      updatedBrewery.image = newLogo as any;
       hasUpdates = true;
     }
     if (brewery?.companyName !== companyName) {
@@ -84,9 +87,8 @@ const EditBreweryProfile = ({ brewery, onClose }: Props) => {
     }
   };
   return (
-    <div className="flex flex-col justify-center items-center z-50 text-primary">
+    <div className="flex flex-col justify-center items-center z-50 text-background">
       <div className="flex w-full h-full justify-between items-center">
-        {" "}
         <button onClick={onClose} className="btn m-4">
           <X size={24} />
         </button>
@@ -115,7 +117,7 @@ const EditBreweryProfile = ({ brewery, onClose }: Props) => {
             {previewImage && (
               <Image
                 className="logo__edit"
-                alt="New Beer Image preview"
+                alt="New Brewery Logo"
                 src={previewImage}
                 width={50}
                 height={50}
@@ -145,10 +147,10 @@ const EditBreweryProfile = ({ brewery, onClose }: Props) => {
               } else {
                 setEditBrewery({
                   ...editBrewery,
-                  image: file,
+                  image: file as any,
                 });
                 // Generate a URL for the new image and set it as the preview
-                const url = URL.createObjectURL(file);
+                const url = URL.createObjectURL(file as File);
                 setPreviewImage(url);
               }
             }}
