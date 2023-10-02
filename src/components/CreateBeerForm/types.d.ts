@@ -3,8 +3,8 @@ import { Category, NewCategory } from "@/app/types/category";
 interface FormValues {
   _id?: string;
   name: string;
-  abv: number;
-  ibu: number;
+  abv: string | number;
+  ibu: number | string;
   style: string;
   malt: Tag[];
   hops: Tag[];
