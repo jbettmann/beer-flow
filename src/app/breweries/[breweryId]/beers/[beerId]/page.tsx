@@ -1,5 +1,5 @@
 import BeerCard from "@/components/BeerCard";
-import BackArrow from "@/components/Buttons/BackArrow";
+import { MoveLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 type pageProps = {
@@ -23,16 +23,16 @@ export default async function SingleBeerPage({
 
   if (!beerId) return notFound();
   return (
-    <div className="w-full h-full ">
+    <section className="w-full sm:w-2/3 lg:w-1/2 mx-auto h-full ">
       <h2>
         <Link href={`/breweries/${breweryId}`}>
-          <BackArrow width={"60"} height={"30"} />
+          <MoveLeft size={30} />
         </Link>
       </h2>
       {/* SingleBeerPageContainer Only on [beerId] page to set selectedBeers State */}
 
       {/* @ts-expect-error Server component */}
       <BeerCard beerId={beerId} />
-    </div>
+    </section>
   );
 }
