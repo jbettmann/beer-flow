@@ -63,7 +63,7 @@ p {
 }
 
 .beer-card {
-  @apply bg-primary text-background p-1 xxs:p-5
+  @apply bg-primary text-background p-2 xxs:p-5
 }
 
 .beer-card__description {
@@ -75,7 +75,11 @@ p {
 }
 
 .beer-card__item {
-  @apply ml-1 mb-1 text-left lg:text-xl
+  @apply ml-1 mb-1 text-left lg:text-xl 
+}
+
+.beer-card__item.links {
+  @apply ml-2 transition-all link-hover hover:text-accent
 }
 
 
@@ -153,7 +157,11 @@ p {
 
 
 .container-create__form {
-  @apply flex flex-col m-3
+  @apply flex flex-col my-2 px-3 w-full
+}
+
+.container-create__form.row {
+  @apply flex flex-row justify-between items-center
 }
 
 
@@ -197,15 +205,26 @@ p {
 
 
 .form {
-  @apply  h-fit
+  @apply beer-card h-fit
 }
 
 .form__input {
   @apply input bg-primary text-background border-stone-500  rounded-full focus:input-accent
 }
 
+.form__input-tag {
+  @apply !bg-accent !text-primary !rounded-full !p-1
+}
+
+/*  tag class in input field */
+.css-1p3m7a8-multiValue {
+  @apply form__input-tag
+
+}
+
+
 .form__input-textarea {
-  @apply textarea textarea-accent text-black
+  @apply textarea textarea-md border-stone-500 focus:border-accent   bg-primary text-background
 }
 
 .form__input-file {
@@ -250,15 +269,15 @@ p {
 }
 
 .ReactTags__tag {
-  @apply p-2 bg-lime-300 rounded-full text-primary
+  @apply bg-accent text-primary rounded-full p-2
 }
 
 .ReactTags__tagInput {
-  @apply mt-4
+  @apply mt-4 
 }
 
 .ReactTags__tagInputField {
-  @apply min-w-fit w-72 input text-primary
+  @apply form__input w-full md:w-1/2
 }
 
 .settings-account__info {
@@ -314,6 +333,7 @@ p {
   padding: 20px;
   gap: 1rem;
 }
+
 
 
 .tag-new {
