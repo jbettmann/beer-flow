@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Tag, WithContext as Tags } from "react-tag-input";
 import { FormValues } from "../CreateBeerForm/types";
 
@@ -57,35 +57,26 @@ const TagInput = ({
     setValues({ ...values, [name]: [...(values[name] as Tag[]), newTags] });
   };
 
-  // Handle tag edits
-  const handleUpdate = (i: number, newTag: Tag) => {
-    if (valueInput === "hops") {
-      setValues({
-        ...values,
-        hops: values.hops.map((tag, index) => (index === i ? newTag : tag)),
-      });
-    }
-    if (valueInput === "malt") {
-      setValues({
-        ...values,
-        malt: values.malt.map((tag, index) => (index === i ? newTag : tag)),
-      });
-    }
-  };
-
   const capitalizeFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
 
+  useEffect(() => {
+    console.log({ values });
+  }, [values]);
+
   return (
-    <div className="container-create__form">
-      <label htmlFor={valueInput}>{capitalizeFirstLetter(valueInput)}:</label>
+    <>
+      <label htmlFor={valueInput} className="beer-card__label-text pl-2">
+        {capitalizeFirstLetter(valueInput)}
+      </label>
       <Tags
         id={valueInput}
         name={valueInput}
         placeholder={`Enter ${valueInput} and press enter`}
         tags={tags}
         delimiters={delimiters}
+        autofocus={false}
         // readOnly={admin? false : true}
         handleAddition={handleAddition(valueInput)}
         handleDelete={handleDelete}
@@ -95,9 +86,8 @@ const TagInput = ({
         allowDragDrop={false}
         autocomplete={true}
         suggestions={suggestions ? suggestions : ([] as any)}
-        // onTagUpdate={handleUpdate}
       />
-    </div>
+    </>
   );
 };
 
