@@ -2,7 +2,7 @@
 import { Beer } from "@/app/types/beer";
 import { useBreweryContext } from "@/context/brewery-beer";
 import { convertDate, isNew } from "@/lib/utils";
-import { ExternalLink, Hop, Sparkles, Wheat } from "lucide-react";
+import { ExternalLink, Hop, LayoutGrid, Sparkles, Wheat } from "lucide-react";
 import { useEffect, useState } from "react";
 import ToggleButton from "./Buttons/ToggleButton";
 import ImageDisplay from "./ImageDisplay/ImageDisplay";
@@ -40,7 +40,7 @@ const BeerCard = ({ beerId }: Props) => {
       <div className=" card w-full lg:mx-auto beer-card shadow-xl ">
         <div className="flex w-full justify-start">
           <button
-            className={`link link-hover text-primary`}
+            className={`link link-hover `}
             onClick={() => setIsEditing(!isEditing)}
           >
             {isEditing ? "Cancel" : "Edit"}
@@ -88,7 +88,10 @@ const BeerCard = ({ beerId }: Props) => {
                     <p className="beer-card__item">
                       {beer?.category?.map((c) => c.name).join(", ")}
                     </p>
-                    <p className="beer-card__title">Category</p>
+                    <p className="beer-card__title">
+                      <LayoutGrid size={18} strokeWidth={1} />
+                      <span className="ml-1">Category</span>
+                    </p>
                   </div>
                 </div>
               </div>
