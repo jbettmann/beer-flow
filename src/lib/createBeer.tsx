@@ -4,7 +4,7 @@ import { Brewery, NewBrewery } from "@/app/types/brewery";
 import { getServerSession } from "next-auth/next";
 
 type pageProps = {
-  newBeer: NewBeer;
+  newBeer: NewBeer | any;
   breweryId: string;
   accessToken: string;
 };
