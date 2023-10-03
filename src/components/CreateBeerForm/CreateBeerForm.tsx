@@ -26,6 +26,24 @@ type pageProps = {
 
 const CreateBeerForm = ({}: pageProps) => {
   const { data: session, status, update } = useSession();
+
+  const { selectedBeers, selectedBrewery } = useBreweryContext();
+
+  const { mutate } = useSWR(
+    [
+      `https://beer-bible-api.vercel.app/breweries/${selectedBrewery?._id}/beers`,
+      session?.user.accessToken,
+    ],
+    getBreweryBeers
+  );
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<ErrorValues>({});
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [previewImage, setPreviewImage] = useState(null);
+
+  const [isClearing, setIsClearing] = useState<boolean>(false); // Track if form is being cleared
+
   const [values, setValues] = useState<FormValues>({
     name: "",
     abv: "",
@@ -42,20 +60,6 @@ const CreateBeerForm = ({}: pageProps) => {
     archived: false,
   });
 
-  const { selectedBeers, selectedBrewery } = useBreweryContext();
-
-  const { mutate } = useSWR(
-    [
-      `https://beer-bible-api.vercel.app/breweries/${selectedBrewery?._id}/beers`,
-      session?.user.accessToken,
-    ],
-    getBreweryBeers
-  );
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<ErrorValues>({});
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const [previewImage, setPreviewImage] = useState(null);
   // Define a new state to track "touched" status for each field
   const [touched, setTouched] = useState<{ [K in keyof FormValues]: boolean }>({
     name: false,
@@ -92,6 +96,7 @@ const CreateBeerForm = ({}: pageProps) => {
 
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    console.log("Summit Running");
     event.preventDefault();
     isSubmitting.current = true;
     // Mark all fields as touched
@@ -159,6 +164,7 @@ const CreateBeerForm = ({}: pageProps) => {
   };
 
   const handleClear = () => {
+    setIsClearing(true); // Set to true at the start of clearing
     setValues({
       name: "",
       abv: "",
@@ -190,7 +196,10 @@ const CreateBeerForm = ({}: pageProps) => {
       releasedOn: false,
       archived: false,
     });
+
     sessionStorage.removeItem("beerForm"); // Remove the saved form
+
+    setIsClearing(false); // Set to false at the end of clearing
   };
 
   // Handle blur events for the inputs
@@ -198,20 +207,11 @@ const CreateBeerForm = ({}: pageProps) => {
     setTouched((prevTouched) => ({ ...prevTouched, [field]: true }));
   };
 
-  // Load persisted state on initial render
-  useEffect(() => {
-    const persistedState = sessionStorage.getItem("beerForm");
-    if (persistedState) {
-      setValues(JSON.parse(persistedState));
-    }
-    if (fieldRefs.name.current) {
-      fieldRefs.name.current.focus();
-    }
-  }, []);
-
   // Validate fields and persist state on every render
   useEffect(() => {
-    setErrors(validateFields(values));
+    if (!isClearing) {
+      setErrors(validateFields(values));
+    }
     sessionStorage.setItem("beerForm", JSON.stringify(values));
     // Clear the error message when the form fields change
     setSubmitError(null);
@@ -222,51 +222,27 @@ const CreateBeerForm = ({}: pageProps) => {
       onSubmit={handleSubmit}
       className=" p-4 form flex flex-col justify-between mx-auto rounded-lg shadow-2xl"
     >
-      <button onClick={handleClear}>Clear</button>
-      <div className="flex flex-col md:flex-row-reverse justify-around ">
+      <button
+        type="button"
+        className="mr-auto"
+        onClick={(e) => {
+          e.stopPropagation();
+          handleClear();
+        }}
+      >
+        Clear
+      </button>
+      <div className="flex flex-col md:flex-row-reverse justify-between p-2 md:p-4 ">
         {/*  Beer Image */}
-        <div className="flex flex-col  items-center justify-end text-center md:flex-auto p-2">
-          {/* Preview of new image */}
-          {previewImage ? (
-            <>
-              <div className="flex flex-col items-center justify-center p-3 relative">
-                <Image
-                  className="bg-transparent border border-stone-500 rounded-xl w-32 h-36 object-cover"
-                  alt="New Beer Image preview"
-                  src={previewImage as any}
-                  width={50}
-                  height={50}
-                />
-                <div className="absolute bottom-0 right-0 p-4 z-10">
-                  <TrashCanIcon
-                    onClick={() => {
-                      URL.revokeObjectURL(previewImage);
-                      setPreviewImage(null);
-                      setValues({
-                        ...values,
-                        image: null,
-                      });
-                    }}
-                  />
-                </div>
-              </div>
-            </>
-          ) : (
+        <div className="flex flex-col items-center justify-between xl:items-end w-full md:w-[45%] p-2 pt-4 md:pt-2">
+          <div className="flex flex-col items-center md:items-start w-full h-full max-h-[550px]">
             <label
               htmlFor="image"
-              className="border border-stone-500 rounded-xl w-4/5 h-52 md:h-3/4 flex justify-center items-center"
-            >
-              <ImagePlus size={30} strokeWidth={1} />
-            </label>
-          )}
-          {/*  Image input field */}
-          <div className="container-create__form">
-            <label
-              htmlFor="image"
-              className="hover:underline hover:cursor-pointer"
+              className="beer-card__label-text hover:underline hover:cursor-pointer"
             >
               Photo
             </label>
+            {/*  Image input field */}
             <input
               type="file"
               id="image"
@@ -294,16 +270,85 @@ const CreateBeerForm = ({}: pageProps) => {
               }}
               onBlur={handleBlur("image")}
             />
+            {/* Preview of new image */}
+            {previewImage ? (
+              <>
+                <div className="flex flex-col items-center justify-center p-3 relative">
+                  <Image
+                    className="bg-transparent border border-stone-400 rounded-xl w-48 h-60 md:w-full  object-cover"
+                    alt="New Beer Image preview"
+                    src={previewImage as any}
+                    width={50}
+                    height={50}
+                  />
+                  <div className="absolute bottom-0 right-0 p-4 z-10">
+                    <TrashCanIcon
+                      onClick={() => {
+                        URL.revokeObjectURL(previewImage);
+                        setPreviewImage(null);
+                        setValues({
+                          ...values,
+                          image: null,
+                        });
+                      }}
+                    />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <label
+                htmlFor="image"
+                className="border border-stone-400 rounded-xl w-48 h-60 md:h-full md:w-full flex justify-center items-center"
+              >
+                <ImagePlus size={30} strokeWidth={1} />
+              </label>
+            )}
 
             {touched.image && errors.image && (
               <ErrorField message={errors.image} />
             )}
           </div>
+          <div className="flex justify-between items-center w-full mt-4">
+            {/* Release Date */}
+            <div className="flex flex-col items-center md:items-start ">
+              <label className="beer-card__label-text " htmlFor="releasedOn">
+                Release Date
+              </label>
+              <input
+                id="releasedOn"
+                name="releasedOn"
+                type="date"
+                className="bg-primary text-accent p-2 rounded-full border border-stone-400 "
+                placeholder="Beer release date"
+                value={values.releasedOn as string}
+                onChange={(e) =>
+                  setValues({ ...values, releasedOn: e.target.value })
+                }
+              />
+            </div>
+            {/* Archived */}
+            <div className="flex flex-col items-center  ">
+              <label className="beer-card__label-text" htmlFor="archived">
+                Archive
+              </label>
+              <input
+                id="archived"
+                name="archived"
+                type="checkbox"
+                className="checkbox checkbox-accent"
+                placeholder="Beer release date"
+                checked={values.archived}
+                onChange={(e) =>
+                  setValues({ ...values, archived: e.target.checked })
+                }
+              />
+            </div>
+          </div>
         </div>
         <div className="flex flex-col items-start w- md:w-1/2">
           {/* Name */}
           <div className="container-create__form">
-            <label className="label-text p-2 text-background" htmlFor="name">
+            <label className="beer-card__label-text" htmlFor="name">
               Name
             </label>
             <input
@@ -323,7 +368,7 @@ const CreateBeerForm = ({}: pageProps) => {
 
           {/* Style */}
           <div className="container-create__form">
-            <label className="label-text p-2 text-background" htmlFor="style">
+            <label className="beer-card__label-text" htmlFor="style">
               Style
             </label>
             <input
@@ -344,7 +389,7 @@ const CreateBeerForm = ({}: pageProps) => {
           {/* ABV */}
 
           <div className="container-create__form">
-            <label className="label-text p-2 text-background" htmlFor="abv">
+            <label className="beer-card__label-text" htmlFor="abv">
               ABV %
             </label>
             <input
@@ -367,7 +412,7 @@ const CreateBeerForm = ({}: pageProps) => {
 
           <div className="container-create__form">
             {/* IBUs   */}
-            <label className="label-text p-2 text-background" htmlFor="ibu">
+            <label className="beer-card__label-text" htmlFor="ibu">
               IBUs
             </label>
             <input
@@ -407,7 +452,7 @@ const CreateBeerForm = ({}: pageProps) => {
 
       {/* Description */}
       <div className="container-create__form">
-        <label className="label-text p-2 text-background" htmlFor="description">
+        <label className="beer-card__label-text " htmlFor="description">
           Description
         </label>
         <textarea
@@ -424,8 +469,8 @@ const CreateBeerForm = ({}: pageProps) => {
       </div>
 
       {/* Name Details */}
-      <div className="container-create__form">
-        <label className="label-text p-2 text-background" htmlFor="nameSake">
+      <div className="container-create__form ">
+        <label className="beer-card__label-text" htmlFor="nameSake">
           Name Details
         </label>
         <textarea
@@ -438,77 +483,47 @@ const CreateBeerForm = ({}: pageProps) => {
           maxLength={2500}
         />
       </div>
-
-      {/* Hops */}
-      <TagInput
-        valueInput={"hops"}
-        values={values}
-        setValues={setValues}
-        tags={values.hops}
-        suggestions={hopSuggestions}
-      />
-
-      {/* Malt */}
-      <TagInput
-        valueInput={"malt"}
-        values={values}
-        setValues={setValues}
-        tags={values.malt}
-        suggestions={maltSuggestions}
-      />
-
-      {/* Release Date */}
       <div className="container-create__form">
-        <label className="label-text p-2 text-background" htmlFor="releasedOn">
-          Release Date
-        </label>
-        <input
-          id="releasedOn"
-          name="releasedOn"
-          type="date"
-          className="form__input"
-          placeholder="Beer release date"
-          value={values.releasedOn as string}
-          onChange={(e) => setValues({ ...values, releasedOn: e.target.value })}
+        {/* Hops */}
+        <TagInput
+          valueInput={"hops"}
+          values={values}
+          setValues={setValues}
+          tags={values.hops}
+          suggestions={hopSuggestions}
+        />
+      </div>
+      <div className="container-create__form">
+        {/* Malt */}
+        <TagInput
+          valueInput={"malt"}
+          values={values}
+          setValues={setValues}
+          tags={values.malt}
+          suggestions={maltSuggestions}
         />
       </div>
 
-      {/* Archived */}
+      {/* Additional Notes */}
       <div className="container-create__form">
-        <label className="label-text p-2 text-background" htmlFor="archived">
-          Archive
-        </label>
-        <input
-          id="archived"
-          name="archived"
-          type="checkbox"
-          className="checkbox-accent"
-          placeholder="Beer release date"
-          checked={values.archived}
-          onChange={(e) => setValues({ ...values, archived: e.target.checked })}
-        />
-      </div>
-
-      {/* Other Notes */}
-      <div className="container-create__form">
-        <label className="label-text p-2 text-background" htmlFor="notes">
-          Other notess
+        <label className="beer-card__label-text" htmlFor="notes">
+          Additional notes
         </label>
         <textarea
           id="notes"
           name="notes"
           className="form__input-textarea"
-          placeholder="Additional info... barrels aged in, collaboration, etc."
+          placeholder="..."
           value={values.notes}
           onChange={(e) => setValues({ ...values, notes: e.target.value })}
           maxLength={2500}
         />
       </div>
 
-      <div>
+      <div className="flex py-5 pr-3 justify-end">
         {submitError && <div>Error: {submitError}</div>}
         <button
-          className="create-btn"
+          className="create-btn inverse"
           type="submit"
           disabled={isSubmitting.current}
         >
