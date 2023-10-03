@@ -67,7 +67,7 @@ const CategorySelect = ({
 
   return (
     <>
-      <label className="label-text p-2 text-background">Category</label>
+      <label className="beer-card__label-text">Category</label>
 
       <CreatableSelect
         styles={{
@@ -77,7 +77,7 @@ const CategorySelect = ({
             padding: "0.25rem",
             color: "#f6f1e",
             borderRadius: "9999px",
-            borderColor: "#78716c",
+            borderColor: "#a8a29e",
           }),
           menu: (base) => ({
             ...base,
