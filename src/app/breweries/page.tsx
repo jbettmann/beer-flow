@@ -1,14 +1,9 @@
 // import { PageProps } from "../../../.next/types/app/layout";
-import getAllBreweries from "@/lib/getAllBreweries";
-import { getServerSession } from "next-auth";
-import Link from "next/link";
-import { authOptions } from "../api/auth/[...nextauth]/route";
-import { Brewery } from "../types/brewery";
-import getBreweries from "@/lib/getBreweries";
-import { redirect } from "next/dist/server/api-utils";
-import BackArrow from "@/components/Buttons/BackArrow";
 import SetBreweryIdStorage from "@/components/Buttons/SetBreweryIdStorage";
+import getBreweries from "@/lib/getBreweries";
 import { Plus } from "lucide-react";
+import Link from "next/link";
+import { Brewery } from "../types/brewery";
 
 const BreweriesPage = async () => {
   const breweryData: Promise<Brewery[]> = getBreweries();
