@@ -82,6 +82,9 @@ p {
   @apply ml-2 transition-all link-hover hover:text-accent
 }
 
+.beer-card__label-text {
+  @apply label-text p-2 text-background font-semibold
+}
 
 .beer-card__title {
   @apply inline-flex justify-center items-center text-sm lg:text-base font-semibold text-accent ml-1 mt-1
@@ -209,11 +212,11 @@ p {
 }
 
 .form__input {
-  @apply input bg-primary text-background border-stone-500  rounded-full focus:input-accent
+  @apply input bg-primary text-background border-stone-400  rounded-full focus:input-accent
 }
 
 .form__input-tag {
-  @apply !bg-accent !text-primary !rounded-full !p-1
+  @apply !bg-accent !text-primary !rounded-full !p-1 !pl-2 !mx-2  
 }
 
 /*  tag class in input field */
@@ -224,7 +227,7 @@ p {
 
 
 .form__input-textarea {
-  @apply textarea textarea-md border-stone-500 focus:border-accent   bg-primary text-background
+  @apply textarea textarea-md border-stone-400 focus:border-accent   bg-primary text-background
 }
 
 .form__input-file {
@@ -234,6 +237,13 @@ p {
 .form__input-file-sx {
   @apply file-input file-input-bordered file-input-accent file-input-xs w-full max-w-xs
 }
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+
+  filter: invert(63%) sepia(74%) saturate(437%) hue-rotate(124deg) brightness(90%) contrast(95%);
+}
+
+
 
 .logo {
   @apply w-12 h-12 rounded-2xl bg-slate-50 p-[.5] object-contain
@@ -263,21 +273,42 @@ p {
   @apply bg-primary bg-opacity-10 shadow-xl
 }
 
+.ReactTags__remove {
+  @apply pl-1 text-lg
+}
 
 .ReactTags__selected {
-  @apply m-4
+  @apply relative flex flex-wrap 
 }
 
 .ReactTags__tag {
-  @apply bg-accent text-primary rounded-full p-2
+  @apply bg-accent text-primary rounded-full p-2 m-2
 }
 
 .ReactTags__tagInput {
-  @apply mt-4 
+  @apply mt-2 w-full
 }
 
 .ReactTags__tagInputField {
-  @apply form__input w-full md:w-1/2
+  @apply form__input w-full 
+}
+
+.ReactTags__suggestions {
+  @apply bg-background text-primary rounded-xl shadow-md shadow-[#807768] absolute z-10 w-full max-h-64 overflow-y-auto 
+}
+
+
+.ReactTags__suggestions li {
+  @apply list-none text-primary p-2 py-3
+
+}
+.ReactTags__suggestions li mark {
+  @apply font-semibold bg-accent;
+}
+
+.ReactTags__suggestions ul li.ReactTags__activeSuggestion {
+  @apply first:rounded-t-xl last:rounded-b-xl bg-blue-200 cursor-pointer
+
 }
 
 .settings-account__info {
