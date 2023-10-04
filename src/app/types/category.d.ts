@@ -1,7 +1,7 @@
 export type Category = {
   _id: string;
   name: string;
-  __v: string | number;
+  __v?: string | number;
   createdAt?: string;
   updatedAt?: string;
 };

@@ -65,7 +65,7 @@ const UpdateCategory = ({ breweryId, categoryId }: pageProps) => {
     );
     if (selectedCat) {
       setValues({
-        _id: selectedCat._id,
+        _id: selectedCat._id || "",
         name: selectedCat?.name,
       });
     }
