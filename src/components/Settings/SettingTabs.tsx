@@ -8,8 +8,6 @@ type Props = {};
 
 const SettingTabs = (props: Props) => {
   const pathname = usePathname();
-  const { data: session } = useSession();
-  console.log(session?.user.breweries);
 
   const isActive = (path: string) => {
     if (
