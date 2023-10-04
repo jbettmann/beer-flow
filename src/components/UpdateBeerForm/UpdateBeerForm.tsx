@@ -24,6 +24,11 @@ import { deleteImage } from "@/lib/supabase/deleteImage";
 
 import getSingleBrewery from "@/lib/getSingleBrewery";
 import { useToast } from "@/context/toast";
+import AlertDialog from "../Alerts/AlertDialog";
+import { set } from "mongoose";
+import TrashCanIcon from "../Buttons/TrashCanIcon";
+import { Save } from "lucide-react";
+import SaveButton from "../Buttons/SaveButton";
 
 // import createBeer from "@/lib/createBeer";
 
@@ -44,6 +49,7 @@ const UpdateBeerForm = ({
 }: pageProps) => {
   const { data: session } = useSession();
   const router = useRouter();
+  const { addToast } = useToast();
   const { mutate: beerMutate } = useSWR(
     [
       `https://beer-bible-api.vercel.app/breweries/${brewery?._id}/beers`,
@@ -58,7 +64,6 @@ const UpdateBeerForm = ({
     ],
     getSingleBrewery
   );
-  const { addToast } = useToast();
 
   const [values, setValues] = useState<FormValues>({
     _id: beer?._id || "",
@@ -101,8 +106,8 @@ const UpdateBeerForm = ({
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<ErrorValues>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [previewImage, setPreviewImage] = useState(null);
-
+  const [previewImage, setPreviewImage] = useState<>(null);
+  const [deleteAlert, setDeleteAlert] = useState<boolean>(false); // delete alert confirmation
   const { selectedBeers } = useBreweryContext();
 
   const isSubmitting = useRef(false);
@@ -122,24 +127,6 @@ const UpdateBeerForm = ({
     setIsEditing(false);
     setBeer(beer);
   };
-
-  useEffect(() => {
-    let date = new Date(beer?.releasedOn as Date);
-    let formattedDate = `${date.getFullYear()}-${(
-      "0" +
-      (date.getMonth() + 1)
-    ).slice(-2)}-${("0" + date.getDate()).slice(-2)}`;
-    setValues((prevValues: FormValues) => ({
-      ...prevValues,
-
-      releasedOn: formattedDate,
-    }));
-  }, []);
-
-  // Validate fields and persist state on every render
-  useEffect(() => {
-    setErrors(validateFields(values));
-  }, [values]);
 
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -182,7 +169,7 @@ const UpdateBeerForm = ({
     try {
       let updatedBeer: FormValues = values;
 
-      if (beer?.image !== values.image) {
+      if (beer?.image !== values.image && values.image) {
         const newImage = await updateImage(beer.image, values.image as File);
         updatedBeer = { ...values, image: newImage as any };
       }
@@ -203,6 +190,8 @@ const UpdateBeerForm = ({
         // forced revalidation of the beers
         beerMutate(updatedBeers);
         breweryMutate();
+
+        addToast(`${updateBeerRes.name} has been updated.`, "success");
         // set beer to updated beer and edit to false
         updateBeerState(updateBeerRes);
       }
@@ -226,11 +215,9 @@ const UpdateBeerForm = ({
 
   //  Delete Beer
   const handleDelete = async () => {
-    const result = confirm(
-      "Are you sure you want to delete this beer? This action cannot be undone."
-    );
-    try {
-      if (result) {
+    if (deleteAlert) {
+      try {
+        setDeleteAlert(false);
         isSubmitting.current = true;
 
         const deletedBeer = await deleteBeers({
@@ -241,277 +228,357 @@ const UpdateBeerForm = ({
         if (deletedBeer) {
           await deleteImage(beer?.image);
           // forced revalidation of the beers
+          addToast(`${beer?.name} has been deleted.`, "success");
           beerMutate();
           router.back();
         }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        isSubmitting.current = false;
       }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      isSubmitting.current = false;
-    }
+    } else return;
   };
 
   useEffect(() => {
-    if (isEditing) {
-      if (fieldRefs.name.current) {
-        fieldRefs.name.current.focus();
-      }
-    }
-  }, [isEditing]);
+    let date = new Date(beer?.releasedOn as Date);
+    let formattedDate = `${date.getFullYear()}-${(
+      "0" +
+      (date.getMonth() + 1)
+    ).slice(-2)}-${("0" + date.getDate()).slice(-2)}`;
+    setValues((prevValues: FormValues) => ({
+      ...prevValues,
+
+      releasedOn: formattedDate,
+    }));
+  }, []);
+
+  // Validate fields and persist state on every render
+  useEffect(() => {
+    setErrors(validateFields(values));
+  }, [values]);
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className={` p-4 form flex flex-col justify-between mx-auto rounded-lg bg-third-color`}
-    >
-      <div className="flex justify-around">
-        {/* Name */}
-        <div className="container-create__form">
-          <label htmlFor="name">Name</label>
-          <input
-            id="name"
-            name="name"
-            ref={fieldRefs.name}
-            className="form__input"
-            placeholder="Beer name"
-            value={values.name}
-            onChange={(e) => setValues({ ...values, name: e.target.value })}
-            onBlur={handleBlur("name")}
-          />
-          {touched.name && errors.name && <ErrorField message={errors.name} />}
-        </div>
-        {/*  Beer Image */}
-        <div className="flex flex-col  items-center">
-          {/*  Existing Beer Image */}
-          {beer?.image && !previewImage && (
-            <div>
-              <ImageDisplay className="w-16" item={beer} />
+    <>
+      <AlertDialog
+        title="Delete Beer"
+        message={
+          <>
+            Are you sure you want to delete this beer?
+            <br />
+            This action cannot be undone.
+          </>
+        }
+        isOpen={deleteAlert}
+        onClose={() => setDeleteAlert(false)}
+        onConfirm={handleDelete}
+      />
+      <form
+        onSubmit={handleSubmit}
+        className={` form flex flex-col justify-between mx-auto rounded-lg `}
+      >
+        <div className="flex flex-col md:flex-row-reverse justify-between w-full ">
+          {/*  Beer Image */}
+          <div className="flex flex-col items-center justify-between xl:items-end w-full md:w-[45%] p-2 pt-4 md:pt-2">
+            <div className="flex flex-col items-center md:items-start w-full h-full max-h-[550px]">
+              <label
+                htmlFor="image"
+                className="beer-card__label-text hover:underline hover:cursor-pointer"
+              >
+                Photo
+              </label>
+
+              <input
+                id="image"
+                name="image"
+                ref={fieldRefs.image}
+                className="hidden"
+                type="file"
+                onChange={(e) => {
+                  const file = e.target.files ? e.target.files[0] : null;
+                  if (file && file.size > 2 * 1024 * 1024) {
+                    // Check if file size is greater than 2MB
+                    addToast(
+                      "File is too large. Please select a file less than 2MB.",
+                      "error"
+                    );
+                    e.target.value = ""; // Clear the selected file
+                  } else {
+                    setValues({
+                      ...values,
+                      image: file,
+                    });
+                    // Generate a URL for the new image and set it as the preview
+                    const url = URL.createObjectURL(file as Blob);
+                    setPreviewImage(url as any);
+                  }
+                }}
+                onBlur={handleBlur("image")}
+              />
+
+              {/*  Beer Image */}
+              <div className="flex flex-col items-center justify-center p-3 relative">
+                {/*  Existing Beer Image */}
+                {beer?.image && !previewImage && (
+                  <ImageDisplay
+                    className="bg-transparent border border-stone-400 rounded-xl w-48 h-60 md:w-full  object-cover"
+                    item={beer}
+                  />
+                )}
+                {/* Preview of new image */}
+                {previewImage && (
+                  <>
+                    <Image
+                      className="beer-card__image"
+                      alt="New Beer Image preview"
+                      src={previewImage}
+                      width={50}
+                      height={50}
+                    />
+                  </>
+                )}
+                <div className="absolute bottom-0 right-0 p-4 z-10">
+                  <TrashCanIcon
+                    onClick={() => {
+                      URL.revokeObjectURL(previewImage as any);
+                      setPreviewImage(null);
+                      setValues({
+                        ...values,
+                        image: null,
+                      });
+                    }}
+                  />
+                </div>
+              </div>
             </div>
-          )}
-          {/* Preview of new image */}
-          {previewImage && (
-            <div>
-              <label>New Image:</label>
-              <Image
-                className="beer-card__image"
-                alt="New Beer Image preview"
-                src={previewImage}
-                width={50}
-                height={50}
+            {/* Release Date */}
+            <div className="flex flex-col items-center md:items-start w-full mt-4">
+              <label className="beer-card__label-text " htmlFor="releasedOn">
+                Release Date
+              </label>
+              <input
+                id="releasedOn"
+                name="releasedOn"
+                type="date"
+                className="bg-primary text-accent p-2 rounded-full border border-stone-400 "
+                placeholder="Beer release date"
+                value={values.releasedOn as string}
+                onChange={(e) =>
+                  setValues({ ...values, releasedOn: e.target.value })
+                }
               />
             </div>
-          )}
-          {/*  Image input field */}
-          <div className="container-create__form">
-            <label htmlFor="image">Image</label>
-            <input
-              id="image"
-              name="image"
-              ref={fieldRefs.image}
-              className="form__input-file-sx text-black"
-              type="file"
-              onChange={(e) => {
-                const file = e.target.files ? e.target.files[0] : null;
-                if (file && file.size > 2 * 1024 * 1024) {
-                  // Check if file size is greater than 2MB
-                  addToast(
-                    "File is too large. Please select a file less than 2MB.",
-                    "error"
-                  );
-                  e.target.value = ""; // Clear the selected file
-                } else {
-                  setValues({
-                    ...values,
-                    image: file,
-                  });
-                  // Generate a URL for the new image and set it as the preview
-                  const url = URL.createObjectURL(file as Blob);
-                  setPreviewImage(url as any);
+          </div>
+          <div className="flex flex-col items-start justify-between w- md:w-1/2">
+            {/* Name */}
+            <div className="container-create__form">
+              <label className="beer-card__label-text" htmlFor="name">
+                Name
+              </label>
+              <input
+                id="name"
+                name="name"
+                ref={fieldRefs.name}
+                className="form__input"
+                placeholder="Beer name"
+                value={values.name}
+                onChange={(e) => setValues({ ...values, name: e.target.value })}
+                onBlur={handleBlur("name")}
+              />
+              {touched.name && errors.name && (
+                <ErrorField message={errors.name} />
+              )}
+            </div>
+            {/* Style */}
+            <div className="container-create__form">
+              <label className="beer-card__label-text" htmlFor="style">
+                Style
+              </label>
+              <input
+                id="style"
+                name="style"
+                ref={fieldRefs.style}
+                className="form__input"
+                placeholder="West Coast IPA, Pilsner, Swchwarzbier..."
+                value={values.style}
+                onChange={(e) =>
+                  setValues({ ...values, style: e.target.value })
                 }
-              }}
-              disabled={values.name && values.category ? false : true}
-              onBlur={handleBlur("image")}
-            />
-            {touched.image && errors.image && (
-              <ErrorField message={errors.image} />
-            )}
+                onBlur={handleBlur("style")}
+              />
+              {touched.style && errors.style && (
+                <ErrorField message={errors.style} />
+              )}
+            </div>
+
+            {/* ABV */}
+            <div className="container-create__form">
+              <label className="beer-card__label-text" htmlFor="abv">
+                ABV %
+              </label>
+              <input
+                id="abv"
+                name="abv"
+                ref={fieldRefs.abv}
+                type="number"
+                step="0.01"
+                min={0}
+                className="form__input"
+                placeholder="ABV %"
+                value={values.abv}
+                onChange={(e) => {
+                  setValues({ ...values, abv: parseFloat(e.target.value) });
+                }}
+                onBlur={handleBlur("abv")}
+              />
+              {touched.abv && errors.abv && <ErrorField message={errors.abv} />}
+            </div>
+            {/* IBUs   */}
+            <div className="container-create__form">
+              <label className="beer-card__label-text" htmlFor="ibu">
+                IBUs
+              </label>
+              <input
+                id="ibu"
+                name="ibu"
+                type="number"
+                step="1"
+                min={0}
+                className="form__input"
+                placeholder="33, 70, 90..."
+                value={values.ibu}
+                onChange={(e) => {
+                  setValues({ ...values, ibu: parseFloat(e.target.value) });
+                }}
+                onBlur={handleBlur("ibu")}
+              />
+            </div>
           </div>
         </div>
-      </div>
-      {/* Style */}
-      <div className="container-create__form">
-        <label htmlFor="style">Style</label>
-        <input
-          id="style"
-          name="style"
-          ref={fieldRefs.style}
-          className="form__input"
-          placeholder="West Coast IPA, Pilsner, Swchwarzbier..."
-          value={values.style}
-          onChange={(e) => setValues({ ...values, style: e.target.value })}
-          onBlur={handleBlur("style")}
-        />
-        {touched.style && errors.style && <ErrorField message={errors.style} />}
-      </div>
-      {/* ABV */}
-      <div className="container-create__form">
-        <label htmlFor="abv">ABV %</label>
-        <input
-          id="abv"
-          name="abv"
-          ref={fieldRefs.abv}
-          type="number"
-          step="0.01"
-          min={0}
-          className="form__input"
-          placeholder="ABV %"
-          value={values.abv}
-          onChange={(e) => {
-            setValues({ ...values, abv: parseFloat(e.target.value) });
-          }}
-          onBlur={handleBlur("abv")}
-        />
-        {touched.abv && errors.abv && <ErrorField message={errors.abv} />}
 
-        {/* IBUs   */}
-        <label htmlFor="ibu">IBUs</label>
-        <input
-          id="ibu"
-          name="ibu"
-          type="number"
-          step="1"
-          min={0}
-          className="form__input"
-          placeholder="33, 70, 90..."
-          value={values.ibu}
-          onChange={(e) => {
-            setValues({ ...values, ibu: parseFloat(e.target.value) });
-          }}
-          onBlur={handleBlur("ibu")}
-        />
-      </div>
-      {/* Categories  */}
-      <div ref={fieldRefs.category}>
-        <CategorySelect
-          setValues={setValues}
-          selectedValues={values.category as any}
-          categories={
-            brewery?.categories?.map((cat) => ({
-              label: cat.name,
-              value: cat.name,
-            })) as Option[]
-          }
-          handleBlur={handleBlur}
-        />
-        {touched.category && errors.category && (
-          <ErrorField message={errors.category} />
-        )}
-      </div>
-      {/* Description */}
-      <div className="container-create__form">
-        <label htmlFor="description">Description</label>
-        <textarea
-          id="description"
-          name="description"
-          className="form__input-textarea"
-          placeholder="Description"
-          value={values.description}
-          onChange={(e) =>
-            setValues({ ...values, description: e.target.value })
-          }
-          maxLength={2500}
-        />
-      </div>
-      {/* Name Details */}
-      <div className="container-create__form">
-        <label htmlFor="nameSake">Name Details</label>
-        <textarea
-          id="nameSake"
-          name="nameSake"
-          className="form__input-textarea"
-          placeholder="Let staff know about any fun deets..."
-          value={values.nameSake}
-          onChange={(e) => setValues({ ...values, nameSake: e.target.value })}
-          maxLength={2500}
-        />
-      </div>
-      {/* Hops */}
-      <TagInput
-        valueInput={"hops"}
-        values={values}
-        setValues={setValues}
-        tags={values.hops}
-        suggestions={hopSuggestions}
-      />
-      {/* Malt */}
-      <TagInput
-        valueInput={"malt"}
-        values={values}
-        setValues={setValues}
-        tags={values.malt}
-        suggestions={maltSuggestions}
-      />
-      {/* Release Date */}
-      <div className="container-create__form">
-        <label htmlFor="releasedOn">Release Date</label>
-        <input
-          id="releasedOn"
-          name="releasedOn"
-          type="date"
-          className="form__input"
-          placeholder="Beer release date"
-          value={values.releasedOn as string}
-          onChange={(e) => setValues({ ...values, releasedOn: e.target.value })}
-        />
-      </div>
-      {/* Archived */}
-      <div className="container-create__form">
-        <label htmlFor="archived">Archive</label>
-        <input
-          id="archived"
-          name="archived"
-          type="checkbox"
-          className="checkbox-accent"
-          placeholder="Beer release date"
-          checked={values.archived}
-          onChange={(e) => setValues({ ...values, archived: e.target.checked })}
-        />
-      </div>
-      {/* Other Notes */}
-      <div className="container-create__form">
-        <label htmlFor="notes">Other notess</label>
-        <textarea
-          id="notes"
-          name="notes"
-          className="form__input-textarea"
-          placeholder="Additional info... barrels aged in, collaboration, etc."
-          value={values.notes}
-          onChange={(e) => setValues({ ...values, notes: e.target.value })}
-          maxLength={2500}
-        />
-      </div>
-
-      <div className="flex justify-between">
-        {submitError && <div>Error: {submitError}</div>}
-        <DeleteBeerButton
-          isSubmitting={isSubmitting}
-          handleDelete={handleDelete}
-        />
-
-        <button
-          className="create-btn"
-          type="submit"
-          disabled={isSubmitting.current}
-        >
-          {isLoading ? (
-            <span className="loading loading-spinner text-accent"></span>
-          ) : (
-            "Save"
+        {/* Categories  */}
+        <div ref={fieldRefs.category} className="container-create__form">
+          <CategorySelect
+            setValues={setValues}
+            selectedValues={values.category as any}
+            categories={
+              brewery?.categories?.map((cat) => ({
+                label: cat.name,
+                value: cat.name,
+              })) as Option[]
+            }
+            handleBlur={handleBlur}
+          />
+          {touched.category && errors.category && (
+            <ErrorField message={errors.category} />
           )}
-        </button>
-      </div>
-    </form>
+        </div>
+        {/* Hops */}
+        <div className="container-create__form">
+          <TagInput
+            valueInput={"hops"}
+            values={values}
+            setValues={setValues}
+            tags={values.hops}
+            suggestions={hopSuggestions}
+          />
+        </div>
+
+        {/* Malt */}
+        <div className="container-create__form">
+          <TagInput
+            valueInput={"malt"}
+            values={values}
+            setValues={setValues}
+            tags={values.malt}
+            suggestions={maltSuggestions}
+          />
+        </div>
+
+        {/* Description */}
+        <div className="container-create__form">
+          <label className="beer-card__label-text" htmlFor="description">
+            Description
+          </label>
+          <textarea
+            id="description"
+            name="description"
+            className="form__input-textarea"
+            placeholder="Description"
+            value={values.description}
+            onChange={(e) =>
+              setValues({ ...values, description: e.target.value })
+            }
+            maxLength={2500}
+          />
+        </div>
+
+        {/* Additional Notes */}
+        <div className="container-create__form">
+          <label htmlFor="notes">Additional notes</label>
+          <textarea
+            id="notes"
+            name="notes"
+            className="form__input-textarea"
+            placeholder="..."
+            value={values.notes}
+            onChange={(e) => setValues({ ...values, notes: e.target.value })}
+            maxLength={2500}
+          />
+        </div>
+
+        {/* Name Details */}
+        <div className="container-create__form">
+          <label className="beer-card__label-text" htmlFor="nameSake">
+            Name Details
+          </label>
+          <textarea
+            id="nameSake"
+            name="nameSake"
+            className="form__input-textarea"
+            placeholder="Let staff know about any fun deets..."
+            value={values.nameSake}
+            onChange={(e) => setValues({ ...values, nameSake: e.target.value })}
+            maxLength={2500}
+          />
+        </div>
+
+        {/* Archived */}
+        <div className="flex flex-col justify-start items-start p-3">
+          <div className="flex flex-col items-center">
+            <label className="beer-card__label-text" htmlFor="archived">
+              Archive
+            </label>
+            <input
+              id="archived"
+              name="archived"
+              type="checkbox"
+              className="checkbox checkbox-accent"
+              placeholder="Beer release date"
+              checked={values.archived}
+              onChange={(e) =>
+                setValues({ ...values, archived: e.target.checked })
+              }
+            />
+          </div>
+        </div>
+
+        <div className="flex py-5 px-3 justify-between items-center">
+          {submitError && <div>Error: {submitError}</div>}
+          <DeleteBeerButton
+            isSubmitting={isSubmitting}
+            handleDelete={() => setDeleteAlert(true)}
+          />
+          <SaveButton
+            title="Save"
+            isLoading={isLoading}
+            disabled={isSubmitting.current}
+            className="inverse"
+            type="submit"
+          />
+        </div>
+      </form>
+    </>
   );
 };
 export default UpdateBeerForm;
