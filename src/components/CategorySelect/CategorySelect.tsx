@@ -1,7 +1,8 @@
-import React, { RefObject, useEffect } from "react";
-
+"use client";
+import React, { RefObject, use, useEffect } from "react";
 import CreatableSelect from "react-select/creatable";
 import { FormValues } from "../CreateBeerForm/types";
+import { useBreweryContext } from "@/context/brewery-beer";
 
 type Props = {
   selectedValues: Option[] | null;
@@ -26,10 +27,19 @@ const CategorySelect = ({
   categories,
   handleBlur,
 }: Props) => {
+  const { selectedBrewery } = useBreweryContext();
   const [options, setOptions] = React.useState<Option[]>(categories);
   const [selectedOptions, setSelectedOptions] = React.useState<Option[] | null>(
     selectedValues
   );
+
+  useEffect(() => {
+    const categoryUpdate = selectedBrewery?.categories?.map((cat) => ({
+      label: cat.name,
+      value: cat.name,
+    }));
+    setOptions(categoryUpdate as Option[]);
+  }, [selectedBrewery]);
 
   // // sets selectedOptions to selectedValues from localSession
   useEffect(() => {
