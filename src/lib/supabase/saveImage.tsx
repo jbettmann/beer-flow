@@ -1,11 +1,13 @@
-import React from "react";
-import { v4 as uuidv4 } from "uuid";
+"use client";
 import { supabase } from "@/lib/supabase";
+import { v4 as uuidv4 } from "uuid";
+
 type Props = {
   file: File | null;
 };
 
 const saveImage = async ({ file }: Props) => {
+
   if (!file) {
     console.error("No file selected");
     alert("No file selected");
