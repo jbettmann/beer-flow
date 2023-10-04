@@ -18,7 +18,9 @@ import Image from "next/image";
 import { ImagePlus } from "lucide-react";
 import { useToast } from "@/context/toast";
 import TrashCanIcon from "../Buttons/TrashCanIcon";
-// import createBeer from "@/lib/createBeer";
+import SaveButton from "../Buttons/SaveButton";
+import DefaultBeerImage from "../../assets/img/beer.png";
+import getSingleBrewery from "@/lib/getSingleBrewery";
 
 type pageProps = {
   // brewery?: Brewery;
@@ -35,6 +37,14 @@ const CreateBeerForm = ({}: pageProps) => {
       session?.user.accessToken,
     ],
     getBreweryBeers
+  );
+
+  const { mutate: mutateBrewery } = useSWR(
+    [
+      `https://beer-bible-api.vercel.app/breweries/${selectedBrewery?._id}`,
+      session?.user.accessToken,
+    ],
+    getSingleBrewery
   );
 
   const [isLoading, setIsLoading] = useState(false);
@@ -96,7 +106,6 @@ const CreateBeerForm = ({}: pageProps) => {
 
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    console.log("Summit Running");
     event.preventDefault();
     isSubmitting.current = true;
     // Mark all fields as touched
@@ -144,9 +153,9 @@ const CreateBeerForm = ({}: pageProps) => {
         if (newBeerRes) {
           // forced revalidation of the beers
           mutate([...(selectedBeers as Beer[]), newBeerRes]);
-
+          mutateBrewery();
           handleClear(); // Clear the form
-
+          addToast(`${newBeerRes.name} successfully created!`, "success");
           onDismiss();
         }
       }
@@ -198,7 +207,7 @@ const CreateBeerForm = ({}: pageProps) => {
     });
 
     sessionStorage.removeItem("beerForm"); // Remove the saved form
-
+    setPreviewImage(null);
     setIsClearing(false); // Set to false at the end of clearing
   };
 
@@ -206,6 +215,14 @@ const CreateBeerForm = ({}: pageProps) => {
   const handleBlur = (field: keyof FormValues) => () => {
     setTouched((prevTouched) => ({ ...prevTouched, [field]: true }));
   };
+
+  // Load persisted state on initial render
+  useEffect(() => {
+    const persistedState = sessionStorage.getItem("beerForm");
+    if (persistedState) {
+      setValues(JSON.parse(persistedState));
+    }
+  }, []);
 
   // Validate fields and persist state on every render
   useEffect(() => {
@@ -273,9 +290,9 @@ const CreateBeerForm = ({}: pageProps) => {
             {/* Preview of new image */}
             {previewImage ? (
               <>
-                <div className="flex flex-col items-center justify-center p-3 relative">
+                <div className="flex flex-col items-center justify-center p-3 w-48 h-60 md:h-full md:w-full  relative">
                   <Image
-                    className="bg-transparent border border-stone-400 rounded-xl w-48 h-60 md:w-full  object-cover"
+                    className="bg-transparent border border-stone-400 rounded-xl  h-60 w-full  object-cover"
                     alt="New Beer Image preview"
                     src={previewImage as any}
                     width={50}
@@ -298,9 +315,18 @@ const CreateBeerForm = ({}: pageProps) => {
             ) : (
               <label
                 htmlFor="image"
-                className="border border-stone-400 rounded-xl w-48 h-60 md:h-full md:w-full flex justify-center items-center"
+                className="border border-stone-400 rounded-xl w-48 h-60 md:h-full md:w-full hover:cursor-pointer relative"
               >
-                <ImagePlus size={30} strokeWidth={1} />
+                <div className="absolute border border-stone-400 flex justify-center items-center top-0 left-0 rounded-xl w-full h-full bg-primary/40">
+                  <ImagePlus size={40} strokeWidth={1} />
+                </div>
+                <Image
+                  src={DefaultBeerImage}
+                  className={`w-full h-full object-cover rounded-xl`}
+                  alt={"Default Beer Image"}
+                  width={50}
+                  height={50}
+                />
               </label>
             )}
 
@@ -308,44 +334,25 @@ const CreateBeerForm = ({}: pageProps) => {
               <ErrorField message={errors.image} />
             )}
           </div>
-          <div className="flex justify-between items-center w-full mt-4">
-            {/* Release Date */}
-            <div className="flex flex-col items-center md:items-start ">
-              <label className="beer-card__label-text " htmlFor="releasedOn">
-                Release Date
-              </label>
-              <input
-                id="releasedOn"
-                name="releasedOn"
-                type="date"
-                className="bg-primary text-accent p-2 rounded-full border border-stone-400 "
-                placeholder="Beer release date"
-                value={values.releasedOn as string}
-                onChange={(e) =>
-                  setValues({ ...values, releasedOn: e.target.value })
-                }
-              />
-            </div>
-            {/* Archived */}
-            <div className="flex flex-col items-center  ">
-              <label className="beer-card__label-text" htmlFor="archived">
-                Archive
-              </label>
-              <input
-                id="archived"
-                name="archived"
-                type="checkbox"
-                className="checkbox checkbox-accent"
-                placeholder="Beer release date"
-                checked={values.archived}
-                onChange={(e) =>
-                  setValues({ ...values, archived: e.target.checked })
-                }
-              />
-            </div>
+          {/* Release Date */}
+          <div className="flex flex-col items-center md:items-start w-full mt-4">
+            <label className="beer-card__label-text " htmlFor="releasedOn">
+              Release Date
+            </label>
+            <input
+              id="releasedOn"
+              name="releasedOn"
+              type="date"
+              className="bg-primary text-accent p-2 rounded-full border border-stone-400 "
+              placeholder="Beer release date"
+              value={values.releasedOn as string}
+              onChange={(e) =>
+                setValues({ ...values, releasedOn: e.target.value })
+              }
+            />
           </div>
         </div>
-        <div className="flex flex-col items-start w- md:w-1/2">
+        <div className="flex flex-col items-start justify-between w- md:w-1/2">
           {/* Name */}
           <div className="container-create__form">
             <label className="beer-card__label-text" htmlFor="name">
@@ -450,39 +457,6 @@ const CreateBeerForm = ({}: pageProps) => {
         )}
       </div>
 
-      {/* Description */}
-      <div className="container-create__form">
-        <label className="beer-card__label-text " htmlFor="description">
-          Description
-        </label>
-        <textarea
-          id="description"
-          name="description"
-          className="form__input-textarea"
-          placeholder="Description"
-          value={values.description}
-          onChange={(e) =>
-            setValues({ ...values, description: e.target.value })
-          }
-          maxLength={2500}
-        />
-      </div>
-
-      {/* Name Details */}
-      <div className="container-create__form ">
-        <label className="beer-card__label-text" htmlFor="nameSake">
-          Name Details
-        </label>
-        <textarea
-          id="nameSake"
-          name="nameSake"
-          className="form__input-textarea"
-          placeholder="Let staff know about any fun deets..."
-          value={values.nameSake}
-          onChange={(e) => setValues({ ...values, nameSake: e.target.value })}
-          maxLength={2500}
-        />
-      </div>
       <div className="container-create__form">
         {/* Hops */}
         <TagInput
@@ -504,6 +478,24 @@ const CreateBeerForm = ({}: pageProps) => {
         />
       </div>
 
+      {/* Description */}
+      <div className="container-create__form">
+        <label className="beer-card__label-text " htmlFor="description">
+          Description
+        </label>
+        <textarea
+          id="description"
+          name="description"
+          className="form__input-textarea"
+          placeholder="Description"
+          value={values.description}
+          onChange={(e) =>
+            setValues({ ...values, description: e.target.value })
+          }
+          maxLength={2500}
+        />
+      </div>
+
       {/* Additional Notes */}
       <div className="container-create__form">
         <label className="beer-card__label-text" htmlFor="notes">
@@ -520,19 +512,54 @@ const CreateBeerForm = ({}: pageProps) => {
         />
       </div>
 
-      <div className="flex py-5 pr-3 justify-end">
+      {/* Name Details */}
+      <div className="container-create__form ">
+        <label className="beer-card__label-text" htmlFor="nameSake">
+          Name Details
+        </label>
+        <textarea
+          id="nameSake"
+          name="nameSake"
+          className="form__input-textarea"
+          placeholder="Let staff know about any fun deets..."
+          value={values.nameSake}
+          onChange={(e) => setValues({ ...values, nameSake: e.target.value })}
+          maxLength={2500}
+        />
+      </div>
+
+      <div className="flex py-5 px-3 justify-between items-center">
         {submitError && <div>Error: {submitError}</div>}
-        <button
+        {/* Archived */}
+        <div className="flex flex-col justify-center items-center">
+          <label className="beer-card__label-text" htmlFor="archived">
+            Archive
+          </label>
+          <input
+            id="archived"
+            name="archived"
+            type="checkbox"
+            className="checkbox checkbox-accent"
+            placeholder="Beer release date"
+            checked={values.archived}
+            onChange={(e) =>
+              setValues({ ...values, archived: e.target.checked })
+            }
+          />
+        </div>
+        <SaveButton
+          title="Create"
+          isLoading={isLoading}
           className="create-btn inverse"
           type="submit"
-          disabled={isSubmitting.current}
-        >
-          {isLoading ? (
-            <span className="loading loading-spinner text-accent"></span>
-          ) : (
-            "Create"
-          )}
-        </button>
+          disabled={
+            isSubmitting.current ||
+            !values.name ||
+            !values.style ||
+            !(values.category && values.category.length) ||
+            !values.abv
+          }
+        />
       </div>
     </form>
   );
