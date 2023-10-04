@@ -140,12 +140,14 @@ export default function BeerCategory({
                   key={beer._id}
                 >
                   <div className="inline-flex items-center">
-                    {beer.image && (
-                      <ImageDisplay
-                        className="beer-category__image"
-                        item={beer}
-                      />
-                    )}
+                   
+                      {beer.image && (
+                        <ImageDisplay
+                          className="beer-category__image"
+                          item={beer}
+                        />
+                      )}
+                  
                     {beer.name}
                   </div>
                 </Link>
