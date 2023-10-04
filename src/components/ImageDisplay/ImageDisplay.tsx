@@ -1,24 +1,26 @@
 "use client";
-import { Beer } from "@/app/types/beer";
-import { Brewery } from "@/app/types/brewery";
-
-import { useEffect, useState } from "react";
-import Image from "next/image";
+import DefaultBeerImage from "../../assets/img/beer.png";
 import { getImagePublicURL } from "@/lib/utils";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 
 const ImageDisplay = ({
   item,
   className,
 }: {
-  item: Beer | Brewery;
+  item: any;
   className: string;
 }) => {
-  const [imageUrl, setImageUrl] = useState<string | undefined>("");
+  const [imageUrl, setImageUrl] = useState<string | null>("");
 
   useEffect(() => {
     async function fetchUrl() {
       const url = getImagePublicURL(item.image);
-      setImageUrl(url);
+      if (url) {
+        setImageUrl(url);
+      } else {
+        setImageUrl("/../../assets/img/beer.png");
+      }
     }
 
     fetchUrl();
@@ -26,7 +28,7 @@ const ImageDisplay = ({
 
   return (
     <Image
-      src={imageUrl}
+      src={imageUrl ? imageUrl : DefaultBeerImage}
       className={className}
       alt={item.name ? item.name : item.companyName}
       width={50}
