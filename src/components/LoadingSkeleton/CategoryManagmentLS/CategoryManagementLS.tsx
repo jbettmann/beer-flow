@@ -12,7 +12,7 @@ const CategoryManagementLS = (props: Props) => {
         <div className="h-12 w-full bg-gray-500 mb-10"></div>
         <div className="mx-auto w-full  lg:hidden mb-4 flex flex-col gap-4">
           {[...Array(4)].map((_, j) => (
-            <CategoryCardManageLS />
+            <CategoryCardManageLS key={j} />
           ))}
         </div>
       </div>
