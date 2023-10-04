@@ -60,26 +60,22 @@ const BeerCard = ({ beerId }: Props) => {
           ) : (
             <>
               <div className="flex items-center justify-around lg:p-6 relative gap-2 xs:gap-4 md:gap-6">
-                {isNew(beer) ? (
-                  <>
-                    <div className="tag-new absolute top-[-5px] right-5">
-                      NEW
-                    </div>
-                    <Sparkles
-                      size={20}
-                      strokeWidth={1}
-                      color="#a5b4fc"
-                      className="absolute top-[-15px] right-0"
-                    />
-                  </>
-                ) : null}
                 {/* Beer Image and Name */}
                 <figure className="rounded-lg overflow-hidden relative flex-initial h-40 lg:h-56 w-36 xs:w-2/5 lg:w-1/2 2xl:w-1/4 p-2">
-                  {beer?.image && (
-                    <ImageDisplay className="beer-card__image " item={beer} />
-                  )}
+                  <ImageDisplay className="beer-card__image " item={beer} />
                 </figure>
                 <div className="flex flex-col justify-start">
+                  {isNew(beer) ? (
+                    <div className="flex w-fit relative pb-2">
+                      <div className="tag-new  border-none">NEW</div>
+                      <Sparkles
+                        size={20}
+                        strokeWidth={1}
+                        color="#a5b4fc"
+                        className="absolute top-[-11px] right-[-16px]"
+                      />
+                    </div>
+                  ) : null}
                   <h3 className="card-title justify-start lg:text-3xl">
                     {beer?.name}
                   </h3>
