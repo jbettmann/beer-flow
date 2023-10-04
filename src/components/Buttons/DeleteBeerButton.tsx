@@ -1,8 +1,4 @@
 "use client";
-import { Beer } from "@/app/types/beer";
-import deleteBeers from "@/lib/DELETE/deleteBeers";
-import { deleteImage } from "@/lib/supabase/deleteImage";
-import { useRouter } from "next/navigation";
 import React from "react";
 
 type Props = {
@@ -14,7 +10,7 @@ type Props = {
 const DeleteBeerButton = ({ isSubmitting, handleDelete }: Props) => {
   return (
     <button
-      className="btn btn-outline btn-error"
+      className="btn btn-outline btn-error rounded-full"
       disabled={isSubmitting.current}
       type="button"
       onClick={handleDelete}
