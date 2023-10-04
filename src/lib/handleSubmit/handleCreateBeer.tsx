@@ -16,7 +16,7 @@ const handleCreateBeer = async (
     // Save the image to the database and create link
     const beerImage = values.image
       ? await saveImage({ file: values.image as File })
-      : undefined;
+      : null;
 
     // Converting brewery categories to a Map for O(1) lookup times
     const existingCategories = new Map(
@@ -68,7 +68,6 @@ const handleCreateBeer = async (
 
     return newBeerRes;
   } catch (error: any) {
-    alert(error.message);
     // This will be the error message from your server
     console.error(error);
   }
