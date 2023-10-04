@@ -13,22 +13,20 @@ import ImageDisplay from "../ImageDisplay/ImageDisplay";
 import TagInput from "../TagInput/TagInput";
 
 import { useBreweryContext } from "@/context/brewery-beer";
+import deleteBeers from "@/lib/DELETE/deleteBeers";
 import getBreweryBeers from "@/lib/getBreweryBeers";
+import { deleteImage } from "@/lib/supabase/deleteImage";
 import { updateImage } from "@/lib/supabase/updateImage";
 import validateFields from "@/lib/validators/forms";
-import useSWR from "swr";
-import deleteBeers from "@/lib/DELETE/deleteBeers";
 import { useRouter } from "next/navigation";
+import useSWR from "swr";
 import DeleteBeerButton from "../Buttons/DeleteBeerButton";
-import { deleteImage } from "@/lib/supabase/deleteImage";
 
-import getSingleBrewery from "@/lib/getSingleBrewery";
 import { useToast } from "@/context/toast";
+import getSingleBrewery from "@/lib/getSingleBrewery";
 import AlertDialog from "../Alerts/AlertDialog";
-import { set } from "mongoose";
-import TrashCanIcon from "../Buttons/TrashCanIcon";
-import { Save } from "lucide-react";
 import SaveButton from "../Buttons/SaveButton";
+import TrashCanIcon from "../Buttons/TrashCanIcon";
 
 // import createBeer from "@/lib/createBeer";
 
@@ -106,7 +104,7 @@ const UpdateBeerForm = ({
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<ErrorValues>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [previewImage, setPreviewImage] = useState<>(null);
+  const [previewImage, setPreviewImage] = useState(null);
   const [deleteAlert, setDeleteAlert] = useState<boolean>(false); // delete alert confirmation
   const { selectedBeers } = useBreweryContext();
 

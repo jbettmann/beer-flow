@@ -4,22 +4,24 @@ import React, { useEffect, useRef, useState } from "react";
 
 import ErrorField from "../ErrorField/ErrorField";
 
-import { useBreweryContext } from "@/context/brewery-beer";
-import updateCategory from "@/lib/PUT/updateCategory";
-import { useRouter } from "next/navigation";
-import { mutate } from "swr";
-import { ErrorValues, FormValues, RefsType } from "./types";
-import deleteCategory from "@/lib/DELETE/deleteCategory";
-import DeleteBeerButton from "../Buttons/DeleteBeerButton";
-import { handleDeleteCategory } from "@/lib/handleSubmit/handleDeleteCategory";
 import { Brewery } from "@/app/types/brewery";
 import { Category } from "@/app/types/category";
+import { useBreweryContext } from "@/context/brewery-beer";
+import { handleDeleteCategory } from "@/lib/handleSubmit/handleDeleteCategory";
 import handleUpdateCategory from "@/lib/handleSubmit/handleUpdateCategory";
+import { useRouter } from "next/navigation";
+import DeleteBeerButton from "../Buttons/DeleteBeerButton";
+import { ErrorValues, FormValues, RefsType } from "./types";
 // import createBeer from "@/lib/createBeer";
 
 type pageProps = {
   breweryId: string;
   categoryId: string;
+};
+
+type RefsType = {
+  [key: string]: React.RefObject<HTMLInputElement>;
+  name: React.RefObject<HTMLInputElement>;
 };
 
 const UpdateCategory = ({ breweryId, categoryId }: pageProps) => {
@@ -34,7 +36,7 @@ const UpdateCategory = ({ breweryId, categoryId }: pageProps) => {
   } = useBreweryContext();
 
   const [values, setValues] = useState<Category>({
-    __v: undefined,
+    __v: "",
     _id: "",
     name: "",
   });
@@ -63,7 +65,7 @@ const UpdateCategory = ({ breweryId, categoryId }: pageProps) => {
     );
     if (selectedCat) {
       setValues({
-        _id: selectedCat?._id,
+        _id: selectedCat._id,
         name: selectedCat?.name,
       });
     }
