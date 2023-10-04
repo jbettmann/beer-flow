@@ -23,11 +23,11 @@ const UserPage = async () => {
 
   const content = (
     <section>
-      <h2>
-        <Link href="/">
-          <BackArrow width={"60"} height={"30"} />
-        </Link>
-      </h2>
+      <Link href="/">
+        {/* @ts-expect-error Server component */}
+        <BackArrow />
+      </Link>
+
       <br />
       {users.map((user) => {
         return (
