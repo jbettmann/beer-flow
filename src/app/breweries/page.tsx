@@ -11,12 +11,6 @@ const BreweriesPage = async () => {
 
   return (
     <section className="w-full h-screen py-3 sm:p-8">
-      {/* <h2>
-        <Link href={``}>
-          <BackArrow width={"60"} height={"30"} />
-        </Link>
-      </h2> */}
-
       <div className="flex flex-col justify-center  mx-auto text-center gap-6">
         <div className="flex justify-between md:p-5 ">
           <div className="flex flex-col w-fit mx-auto lg:m-0 lg:my-auto ">
