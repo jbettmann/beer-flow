@@ -1,25 +1,21 @@
 "use client";
-import getSingleBrewery from "@/lib/getSingleBrewery";
-import { getInitials } from "@/lib/utils";
-import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
-import useSWR from "swr";
-import ImageDisplay from "../ImageDisplay/ImageDisplay";
-import { Divide, MoveLeft, PencilLine, Repeat2, Trash2 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import RemoveAccess from "../Buttons/RemoveAccess";
 import { Users } from "@/app/types/users";
-import BottomDrawer from "../Drawers/BottomDrawer";
-import EditBreweryProfile from "./EditBreweryProfile";
-import DeleteOrRemoveButton from "../Buttons/DeleteOrRemoveButton";
 import { useBreweryContext } from "@/context/brewery-beer";
-import removeBreweryFromUser from "@/lib/DELETE/removeBreweryFromUser";
-import AlertDialog from "../Alerts/AlertDialog";
-import { set } from "mongoose";
-import ToastAlert from "../Alerts/ToastAlert";
 import { useToast } from "@/context/toast";
 import deleteBrewery from "@/lib/DELETE/deleteBrewery";
+import removeBreweryFromUser from "@/lib/DELETE/removeBreweryFromUser";
+import getSingleBrewery from "@/lib/getSingleBrewery";
+import { getInitials } from "@/lib/utils";
+import { MoveLeft, PencilLine, Repeat2, Trash2 } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import useSWR from "swr";
+import AlertDialog from "../Alerts/AlertDialog";
+import DeleteOrRemoveButton from "../Buttons/DeleteOrRemoveButton";
+import BottomDrawer from "../Drawers/BottomDrawer";
+import ImageDisplay from "../ImageDisplay/ImageDisplay";
+import EditBreweryProfile from "./EditBreweryProfile";
 
 type Props = {
   breweryId: string;

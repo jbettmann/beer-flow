@@ -1,6 +1,6 @@
 type pageProps = {
   breweryId: string | undefined;
-  userId: string | undefined;
+  userId: number | undefined;
   accessToken: string | undefined;
 };
 
@@ -31,7 +31,7 @@ export default async function removeBreweryFromUser({
       }
 
       return responseBody;
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
 
       throw new Error(err.error || err.message);
