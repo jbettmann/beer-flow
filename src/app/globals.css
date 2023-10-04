@@ -59,7 +59,7 @@ p {
 
 
 .beer-category__image {
-  @apply rounded-full my-2 mx-4
+  @apply flex justify-center items-center object-cover w-14 h-14 rounded-full my-2 mx-4
 }
 
 .beer-card {
@@ -143,13 +143,13 @@ p {
 }
 
 .create-btn {
-  @apply btn bg-primary text-background border-none rounded-full transition-all duration-300 hover:bg-primary hover:scale-105 hover:shadow-xl;
+  @apply btn bg-primary text-background border-none rounded-full transition-all duration-300 hover:bg-primary hover:scale-105 hover:shadow-xl 
   
 }
 
 .create-btn.inverse 
 {
-  @apply bg-background text-primary hover:shadow-lg hover:shadow-[#413c33] hover:bg-background hover:scale-105 
+  @apply bg-background text-primary hover:shadow-lg hover:shadow-[#413c33]   hover:bg-background hover:scale-105 disabled:bg-opacity-20;
   
 } 
 
@@ -282,7 +282,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .ReactTags__tag {
-  @apply bg-accent text-primary rounded-full p-2 m-2
+  @apply bg-accent text-primary rounded-full p-1 px-2 m-2
 }
 
 .ReactTags__tagInput {
@@ -368,7 +368,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 
 .tag-new {
-  @apply indicator-item badge bg-indigo-300
+  @apply indicator-item badge bg-indigo-300 text-sm 
 }
 
 .table-row__effect {
