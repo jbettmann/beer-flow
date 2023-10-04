@@ -129,9 +129,8 @@ const BeerCard = ({ beerId }: Props) => {
                       <div>
                         <div>
                           {beer?.hops?.map((hop, i, array) => (
-                            <span className="inline-flex items-center">
+                            <span className="inline-flex items-center" key={i}>
                               <Link
-                                key={i}
                                 href={`https://www.beermaverick.com/hop/${handleHopClick(
                                   hop
                                 )}`}
@@ -164,9 +163,8 @@ const BeerCard = ({ beerId }: Props) => {
                     <div className="flex flex-col items-start w-full">
                       <div>
                         {beer?.malt?.map((m, i, array) => (
-                          <span className="inline-flex items-center">
+                          <span className="inline-flex items-center" key={i}>
                             <Link
-                              key={i}
                               href={`https://www.google.com/search?q=${handleMaltClick(
                                 m
                               )}+malt`}
