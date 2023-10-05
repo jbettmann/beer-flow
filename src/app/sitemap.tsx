@@ -1,5 +1,4 @@
 import { Users } from "@/app/types/users";
-import { Allura } from "next/font/google";
 
 export default async function sitemap() {
   const res = await fetch("https://beer-bible-api.vercel.app/users");
