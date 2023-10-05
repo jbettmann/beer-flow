@@ -3,7 +3,7 @@ import { Brewery } from "@/app/types/brewery";
 import { Users } from "@/app/types/users";
 import { cn } from "@/lib/utils";
 import { ListFilter, MoveDown, MoveUp, UserPlus } from "lucide-react";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { use, useEffect, useMemo, useRef, useState } from "react";
 import StaffMemberCard from "./StaffMemberCard";
 import StaffMemberRow from "./StaffMemberRow";
 
@@ -40,12 +40,7 @@ const StaffTable = ({ viewFilter, brewery, setIsOpen }: Props) => {
       title: "A-Z",
       setFilterState: () => {
         setIsAlphabetical(true);
-        setStaff(
-          staff.sort(
-            ({ a, b }: { a: any; b: any }) =>
-              b?.fullName.localeCompare(a?.fullName)
-          )
-        );
+        handleAlphabetizeName();
       },
       type: "NAME",
     },
@@ -53,12 +48,7 @@ const StaffTable = ({ viewFilter, brewery, setIsOpen }: Props) => {
       title: "Z-A",
       setFilterState: () => {
         setIsAlphabetical(false);
-        setStaff(
-          staff.sort(
-            ({ a, b }: { a: any; b: any }) =>
-              b?.fullName.localeCompare(a?.fullName)
-          )
-        );
+        handleAlphabetizeName();
       },
       type: "NAME",
     },
@@ -69,15 +59,13 @@ const StaffTable = ({ viewFilter, brewery, setIsOpen }: Props) => {
     if (isAlphabetical) {
       setStaff(
         staff.sort(
-          ({ a, b }: { a: any; b: any }) =>
-            b?.fullName.localeCompare(a?.fullName)
+          (a: Users, b: Users) => b?.fullName.localeCompare(a?.fullName)
         )
       );
     } else {
       setStaff(
         staff.sort(
-          ({ a, b }: { a: any; b: any }) =>
-            a?.fullName.localeCompare(b?.fullName)
+          (a: Users, b: Users) => a?.fullName.localeCompare(b?.fullName)
         )
       );
     }
@@ -137,7 +125,7 @@ const StaffTable = ({ viewFilter, brewery, setIsOpen }: Props) => {
     brewery && (
       <>
         <div
-          className={`flex justify-between mx-auto lg:hidden w-full xxs:w-80 `}
+          className={`flex justify-between mx-auto lg:hidden w-full max-w-[367px] px-3`}
         >
           <label className="flex items-center ">
             <input
@@ -159,7 +147,7 @@ const StaffTable = ({ viewFilter, brewery, setIsOpen }: Props) => {
             )}`}
           >
             <label
-              className="btn btn-ghost  w-full"
+              className="btn btn-ghost !pr-1 w-full"
               tabIndex={0}
               onClick={() => setIsFilterOpen((prev) => !prev)}
             >
