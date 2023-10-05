@@ -155,7 +155,7 @@ export const authOptions: NextAuthOptions = {
           }
         }
       }
-
+      console.log("User", user, "Token", token);
       return token;
     },
 
@@ -251,6 +251,7 @@ export const authOptions: NextAuthOptions = {
         session.user.breweries = token.breweries as string[]; // sets user's breweries
         session.user.notifications = token.notifications as Notifications; // sets user's notifications
       }
+      console.log("User", user, "Session", session);
       return session;
     },
   },
