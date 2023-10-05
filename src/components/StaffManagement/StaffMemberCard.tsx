@@ -105,6 +105,12 @@ const StaffMemberCard = ({
     setHasChanged(false);
   };
 
+  const handleOwnerClick = () => {
+    setTimeout(() => {
+      addToast("Owner can't be mess with!", "info");
+    }, 200); // Show tooltip after 1 second of pressing
+  };
+
   const useOutsideClick = (
     ref: RefObject<HTMLDivElement>,
     callback: () => void
@@ -243,7 +249,12 @@ const StaffMemberCard = ({
       {/* If owner, skull */}
       <div className="absolute top-0 right-0 z-[1] flex flex-col justify-between">
         {isChecked && role === "Owner" ? (
-          <div className="btn btn-circle btn-ghost">
+          <div
+            className="btn btn-circle btn-ghost"
+            onClick={(e) => {
+              e.stopPropagation(), handleOwnerClick();
+            }}
+          >
             <SkullIcon size={26} strokeWidth={1} />
           </div>
         ) : (
