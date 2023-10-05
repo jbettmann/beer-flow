@@ -111,7 +111,7 @@ p {
 
 
 .category__input {
-  @apply input rounded-full border-none font-semibold 
+  @apply input rounded-full border-none font-semibold bg-white text-primary
 }
 
 .category-card__title {

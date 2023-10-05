@@ -512,7 +512,7 @@ const CardCategory = ({
                     onChange={handleInputChange}
                     name="name"
                     id="name"
-                    className="input rounded-full border-none  font-semibold "
+                    className="category__input"
                     autoFocus
                     onKeyDown={handleKeyPress}
                   />
