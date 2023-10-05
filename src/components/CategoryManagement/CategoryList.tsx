@@ -17,6 +17,7 @@ import CardCategory from "../CardCategory/CardCategory";
 import { useOnClickOutside } from "usehooks-ts";
 import cn from "classnames";
 import CreateNewCategoryCard from "../CardCategory/CreateNewCategoryCard";
+import { useToast } from "@/context/toast";
 
 type Props = {
   createNewCategory: boolean;
@@ -34,7 +35,7 @@ const CategoryList = ({
     useBreweryContext();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
+  const { addToast } = useToast();
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
   const [categories, setCategories] = useState<Category[] | NewCategory[]>(
@@ -174,11 +175,11 @@ const CategoryList = ({
       if (isNumberAscending) setIsNumberAscending(false);
       sortedCategoriesWithBeers.sort((a, b) =>
         isCreateFilter
-          ? (b.category as Category).createdAt.localeCompare(
-              (a.category as Category).createdAt
+          ? (b.category as Category).createdAt!.localeCompare(
+              (a.category as Category).createdAt!
             )
-          : (a.category as Category).createdAt.localeCompare(
-              (b.category as Category).createdAt
+          : (a.category as Category).createdAt!.localeCompare(
+              (b.category as Category).createdAt!
             )
       );
     } else {
@@ -287,13 +288,16 @@ const CategoryList = ({
 
     if (checkedAndEmptyCategoryIds && selectedBrewery) {
       try {
-        checkedAndEmptyCategoryIds.forEach(async (categoryId) => {
-          await deleteCategory({
-            breweryId: selectedBrewery._id,
-            categoryId,
-            token: session?.user.accessToken || "",
-          });
-        });
+        const deletedCategory = checkedAndEmptyCategoryIds.forEach(
+          async (categoryId) => {
+            await deleteCategory({
+              breweryId: selectedBrewery._id,
+              categoryId,
+              token: session?.user.accessToken || "",
+            });
+          }
+        );
+
         setSelectedBrewery((prev) => {
           if (prev === null) {
             return null;
@@ -306,9 +310,10 @@ const CategoryList = ({
             ),
           };
         });
-      } catch (error) {
+        addToast("Category Deleted", "success");
+      } catch (error: any) {
         console.error(error);
-        alert(error);
+        addToast(error.message, "error");
       }
     }
     setIsLoading(false);
@@ -388,6 +393,78 @@ const CategoryList = ({
           setToContinue={setDeleteConfirm}
         />
       )}
+      {/* Small Screen Filter and Edit */}
+      <div
+        className={`lg:hidden flex justify-between sticky top-0 l z-20 bg-background xxs:px-8 w-full`}
+      >
+        {isEdit ? (
+          <>
+            <label className="flex items-center ">
+              <input
+                type="checkbox"
+                className="checkbox   ml-1 mr-2 "
+                onChange={handleSelectAll}
+                checked={selectAll}
+              />
+              Select All
+            </label>
+            <button
+              className={`btn btn-circle btn-ghost text-primary`}
+              onClick={handleDeselectedAllCategories}
+            >
+              Cancel
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              className={`btn btn-circle btn-ghost`}
+              onClick={(e) => setIsEdit(true)}
+            >
+              Edit
+            </button>
+            <div
+              ref={ref}
+              className={`lg:hidden flex-initial z-[1] dropdown-end bg-transparent lg:z-0 ${cn(
+                {
+                  dropdown: true,
+                  "dropdown-open ": isFilterOpen,
+                }
+              )}`}
+            >
+              <label
+                className="btn btn-ghost  w-full"
+                tabIndex={0}
+                onClick={() => setIsFilterOpen((prev) => !prev)}
+              >
+                <ListFilter size={20} />
+              </label>
+              <ul
+                tabIndex={0}
+                className={cn({
+                  "dropdown-content menu p-2 shadow rounded-box bg-primary text-background":
+                    true,
+                  hidden: !isFilterOpen,
+                })}
+              >
+                {menuButtons.map((button, i) => (
+                  <li key={i}>
+                    <button
+                      className="btn btn-ghost "
+                      onClick={() => {
+                        handleClick();
+                        button.setFilterState(button.type);
+                      }}
+                    >
+                      {button.title}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </>
+        )}
+      </div>
       {/* Large Screen Table Layout  */}
       <table
         className={`hidden lg:table border-separate border-spacing-y-2 first:border-spacing-y-0 p-3 relative`}
@@ -496,76 +573,6 @@ const CategoryList = ({
 
       {/* Small Screen Card Layout*/}
       <div className=" lg:hidden flex flex-col p-3 relative">
-        <div className={`flex justify-between`}>
-          {isEdit ? (
-            <>
-              <label className="flex items-center ">
-                <input
-                  type="checkbox"
-                  className="checkbox   ml-1 mr-2 "
-                  onChange={handleSelectAll}
-                  checked={selectAll}
-                />
-                Select All
-              </label>
-              <button
-                className={`btn btn-circle btn-ghost text-primary`}
-                onClick={handleDeselectedAllCategories}
-              >
-                Cancel
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                className={`btn btn-circle btn-ghost`}
-                onClick={(e) => setIsEdit(true)}
-              >
-                Edit
-              </button>
-              <div
-                ref={ref}
-                className={`lg:hidden flex-initial z-[1] dropdown-end bg-transparent lg:z-0 ${cn(
-                  {
-                    dropdown: true,
-                    "dropdown-open ": isFilterOpen,
-                  }
-                )}`}
-              >
-                <label
-                  className="btn btn-ghost  w-full"
-                  tabIndex={0}
-                  onClick={() => setIsFilterOpen((prev) => !prev)}
-                >
-                  <ListFilter size={20} />
-                </label>
-                <ul
-                  tabIndex={0}
-                  className={cn({
-                    "dropdown-content menu p-2 shadow rounded-box bg-primary text-background":
-                      true,
-                    hidden: !isFilterOpen,
-                  })}
-                >
-                  {menuButtons.map((button, i) => (
-                    <li key={i}>
-                      <button
-                        className="btn btn-ghost "
-                        onClick={() => {
-                          handleClick();
-                          button.setFilterState(button.type);
-                        }}
-                      >
-                        {button.title}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </>
-          )}
-        </div>
-
         <div className="flex flex-col gap-8">
           {/* row 1 */}
           {createNewCategory && (
