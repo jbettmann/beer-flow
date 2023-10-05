@@ -127,7 +127,7 @@ const EditBreweryProfile = ({ brewery, onClose }: Props) => {
 
           <label
             htmlFor="fileUpload"
-            className="text-sm hover:underline hover:cursor-pointer"
+            className="text-sm hover:underline hover:cursor-pointer pt-3"
           >
             Change Logo
           </label>
