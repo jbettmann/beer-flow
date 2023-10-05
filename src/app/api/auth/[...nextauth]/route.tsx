@@ -240,6 +240,7 @@ export const authOptions: NextAuthOptions = {
 
         return false;
       }
+      console.log("User", user);
       return false;
     },
     async session({ session, token, user }) {
