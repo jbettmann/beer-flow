@@ -273,7 +273,7 @@ const UpdateBeerForm = ({
       />
       <form
         onSubmit={handleSubmit}
-        className={` form flex flex-col justify-between mx-auto rounded-lg `}
+        className={` flex flex-col justify-between mx-auto rounded-lg `}
       >
         <div className="flex flex-col md:flex-row-reverse justify-between w-full ">
           {/*  Beer Image */}
