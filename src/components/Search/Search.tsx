@@ -131,7 +131,7 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
   return (
     <div className="mx-auto w-full lg:w-1/2 mb-16 lg:mb-0 pt-6 text-white">
       <div className="side-header">
-        <div className="relative">
+        <div className="relative flex-auto">
           {/* Input with padding on the right */}
           <input
             type="text"
@@ -139,22 +139,22 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
             onChange={(e) => handleSearch(e.target.value)}
             onKeyDown={handleKeyPress}
             placeholder="Search"
-            className="input input-bordered rounded-full w-auto text-primary pr-8"
+            className="form__input w-full  pr-8"
           />
           {searchTerm && (
             <button
               aria-label="Clear input"
-              className="absolute inset-y-0 right-2 flex items-center opacity-50 cursor-pointer focus:outline-none"
+              className="absolute inset-y-0 right-2  flex items-center opacity-50 cursor-pointer focus:outline-none"
               onClick={() => {
                 setSearchTerm(""), handleSearch("");
               }}
             >
-              <X size={20} color="#000" />
+              <X size={20} color="#fff" />
             </button>
           )}
         </div>
         <button
-          className="btn btn-outline btn-accent rounded-full ml-2"
+          className="btn-link no-underline link-accent rounded-full pr-4"
           onClick={onClose}
         >
           Cancel
