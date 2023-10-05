@@ -110,9 +110,9 @@ p {
 
 
 
-/* .category-card.open {
-  @apply bg-fourth-color text-primary border border-accent shadow-lg
-} */
+.category__input {
+  @apply input rounded-full border-none font-semibold 
+}
 
 .category-card__title {
   @apply  flex h-20 py-0 px-5 items-center  self-stretch after:left-5 text-xl font-medium 
@@ -368,11 +368,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 
 .tag-new {
-  @apply indicator-item badge bg-indigo-300 text-sm 
+  @apply indicator-item badge text-primary bg-indigo-300 text-sm 
 }
 
 .table-row__effect {
-  @apply transition-all rounded-lg hover:shadow-lg hover:cursor-pointer hover:bg-blue-300 
+  @apply transition-all rounded-lg hover:shadow-lg hover:cursor-pointer md:hover:bg-blue-300 
 }
 
 .table-row__checked {
