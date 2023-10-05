@@ -18,6 +18,8 @@ export const config = {
     "/beers/:path*",
     "/create/:path*",
     "/admin/:path*",
+    "/auth/:path*",
+    "/settings/:path*",
   ],
 };
 
