@@ -156,7 +156,7 @@ const EditBreweryProfile = ({ brewery, onClose }: Props) => {
             }}
           />
         </div>
-        <div className="text-center mt-10">
+        <div className="text-center mt-10 w-full sm:w-1/2 lg:w-fit">
           <input
             type="text"
             id="fileUpload"

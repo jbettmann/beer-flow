@@ -178,18 +178,18 @@ const BrewerySettingsProfileView = ({ breweryId }: Props) => {
           <h3 className="mt-5">{brewery.companyName}</h3>
 
           <div>
-            <p className="badge badge-ghost">
+            <p className="badge badge-accent">
               Owner {owner ? "You" : brewery?.owner?.fullName}
             </p>
             {owner || admin ? (
               <button
                 onClick={handleStaffMemberClick}
-                className="badge badge-ghost"
+                className="badge badge-accent"
               >
                 {brewery.staff?.length + 1} Staff Members
               </button>
             ) : (
-              <div className="badge badge-ghost">
+              <div className="badge badge-accent">
                 {brewery.staff?.length + 1} Staff Members
               </div>
             )}
@@ -198,7 +198,7 @@ const BrewerySettingsProfileView = ({ breweryId }: Props) => {
           {owner && (
             <div
               onClick={() => setIsOpen(true)}
-              className="btn w-full md:w-1/4"
+              className="create-btn w-full md:w-1/4"
             >
               <PencilLine size={24} strokeWidth={1} />
               Edit
