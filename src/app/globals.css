@@ -212,7 +212,7 @@ p {
 }
 
 .form__input {
-  @apply input bg-primary text-background border-stone-400  rounded-full focus:input-accent
+  @apply input bg-primary text-background border-stone-400  rounded-full focus:border-accent
 }
 
 .form__input-tag {

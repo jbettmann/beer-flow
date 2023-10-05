@@ -101,7 +101,7 @@ const EditBreweryProfile = ({ brewery, onClose }: Props) => {
       </div>
       <div className="flex flex-col items-center p-6 pt-7 w-full">
         <div className="flex flex-col items-center">
-          <div className="flex flex-col  items-center">
+          <div className="flex flex-col  items-center bg-background rounded-full">
             {/*  Existing Beer Image */}
             {editBrewery?.image && !previewImage ? (
               <ImageDisplay item={editBrewery} className="logo__edit m-3" />
@@ -160,13 +160,13 @@ const EditBreweryProfile = ({ brewery, onClose }: Props) => {
           <input
             type="text"
             id="fileUpload"
-            className="input w-full font-bold text-2xl text-primary text-center border-b-2 border-gray-400 focus:outline-none focus:border-accent "
+            className="form__input w-full !font-bold !text-2xl text-primary text-center focus:outline-none  "
             value={companyName}
             onChange={(e) => setCompanyName(e.target.value)}
           />
           <p className="mt-2 text-xs">
             This can be the company name or nickname.
-            <br /> This is how brewery will appear to staff{" "}
+            <br /> This is how brewery will appear to staff
           </p>
         </div>
       </div>
