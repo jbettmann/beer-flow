@@ -178,18 +178,15 @@ const BrewerySettingsProfileView = ({ breweryId }: Props) => {
           <h3 className="mt-5">{brewery.companyName}</h3>
 
           <div>
-            <p className="badge badge-accent">
+            <p className="badge ">
               Owner {owner ? "You" : brewery?.owner?.fullName}
             </p>
             {owner || admin ? (
-              <button
-                onClick={handleStaffMemberClick}
-                className="badge badge-accent"
-              >
+              <button onClick={handleStaffMemberClick} className="badge ">
                 {brewery.staff?.length + 1} Staff Members
               </button>
             ) : (
-              <div className="badge badge-accent">
+              <div className="badge ">
                 {brewery.staff?.length + 1} Staff Members
               </div>
             )}
