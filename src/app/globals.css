@@ -29,7 +29,7 @@ body {
 }
 
 h1 {
-  @apply text-4xl font-bold text-center
+  @apply text-4xl  font-bold text-center
 }
 
 h2 {
@@ -37,18 +37,18 @@ h2 {
 }
 
 h3 {
-  @apply text-2xl font-bold text-center
+  @apply text-2xl  font-bold text-center
 }
 h4 {
-  @apply text-xl font-bold 
+  @apply text-xl lg:text-lg font-bold 
 }
 
 h5 {
-  @apply text-lg font-bold text-center
+  @apply text-lg lg:text-base font-bold text-center
 }
 
 h6 {
-  @apply text-sm font-bold text-center
+  @apply text-sm lg:text-xs font-bold text-center
 }
 
 p {
@@ -57,9 +57,12 @@ p {
 
 
 
-
 .beer-category__image {
-  @apply flex justify-center items-center object-cover w-14 h-14 rounded-full my-2 mx-4
+  @apply flex justify-center items-center object-cover w-14 h-14 lg:w-10 lg:h-10 rounded-full my-2 mx-4
+}
+
+.beer-category__name {
+  @apply text-base lg:text-sm m-0
 }
 
 .beer-card {
@@ -67,15 +70,18 @@ p {
 }
 
 .beer-card__description {
-  @apply  m-0 ml-1
+  @apply  m-0 ml-1 lg:text-base 
+
 }
 
 .beer-card__image {
   @apply bg-transparent absolute w-full h-full object-cover
 }
 
+
+
 .beer-card__item {
-  @apply ml-1 mb-1 text-left lg:text-xl 
+  @apply ml-1 mb-1 text-left lg:text-base 
 }
 
 .beer-card__item.links {
@@ -83,11 +89,11 @@ p {
 }
 
 .beer-card__label-text {
-  @apply label-text p-2 text-background font-semibold
+  @apply label-text p-2 text-background lg:text-xs lg:p-1 font-semibold
 }
 
 .beer-card__title {
-  @apply inline-flex justify-center items-center text-sm lg:text-base font-semibold text-accent ml-1 mt-1
+  @apply inline-flex justify-center items-center text-sm font-semibold text-accent ml-1 mt-1
 }
 
 /* styles.css or any other CSS file you're using */
@@ -115,7 +121,7 @@ p {
 }
 
 .category-card__title {
-  @apply  flex h-20 py-0 px-5 items-center  self-stretch after:left-5 text-xl font-medium 
+  @apply  flex h-20 lg:h-16 py-0 px-5 items-center  self-stretch after:left-5 text-xl lg:text-base font-medium 
 }
 
 .category-card__content {
@@ -170,11 +176,11 @@ p {
 
 
 .dashboard-container {
-  @apply   flex flex-row w-fit mx-auto py-7 px-1 justify-center items-center rounded-full 
+  @apply  flex flex-row w-fit mx-auto lg:w-[90%] py-5 md:py-1 px-1 lg:pr-8 justify-center items-center rounded-full 
 }
 
 .dashboard-button {
-  @apply text-xs xxs:text-sm  border border-stone-400 py-2 px-4 md:py-3 md:px-6 font-semibold  first:rounded-l-full last:rounded-r-full hover:border-black  justify-center shadow-xl 
+  @apply text-xs border border-stone-400 py-2 px-3 md:py-3 md:px-4 font-semibold  first:rounded-l-full last:rounded-r-full hover:border-black  justify-center shadow-lg lg:shadow-xl 
 }
 
 
@@ -212,7 +218,7 @@ p {
 }
 
 .form__input {
-  @apply input bg-primary text-background border-stone-400  rounded-full focus:border-accent
+  @apply input bg-primary text-background border-stone-400  rounded-full focus:border-accent lg:h-9 lg:text-sm
 }
 
 .form__input-tag {
@@ -227,7 +233,7 @@ p {
 
 
 .form__input-textarea {
-  @apply textarea textarea-md border-stone-400 focus:border-accent   bg-primary text-background
+  @apply textarea textarea-md border-stone-400 focus:border-accent  bg-primary text-background lg:text-sm
 }
 
 .form__input-file {
@@ -282,7 +288,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .ReactTags__tag {
-  @apply bg-accent text-primary rounded-full p-1 px-2 m-2
+  @apply bg-accent text-primary rounded-full p-1 px-2 pt-0 m-2 lg:text-sm
 }
 
 .ReactTags__tagInput {
@@ -380,6 +386,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 @layer components {
+
+  .badge {
+    @apply bg-white/95
+  }
   .btm-nav {
     @apply border border-t-[1px] border-gray-400;
   }
@@ -398,6 +408,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   .divider::before {
     @apply bg-gray-400 bg-opacity-20
   }
+
 
   .label-text {
     @apply text-primary
