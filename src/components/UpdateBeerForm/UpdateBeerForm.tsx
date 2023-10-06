@@ -278,7 +278,7 @@ const UpdateBeerForm = ({
         <div className="flex flex-col md:flex-row-reverse justify-between w-full ">
           {/*  Beer Image */}
           <div className="flex flex-col items-center justify-between xl:items-end w-full md:w-[45%] p-2 pt-4 md:pt-2">
-            <div className="flex flex-col items-center md:items-start w-full h-full max-h-[550px]">
+            <div className="flex flex-col items-center md:items-start w-full h-full  max-h-[550px]">
               <label
                 htmlFor="image"
                 className="beer-card__label-text hover:underline hover:cursor-pointer"
@@ -319,7 +319,7 @@ const UpdateBeerForm = ({
                 {/*  Existing Beer Image */}
                 {beer?.image && !previewImage && (
                   <ImageDisplay
-                    className="bg-transparent border border-stone-400 rounded-xl w-48 h-60 md:w-full  object-cover"
+                    className="bg-transparent border border-stone-400 rounded-xl w-48 h-60 lg:h-40 md:w-full  object-cover"
                     item={beer}
                   />
                 )}
@@ -358,7 +358,7 @@ const UpdateBeerForm = ({
                 id="releasedOn"
                 name="releasedOn"
                 type="date"
-                className="bg-primary text-accent p-2 rounded-full border border-stone-400 "
+                className="bg-primary text-accent p-2 rounded-full border border-stone-400 lg:h-9 text-sm"
                 placeholder="Beer release date"
                 value={values.releasedOn as string}
                 onChange={(e) =>
@@ -513,7 +513,9 @@ const UpdateBeerForm = ({
 
         {/* Additional Notes */}
         <div className="container-create__form">
-          <label htmlFor="notes">Additional notes</label>
+          <label className="beer-card__label-text" htmlFor="notes">
+            Additional notes
+          </label>
           <textarea
             id="notes"
             name="notes"
