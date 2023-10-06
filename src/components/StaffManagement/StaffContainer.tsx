@@ -25,7 +25,7 @@ const StaffContainer = (props: Props) => {
             <h3 className="text-center lg:text-left">
               {selectedBrewery.companyName} Staff
             </h3>
-            <div className="text-sm badge badge-ghost opacity-50 mt-2">
+            <div className="text-sm badge opacity-50 mt-2">
               Owner {(selectedBrewery.owner as Users).fullName || ""}
             </div>
           </div>
@@ -51,6 +51,7 @@ const StaffContainer = (props: Props) => {
             setViewFilter={setViewFilter}
             viewFilter={viewFilter}
           />
+
           <StaffTable
             viewFilter={viewFilter}
             brewery={selectedBrewery}
