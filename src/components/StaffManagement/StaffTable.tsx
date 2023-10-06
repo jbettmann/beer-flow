@@ -177,8 +177,8 @@ const StaffTable = ({ viewFilter, brewery, setIsOpen }: Props) => {
             </ul>
           </div>
         </div>
-        <div className="overflow-x-auto flex-auto flex justify-center   lg:pl-8 ">
-          <table className="hidden lg:table border-separate border-spacing-y-6 p-3">
+        <div className="overflow-x-auto flex-auto flex-col justify-center   mx-auto lg:w-full">
+          <table className="hidden lg:table  border-separate border-spacing-y-2 p-3">
             {/* head */}
             <thead>
               <tr>
@@ -260,7 +260,6 @@ const StaffTable = ({ viewFilter, brewery, setIsOpen }: Props) => {
               </tr>
             </tfoot>
           </table>
-
           {/* Small Screen Card Layout*/}
           <div className=" lg:hidden flex flex-col py-3 xxs:p-3  relative">
             <div className="flex flex-col gap-8 ">
