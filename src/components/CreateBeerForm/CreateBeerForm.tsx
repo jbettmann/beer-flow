@@ -241,7 +241,7 @@ const CreateBeerForm = ({}: pageProps) => {
     >
       <button
         type="button"
-        className="mr-auto"
+        className="mr-auto text-sm lg:text-xs"
         onClick={(e) => {
           e.stopPropagation();
           handleClear();
@@ -343,7 +343,7 @@ const CreateBeerForm = ({}: pageProps) => {
               id="releasedOn"
               name="releasedOn"
               type="date"
-              className="bg-primary text-accent p-2 rounded-full border border-stone-400 "
+              className="bg-primary text-accent p-2 rounded-full border border-stone-400 lg:h-9 text-sm"
               placeholder="Beer release date"
               value={values.releasedOn as string}
               onChange={(e) =>
