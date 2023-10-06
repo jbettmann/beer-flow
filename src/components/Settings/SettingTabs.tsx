@@ -20,7 +20,7 @@ const SettingTabs = (props: Props) => {
   };
 
   return (
-    <div className="m-6  lg:w-3/4">
+    <div className="m-6  ">
       <h2>Settings</h2>
       <div className="tabs mt-14 w-full  ">
         <Link
