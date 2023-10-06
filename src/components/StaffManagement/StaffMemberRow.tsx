@@ -150,7 +150,7 @@ const StaffMemberRow = ({
       <tr
         key={staff._id}
         ref={rowRef}
-        className={` table-row__effect ${
+        className={` table-row__effect border category-card ${
           isChecked ? "table-row__checked" : ""
         }`}
         onClick={() => {
