@@ -24,7 +24,7 @@ const CategoryDashboard = ({ viewFilter, setViewFilter }: Props) => {
         {menuButtons.map((button, i) => (
           <button
             key={i}
-            className={` dashboard-button first:px-7 md:first:px-10 ${
+            className={` dashboard-button first:px-6 md:first:px-7 ${
               viewFilter === button ? "dashboard-button__selected " : ""
             }`}
             onClick={() => setViewFilter(button)}
