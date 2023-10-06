@@ -11,12 +11,15 @@ import { handleDeleteCategory } from "@/lib/handleSubmit/handleDeleteCategory";
 import handleUpdateCategory from "@/lib/handleSubmit/handleUpdateCategory";
 import { useRouter } from "next/navigation";
 import DeleteBeerButton from "../Buttons/DeleteBeerButton";
-import { ErrorValues, FormValues, RefsType } from "./types";
+import { ErrorValues, FormValues } from "./types";
+import SaveButton from "../Buttons/SaveButton";
+import { useToast } from "@/context/toast";
+import { X } from "lucide-react";
 // import createBeer from "@/lib/createBeer";
 
-type pageProps = {
-  breweryId: string;
-  categoryId: string;
+type Props = {
+  category: Category | undefined;
+  onClose: () => void;
 };
 
 type RefsType = {
@@ -24,7 +27,7 @@ type RefsType = {
   name: React.RefObject<HTMLInputElement>;
 };
 
-const UpdateCategory = ({ breweryId, categoryId }: pageProps) => {
+const UpdateCategory = ({ category, onClose }: Props) => {
   const { data: session } = useSession();
   const router = useRouter();
 
@@ -49,8 +52,12 @@ const UpdateCategory = ({ breweryId, categoryId }: pageProps) => {
   const [errors, setErrors] = useState<ErrorValues>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const isSubmitting = useRef(false);
+  const [initialName, setInitialName] = useState<string>(category?.name || "");
+  const [hasEdited, setHasEdited] = useState<boolean>(false);
 
+  const { addToast } = useToast();
+
+  console.log({ values, initialName });
   // Create a map that connects field names to their refs
   const fieldRefs: RefsType = {
     name: useRef<HTMLInputElement>(null),
@@ -59,22 +66,11 @@ const UpdateCategory = ({ breweryId, categoryId }: pageProps) => {
   // updated beer card state and isEditing to false
 
   // Validate fields and persist state on every render
-  useEffect(() => {
-    const selectedCat = selectedBrewery?.categories?.find(
-      (category) => category._id === categoryId
-    );
-    if (selectedCat) {
-      setValues({
-        _id: selectedCat._id || "",
-        name: selectedCat?.name,
-      });
-    }
-  }, [selectedBrewery]);
 
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    isSubmitting.current = true;
+
     // Mark all fields as touched
     setTouched({
       name: true,
@@ -91,35 +87,43 @@ const UpdateCategory = ({ breweryId, categoryId }: pageProps) => {
           behavior: "smooth",
         });
       }
-      isSubmitting.current = false;
+
       return;
     }
+    if (values.name.trim() !== initialName) {
+      setIsLoading(true); // Set loading state to true
 
-    setIsLoading(true); // Set loading state to true
+      try {
+        let updatedCategory: Category = values;
+        if (category) {
+          const updatedCatName = await handleUpdateCategory({
+            categoryId: category._id,
+            updatedCategory,
+            accessToken: session?.user?.accessToken,
+            setBreweryState: {
+              selectedBeers,
+              selectedBrewery,
+              setSelectedBeers,
+              setSelectedBrewery,
+            },
+          });
 
-    try {
-      let updatedCategory: Category = values;
-
-      await handleUpdateCategory({
-        categoryId,
-        updatedCategory,
-        accessToken: session?.user?.accessToken,
-        setBreweryState: {
-          selectedBeers,
-          selectedBrewery,
-          setSelectedBeers,
-          setSelectedBrewery,
-        },
-      });
-
-      router.back();
-    } catch (err: any) {
-      console.error(err);
-      setSubmitError(err.message);
-    } finally {
-      isSubmitting.current = false;
-      setIsLoading(false); // Set loading state to false
-    }
+          if (updatedCatName) {
+            addToast(`Category ${updatedCatName.name} updated`, "success");
+            router.back();
+          }
+        }
+      } catch (err: any) {
+        console.error(err);
+        addToast(`Unable to rename category. Try again later`, "error");
+        setSubmitError(err.message);
+      } finally {
+        setIsLoading(false); // Set loading state to false
+        onClose();
+      }
+    } else {
+      onClose();
+    } // no change made
   };
 
   // Handle blur events for the inputs
@@ -127,71 +131,81 @@ const UpdateCategory = ({ breweryId, categoryId }: pageProps) => {
     setTouched((prevTouched) => ({ ...prevTouched, [field]: true }));
   };
 
-  const handleDelete = async () => {
-    isSubmitting.current = true;
-    setIsLoading(true); // Set loading state to true
-    try {
-      if (selectedBeers && selectedBrewery && session) {
-        const updatedBreweryCat = await handleDeleteCategory({
-          categoryId,
-          breweryId,
-          selectedBeers,
-          selectedBrewery,
-          token: session?.user?.accessToken,
-        });
-        router.back();
-        // if !updatedBreweryCat then state doesnt get set
-        if (updatedBreweryCat) setSelectedBrewery(updatedBreweryCat as Brewery);
-      }
-    } catch (err: any) {
-      console.error(err);
-      setSubmitError(err.message);
-    } finally {
-      isSubmitting.current = false;
-      setIsLoading(false); // Set loading state to false
+  useEffect(() => {
+    const selectedCat = selectedBrewery?.categories?.find(
+      (cat) => cat._id === category?._id
+    );
+    if (selectedCat) {
+      setValues({
+        _id: selectedCat._id || "",
+        name: selectedCat?.name,
+      });
     }
-  };
+  }, [selectedBrewery]);
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="p-4 form flex flex-col justify-between mx-auto rounded-lg shadow-2xl text-white"
-    >
-      {/* Name */}
-      <div className="container-create__form">
-        <label htmlFor="name">Name</label>
-        <input
-          id="name"
-          name="name"
-          ref={fieldRefs.name}
-          className="form__input"
-          value={values.name}
-          onChange={(e) => setValues({ ...values, name: e.target.value })}
-          onBlur={handleBlur("name")}
-        />
-        {touched.name && errors.name && <ErrorField message={errors.name} />}
-      </div>
-
-      <div className="flex justify-between">
-        {submitError && <div>Error: {submitError}</div>}
-        <DeleteBeerButton
-          isSubmitting={isSubmitting}
-          handleDelete={handleDelete}
-        />
-
-        <button
-          className="create-btn"
-          type="submit"
-          disabled={isSubmitting.current}
-        >
-          {isLoading ? (
-            <span className="loading loading-spinner text-accent"></span>
-          ) : (
-            "Save"
-          )}
+    <div className="flex flex-col justify-center items-center z-50 text-background my-auto ">
+      <div className="flex w-full h-full justify-between items-center p-3 lg:hidden">
+        <button onClick={onClose} className="btn btn-ghost ">
+          <X size={24} />
         </button>
+        <h4>Edit Category Name</h4>
+        <SaveButton
+          isLoading={isLoading}
+          type="submit"
+          onClick={handleSubmit}
+          className="inverse"
+          disabled={!hasEdited}
+        />
       </div>
-    </form>
+      <form className="p-4 form flex flex-col justify-between mx-auto rounded-lg text-white lg:w-3/4 lg:p-0">
+        {/* Name */}
+        <div className="container-create__form text-left ">
+          <label
+            className="label-text text-background pl-3 lg:hidden"
+            htmlFor="name"
+          >
+            Name
+          </label>
+          <input
+            id="name"
+            name="name"
+            ref={fieldRefs.name}
+            className="form__input text-center "
+            value={values.name}
+            onChange={(e) => {
+              setValues({ ...values, name: e.target.value });
+              setHasEdited(true);
+            }}
+            onBlur={handleBlur("name")}
+          />
+          {touched.name && errors.name && <ErrorField message={errors.name} />}
+        </div>
+
+        <div className="flex justify-between p-3 lg:mt-2 lg:pb-0  ">
+          {submitError && <div>Error: {submitError}</div>}
+          <div className=" hidden lg:flex justify-between items-center w-full">
+            {submitError && <div>Error: {submitError}</div>}
+
+            <button
+              className="btn border-none bg-transparent hover:bg-background hover:text-primary text-background"
+              onClick={onClose}
+              type="button"
+            >
+              Cancel
+            </button>
+
+            <SaveButton
+              isLoading={isLoading}
+              type="submit"
+              onClick={handleSubmit}
+              className=" ml-2 inverse"
+              disabled={!hasEdited}
+            />
+          </div>
+        </div>
+      </form>
+    </div>
   );
 };
 export default UpdateCategory;
