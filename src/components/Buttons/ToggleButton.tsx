@@ -14,7 +14,7 @@ const ToggleButton = ({ toggleStates, setToggleStates }: Props) => {
   };
 
   return (
-    <div className="flex items-center w-3/4 h-10 my-3 relative bg-fourth-color rounded-full justify-around overflow-hidden">
+    <div className="flex items-center w-3/4 h-10 lg:w-1/2 my-3 relative bg-fourth-color rounded-full justify-around overflow-hidden">
       <div
         className={`absolute top-0 left-0 h-full transition-transform duration-300 ease-in-out rounded-full ${
           toggleState === toggleStates[0]
@@ -25,7 +25,7 @@ const ToggleButton = ({ toggleStates, setToggleStates }: Props) => {
 
       <button
         onClick={() => handleToggle(toggleStates[0])}
-        className={`flex-1 text-center z-[1] transition-colors duration-300 ${
+        className={`flex-1 text-center z-[1] transition-colors duration-300 lg:text-sm ${
           toggleState === toggleStates[0] ? "text-primary font-bold" : ""
         }`}
       >
@@ -34,7 +34,7 @@ const ToggleButton = ({ toggleStates, setToggleStates }: Props) => {
 
       <button
         onClick={() => handleToggle(toggleStates[1])}
-        className={`flex-1 text-center z-[1] ml-4 transition-colors duration-300 ${
+        className={`flex-1 text-center z-[1] transition-colors duration-300 lg:text-sm ${
           toggleState === toggleStates[1] ? "text-primary font-bold" : ""
         }`}
       >

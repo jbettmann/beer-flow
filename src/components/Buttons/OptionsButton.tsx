@@ -18,38 +18,30 @@ type Props = {
 
 const OptionsButton = ({ handleOptions, className, options }: Props) => {
   return (
-    <div className="dropdown dropdown-end absolute right-5 top-[10%]">
+    <div className="dropdown dropdown-end absolute right-4 top-2">
       <label tabIndex={0}>
-        <button onClick={handleOptions} className={className}>
-          <MoreHorizontal size={24} />
+        <button onClick={handleOptions} className={`${className} btn-sm`}>
+          <MoreHorizontal size={20} />
         </button>
       </label>
 
       <ul
         tabIndex={0}
-        className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 flex items-center"
+        className="menu menu-sm dropdown-content z-[1] p-2 shadow rounded-box w-fit flex items-center bg-white text-primary"
       >
-        {options.map(
-          (option, index) =>
-            option.name === "Edit Category" ? (
-              <li key={index}>
-                <Link
-                  key={index}
-                  href={option.href}
-                  className={`${option.disabled ? "disabled" : ""} p-2 `}
-                >
-                  {option.name}
-                </Link>
-              </li>
-            ) : null
-          // <button
-          //   key={index}
-          //   onClick={option.onClick}
-          //   disabled={option.disabled}
-          //   className={`${option.disabled ? "disabled" : ""} py-2 `}
-          // >
-          //   {option.name}
-          // </button>
+        {options.map((option, index) =>
+          option.name === "Edit Name" ? (
+            <li key={index} className="w-full">
+              <button
+                key={index}
+                onClick={option.onClick}
+                aria-label="Edit Category Name"
+                className={`${option.disabled ? "disabled" : ""} p-1 w-full`}
+              >
+                <p className="w-full text-center text-xs m-0">{option.name}</p>
+              </button>
+            </li>
+          ) : null
         )}
       </ul>
     </div>

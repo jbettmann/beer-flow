@@ -71,9 +71,20 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
 
   return (
     selectedBeers && (
-      <section className="md:w-1/2 mt-10 mx-auto py-3">
+      <section className="sm:w-3/4 md:w-1/2 lg:w-[40%] xl:w-1/3 mt-8 mx-auto py-3 md:mt-0 md:p-8">
         <Suspense fallback={<BreweryProfileSkeleton />}>
-          <h3>Home</h3>
+          <div className="flex justify-center md:p-5">
+            <h3 className="text-center lg:text-left">Home</h3>
+          </div>
+          {/* Small Screen New Category Button */}
+          <div className="fixed right-5 bottom-20 p-1 z-[2] lg:hidden ">
+            <Link
+              href={`/create/${selectedBrewery?._id}/beer`}
+              className="btn btn-circle btn-white create-btn !btn-lg"
+            >
+              <Plus size={28} />
+            </Link>
+          </div>
 
           <div>
             {beersForCategory &&
@@ -102,16 +113,15 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
                 setSelectedBrewery={setSelectedBrewery}
               />
             </div>
-          </div>
-
-          <div className="fixed right-5 bottom-20 lg:static flex justify-center lg:w-full gap-2 items-center p-1">
-            <Link
-              href={`/create/${selectedBrewery?._id}/beer`}
-              className="btn btn-circle create-btn !btn-lg"
-            >
-              <Plus size={30} />
-            </Link>
-            <p className="hidden m-0 text-lg lg:flex">Beer</p>
+            <div className="hidden lg:flex mt-10 justify-center">
+              <Link
+                href={`/create/${selectedBrewery?._id}/beer`}
+                className="create-btn "
+              >
+                <span className="flex justify-center items-center">+ Beer</span>
+                <Beer size={20} />
+              </Link>
+            </div>
           </div>
         </Suspense>
       </section>

@@ -37,10 +37,10 @@ const BeerCard = ({ beerId }: Props) => {
 
   return (
     beer && (
-      <div className=" card w-full lg:mx-auto beer-card shadow-xl ">
-        <div className="flex w-full justify-start">
+      <div className=" card w-full  lg:mx-auto beer-card shadow-xl ">
+        <div className="flex w-full justify-start mb-2 md:mb-0 ">
           <button
-            className={`link link-hover `}
+            className={`link link-hover text-sm lg:text-xs`}
             onClick={() => setIsEditing(!isEditing)}
           >
             {isEditing ? "Cancel" : "Edit"}
@@ -59,9 +59,9 @@ const BeerCard = ({ beerId }: Props) => {
             />
           ) : (
             <>
-              <div className="flex items-center justify-around lg:p-6 relative gap-2 xs:gap-4 md:gap-6">
+              <div className="flex items-center justify-around lg:p-6 lg:pb-3 relative gap-2 xs:gap-4 md:gap-6">
                 {/* Beer Image and Name */}
-                <figure className="rounded-lg overflow-hidden relative flex-initial h-40 lg:h-56 w-36 xs:w-2/5 lg:w-1/2 2xl:w-1/4 p-2">
+                <figure className="rounded-lg overflow-hidden relative flex-initial h-40 lg:h-32 w-36 xs:w-2/5  2xl:w-1/4 p-2">
                   <ImageDisplay className="beer-card__image " item={beer} />
                 </figure>
                 <div className="flex flex-col justify-start">
@@ -76,9 +76,7 @@ const BeerCard = ({ beerId }: Props) => {
                       />
                     </div>
                   ) : null}
-                  <h3 className="card-title justify-start lg:text-3xl">
-                    {beer?.name}
-                  </h3>
+                  <h3 className="card-title justify-start ">{beer?.name}</h3>
 
                   <div>
                     <p className="beer-card__item">
@@ -91,7 +89,7 @@ const BeerCard = ({ beerId }: Props) => {
                   </div>
                 </div>
               </div>
-              <div className="divider"></div>
+              <div className="my-2 divider"></div>
 
               {/* Beer Card Info */}
               <div className="card-body gap-5 items-center w-full">

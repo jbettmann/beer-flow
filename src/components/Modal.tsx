@@ -47,7 +47,7 @@ export default function Modal({
     >
       <div
         ref={wrapper}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full sm:w-10/12 md:w-8/12 lg:w-1/2 p-1 xxs:p-6 h-[80%] xxs:h-[90%] "
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full sm:w-10/12 md:w-8/12 lg:w-1/2 p-1 xxs:p-6 h-full "
       >
         <button
           className="close-btn absolute p-1 xxs:p-6 top-2 xxs:top-4 right-2 xxs:right-4 z-10 text-background"

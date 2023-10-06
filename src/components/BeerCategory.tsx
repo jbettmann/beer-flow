@@ -8,10 +8,14 @@ import { handleBeerView, isNew } from "@/lib/utils";
 import { ChevronRight, Sparkles } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import OptionsButton from "./Buttons/OptionsButton";
 import ImageDisplay from "./ImageDisplay/ImageDisplay";
 import BeerMugBadge from "./Badges/BeerMugBadge";
+import BottomDrawer from "./Drawers/BottomDrawer";
+import UpdateCategory from "./UpdateCategory/UpdateCategory";
+import EditModal from "./Alerts/EditModal";
+import { set } from "mongoose";
 
 type Props = {
   category: Category | NewCategory;
@@ -36,6 +40,8 @@ export default function BeerCategory({
   const { selectedBeers, selectedBrewery } = useBreweryContext();
   // manage archived cat arrow state
   const [isArchivedOpen, setIsArchivedOpen] = useState<string | null>(null);
+  const [editName, setEditName] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const { data: session } = useSession();
 
   const filteredBeers = useMemo(() => {
@@ -72,6 +78,34 @@ export default function BeerCategory({
 
     return groupedBeers;
   };
+
+  const beersInCategory = filteredBeers;
+
+  // Options for the category
+  const options = [
+    {
+      name: "Edit Name",
+      onClick: () => setEditName(true),
+      href: `/breweries/${breweryId}/categories/${category._id}`,
+      disabled: false,
+    },
+    {
+      name: "Delete Category",
+      onClick: async () => {
+        const updateBrewCats = await handleDeleteCategory({
+          categoryId: category._id as any,
+          breweryId: breweryId as any,
+          selectedBeers: selectedBeers as any,
+          selectedBrewery: selectedBrewery as any,
+          token: session?.user?.accessToken as any,
+        });
+
+        if (updateBrewCats) setSelectedBrewery(updateBrewCats as Brewery);
+      },
+
+      disabled: beersInCategory.length > 0, // Disable this option if there are beers in the category
+    },
+  ];
 
   // const renderAllBeers = (beers: Beer[]) => {
   //   const groupedBeers = groupBeersByCategory(beers);
@@ -140,14 +174,13 @@ export default function BeerCategory({
                   key={beer._id}
                 >
                   <div className="inline-flex items-center">
-                   
-                      {beer.image && (
-                        <ImageDisplay
-                          className="beer-category__image"
-                          item={beer}
-                        />
-                      )}
-                  
+                    {beer.image && (
+                      <ImageDisplay
+                        className="beer-category__image"
+                        item={beer}
+                      />
+                    )}
+
                     {beer.name}
                   </div>
                 </Link>
@@ -159,8 +192,6 @@ export default function BeerCategory({
     );
   };
 
-  const beersInCategory = filteredBeers;
-
   // Check if any beer in the category is new
   const isCategoryNew = beersInCategory.some((beer) => isNew(beer));
 
@@ -169,30 +200,40 @@ export default function BeerCategory({
     setIsOptionsOpen(!isOptionsOpen);
   };
 
-  // Options for the category
-  const options = [
-    {
-      name: "Edit Category",
-      href: `/breweries/${breweryId}/categories/${category._id}`,
-      disabled: false,
-    },
-    {
-      name: "Delete Category",
-      onClick: async () => {
-        const updateBrewCats = await handleDeleteCategory({
-          categoryId: category._id as any,
-          breweryId: breweryId as any,
-          selectedBeers: selectedBeers as any,
-          selectedBrewery: selectedBrewery as any,
-          token: session?.user?.accessToken as any,
-        });
+  const debounce = (func: () => void, delay: number) => {
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
-        if (updateBrewCats) setSelectedBrewery(updateBrewCats as Brewery);
-      },
+    return (...args: any[]) => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
 
-      disabled: beersInCategory.length > 0, // Disable this option if there are beers in the category
-    },
-  ];
+      timeoutId = setTimeout(() => {
+        func.apply(null, args as any);
+      }, delay);
+    };
+  };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    const debouncedResize = debounce(handleResize, 250); // 250ms delay
+    // or
+    // const throttledResize = throttle(handleResize, 250); // Execute at most once every 250ms
+
+    window.addEventListener("resize", debouncedResize);
+    // or
+    // window.addEventListener('resize', throttledResize);
+
+    return () => {
+      window.removeEventListener("resize", debouncedResize);
+      // or
+      // window.removeEventListener('resize', throttledResize);
+    };
+  }, []);
+
   return (
     <div className="relative">
       <div
@@ -229,7 +270,7 @@ export default function BeerCategory({
                           item={beer}
                         />
                       )}
-                      {beer.name}
+                      <p className="beer-category__name">{beer.name}</p>
                     </div>
                     <div className="inline-flex justify-center items-center ">
                       {isNew(beer) && (
@@ -262,6 +303,22 @@ export default function BeerCategory({
           className="btn btn-circle btn-ghost"
           options={options}
         />
+      )}
+
+      {isMobile ? (
+        <BottomDrawer isOpen={editName}>
+          <UpdateCategory
+            category={category as Category}
+            onClose={() => setEditName(false)}
+          />
+        </BottomDrawer>
+      ) : (
+        <EditModal isOpen={editName} title="Edit Category Name">
+          <UpdateCategory
+            category={category as Category}
+            onClose={() => setEditName(false)}
+          />
+        </EditModal>
       )}
     </div>
   );
