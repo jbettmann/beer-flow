@@ -84,7 +84,6 @@ const CategorySelect = ({
           control: (base) => ({
             ...base,
             backgroundColor: "primary",
-            padding: "0.25rem",
             color: "#f6f1e",
             borderRadius: "9999px",
             borderColor: "#a8a29e",
