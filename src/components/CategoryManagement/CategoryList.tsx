@@ -467,7 +467,7 @@ const CategoryList = ({
       </div>
       {/* Large Screen Table Layout  */}
       <table
-        className={`hidden lg:table border-separate border-spacing-y-2 first:border-spacing-y-0 p-3 relative`}
+        className={`hidden lg:table border-separate border-spacing-y-0 p-3 relative`}
       >
         {/* head */}
         <thead>
