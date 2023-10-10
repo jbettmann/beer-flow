@@ -24,6 +24,8 @@ type Props = {
   onClick: () => void;
   breweryId: string | undefined;
   setSelectedBrewery: (brewery: Brewery) => void;
+  setBeerForDrawer: (beer: Beer) => void;
+  setBottomDrawerOpen: (isOpen: boolean) => void;
 };
 
 // in BeerCategory.tsx
@@ -34,6 +36,8 @@ export default function BeerCategory({
   onClick,
   breweryId,
   setSelectedBrewery,
+  setBeerForDrawer,
+  setBottomDrawerOpen,
 }: Props) {
   // State for managing the visibility of the options container
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
@@ -44,6 +48,7 @@ export default function BeerCategory({
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const { data: session } = useSession();
 
+  console.log({ beers });
   const filteredBeers = useMemo(() => {
     if (!beers) return [];
     if (category.name === "All Beers") {
@@ -168,22 +173,41 @@ export default function BeerCategory({
             </div>
             <div className="collapse-content category-card__content pb-0">
               {beersInCategory.map((beer) => (
-                <Link
-                  className="flex items-center justify-between"
-                  href={`/breweries/${breweryId}/beers/${beer._id}`}
-                  key={beer._id}
-                >
-                  <div className="inline-flex items-center">
-                    {beer.image && (
+                <>
+                  {/* Desktop  */}
+                  <Link
+                    className="hidden md:flex items-center justify-between"
+                    href={`/breweries/${breweryId}/beers/${beer._id}`}
+                    key={beer._id}
+                  >
+                    <div className="inline-flex items-center">
                       <ImageDisplay
                         className="beer-category__image"
                         item={beer}
                       />
-                    )}
 
-                    {beer.name}
-                  </div>
-                </Link>
+                      {beer.name}
+                    </div>
+                  </Link>
+                  {/* Small screen bottom drawer view */}
+                  <button
+                    className="flex items-center justify-between md:hidden md:disabled"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setBeerForDrawer(beer);
+                      setBottomDrawerOpen(true);
+                    }}
+                  >
+                    <div className="inline-flex items-center">
+                      <ImageDisplay
+                        className="beer-category__image"
+                        item={beer}
+                      />
+
+                      {beer.name}
+                    </div>
+                  </button>
+                </>
               ))}
             </div>
           </div>
@@ -242,56 +266,85 @@ export default function BeerCategory({
           isOpen ? "collapse-open category-card__open" : ""
         } collapse-arrow my-4 `}
       >
-        <div className="collapse-title category-card__title">
+        <div className="collapse-title category-card__title last:mr-auto">
           <p className="ml-8">{category.name}</p>
           {beersInCategory.length > 0 && (
             <BeerMugBadge beerCount={beersInCategory.length} />
           )}
-          {isCategoryNew && <p className="tag-new">NEW</p>}
+          {isCategoryNew && (
+            <>
+              <div className="relative flex justify-center items-center">
+                <p className="m-2 xxs:m-4 indicator-item badge badge-xs xs:badge-sm bg-indigo-300 text-primary ">
+                  NEW
+                </p>
+                <Sparkles
+                  size={15}
+                  strokeWidth={1}
+                  color="#a5b4fc"
+                  className="hidden xxs:block xxs:absolute top-3 right-0"
+                />
+              </div>
+            </>
+          )}
         </div>
         <div className="collapse-content ">
           <div className="flex flex-col category-card__content">
             {category.name === "Archived"
               ? renderArchivedBeers()
               : filteredBeers.map((beer) => (
-                  <Link
-                    className="flex items-center justify-between"
-                    href={`/breweries/${breweryId}/beers/${beer._id}`}
-                    key={beer._id}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleBeerView(beer._id);
-                    }}
-                  >
-                    <div className="inline-flex items-center">
-                      {beer.image && (
+                  <>
+                    {/* Small screen bottom drawer view */}
+                    <button
+                      className="flex items-center justify-between md:hidden md:disabled"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setBeerForDrawer(beer);
+                        setBottomDrawerOpen(true);
+                      }}
+                    >
+                      <div className="inline-flex items-center">
                         <ImageDisplay
                           className="beer-category__image"
                           item={beer}
                         />
-                      )}
-                      <p className="beer-category__name">{beer.name}</p>
-                    </div>
-                    <div className="inline-flex justify-center items-center ">
-                      {isNew(beer) && (
-                        <>
-                          <div className=" relative ">
-                            <p className="hidden md:block md:indicator-item md:badge md:bg-indigo-300  ">
-                              NEW
-                            </p>
-                            <Sparkles
-                              size={20}
-                              strokeWidth={1}
-                              color="#a5b4fc"
-                              className="md:absolute md:top-2 md:right-0"
-                            />
-                          </div>
-                        </>
-                      )}
 
-                      <ChevronRight size={24} strokeWidth={1} />
-                    </div>
-                  </Link>
+                        <p className="beer-category__name">{beer.name}</p>
+                      </div>
+                      <div className="inline-flex justify-center items-center ">
+                        {isNew(beer) && (
+                          <Sparkles size={18} strokeWidth={1} color="#a5b4fc" />
+                        )}
+
+                        <ChevronRight size={24} strokeWidth={1} />
+                      </div>
+                    </button>
+                    {/* Desktop modal page  */}
+                    <Link
+                      className="hidden md:flex items-center justify-between"
+                      href={`/breweries/${breweryId}/beers/${beer._id}`}
+                      key={beer._id}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleBeerView(beer._id);
+                      }}
+                    >
+                      <div className="inline-flex items-center">
+                        <ImageDisplay
+                          className="beer-category__image"
+                          item={beer}
+                        />
+
+                        <p className="beer-category__name">{beer.name}</p>
+                      </div>
+                      <div className="inline-flex justify-center items-center ">
+                        {isNew(beer) && (
+                          <Sparkles size={18} strokeWidth={1} color="#a5b4fc" />
+                        )}
+
+                        <ChevronRight size={24} strokeWidth={1} />
+                      </div>
+                    </Link>
+                  </>
                 ))}
           </div>
         </div>
