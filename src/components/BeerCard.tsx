@@ -2,7 +2,14 @@
 import { Beer } from "@/app/types/beer";
 import { useBreweryContext } from "@/context/brewery-beer";
 import { convertDate, isNew } from "@/lib/utils";
-import { ExternalLink, Hop, LayoutGrid, Sparkles, Wheat } from "lucide-react";
+import {
+  ExternalLink,
+  Hop,
+  LayoutGrid,
+  Sparkles,
+  Wheat,
+  X,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import ToggleButton from "./Buttons/ToggleButton";
 import ImageDisplay from "./ImageDisplay/ImageDisplay";
@@ -11,9 +18,11 @@ import { hopSuggestions, maltSuggestions } from "@/lib/suggestionsDB";
 import Link from "next/link";
 type Props = {
   beerId: string;
+  beerForDrawer?: Beer | null;
+  onClose?: () => void;
 };
 
-const BeerCard = ({ beerId }: Props) => {
+const BeerCard = ({ beerId, beerForDrawer, onClose }: Props) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const { selectedBeers, selectedBrewery } = useBreweryContext();
@@ -32,18 +41,33 @@ const BeerCard = ({ beerId }: Props) => {
   };
 
   useEffect(() => {
-    setBeer(selectedBeers?.find((beer) => beer._id === beerId));
-  }, [selectedBeers]);
+    // If beerForDrawer exists and beer state is undefined, set it.
+    if (beerForDrawer && !beer) {
+      setBeer(beerForDrawer);
+    } else if (!beerForDrawer) {
+      // If beerForDrawer doesn't exist, always try to find the beer from selectedBeers.
+      setBeer(selectedBeers?.find((beer) => beer._id === beerId));
+    }
+  }, [selectedBeers, beerForDrawer, beerId]);
 
   return (
     beer && (
       <div className=" card w-full  lg:mx-auto beer-card shadow-xl ">
-        <div className="flex w-full justify-start mb-2 md:mb-0 ">
+        <div className="flex w-full justify-between mb-2  md:mb-0 bg-primary py-3 sticky top-[-2px] h-10 z-20 md:z-0 md:h-auto md:bg-transparent md:block md:py-0">
           <button
             className={`link link-hover text-sm lg:text-xs`}
             onClick={() => setIsEditing(!isEditing)}
           >
             {isEditing ? "Cancel" : "Edit"}
+          </button>
+          <button
+            className={`md:hidden link link-hover text-sm lg:text-xs`}
+            onClick={() => {
+              onClose!();
+              if (isEditing) setIsEditing(false);
+            }}
+          >
+            <X size={20} strokeWidth={1} />
           </button>
         </div>
 
@@ -59,7 +83,7 @@ const BeerCard = ({ beerId }: Props) => {
             />
           ) : (
             <>
-              <div className="flex items-center justify-around lg:p-6 lg:pb-3 relative gap-2 xs:gap-4 md:gap-6">
+              <div className="flex items-center justify-around lg:p-6 lg:pb-3 relative gap-2 xs:gap-4 md:gap-6 ">
                 {/* Beer Image and Name */}
                 <figure className="rounded-lg overflow-hidden relative flex-initial h-40 lg:h-32 w-36 xs:w-2/5  2xl:w-1/4 p-2">
                   <ImageDisplay className="beer-card__image " item={beer} />
