@@ -317,14 +317,13 @@ const UpdateBeerForm = ({
               {/*  Beer Image */}
               <div className="flex flex-col items-center justify-center p-3 relative">
                 {/*  Existing Beer Image */}
-                {beer?.image && !previewImage && (
+                {!previewImage ? (
                   <ImageDisplay
                     className="bg-transparent border border-stone-400 rounded-xl w-48 h-60 lg:h-40 md:w-full  object-cover"
                     item={beer}
                   />
-                )}
-                {/* Preview of new image */}
-                {previewImage && (
+                ) : (
+                  //  Preview of new image
                   <>
                     <Image
                       className="beer-card__image"
