@@ -1,7 +1,7 @@
 "use client";
 import DefaultBeerImage from "../../assets/img/beer.png";
 import { getImagePublicURL } from "@/lib/utils";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import { useEffect, useState } from "react";
 
 const ImageDisplay = ({
@@ -11,15 +11,19 @@ const ImageDisplay = ({
   item: any;
   className: string;
 }) => {
-  const [imageUrl, setImageUrl] = useState<string | null>("");
+  const [imageUrl, setImageUrl] = useState<string | null | StaticImageData>(
+    null
+  );
 
   useEffect(() => {
     async function fetchUrl() {
-      const url = getImagePublicURL(item.image);
-      if (url) {
-        setImageUrl(url);
+      if (item.image === null || undefined) {
+        setImageUrl(DefaultBeerImage);
       } else {
-        setImageUrl("/../../assets/img/beer.png");
+        const url = getImagePublicURL(item.image);
+        if (url) {
+          setImageUrl(url);
+        }
       }
     }
 
