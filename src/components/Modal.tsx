@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useRef, useEffect, MouseEventHandler } from "react";
 import { useRouter } from "next/navigation";
+import { X } from "lucide-react";
 
 export default function Modal({
   children,
@@ -50,24 +51,11 @@ export default function Modal({
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full sm:w-10/12 md:w-8/12 lg:w-1/2 p-1 xxs:p-6 h-full "
       >
         <button
-          className="close-btn absolute p-1 xxs:p-6 top-2 xxs:top-4 right-2 xxs:right-4 z-10 text-background"
+          className="close-btn absolute p-1 xxs:p-7 top-2 xxs:top-4 right-2 xxs:right-4 z-10 text-background"
           onClick={onDismiss}
         >
           {/* X Close Button SVG */}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
+          <X size={20} strokeWidth={2} color="#f6f1e9" />
         </button>
 
         {children}
