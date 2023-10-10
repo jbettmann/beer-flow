@@ -1,11 +1,15 @@
 "use client";
 import { Category } from "@/app/types/category";
 import { useBreweryContext } from "@/context/brewery-beer";
+import { Beer as BeerIcon, Plus } from "lucide-react";
 import Link from "next/link";
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, use, useEffect, useMemo, useState } from "react";
 import BeerCategory from "./BeerCategory";
 import BreweryProfileSkeleton from "./LoadingSkeleton/BreweryProfileLS";
-import { Beer, Plus } from "lucide-react";
+import { Beer } from "@/app/types/beer";
+import BottomDrawer from "./Drawers/BottomDrawer";
+import BeerCard from "./BeerCard";
+import CreateBeerForm from "./CreateBeerForm/CreateBeerForm";
 
 type pageProps = {
   breweryId: string;
@@ -23,10 +27,36 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
   const [openCategory, setOpenCategory] = useState<string | null | number>(
     null
   );
-
   const [categories, setCategories] = useState<Category[]>([]);
+  // Mobile Beer Card View
+  const [bottomDrawerOpen, setBottomDrawerOpen] = useState<boolean>(false);
+  const [beerForDrawer, setBeerForDrawer] = useState<Beer | null>(null);
+  // Mobile Create Beer View
+  const [isCreateBeer, setIsCreateBeer] = useState<boolean>(false);
 
-  // let categories: Category[] = [...brewery?.categories];
+  const beersForCategory = useMemo(() => {
+    return categories?.map((category, i) => {
+      return selectedBeers?.filter((beer) =>
+        beer.category
+          ? beer?.category.some((cat) => cat.name === category.name) &&
+            !beer.archived
+          : false
+      );
+    });
+  }, [selectedBeers, selectedBrewery, categories]);
+
+  // Handle category change
+  const handleCategoryClick = (categoryKey: any) => {
+    if (typeof window !== "undefined") {
+      if (categoryKey === openCategory) {
+        sessionStorage.removeItem("openCategory");
+        setOpenCategory(null);
+      } else {
+        sessionStorage.setItem("openCategory", categoryKey);
+        setOpenCategory(categoryKey);
+      }
+    }
+  };
 
   // watch for change in selected brewery and beer to update categories
   useEffect(() => {
@@ -45,45 +75,12 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
     }
   }, [selectedBrewery?._id]);
 
-  // Handle category change
-  const handleCategoryClick = (categoryKey: any) => {
-    if (typeof window !== "undefined") {
-      if (categoryKey === openCategory) {
-        sessionStorage.removeItem("openCategory");
-        setOpenCategory(null);
-      } else {
-        sessionStorage.setItem("openCategory", categoryKey);
-        setOpenCategory(categoryKey);
-      }
-    }
-  };
-
-  const beersForCategory = useMemo(() => {
-    return categories?.map((category, i) => {
-      return selectedBeers?.filter((beer) =>
-        beer.category
-          ? beer?.category.some((cat) => cat.name === category.name) &&
-            !beer.archived
-          : false
-      );
-    });
-  }, [selectedBeers, selectedBrewery, categories]);
-
   return (
     selectedBeers && (
       <section className="sm:w-3/4 md:w-1/2 lg:w-[40%] xl:w-1/3 mt-8 mx-auto py-3 md:mt-0 md:p-8">
         <Suspense fallback={<BreweryProfileSkeleton />}>
           <div className="flex justify-center md:p-5">
             <h3 className="text-center lg:text-left">Home</h3>
-          </div>
-          {/* Small Screen New Category Button */}
-          <div className="fixed right-5 bottom-20 p-1 z-[2] lg:hidden ">
-            <Link
-              href={`/create/${selectedBrewery?._id}/beer`}
-              className="btn btn-circle btn-white create-btn !btn-lg"
-            >
-              <Plus size={28} />
-            </Link>
           </div>
 
           <div>
@@ -99,6 +96,8 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
                     isOpen={openCategory == i}
                     breweryId={selectedBrewery?._id}
                     setSelectedBrewery={setSelectedBrewery}
+                    setBeerForDrawer={setBeerForDrawer}
+                    setBottomDrawerOpen={setBottomDrawerOpen}
                   />
                 ) : null;
               })}
@@ -111,6 +110,8 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
                 isOpen={openCategory == "archived"}
                 breweryId={selectedBrewery?._id}
                 setSelectedBrewery={setSelectedBrewery}
+                setBeerForDrawer={setBeerForDrawer}
+                setBottomDrawerOpen={setBottomDrawerOpen}
               />
             </div>
             <div className="hidden lg:flex mt-10 justify-center">
@@ -119,11 +120,37 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
                 className="create-btn "
               >
                 <span className="flex justify-center items-center">+ Beer</span>
-                <Beer size={20} />
+                <BeerIcon size={20} />
               </Link>
+            </div>
+            {/* Small Screen New Category Button */}
+            <div className="fixed right-5 bottom-20 p-1 z-[2] lg:hidden ">
+              <button
+                onClick={() => setIsCreateBeer(true)}
+                className="btn btn-circle btn-white create-btn !btn-lg"
+              >
+                <Plus size={28} />
+              </button>
             </div>
           </div>
         </Suspense>
+        {/* Beer Card View for Mobile */}
+        <BottomDrawer isOpen={bottomDrawerOpen}>
+          {/* @ts-expect-error Server component */}
+          <BeerCard
+            beerForDrawer={beerForDrawer as Beer}
+            onClose={() => {
+              setBottomDrawerOpen(false);
+              setTimeout(() => {
+                setBeerForDrawer(null);
+              }, 500);
+            }}
+          />
+        </BottomDrawer>
+        {/* Create Beer for Mobile */}
+        <BottomDrawer isOpen={isCreateBeer}>
+          <CreateBeerForm setIsCreateBeer={setIsCreateBeer} />
+        </BottomDrawer>
       </section>
     )
   );
