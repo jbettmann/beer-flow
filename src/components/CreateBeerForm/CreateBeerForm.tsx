@@ -15,7 +15,7 @@ import getBreweryBeers from "@/lib/getBreweryBeers";
 import { useBreweryContext } from "@/context/brewery-beer";
 import { Beer } from "@/app/types/beer";
 import Image from "next/image";
-import { ImagePlus } from "lucide-react";
+import { ImagePlus, X } from "lucide-react";
 import { useToast } from "@/context/toast";
 import TrashCanIcon from "../Buttons/TrashCanIcon";
 import SaveButton from "../Buttons/SaveButton";
@@ -23,10 +23,10 @@ import DefaultBeerImage from "../../assets/img/beer.png";
 import getSingleBrewery from "@/lib/getSingleBrewery";
 
 type pageProps = {
-  // brewery?: Brewery;
+  setIsCreateBeer?: (value: boolean) => void;
 };
 
-const CreateBeerForm = ({}: pageProps) => {
+const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
   const { data: session, status, update } = useSession();
 
   const { selectedBeers, selectedBrewery } = useBreweryContext();
@@ -101,6 +101,7 @@ const CreateBeerForm = ({}: pageProps) => {
   };
 
   const onDismiss = useCallback(() => {
+    if (setIsCreateBeer) setIsCreateBeer(false);
     router.back();
   }, [router]);
 
@@ -239,16 +240,28 @@ const CreateBeerForm = ({}: pageProps) => {
       onSubmit={handleSubmit}
       className=" p-4 form flex flex-col justify-between mx-auto rounded-lg shadow-2xl"
     >
-      <button
-        type="button"
-        className="mr-auto text-sm lg:text-xs"
-        onClick={(e) => {
-          e.stopPropagation();
-          handleClear();
-        }}
-      >
-        Clear
-      </button>
+      <div className="flex w-full justify-between mb-2  md:mb-0 bg-primary py-3 sticky top-[-2px] h-10 z-20 md:z-0 md:h-auto md:bg-transparent md:block md:py-0">
+        <button
+          type="button"
+          className="mr-auto text-sm lg:text-xs"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleClear();
+          }}
+        >
+          Clear
+        </button>
+        <button
+          className={`md:hidden link link-hover text-background`}
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsCreateBeer && setIsCreateBeer(false);
+          }}
+          type="button"
+        >
+          <X size={20} strokeWidth={1} />
+        </button>
+      </div>
       <div className="flex flex-col md:flex-row-reverse justify-between p-2 md:p-4 ">
         {/*  Beer Image */}
         <div className="flex flex-col items-center justify-between xl:items-end w-full md:w-[45%] p-2 pt-4 md:pt-2">
