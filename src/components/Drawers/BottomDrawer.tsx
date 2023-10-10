@@ -5,8 +5,14 @@ type Props = {
 };
 function BottomDrawer({ isOpen, children }: Props) {
   return (
-    <div className={`bottom-drawer  ${isOpen ? "open" : ""}`}>
-      <div className=" h-screen bg-primary text-background ">{children}</div>
+    <div
+      className={`bottom-drawer  overflow-y-auto md:overflow-y-visible ${
+        isOpen ? "open" : ""
+      }`}
+    >
+      <div className=" h-screen bg-primary text-background relative">
+        {children}
+      </div>
     </div>
   );
 }
