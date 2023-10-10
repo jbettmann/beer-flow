@@ -57,7 +57,6 @@ const UpdateCategory = ({ category, onClose }: Props) => {
 
   const { addToast } = useToast();
 
-  console.log({ values, initialName });
   // Create a map that connects field names to their refs
   const fieldRefs: RefsType = {
     name: useRef<HTMLInputElement>(null),
