@@ -24,7 +24,7 @@ const CreateNewCategoryCard = ({
   };
   return (
     <div className={`card new-category h-fit py-8 px-6`}>
-      <div className="flex justify-between items-center py-6 ">
+      <div className="flex gap-3 items-center py-6 ">
         <label className=" ">
           <LayoutGrid size={28} strokeWidth={1} />
         </label>
@@ -33,7 +33,7 @@ const CreateNewCategoryCard = ({
           <input
             type="text"
             value={inputValue}
-            className="input rounded-full border-none font-semibold "
+            className="input w-full rounded-full border-none font-semibold "
             autoFocus
             placeholder="Category name"
             onChange={(e) => setInputValue(e.target.value)}
