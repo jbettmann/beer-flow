@@ -33,6 +33,7 @@ import TrashCanIcon from "../Buttons/TrashCanIcon";
 type pageProps = {
   brewery: Brewery | null;
   beer: Beer;
+
   setBeer: (beer: Beer) => void;
   isEditing: boolean;
   setIsEditing: (isEditing: boolean) => void;
@@ -572,7 +573,7 @@ const UpdateBeerForm = ({
             title="Save"
             isLoading={isLoading}
             disabled={isSubmitting.current}
-            className="inverse"
+            className="inverse "
             type="submit"
           />
         </div>
