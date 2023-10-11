@@ -79,7 +79,8 @@ export const handleBeerView = (beerId: string) => {
 const manageLocalStorageSize = () => {
   const maxEntries = 500;
 
-  let viewedBeers = JSON.parse(localStorage.getItem("viewedBeers")) || [];
+  let viewedBeers =
+    JSON.parse(localStorage.getItem("viewedBeers") as string) || [];
 
   // If the size exceeds maxEntries, remove oldest entries.
   if (viewedBeers.length > maxEntries) {
@@ -123,4 +124,17 @@ export function getInitials(name: string) {
   }
 }
 
-// prevent search boncing
+// prevent search debouncing
+export const debounce = (func: () => void, delay: number) => {
+  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
+  return (...args: any[]) => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    timeoutId = setTimeout(() => {
+      func.apply(null, args as any);
+    }, delay);
+  };
+};
