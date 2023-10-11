@@ -16,6 +16,7 @@ import ImageDisplay from "./ImageDisplay/ImageDisplay";
 import UpdateBeerForm from "./UpdateBeerForm/UpdateBeerForm";
 import { hopSuggestions, maltSuggestions } from "@/lib/suggestionsDB";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 type Props = {
   beerId: string;
   beerForDrawer?: Beer | null;
@@ -39,7 +40,7 @@ const BeerCard = ({ beerId, beerForDrawer, onClose }: Props) => {
     const maltDetail = maltSuggestions.find((m) => m.name === malt);
     return maltDetail?.id;
   };
-
+  const router = useRouter();
   useEffect(() => {
     // If beerForDrawer exists and beer state is undefined, set it.
     if (beerForDrawer && !beer) {
@@ -63,7 +64,11 @@ const BeerCard = ({ beerId, beerForDrawer, onClose }: Props) => {
           <button
             className={`md:hidden link link-hover text-sm lg:text-xs`}
             onClick={() => {
-              onClose!();
+              if (onClose) {
+                onClose();
+              } else {
+                router.back();
+              }
               if (isEditing) setIsEditing(false);
             }}
           >
@@ -222,14 +227,12 @@ const BeerCard = ({ beerId, beerForDrawer, onClose }: Props) => {
                       )} */}
                       <div>
                         <h4 className="beer-card__item">
-                          {" "}
                           {convertDate(beer?.releasedOn)}
                         </h4>
                         <p className="beer-card__title">Released Date</p>
                       </div>
                       <div>
                         <h4 className="beer-card__item">
-                          {" "}
                           {convertDate(beer?.updatedAt)}
                         </h4>
                         <p className="beer-card__title">Lasted Updated</p>
