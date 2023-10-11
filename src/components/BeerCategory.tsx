@@ -4,7 +4,7 @@ import { Brewery } from "@/app/types/brewery";
 import { Category, NewCategory } from "@/app/types/category";
 import { useBreweryContext } from "@/context/brewery-beer";
 import { handleDeleteCategory } from "@/lib/handleSubmit/handleDeleteCategory";
-import { handleBeerView, isNew } from "@/lib/utils";
+import { debounce, handleBeerView, isNew } from "@/lib/utils";
 import { ChevronRight, Sparkles } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -48,7 +48,6 @@ export default function BeerCategory({
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const { data: session } = useSession();
 
-  console.log({ beers });
   const filteredBeers = useMemo(() => {
     if (!beers) return [];
     if (category.name === "All Beers") {
@@ -222,20 +221,6 @@ export default function BeerCategory({
   const handleOptions = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     setIsOptionsOpen(!isOptionsOpen);
-  };
-
-  const debounce = (func: () => void, delay: number) => {
-    let timeoutId: ReturnType<typeof setTimeout> | null = null;
-
-    return (...args: any[]) => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-
-      timeoutId = setTimeout(() => {
-        func.apply(null, args as any);
-      }, delay);
-    };
   };
 
   useEffect(() => {
