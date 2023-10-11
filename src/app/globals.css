@@ -105,7 +105,7 @@ p {
   height: 85vh;
   visibility: hidden; /* set to hidden initially */
   transition: all 0.5s ease-in-out;
-  z-index: 2;
+  z-index: 20;
 }
 
 .bottom-drawer.open {
@@ -156,6 +156,12 @@ p {
 .create-btn.inverse 
 {
   @apply bg-background text-primary hover:shadow-lg hover:shadow-[#413c33]   hover:bg-background hover:scale-105 disabled:bg-opacity-20;
+  
+} 
+
+.create-btn.ghost 
+{
+  @apply btn-ghost text-background disabled:text-opacity-20
   
 } 
 
