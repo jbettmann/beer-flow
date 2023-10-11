@@ -95,7 +95,7 @@ const EditBreweryProfile = ({ brewery, onClose }: Props) => {
         <h4>Edit Brewery Profile</h4>
         <SaveButton
           onClick={handleSave}
-          className="btn btn-accent m-4"
+          className="ghost m-4"
           isLoading={isLoading}
         />
       </div>
