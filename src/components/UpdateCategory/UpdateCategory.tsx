@@ -145,7 +145,16 @@ const UpdateCategory = ({ category, onClose }: Props) => {
   return (
     <div className="flex flex-col justify-center items-center z-50 text-background my-auto ">
       <div className="flex w-full h-full justify-between items-center p-3 lg:hidden">
-        <button onClick={onClose} className="btn btn-ghost ">
+        <button
+          onClick={() => {
+            onClose();
+            if (hasEdited) {
+              setValues({ ...values, name: initialName });
+              setHasEdited(false);
+            }
+          }}
+          className="btn btn-ghost "
+        >
           <X size={24} />
         </button>
         <h4>Edit Category Name</h4>
@@ -153,7 +162,7 @@ const UpdateCategory = ({ category, onClose }: Props) => {
           isLoading={isLoading}
           type="submit"
           onClick={handleSubmit}
-          className="inverse"
+          className={`ghost`}
           disabled={!hasEdited}
         />
       </div>
