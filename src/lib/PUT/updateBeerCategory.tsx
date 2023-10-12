@@ -1,7 +1,7 @@
 import { Beer } from "@/app/types/beer";
 
 type pageProps = {
-  updatedCategory: string[];
+  updatedCategory: string[] | string;
   accessToken: string | undefined;
   breweryId: string | undefined;
   beerId: string | null;
