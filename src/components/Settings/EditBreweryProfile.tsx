@@ -89,7 +89,7 @@ const EditBreweryProfile = ({ brewery, onClose }: Props) => {
   return (
     <div className="flex flex-col justify-center items-center z-50 text-background">
       <div className="flex w-full h-full justify-between items-center">
-        <button onClick={onClose} className="btn m-4">
+        <button onClick={onClose} className="btn m-4" type="button">
           <X size={24} />
         </button>
         <h4>Edit Brewery Profile</h4>
