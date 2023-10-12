@@ -208,9 +208,19 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                 </li>
                 <li>
                   {breweries ? (
-                    <button onClick={handleSignOut}>Sign Out</button>
+                    <button
+                      className=" flex flex-row items-center"
+                      onClick={handleSignOut}
+                    >
+                      <h6 className="pl-3">Sign Out</h6>
+                    </button>
                   ) : (
-                    <button onClick={() => signIn()}>Sign In</button>
+                    <button
+                      className=" flex flex-row items-center"
+                      onClick={() => signIn()}
+                    >
+                      <h6 className="pl-3">Sign In</h6>
+                    </button>
                   )}
                 </li>
               </div>
