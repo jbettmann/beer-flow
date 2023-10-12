@@ -206,6 +206,13 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                     <h6 className="pl-3">Help</h6>
                   </Link>
                 </li>
+                <li>
+                  {breweries ? (
+                    <button onClick={handleSignOut}>Sign Out</button>
+                  ) : (
+                    <button onClick={() => signIn()}>Sign In</button>
+                  )}
+                </li>
               </div>
             </div>
           </div>
