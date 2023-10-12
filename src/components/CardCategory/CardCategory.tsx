@@ -4,7 +4,7 @@ import { useBreweryContext } from "@/context/brewery-beer";
 import updateBeerCategory from "@/lib/PUT/updateBeerCategory";
 import { ChevronDown, LayoutGrid, PencilLine, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Beer } from "@/app/types/beer";
 import { useToast } from "@/context/toast";
@@ -14,12 +14,10 @@ import AlertDialog from "../Alerts/AlertDialog";
 import MoveBeerToCategory from "../Alerts/MoveBeerToCategory";
 import BeerMugBadge from "../Badges/BeerMugBadge";
 
-import CardItem from "./CardItem";
-import { FormValues } from "../UpdateCategory/types";
-import EditCategoryCardLS from "../LoadingSkeleton/CategoryManagmentLS/CategoryCardManageLS";
-import CategoryManagementLS from "../LoadingSkeleton/CategoryManagmentLS/CategoryManagementLS";
-import TrashCanIcon from "../Buttons/TrashCanIcon";
 import SaveButton from "../Buttons/SaveButton";
+import TrashCanIcon from "../Buttons/TrashCanIcon";
+import { FormValues } from "../UpdateCategory/types";
+import CardItem from "./CardItem";
 
 type Props = {
   category: Category | NewCategory | any;
@@ -49,14 +47,7 @@ const CardCategory = ({
   beersInCategory,
   handleDeleteAlert,
 }: Props) => {
-  const [toContinue, setToContinue] = useState(false);
-  const [toMoveContinue, setToMoveContinue] = useState(false);
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [alertOpen, setAlertOpen] = useState<boolean>(false);
-  const [moveAlertOpen, setMoveAlertOpen] = useState<boolean>(false);
-
-  const [moveCategory, setMoveCategory] = useState<FormValues | []>([]);
 
   const [checkedBeers, setCheckedBeers] = useState<
     Record<string, Record<string, boolean>>
@@ -125,203 +116,6 @@ const CardCategory = ({
       }));
     }
   };
-
-  const getButtonsState = (categoryId: string) => {
-    let isMoveAllButtonVisible = false;
-    let isRemoveAllButtonVisible = true;
-    let checkedCount = 0;
-
-    for (const beerId in checkedBeers[categoryId]) {
-      if (checkedBeers[categoryId][beerId]) {
-        const beer = selectedBeers?.find((b) => b._id === beerId);
-        isMoveAllButtonVisible = true; // At least one beer is checked
-        checkedCount++;
-
-        // If a beer is found and it has only one category, then the Remove All button should not be visible
-        if (!(beer?.category && beer.category.length > 1)) {
-          isRemoveAllButtonVisible = false;
-          break; // Exit the loop early since one non-removable beer is enough
-        }
-      }
-    }
-
-    // If no beers are checked, the Remove All button should not be visible
-    if (checkedCount === 0) {
-      isRemoveAllButtonVisible = false;
-    }
-
-    return { isMoveAllButtonVisible, isRemoveAllButtonVisible };
-  };
-
-  const beersToUpdate = () => {
-    // Identify the beers that need to be moved
-    const beerIdsToMove = Object.keys(checkedBeers[category._id] || {}).filter(
-      (beerId) => checkedBeers[category._id][beerId]
-    );
-
-    if (beerIdsToMove.length === 0) return; // No beers to move
-
-    return beerIdsToMove;
-  };
-
-  const removeBeersFromCategory = async (categoryId: string) => {
-    try {
-      // Determine which beers to update
-
-      const beerIdsToUpdate = beersToUpdate() || [];
-
-      // Prepare the updated categories for each beer by removing the specified category
-      const updatedBeersRequests = beerIdsToUpdate
-        .map((beerId) => {
-          const beer = selectedBeers?.find((b) => b._id === beerId);
-          if (!beer) return null;
-
-          // Build an array of category IDs that don't include the one being removed
-          const updatedCategoryIds = beer.category
-            .filter((cat) => cat._id !== categoryId)
-            .map((cat) => cat._id);
-
-          return updateBeerCategory({
-            beerId,
-            updatedCategory: updatedCategoryIds,
-            breweryId: selectedBrewery?._id,
-            accessToken: session?.user.accessToken,
-          });
-        })
-        .filter(Boolean);
-
-      // Call the `updateBeerCategory` function for each updated beer
-      await Promise.all(updatedBeersRequests);
-
-      // Update the client state
-      setSelectedBeers((prevSelectedBeers) => {
-        if (!prevSelectedBeers) return prevSelectedBeers;
-        // Iterate over the previous selected beers and create a new array
-        return prevSelectedBeers?.map((beer: Beer) => {
-          if (beerIdsToUpdate.includes(beer._id)) {
-            // If this beer's ID is in the list of IDs to update, remove the category from its categories
-            const updatedCategories = beer.category.filter(
-              (cat) => cat._id !== categoryId
-            );
-            return { ...beer, category: updatedCategories }; // Return the updated beer object
-          } else {
-            return beer; // If it's not the beer we want to update, return it as is
-          }
-        });
-      });
-
-      // Optionally, you may want to reset the checked beers for this category
-      setCheckedBeers((prevCheckedBeers) => ({
-        ...prevCheckedBeers,
-        [categoryId]: {},
-      }));
-    } catch (error) {
-      console.error(
-        "An error occurred while removing beers from category:",
-        error
-      );
-
-      // Optionally, show an error message to the user
-    } finally {
-      setToContinue(false);
-      setIsEmpty(!beersInCategory || beersInCategory.length === 0);
-    }
-  };
-
-  const moveBeerToCategory = async (categoryId: string) => {
-    try {
-      // Determine which beers to update
-      const beerIdsToMove = beersToUpdate() || [];
-
-      const updatedBeersRequests = beerIdsToMove
-        .map((beerId) => {
-          const beer = selectedBeers?.find((b) => b._id === beerId);
-          if (!beer) return null;
-
-          // Remove the current category and add the target category
-          const updatedCategoryIds = beer.category
-            .filter((cat) => cat._id !== category._id) // Exclude current category
-            .map((cat) => cat._id);
-
-          return handleMoveBeerToCategory({
-            values: moveCategory,
-            beerId,
-            updatedCategory: updatedCategoryIds,
-            brewery: selectedBrewery,
-            accessToken: session?.user.accessToken,
-          });
-        })
-        .filter(Boolean);
-
-      // Update the beers with the new category
-      const updatedBeers = await Promise.all(updatedBeersRequests);
-
-      // Extract all unique category IDs from the updated beers
-      const updatedCategoryIds = new Set(
-        updatedBeers.flatMap((beer) => beer?.category.map((cat) => cat._id))
-      );
-
-      // Identify the new categories that are not in the selectedBrewery.categories
-      const newCategories: Category[] = [];
-      updatedCategoryIds.forEach((categoryId) => {
-        if (
-          (!selectedBrewery?.categories as any).some(
-            (cat: Category) => cat?._id === categoryId
-          )
-        ) {
-          const newCategory = updatedBeers
-            .flatMap((beer) => beer?.category)
-            .find((cat) => cat?._id === categoryId);
-          if (newCategory) {
-            newCategories.push(newCategory);
-          }
-        }
-      });
-
-      // NEED updatedBeers to return the updated beers with the new category
-      // If there are new categories, update the selectedBrewery
-      if (newCategories.length > 0) {
-        setSelectedBrewery((prevBrewery) => {
-          if (!prevBrewery) return prevBrewery;
-          return {
-            ...prevBrewery,
-            categories: [...(prevBrewery?.categories || []), ...newCategories],
-          };
-        });
-      }
-      // Update the client state with the newly updated beers
-      setSelectedBeers((prevSelectedBeers) => {
-        if (!prevSelectedBeers) return prevSelectedBeers;
-        return prevSelectedBeers?.map((prevBeer) => {
-          const updatedBeer = updatedBeers.find(
-            (beer) => beer?._id === prevBeer._id
-          );
-          return updatedBeer || prevBeer; // Replace the beer if it was updated, or keep it as is
-        });
-      });
-
-      // Optionally, you may want to reset the checked beers for this category
-      setCheckedBeers((prevCheckedBeers) => ({
-        ...prevCheckedBeers,
-        [categoryId]: {},
-      }));
-    } catch (error) {
-      console.error(
-        "An error occurred while removing beers from category:",
-        error
-      );
-
-      // Optionally, show an error message to the user
-    } finally {
-      setMoveAlertOpen(false);
-      setIsEmpty(!beersInCategory || beersInCategory.length === 0);
-    }
-  };
-
-  // Get the state for the buttons specific to this category
-  const { isMoveAllButtonVisible, isRemoveAllButtonVisible } = getButtonsState(
-    category._id as string
-  );
 
   const getCategoriesNotInCheckedBeers = () => {
     // Get all the unique categories from selectedBrewery
@@ -414,16 +208,6 @@ const CardCategory = ({
     handleEmptyCategory(category._id, isEmpty);
   }, [isEmpty]);
 
-  // Call Remove or Move Beer to Category
-  useEffect(() => {
-    if (toContinue) {
-      removeBeersFromCategory(category._id);
-    }
-    if (toMoveContinue) {
-      moveBeerToCategory(category._id);
-    }
-  }, [toContinue, toMoveContinue]);
-
   // Update the isCheckedstate when selectAll changes
   useEffect(() => {
     handleEmptyCategory(category._id, isEmpty);
@@ -440,26 +224,6 @@ const CardCategory = ({
 
   return (
     <>
-      {/*  Remove Beer From Category */}
-      <AlertDialog
-        title=""
-        message={`Selected beers will be removed from ${category.name}`}
-        isOpen={alertOpen}
-        onClose={() => setAlertOpen(false)}
-        onConfirm={() => setToContinue(true)}
-      />
-
-      {/* Move Beer to Category */}
-      <MoveBeerToCategory
-        title=""
-        message={`Selected beers will be moved to:`}
-        checkedBeers={categoriesNotInCheckedBeers as Category[]}
-        setValues={setMoveCategory}
-        onClose={() => setMoveAlertOpen(false)}
-        onConfirm={() => setToMoveContinue(true)}
-        isOpen={moveAlertOpen}
-      />
-
       <div
         className={`card category-card transition-colors duration-75  relative py-8 ${
           isOpen ? "  category-card__open  shadow-2xl" : " "
@@ -609,8 +373,6 @@ const CardCategory = ({
                         handleCheckbox={(beerId, isChecked) =>
                           handleBeerCheckbox(category._id, beerId, isChecked)
                         }
-                        setAlertOpen={setAlertOpen}
-                        setMoveAlertOpen={setMoveAlertOpen}
                         isChecked={
                           checkedBeers[category._id]?.[beer._id] || false
                         }
