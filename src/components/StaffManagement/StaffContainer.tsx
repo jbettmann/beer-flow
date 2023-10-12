@@ -1,7 +1,7 @@
 "use client";
 import { useBreweryContext } from "@/context/brewery-beer";
 import { useSession } from "next-auth/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import StaffDashboard from "./StaffDashboard";
 import StaffTable from "./StaffTable";
 import Link from "next/link";
@@ -9,6 +9,8 @@ import { Plus, UserPlus } from "lucide-react";
 import BottomDrawer from "../Drawers/BottomDrawer";
 import MultipleInvites from "../Invite/MultipuleInvites";
 import { Users } from "@/app/types/users";
+import EditModal from "../Alerts/EditModal";
+import { debounce } from "@/lib/utils";
 
 type Props = {};
 
@@ -16,6 +18,22 @@ const StaffContainer = (props: Props) => {
   const { selectedBrewery } = useBreweryContext();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [viewFilter, setViewFilter] = useState<string>("All Staff");
+
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 1024);
+    };
+
+    const debouncedResize = debounce(handleResize, 250); // 250ms delay
+
+    window.addEventListener("resize", debouncedResize);
+
+    return () => {
+      window.removeEventListener("resize", debouncedResize);
+    };
+  }, []);
 
   return (
     selectedBrewery?.staff && (
@@ -58,12 +76,23 @@ const StaffContainer = (props: Props) => {
             setIsOpen={setIsOpen}
           />
         </div>
-        <BottomDrawer isOpen={isOpen}>
-          <MultipleInvites
-            breweryId={selectedBrewery._id}
-            setIsOpen={setIsOpen}
-          />
-        </BottomDrawer>
+        {isMobile ? (
+          <BottomDrawer isOpen={isOpen}>
+            <MultipleInvites
+              breweryId={selectedBrewery._id}
+              setIsOpen={setIsOpen}
+            
+            />
+          </BottomDrawer>
+        ) : (
+          <EditModal isOpen={isOpen} title="Invite">
+            <MultipleInvites
+              breweryId={selectedBrewery._id}
+              setIsOpen={setIsOpen}
+          
+            />
+          </EditModal>
+        )}
       </>
     )
   );
