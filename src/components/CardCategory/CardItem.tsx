@@ -1,41 +1,166 @@
 "use client";
 import { Beer } from "@/app/types/beer";
 import { Category } from "@/app/types/category";
-import { beerInCategory, convertDate } from "@/lib/utils";
-import {
-  Beer as BeerMug,
-  Check,
-  Flame,
-  LogIn,
-  Scissors,
-  Skull,
-} from "lucide-react";
-import { useState, useEffect } from "react";
+import { Beer as BeerMug, Check, Flame, LogIn, Scissors } from "lucide-react";
+import { useEffect, useState } from "react";
+import AlertDialog from "../Alerts/AlertDialog";
+import MoveBeerToCategory from "../Alerts/MoveBeerToCategory";
+import { useBreweryContext } from "@/context/brewery-beer";
+import { useSession } from "next-auth/react";
+import { useToast } from "@/context/toast";
+import { FormValues } from "../UpdateCategory/types";
+import handleMoveBeerToCategory from "@/lib/handleSubmit/handleMoveBeerToCategory";
 
 type Props = {
   category: Category;
   beer: Beer;
   isChecked: boolean;
   handleCheckbox: (beerId: string, isChecked: boolean) => void;
-  setAlertOpen: (value: boolean) => void;
-  setMoveAlertOpen: (value: boolean) => void;
 };
 
-const CardItem = ({
-  category,
-  beer,
-  handleCheckbox,
-  isChecked,
-  setAlertOpen,
-  setMoveAlertOpen,
-}: Props) => {
+const CardItem = ({ category, beer, handleCheckbox, isChecked }: Props) => {
   const isInMultipleCategories = beer.category && beer.category.length > 1;
   const [checked, setChecked] = useState(isChecked);
+  const [removeSingleAlert, setRemoveSingleAlert] = useState<boolean>(false);
+  const [moveSingleAlert, setMoveSingleAlert] = useState<boolean>(false);
 
-  // Update the local state if the isChecked prop changes
-  useEffect(() => {
-    setChecked(isChecked);
-  }, [isChecked]);
+  const [isRemoveLoading, setIsRemoveLoading] = useState<boolean>(false);
+  const [isMoveLoading, setIsMoveLoading] = useState<boolean>(false);
+
+  const [moveCategory, setMoveCategory] = useState<FormValues[] | []>([]);
+
+  const { addToast } = useToast();
+  const { data: session } = useSession();
+  const {
+    selectedBeers,
+    selectedBrewery,
+    setSelectedBeers,
+    setSelectedBrewery,
+  } = useBreweryContext();
+
+  // Remove beers from category
+  const removeSingleBeersFromCategory = async (beerId: string) => {
+    if (checked) {
+      setIsRemoveLoading(true);
+      try {
+        // Determine which beers to update
+
+        // Build an array of category IDs that don't include the one being removed
+        const updatedCategoryId = beer.category
+          .filter((cat) => cat._id !== category._id)
+          .map((cat) => cat._id);
+
+        const updateBeer = await updateBeerCategory({
+          beerId,
+          updatedCategory: updatedCategoryId,
+          breweryId: selectedBrewery?._id,
+          accessToken: session?.user.accessToken,
+        });
+
+        console.log({ updateBeer });
+
+        if (updateBeer) {
+          // Update the client state
+          setSelectedBeers((prevSelectedBeers) => {
+            if (!prevSelectedBeers) return null;
+            // Iterate over the previous selected beers and create a new array
+            return prevSelectedBeers?.map((beer) => {
+              // If this beer's ID is in the list of IDs to update, remove the category from its categories
+              const updatedCategories = beer.category.filter(
+                (cat) => cat._id !== category._id
+              );
+              return { ...beer, category: updatedCategories }; // Return the updated beer object
+            });
+          });
+
+          addToast(`${beer.name} was removed from ${category.name}`, "success");
+        }
+        handleClick();
+      } catch (error: any) {
+        addToast(error.message, "error");
+        console.error(
+          "An error occurred while removing beers from category:",
+          error
+        );
+      } finally {
+        setIsRemoveLoading(false);
+        setRemoveSingleAlert(false);
+      }
+    }
+    return;
+  };
+  console.log({ moveCategory });
+
+  // Move beers to category
+  const moveSingleBeerToCategory = async () => {
+    if (checked) {
+      setIsMoveLoading(true);
+      try {
+        // Remove the current category and add the target category
+        const updatedCategoryIds = beer.category
+          .filter((cat) => cat._id !== category._id) // Exclude current category
+          .map((cat) => cat._id);
+
+        const movedBeer = handleMoveBeerToCategory({
+          values: moveCategory,
+          beerId: beer._id,
+          updatedCategory: updatedCategoryIds,
+          brewery: selectedBrewery,
+          accessToken: session?.user.accessToken,
+        });
+
+        // Identify the new categories that are not in the selectedBrewery.categories
+        const newCategories: Category[] = [];
+        beer.category.forEach((category) => {
+          if (
+            !selectedBrewery?.categories.some((cat) => cat._id === category._id)
+          ) {
+            newCategories.push(category);
+          }
+        });
+
+        // NEED updatedBeers to return the updated beers with the new category
+        // If there are new categories, update the selectedBrewery
+        if (newCategories.length > 0) {
+          setSelectedBrewery((prevBrewery) => {
+            if (!prevBrewery) return null;
+            return {
+              ...prevBrewery,
+              categories: [
+                ...(prevBrewery?.categories || []),
+                ...newCategories,
+              ],
+            };
+          });
+        }
+        // Update the client state with the newly updated beers
+        setSelectedBeers((prevSelectedBeers) => {
+          if (!prevSelectedBeers) return null;
+
+          return { ...prevSelectedBeers, movedBeer };
+        });
+
+        addToast(
+          `${beer.name} was moved to ${(moveCategory as any).category.map(
+            (cat: any) => cat.value
+          )}`,
+          "success"
+        );
+
+        handleClick();
+      } catch (error: any) {
+        addToast(error.message, "error");
+        console.error(
+          "An error occurred while removing beers from category:",
+          error
+        );
+      } finally {
+        setMoveSingleAlert(false);
+        setIsMoveLoading(false);
+      }
+    }
+    return;
+  };
 
   // detect source of click
   const handleClick = () => {
@@ -46,88 +171,130 @@ const CardItem = ({
     handleCheckbox(beer._id, newChecked);
   };
 
+  // Update the local state if the isChecked prop changes
+  useEffect(() => {
+    setChecked(isChecked);
+  }, [isChecked]);
+
   return (
-    <div
-      className={`flex justify-between items-center relative my-2 p-2 transition-all  ${
-        checked ? "category-card__selected rounded-lg" : ""
-      }`}
-      onClick={handleClick}
-    >
-      <div className="hover:cursor-pointer px-2 py-6">
-        <div className="flex items-center space-x-3 ">
-          <label>
-            <input type="checkbox" className="hidden" checked={checked} />
-            {checked ? (
-              <div className=" bg-primary rounded-full p-1">
-                <Check size={24} color="#f9fafb" />
-              </div>
-            ) : (
-              <BeerMug size={24} strokeWidth={1} className="" />
-            )}
-          </label>
+    <>
+      {/*  Remove Beer From Category */}
+      {removeSingleAlert && (
+        <AlertDialog
+          title="Remove Beer From Category"
+          message={`${beer.name} will be removed from ${category.name}`}
+          isOpen={removeSingleAlert}
+          onClose={() => setRemoveSingleAlert(false)}
+          onConfirm={() => removeSingleBeersFromCategory(beer._id)}
+        />
+      )}
 
-          <div>
-            <div className="font-bold flex">
-              {beer.name}
-              {isInMultipleCategories && (
-                <span
-                  className=" text-gray-600 cursor-pointer "
-                  title={`Beer is in more than one category`}
-                >
-                  <Flame size={12} strokeWidth={2} />
-                </span>
+      {/* Move Beer to Category */}
+      {moveSingleAlert && (
+        <MoveBeerToCategory
+          title="Move Beer"
+          message={`Move ${beer.name} to a different category`}
+          checkedBeers={
+            selectedBrewery?.categories.filter(
+              (cat) => cat._id !== category._id
+            ) as Category[]
+          }
+          setValues={setMoveCategory}
+          onClose={() => setMoveSingleAlert(false)}
+          onConfirm={moveSingleBeerToCategory}
+          isOpen={moveSingleAlert}
+        />
+      )}
+      <div
+        className={`flex justify-between items-center relative my-2 p-2 transition-all  ${
+          checked ? "category-card__selected rounded-lg" : ""
+        }`}
+        onClick={handleClick}
+      >
+        <div className="hover:cursor-pointer px-2 py-6">
+          <div className="flex items-center space-x-3 ">
+            <label>
+              <input type="checkbox" className="hidden" checked={checked} />
+              {checked ? (
+                <div className=" bg-primary rounded-full p-1">
+                  <Check size={24} color="#f9fafb" />
+                </div>
+              ) : (
+                <BeerMug size={24} strokeWidth={1} className="" />
               )}
-            </div>
+            </label>
 
-            <div className="hover:cursor-pointer text-xs ">
-              <div>{beer.style ? beer.style : null}</div>
+            <div>
+              <div className="font-bold flex">
+                {beer.name}
+                {isInMultipleCategories && (
+                  <span
+                    className=" text-gray-600 cursor-pointer "
+                    title={`Beer is in more than one category`}
+                  >
+                    <Flame size={12} strokeWidth={2} />
+                  </span>
+                )}
+              </div>
+
+              <div className="hover:cursor-pointer text-xs ">
+                <div>{beer.style ? beer.style : null}</div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {checked ? (
-        <div className="inline-flex justify-center items-center">
-          {isInMultipleCategories && (
+        {checked ? (
+          <div className="inline-flex justify-center items-center">
+            {isInMultipleCategories && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setRemoveSingleAlert(true);
+                }}
+                className={`btn btn-circle ${
+                  isChecked ? "btn-error " : "btn-disabled"
+                } `}
+              >
+                {isRemoveLoading ? (
+                  <span className="loading loading-spinner"></span>
+                ) : (
+                  <span title="Remove from Category">
+                    <Scissors strokeWidth={1} size={20} />
+                  </span>
+                )}
+              </button>
+            )}
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                setAlertOpen(true);
+                setMoveSingleAlert(true);
               }}
-              className={`btn btn-circle ${
-                isChecked ? "btn-error " : "btn-disabled"
+              className={`btn btn-circle ml-2 ${
+                isChecked ? "btn-warning" : "btn-disabled"
               } `}
             >
-              <span title="Remove from Category">
-                <Scissors strokeWidth={1} size={20} />
-              </span>
+              {isMoveLoading ? (
+                <span className="loading loading-spinner"></span>
+              ) : (
+                <span title="Move to different Category">
+                  <LogIn size={20} strokeWidth={1} />
+                </span>
+              )}
             </button>
-          )}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setMoveAlertOpen(true);
-            }}
-            className={`btn btn-circle ml-2 ${
-              isChecked ? "btn-warning" : "btn-disabled"
-            } `}
-          >
-            <span title="Move to different Category">
-              <LogIn size={20} strokeWidth={1} />
-            </span>
-          </button>
-        </div>
-      ) : (
-        <>
-          <div
-            className="hover:cursor-pointer text-base font-bold"
-            onClick={handleClick}
-          >
-            <div>{beer.abv ? beer.abv + "%" : null} </div>
           </div>
-        </>
-      )}
-    </div>
+        ) : (
+          <>
+            <div
+              className="hover:cursor-pointer text-base font-bold"
+              onClick={handleClick}
+            >
+              <div>{beer.abv ? beer.abv + "%" : null} </div>
+            </div>
+          </>
+        )}
+      </div>
+    </>
   );
 };
 
