@@ -55,6 +55,9 @@ p {
   @apply m-4 
 }
 
+.alert-modal {
+  @apply bg-primary text-background bg-opacity-10 rounded-xl border-none
+}
 
 
 .beer-category__image {
@@ -277,9 +280,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   @apply bg-fourth-color
 }
 
-.alert-modal {
-  @apply bg-primary text-background bg-opacity-10 rounded-xl border-none
-}
+
 
 .new-category {
   @apply bg-primary bg-opacity-10 shadow-xl
