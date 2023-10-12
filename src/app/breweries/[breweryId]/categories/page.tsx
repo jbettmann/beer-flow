@@ -6,7 +6,7 @@ type Props = {};
 
 const CategoriesManagementPage = (props: Props) => {
   return (
-    <div className="py-3 md:p-8">
+    <div className="py-3 lg:p-8 lg:w-10/12 mx-auto">
       <Suspense fallback={<CategoryManagementLS />}>
         {/* @ts-expect-error Server Component */}
         <CategoryContainer />
