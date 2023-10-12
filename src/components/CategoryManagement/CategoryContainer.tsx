@@ -1,12 +1,10 @@
 "use client";
 import { useBreweryContext } from "@/context/brewery-beer";
-import { LayoutGrid, Plus } from "lucide-react";
-import Link from "next/link";
+import { Plus } from "lucide-react";
 import { useState } from "react";
 import CategoryDashboard from "./CategoryDashboard";
 import CategoryList from "./CategoryList";
-import StaffManagementTable from "../LoadingSkeleton/StaffManagementTableLS";
-import { Brewery } from "@/app/types/brewery";
+import { Users } from "@/app/types/users";
 
 type Props = {};
 
@@ -16,15 +14,15 @@ const CategoryContainer = (props: Props) => {
   const [viewFilter, setViewFilter] = useState<string>("All");
 
   return (
-    selectedBrewery?.staff && (
+    selectedBrewery?.categories && (
       <>
         {/* Large Screen New Category Button */}
-        <div className="flex justify-between md:p-5 ">
+        <div className="flex justify-between md:p-5 md:pr-0 ">
           <div className="flex flex-col w-fit mx-auto lg:m-0 lg:my-auto ">
             <h3 className="text-center lg:text-left">Category Management</h3>
-            {/* <div className="text-sm badge badge-ghost opacity-50 mt-2">
-              Owner {selectedBrewery.owner.fullName || ""}
-            </div> */}
+            <div className="text-sm badge badge-ghost opacity-50 mt-2">
+              Owner {(selectedBrewery.owner as Users).fullName || ""}
+            </div>
           </div>
           <div className="hidden lg:block">
             <button
@@ -45,7 +43,7 @@ const CategoryContainer = (props: Props) => {
             <Plus size={28} />
           </button>
         </div>
-        <div className="flex flex-col w-full  md:p-5">
+        <div className="flex flex-col w-full sm:w-2/3 lg:w-full  md:p-5 mx-auto">
           <CategoryDashboard
             setViewFilter={setViewFilter}
             viewFilter={viewFilter}
