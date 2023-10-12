@@ -92,17 +92,6 @@ const manageLocalStorageSize = () => {
   }
 };
 
-export const beerInCategory = (
-  beers: Beer[] | null,
-  category: Category | NewCategory
-) => {
-  return beers?.filter((beer) => {
-    return beer.category
-      ? beer.category.some((cat) => cat.name === category.name)
-      : false;
-  });
-};
-
 // create default mark for brewery with no image/logo
 export function getInitials(name: string) {
   // Exclude any signs like &,$,/,@,$
