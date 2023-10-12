@@ -146,6 +146,7 @@ const UpdateCategory = ({ category, onClose }: Props) => {
     <div className="flex flex-col justify-center items-center z-50 text-background my-auto ">
       <div className="flex w-full h-full justify-between items-center p-3 lg:hidden">
         <button
+          type="button"
           onClick={() => {
             onClose();
             if (hasEdited) {
