@@ -1,16 +1,9 @@
 "use client";
 import { Beer } from "@/app/types/beer";
 import { Category } from "@/app/types/category";
-import { beerInCategory, convertDate } from "@/lib/utils";
-import {
-  Beer as BeerMug,
-  Check,
-  Flame,
-  LogIn,
-  Scissors,
-  Skull,
-} from "lucide-react";
-import { useState, useEffect } from "react";
+import { convertDate } from "@/lib/utils";
+import { Beer as BeerMug, Flame } from "lucide-react";
+import { useEffect, useState } from "react";
 
 type Props = {
   category: Category;
@@ -18,8 +11,6 @@ type Props = {
   isChecked: boolean;
   isOpen: boolean;
   handleCheckbox: (beerId: string, isChecked: boolean) => void;
-  setAlertOpen: React.Dispatch<React.SetStateAction<boolean | string>>;
-  setMoveAlertOpen: React.Dispatch<React.SetStateAction<boolean | string>>;
 };
 
 const CategoryItem = ({
@@ -28,8 +19,6 @@ const CategoryItem = ({
   isOpen,
   handleCheckbox,
   isChecked,
-  setAlertOpen,
-  setMoveAlertOpen,
 }: Props) => {
   const isInMultipleCategories = beer.category && beer.category.length > 1;
   const [checked, setChecked] = useState(isChecked);
@@ -42,6 +31,7 @@ const CategoryItem = ({
     setChecked(newChecked);
     handleCheckbox(beer._id, newChecked);
   };
+
   // Update the local state if the isChecked prop changes
   useEffect(() => {
     setChecked(isChecked);
@@ -56,77 +46,52 @@ const CategoryItem = ({
   }, [isOpen]);
 
   return (
-    <tr className={`relative ${checked ? "table-row__checked" : ""}`}>
-      <th className="rounded-l-lg !py-6">
-        <label>
-          <input
-            type="checkbox"
-            className="checkbox"
-            onClick={handleClick}
-            checked={checked}
-          />
-        </label>
-      </th>
-      <td className="hover:cursor-pointer " onClick={handleClick}>
-        <div className="flex items-center space-x-3 ">
-          <BeerMug size={24} strokeWidth={1} className="" />
+    <>
+      <tr className={`relative ${checked ? "table-row__checked" : ""}`}>
+        <th className="rounded-l-lg !py-6">
+          <label>
+            <input
+              type="checkbox"
+              className="checkbox"
+              onClick={handleClick}
+              checked={checked}
+            />
+          </label>
+        </th>
+        <td className="hover:cursor-pointer " onClick={handleClick}>
+          <div className="flex items-center space-x-3 ">
+            <BeerMug size={24} strokeWidth={1} className="" />
 
-          <div>
-            <div className="font-bold flex">
-              {beer.name}{" "}
-              {isInMultipleCategories && (
-                <span
-                  className="ml-2  cursor-pointer"
-                  title={`Beer is in more than one category`}
-                >
-                  <Flame size={12} strokeWidth={2} />
-                </span>
-              )}
+            <div>
+              <div className="font-bold flex">
+                {beer.name}
+                {isInMultipleCategories && (
+                  <span
+                    className="ml-2  cursor-pointer"
+                    title={`Beer is in more than one category`}
+                  >
+                    <Flame size={12} strokeWidth={2} />
+                  </span>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      </td>
+        </td>
 
-      <td className="hover:cursor-pointer" onClick={handleClick}>
-        <div>{beer.style ? beer.style : null}</div>
-      </td>
-      <td className="hover:cursor-pointer" onClick={handleClick}>
-        <div>{beer.abv ? beer.abv + "%" : null} </div>
-      </td>
-      <td className="hover:cursor-pointer" onClick={handleClick}>
-        <div>{beer.updatedAt ? convertDate(beer.updatedAt) : null}</div>
-      </td>
-      <th className="absolute right-0  ">
-        {isInMultipleCategories && (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setAlertOpen(true);
-            }}
-            className={`btn btn-circle ${
-              isChecked ? "btn-error " : "btn-disabled"
-            } `}
-          >
-            <span title="Remove from Category">
-              <Scissors strokeWidth={1} size={20} />
-            </span>
-          </button>
-        )}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            setMoveAlertOpen(true);
-          }}
-          className={`btn btn-circle ml-2 ${
-            isChecked ? "btn-warning" : "btn-disabled"
-          } `}
+        <td className="hover:cursor-pointer" onClick={handleClick}>
+          <div>{beer.style ? beer.style : null}</div>
+        </td>
+        <td className="hover:cursor-pointer" onClick={handleClick}>
+          <div>{beer.abv ? beer.abv + "%" : null} </div>
+        </td>
+        <td
+          className="hover:cursor-pointer rounded-r-lg "
+          onClick={handleClick}
         >
-          <span title="Move to different Category">
-            <LogIn size={20} strokeWidth={1} />
-          </span>
-        </button>
-      </th>
-    </tr>
+          <div>{beer.updatedAt ? convertDate(beer.updatedAt) : null}</div>
+        </td>
+      </tr>
+    </>
   );
 };
 
