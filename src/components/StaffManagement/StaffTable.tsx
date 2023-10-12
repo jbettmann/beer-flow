@@ -177,7 +177,7 @@ const StaffTable = ({ viewFilter, brewery, setIsOpen }: Props) => {
             </ul>
           </div>
         </div>
-        <div className="overflow-x-auto flex-auto flex-col justify-center   mx-auto lg:w-full">
+        <div className="flex-auto flex-col justify-center   mx-auto lg:w-full">
           <table className="hidden lg:table  border-separate border-spacing-y-2 p-3">
             {/* head */}
             <thead>
