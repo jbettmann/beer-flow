@@ -19,21 +19,15 @@ const Breweries = ({ breweries }: Props) => {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
+      setIsMobile(window.innerWidth <= 1024);
     };
 
     const debouncedResize = debounce(handleResize, 250); // 250ms delay
-    // or
-    // const throttledResize = throttle(handleResize, 250); // Execute at most once every 250ms
 
     window.addEventListener("resize", debouncedResize);
-    // or
-    // window.addEventListener('resize', throttledResize);
 
     return () => {
       window.removeEventListener("resize", debouncedResize);
-      // or
-      // window.removeEventListener('resize', throttledResize);
     };
   }, []);
 
@@ -44,9 +38,12 @@ const Breweries = ({ breweries }: Props) => {
           <h3 className="text-center lg:text-left">Breweries</h3>
         </div>
         <div className="hidden lg:flex justify-center items-center gap-2">
-          <Link href={"/create/brewery"} className="create-btn  ">
+          <button
+            onClick={() => setIsCreateBrewery(true)}
+            className="create-btn  "
+          >
             + Brewery
-          </Link>
+          </button>
         </div>
       </div>
       <div className="flex flex-col justify-center w-[80%] items-center mx-auto gap-8">
@@ -68,20 +65,20 @@ const Breweries = ({ breweries }: Props) => {
           })}
       </div>
       <div className="fixed right-5 bottom-20 p-1 z-[2] lg:hidden ">
-        <Link
-          href={"/create/brewery"}
+        <button
+          onClick={() => setIsCreateBrewery(true)}
           className="btn btn-circle btn-white create-btn !btn-lg"
         >
           <Plus size={28} />
-        </Link>
+        </button>
       </div>
       {isMobile ? (
         <BottomDrawer isOpen={isCreateBrewery}>
-          <CreateBreweryForm />
+          <CreateBreweryForm onClose={() => setIsCreateBrewery(false)} />
         </BottomDrawer>
       ) : (
-        <EditModal isOpen={isCreateBrewery} title="Edit Category Name">
-          <CreateBreweryForm />
+        <EditModal isOpen={isCreateBrewery} title="Create Brewery">
+          <CreateBreweryForm onClose={() => setIsCreateBrewery(false)} />
         </EditModal>
       )}
     </div>
