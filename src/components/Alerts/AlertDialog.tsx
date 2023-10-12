@@ -33,19 +33,16 @@ const AlertDialog: FC<AlertDialogProps> = ({
     <dialog ref={modalRef} id="alert_modal" className="modal modal-middle ">
       <form method="dialog" className="modal-box p-5 bg-primary ">
         <div className="p-6 flex text-center flex-col alert alert-modal">
-          <h2>{title}</h2>
-          <span>{message}</span>
+          <h4 className="text-accent">{title}</h4>
+          <span className="text-background ">{message}</span>
           <div>
             <button
-              className="btn btn-sm border-none bg-transparent hover:bg-background hover:text-primary text-background"
+              className="btn border-none bg-transparent hover:bg-background hover:text-primary text-background"
               onClick={onClose}
             >
               {cancelButtonText}
             </button>
-            <button
-              className="ml-2 create-btn inverse !btn-sm"
-              onClick={onConfirm}
-            >
+            <button className="ml-2 create-btn inverse " onClick={onConfirm}>
               {confirmButtonText}
             </button>
           </div>
