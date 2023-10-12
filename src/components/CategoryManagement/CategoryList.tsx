@@ -4,7 +4,7 @@ import { Category, NewCategory } from "@/app/types/category";
 import { useBreweryContext } from "@/context/brewery-beer";
 import deleteCategory from "@/lib/DELETE/deleteCategory";
 import handleCreateNewCategory from "@/lib/handleSubmit/handleCreateNewCategory";
-import { beerInCategory } from "@/lib/utils";
+
 import { MoveDown, MoveUp, Trash2, ListFilter } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -152,12 +152,29 @@ const CategoryList = ({
   ];
   // sort the categories alphabetically
 
+  const beerInCategory = (
+    beers: Beer[] | null,
+    category: Category | NewCategory
+  ) => {
+    return (
+      beers?.filter((beer) => {
+        return beer.category
+          ? beer.category.some((cat) => cat.name === category.name)
+          : false;
+      }) ?? []
+    );
+  };
+
   // useMemo for expensive calculations
   const categoriesWithBeers = useMemo(() => {
-    return categories.map((category) => ({
-      category,
-      beers: beerInCategory(selectedBeers, category),
-    }));
+    if (selectedBeers) {
+      return categories.map((category) => ({
+        category,
+        beers: beerInCategory(selectedBeers, category),
+      }));
+    } else {
+      return [];
+    }
   }, [categories, selectedBeers]);
 
   const updateSortedCategories = () => {
@@ -340,7 +357,7 @@ const CategoryList = ({
   };
 
   useEffect(() => {
-    if (selectedBrewery) {
+    if (selectedBrewery && selectedBeers) {
       let newCategories: NewCategory[] = [];
       let newBeersInCategory = [];
 
@@ -385,7 +402,7 @@ const CategoryList = ({
   }, [checkedCategories, selectAll]);
 
   return (
-    <div className="lg:overflow-x-auto flex-auto lg:pl-8 text-primary">
+    <div className=" flex-auto text-primary">
       {onlyEmptyAlert && (
         <OnlyEmptyCategoryDelete
           alertOpen={onlyEmptyAlert}
