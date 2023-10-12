@@ -4,19 +4,9 @@ type EditModalProps = {
   title?: string;
   children: React.ReactNode;
   isOpen: boolean;
-
-  confirmButtonText?: string;
-  cancelButtonText?: string;
 };
 
-const EditModal: FC<EditModalProps> = ({
-  title = "",
-  children,
-  isOpen,
-
-  confirmButtonText = "Save",
-  cancelButtonText = "Cancel",
-}) => {
+const EditModal: FC<EditModalProps> = ({ title = "", children, isOpen }) => {
   const modalRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
