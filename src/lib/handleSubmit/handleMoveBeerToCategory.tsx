@@ -56,7 +56,7 @@ const handleMoveBeerToCategory = async ({
 
     // Map categories to their IDs
     const categoryIds = await Promise.all(
-      values.category.map((category) => getCategoryId(category.value))
+      values.category.map((category: any) => getCategoryId(category.value))
     );
 
     const newCategoryIds = [...categoryIds, ...updatedCategory];
