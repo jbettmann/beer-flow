@@ -8,6 +8,7 @@ import {
   HelpCircle,
   Home,
   LayoutGrid,
+  LogOut,
   PlusCircle,
   Search as SearchIcon,
   Settings,
@@ -209,9 +210,10 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                 <li>
                   {breweries ? (
                     <button
-                      className=" flex flex-row items-center"
+                      className=" flex flex-row items-center text-accent"
                       onClick={handleSignOut}
                     >
+                      <LogOut size={24} className="invisible" />
                       <h6 className="pl-3">Sign Out</h6>
                     </button>
                   ) : (
