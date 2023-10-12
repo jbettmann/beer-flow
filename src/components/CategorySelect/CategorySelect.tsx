@@ -33,19 +33,6 @@ const CategorySelect = ({
     selectedValues
   );
 
-  useEffect(() => {
-    const categoryUpdate = selectedBrewery?.categories?.map((cat) => ({
-      label: cat.name,
-      value: cat.name,
-    }));
-    setOptions(categoryUpdate as Option[]);
-  }, [selectedBrewery]);
-
-  // // sets selectedOptions to selectedValues from localSession
-  useEffect(() => {
-    setSelectedOptions(selectedValues || []);
-  }, [selectedValues]);
-
   // Creates new category and adds it to selectedOptions
   const handleCreate = (inputValue: string) => {
     if (!inputValue) return;
@@ -74,6 +61,20 @@ const CategorySelect = ({
       category: [...(newValue || [])],
     }));
   };
+
+  // COMMENTED OUT BECAUSE WAS CAUSING ISSUES WITH CATEGORY MOVING ON MANAGEMENT PAGE
+  // useEffect(() => {
+  //   const categoryUpdate = selectedBrewery?.categories?.map((cat) => ({
+  //     label: cat.name,
+  //     value: cat.name,
+  //   }));
+  //   setOptions(categoryUpdate as Option[]);
+  // }, [selectedBrewery?.categories.length]);
+
+  // // sets selectedOptions to selectedValues from localSession
+  useEffect(() => {
+    setSelectedOptions(selectedValues || []);
+  }, [selectedValues]);
 
   return (
     <>
