@@ -7,7 +7,8 @@ import React, { FC, useCallback, useEffect, useRef, useState } from "react";
 import createBrewery from "@/lib/createBrewery";
 import ErrorField from "./ErrorField/ErrorField";
 import SaveButton from "./Buttons/SaveButton";
-import { X } from "lucide-react";
+import { ImagePlus, X } from "lucide-react";
+import { useToast } from "@/context/toast";
 
 interface FormValues {
   companyName: string;
@@ -48,28 +49,30 @@ const CreateBreweryForm = ({ onClose }: Props) => {
   const [hasCreated, setHasCreated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
   const { data: session, status, update } = useSession();
+  const { addToast } = useToast();
   const router = useRouter();
   const isSubmitting = useRef(false);
 
-  const onDismiss = useCallback(() => {
-    router.back();
-  }, [router]);
+  // Define a new state to track "touched" status for each field
+  const [touched, setTouched] = useState<{ [K in keyof FormValues]: boolean }>({
+    companyName: false,
+    image: false,
+  });
 
-  // Load persisted state on initial render
-  useEffect(() => {
-    const persistedState = sessionStorage.getItem("breweryForm");
-    if (persistedState) {
-      setValues(JSON.parse(persistedState));
+  // Handle blur events for the inputs
+  const handleBlur = (field: keyof FormValues) => () => {
+    setTouched((prevTouched) => ({ ...prevTouched, [field]: true }));
+  };
+
+  const onDismiss = () => {
+    if (hasCreated) {
+      setHasCreated(false);
+      setValues({ companyName: "", image: null });
     }
-  }, []);
 
-  // Validate fields and persist state on every render
-  useEffect(() => {
-    setErrors(validateFields(values));
-    sessionStorage.setItem("breweryForm", JSON.stringify(values));
-    // Clear the error message when the form fields change
-    setSubmitError(null);
-  }, [values]);
+    setTouched({ companyName: false, image: false });
+    onClose();
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -78,7 +81,7 @@ const CreateBreweryForm = ({ onClose }: Props) => {
     if (Object.keys(errors).length > 0) {
       return;
     }
-
+    setIsLoading(true);
     isSubmitting.current = true;
 
     try {
@@ -96,9 +99,6 @@ const CreateBreweryForm = ({ onClose }: Props) => {
         accessToken: session?.user?.accessToken as string,
       })) as any;
 
-      setValues({ companyName: "", image: null });
-      onDismiss();
-
       await update({
         newBreweryId: responseBrewery.savedBrewery._id,
       });
@@ -107,39 +107,34 @@ const CreateBreweryForm = ({ onClose }: Props) => {
       console.error(err);
       setSubmitError(err.message);
     } finally {
+      onDismiss();
+      setIsLoading(false);
       isSubmitting.current = false;
     }
   };
 
-  // Define a new state to track "touched" status for each field
-  const [touched, setTouched] = useState<{ [K in keyof FormValues]: boolean }>({
-    companyName: false,
-    image: false,
-  });
+  // Validate fields and persist state on every render
+  useEffect(() => {
+    setErrors(validateFields(values));
 
-  // Handle blur events for the inputs
-  const handleBlur = (field: keyof FormValues) => () => {
-    setTouched((prevTouched) => ({ ...prevTouched, [field]: true }));
-  };
+    // Clear the error message when the form fields change
+    setSubmitError(null);
+    if (values.companyName === "") {
+      setHasCreated(false);
+    }
+  }, [values]);
 
   return (
     <div className="flex flex-col justify-center items-center z-50 text-background my-auto ">
       <div className="flex w-full h-full justify-between items-center p-3 lg:hidden">
-        <button
-          onClick={() => {
-            onClose();
-            if (hasCreated) {
-              setHasCreated(false);
-            }
-          }}
-          className="btn btn-ghost "
-        >
+        <button onClick={onDismiss} className="btn btn-ghost " type="button">
           <X size={24} />
         </button>
         <h4>Create Brewery</h4>
         <SaveButton
           isLoading={isLoading}
           type="submit"
+          title="Create"
           className={`ghost`}
           disabled={!hasCreated}
         />
@@ -149,15 +144,16 @@ const CreateBreweryForm = ({ onClose }: Props) => {
         className="p-4 form flex flex-col justify-between mx-auto rounded-lg text-white lg:w-3/4 lg:p-0"
       >
         <div className="flex flex-col items-center p-6 pt-7 w-full">
-          <h5>Image</h5>
-          <div className="relative w-32 h-32">
-            {" "}
+          <label htmlFor="image" className="beer-card__label-text">
+            Photo
+          </label>
+          <div className="relative w-32 h-32 ">
             {/* Set a fixed size for responsiveness */}
             <label
-              className="absolute top-0 left-0 w-full h-full rounded-full border border-background bg-gray-200"
               htmlFor="image"
+              className="absolute top-0 left-0 w-full h-full flex justify-center items-center rounded-full border border-background bg-background/50 object-cover overflow-hidden text-primary"
             >
-              {/* You can add a spinner or any loading animation here */}
+              <ImagePlus size={120} strokeWidth={1} />
             </label>
           </div>
 
@@ -170,7 +166,10 @@ const CreateBreweryForm = ({ onClose }: Props) => {
               const file = e.target.files ? e.target.files[0] : null;
               if (file && file.size > 2 * 1024 * 1024) {
                 // Check if file size is greater than 2MB
-                alert("File is too large. Please select a file less than 2MB.");
+                addToast(
+                  "File is too large. Please select a file less than 2MB.",
+                  "error"
+                );
                 e.target.value = ""; // Clear the selected file
               } else {
                 setValues({
@@ -185,34 +184,60 @@ const CreateBreweryForm = ({ onClose }: Props) => {
             <ErrorField message={errors.image} />
           )}
         </div>
-        <div className="text-center mt-10 w-full sm:w-1/2 lg:w-fit">
-          <label className="beer-card__label-text" htmlFor="companyName">
-            Company Name
-          </label>
-          <input
-            id="companyName"
-            name="companyName"
-            className="form__input w -full !font-bold !text-2xl text-primary text-center focus:outline-none "
-            placeholder="Company Name"
-            value={values.companyName}
-            onChange={(e) =>
-              setValues({ ...values, companyName: e.target.value })
-            }
-            onBlur={handleBlur("companyName")}
-          />
+        <div>
+          <div className="flex flex-col mt-6 w-full  lg:w-fit relative">
+            {hasCreated && (
+              <button
+                aria-label="Clear input"
+                className="absolute inset-y-0 right-2 flex items-center  cursor-pointer  text-accent/50"
+                onClick={() => {
+                  setValues({ ...values, companyName: "" }),
+                    setTouched({ ...touched, companyName: false });
+                  setHasCreated(false);
+                }}
+              >
+                <X size={20} strokeWidth={3} />
+              </button>
+            )}
+            <input
+              id="companyName"
+              name="companyName"
+              className="form__input w-full !font-bold !text-2xl text-primary text-center !pr-7 lg:!h-11"
+              placeholder="Company Name"
+              autoComplete="off"
+              value={values.companyName}
+              onChange={(e) => {
+                setValues({ ...values, companyName: e.target.value });
+                setHasCreated(true);
+              }}
+              onBlur={handleBlur("companyName")}
+            />
+          </div>
           {touched.companyName && errors.companyName && (
             <ErrorField message={errors.companyName} />
           )}
         </div>
-        <div>
+        <div className="flex justify-between p-3 lg:mt-2 lg:pb-0  ">
           {submitError && <div>Error: {submitError}</div>}
-          <button
-            className="create-btn"
-            type="submit"
-            disabled={isSubmitting.current}
-          >
-            Create Brewery
-          </button>
+          <div className=" hidden lg:flex justify-between items-center w-full">
+            {submitError && <div>Error: {submitError}</div>}
+
+            <button
+              className="btn border-none bg-transparent hover:bg-background hover:text-primary text-background"
+              onClick={onDismiss}
+              type="button"
+            >
+              Cancel
+            </button>
+
+            <SaveButton
+              isLoading={isLoading}
+              type="submit"
+              onClick={handleSubmit}
+              className=" ml-2 inverse"
+              disabled={!hasCreated}
+            />
+          </div>
         </div>
       </form>
     </div>
