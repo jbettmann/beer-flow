@@ -15,7 +15,7 @@ type Props = {
   confirmButtonText?: string;
   cancelButtonText?: string;
 
-  setValues: (value: FormValues) => void;
+  setValues: (value: any) => void;
   checkedBeers: Category[];
 };
 
@@ -41,15 +41,17 @@ const MoveBeerToCategory = ({
     }
   }, [isOpen]);
 
+  console.log({ checkedBeers });
+
   return (
     <dialog ref={modalRef} id="alert_modal" className="modal modal-middle ">
       <form
         method="dialog"
-        className="modal-box p-0 rounded-md overflow-visible"
+        className="modal-box p-5 rounded-md overflow-visible bg-primary "
       >
-        <div className="p-6 flex text-center flex-col alert">
-          <h2>{title}</h2>
-          <span>{message}</span>
+        <div className="p-6 flex text-center flex-col alert alert-modal">
+          <h4 className="text-accent">{title}</h4>
+          <span className="text-background ">{message}</span>
           <div>
             <CategorySelect
               setValues={setValues}
@@ -58,15 +60,18 @@ const MoveBeerToCategory = ({
                 label: cat.name,
                 value: cat.name,
               }))}
-              handleBlur={() => null}
+              handleBlur={() => null as any}
             />
           </div>
 
           <div>
-            <button className="btn btn-sm" onClick={onClose}>
+            <button
+              className="btn border-none bg-transparent hover:bg-background hover:text-primary text-background"
+              onClick={onClose}
+            >
               {cancelButtonText}
             </button>
-            <button className="ml-2 btn btn-sm btn-accent" onClick={onConfirm}>
+            <button className="ml-2 create-btn inverse " onClick={onConfirm}>
               {confirmButtonText}
             </button>
           </div>
