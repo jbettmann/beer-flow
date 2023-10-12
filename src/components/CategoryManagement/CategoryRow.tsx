@@ -8,7 +8,6 @@ import {
   LogIn,
   PencilLine,
   Scissors,
-  Trash,
   Trash2,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -23,10 +22,9 @@ import { convertDate } from "@/lib/utils";
 import AlertDialog from "../Alerts/AlertDialog";
 import MoveBeerToCategory from "../Alerts/MoveBeerToCategory";
 import BeerMugBadge from "../Badges/BeerMugBadge";
-import { FormValues } from "../UpdateCategory/types";
-import CategoryManagementLS from "../LoadingSkeleton/CategoryManagmentLS/CategoryManagementLS";
-import TrashCanIcon from "../Buttons/TrashCanIcon";
 import SaveButton from "../Buttons/SaveButton";
+import TrashCanIcon from "../Buttons/TrashCanIcon";
+import { FormValues } from "../UpdateCategory/types";
 
 type Props = {
   category: Category;
@@ -446,24 +444,28 @@ const CategoryRow = ({
   return (
     <>
       {/*  Remove Beer From Category */}
-      <AlertDialog
-        title=""
-        message={`Selected beers will be removed from ${category.name}`}
-        isOpen={alertOpen}
-        onClose={() => setAlertOpen(false)}
-        onConfirm={() => setToContinue(true)}
-      />
+      {alertOpen && (
+        <AlertDialog
+          title=""
+          message={`Selected beers will be removed from ${category.name}`}
+          isOpen={alertOpen}
+          onClose={() => setAlertOpen(false)}
+          onConfirm={() => setToContinue(true)}
+        />
+      )}
 
       {/* Move Beer to Category */}
-      <MoveBeerToCategory
-        title=""
-        message={`Selected beers will be moved to:`}
-        checkedBeers={categoriesNotInCheckedBeers as Category[]}
-        setValues={setMoveCategory}
-        onClose={() => setMoveAlertOpen(false)}
-        onConfirm={() => setToMoveContinue(true)}
-        isOpen={moveAlertOpen}
-      />
+      {moveAlertOpen && (
+        <MoveBeerToCategory
+          title=""
+          message={`Selected beers will be moved to:`}
+          checkedBeers={categoriesNotInCheckedBeers as Category[]}
+          setValues={setMoveCategory}
+          onClose={() => setMoveAlertOpen(false)}
+          onConfirm={() => setToMoveContinue(true)}
+          isOpen={moveAlertOpen}
+        />
+      )}
 
       <tr
         className={` lg:table-row table-row__effect relative ${
@@ -552,7 +554,9 @@ const CategoryRow = ({
               }}
             >
               <div>
-                <p className="font-normal">{convertDate(category.createdAt)}</p>
+                <p className="font-normal">
+                  {convertDate(category.createdAt as string)}
+                </p>
               </div>
             </th>
 
@@ -618,12 +622,12 @@ const CategoryRow = ({
       </tr>
       <tr
         className={`${
-          isOpen ? "category-card__open shadow-lg rounded-lg" : ""
+          isOpen ? "category-card__open !shadow-lg rounded-lg" : ""
         }`}
       >
-        <td colSpan={5} className="rounded-b-lg">
+        <td colSpan={5} className="rounded-b-lg ">
           <div
-            className={`collapse transition-all duration-300 overflow-hidden `}
+            className={`collapse transition-all pt-4 duration-300 overflow-hidden `}
           >
             <input type="checkbox" checked={isOpen} className="hidden" />
 
@@ -637,47 +641,49 @@ const CategoryRow = ({
                   <th>Style</th>
                   <th>ABV%</th>
                   <th>Last Updated</th>
-                  <th className="w-64 p-8"></th>
-                  <th className="absolute right-0 top-3 p-0">
-                    {isMoveAllButtonVisible && (
-                      <button
-                        className="btn btn-ghost btn-sm text-primary hover:btn-warning"
-                        onClick={() => setMoveAlertOpen(true)}
-                      >
-                        <div
-                          className="flex items-center"
-                          title="Move beers to different Category"
-                        >
-                          <LogIn size={20} strokeWidth={1} />
-                          <span className="flex items-center justify-center text-xs">
-                            <p className=" m-0 ml-1">Move</p>
-                            <p className=" m-0 ml-1">
-                              ({checkedBeersCount[category._id] || 0})
-                            </p>
-                          </span>
-                        </div>
-                      </button>
-                    )}
 
-                    {isRemoveAllButtonVisible && (
-                      <button
-                        className={`btn btn-ghost btn-sm text-primary hover:btn-error  ml-2`}
-                        onClick={() => setAlertOpen(true)}
+                  <th className="absolute right-5 top-[-23px] !pr-0">
+                    <button
+                      className="btn btn-sm border-none bg-transparent disabled:bg-transparent text-primary hover:btn-warning"
+                      onClick={() => setMoveAlertOpen(true)}
+                      disabled={!isMoveAllButtonVisible}
+                    >
+                      <div
+                        className="flex items-center"
+                        title="Move beers to different Category"
                       >
-                        <div
-                          className="flex items-center"
-                          title="Remove beers from Category"
-                        >
-                          <Scissors size={20} strokeWidth={1} />
-                          <span className="flex items-center justify-center text-xs">
-                            <p className=" m-0 ml-1">Remove</p>
+                        <LogIn size={20} strokeWidth={1} />
+                        <span className="flex items-center justify-center text-xs">
+                          <p className=" m-0 ml-1">Move</p>
+                          {(
                             <p className=" m-0 ml-1">
-                              ({checkedBeersCount[category._id] || 0})
+                              {checkedBeersCount[category._id] || null}
                             </p>
-                          </span>
-                        </div>
-                      </button>
-                    )}
+                          ) || null}
+                        </span>
+                      </div>
+                    </button>
+
+                    <button
+                      className={`btn btn-sm border-none bg-transparent disabled:bg-transparent text-primary hover:btn-error  ml-2`}
+                      onClick={() => setAlertOpen(true)}
+                      disabled={!isRemoveAllButtonVisible}
+                    >
+                      <div
+                        className="flex items-center"
+                        title="Remove beers from Category"
+                      >
+                        <Scissors size={20} strokeWidth={1} />
+                        <span className="flex items-center justify-center text-xs">
+                          <p className=" m-0 ml-1">Remove</p>
+                          {(
+                            <p className=" m-0 ml-1">
+                              {checkedBeersCount[category._id] || null}
+                            </p>
+                          ) || null}
+                        </span>
+                      </div>
+                    </button>
                   </th>
                 </tr>
               </thead>
@@ -691,8 +697,6 @@ const CategoryRow = ({
                       handleCheckbox={(beerId, isChecked) =>
                         handleBeerCheckbox(category._id, beerId, isChecked)
                       }
-                      setAlertOpen={setAlertOpen}
-                      setMoveAlertOpen={setMoveAlertOpen}
                       isChecked={
                         checkedBeers[category._id]?.[beer._id] || false
                       }
