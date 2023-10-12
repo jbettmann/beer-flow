@@ -225,7 +225,7 @@ export default function BeerCategory({
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
+      setIsMobile(window.innerWidth <= 1024);
     };
 
     const debouncedResize = debounce(handleResize, 250); // 250ms delay
