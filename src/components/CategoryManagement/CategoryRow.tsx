@@ -19,12 +19,16 @@ import { useToast } from "@/context/toast";
 import handleMoveBeerToCategory from "@/lib/handleSubmit/handleMoveBeerToCategory";
 import handleUpdateCategory from "@/lib/handleSubmit/handleUpdateCategory";
 import { convertDate } from "@/lib/utils";
+
 import AlertDialog from "../Alerts/AlertDialog";
 import MoveBeerToCategory from "../Alerts/MoveBeerToCategory";
 import BeerMugBadge from "../Badges/BeerMugBadge";
 import SaveButton from "../Buttons/SaveButton";
 import TrashCanIcon from "../Buttons/TrashCanIcon";
 import { FormValues } from "../UpdateCategory/types";
+import useSWR from "swr";
+import getBreweryBeers from "@/lib/getBreweryBeers";
+import getSingleBrewery from "@/lib/getSingleBrewery";
 
 type Props = {
   category: Category;
@@ -69,7 +73,6 @@ const CategoryRow = ({
   >({});
 
   // category name change
-
   const [changeName, setChangeName] = useState<boolean>(false);
   const [categoryName, setCategoryName] = useState<string>(category.name);
   const { addToast } = useToast();
@@ -81,6 +84,22 @@ const CategoryRow = ({
     setSelectedBeers,
     setSelectedBrewery,
   } = useBreweryContext();
+
+  const { mutate } = useSWR(
+    [
+      `https://beer-bible-api.vercel.app/breweries/${selectedBrewery?._id}/beers`,
+      session?.user.accessToken,
+    ],
+    getBreweryBeers
+  );
+
+  const { mutate: mutateBrewery } = useSWR(
+    [
+      `https://beer-bible-api.vercel.app/breweries/${selectedBrewery?._id}`,
+      session?.user.accessToken,
+    ],
+    getSingleBrewery
+  );
 
   const [isEmpty, setIsEmpty] = useState(
     !beersInCategory || beersInCategory.length === 0
@@ -206,7 +225,24 @@ const CategoryRow = ({
       // Call the `updateBeerCategory` function for each updated beer
       await Promise.all(updatedBeersRequests);
 
-      // Update the client state
+      // Update the cache
+      mutate((prevSelectedBeers: any) => {
+        if (!prevSelectedBeers) return null;
+        // Iterate over the previous selected beers and create a new array
+        return prevSelectedBeers?.map((beer: Beer) => {
+          if (beerIdsToUpdate.includes(beer._id)) {
+            // If this beer's ID is in the list of IDs to update, remove the category from its categories
+            const updatedCategories = beer.category.filter(
+              (cat) => cat._id !== categoryId
+            );
+            return { ...beer, category: updatedCategories }; // Return the updated beer object
+          } else {
+            return beer; // If it's not the beer we want to update, return it as is
+          }
+        });
+      });
+
+      // // Update the client state
       setSelectedBeers((prevSelectedBeers) => {
         if (!prevSelectedBeers) return null;
         // Iterate over the previous selected beers and create a new array
@@ -228,7 +264,12 @@ const CategoryRow = ({
         ...prevCheckedBeers,
         [categoryId]: {},
       }));
-    } catch (error) {
+      addToast(
+        `${getCheckedBeerNames()} successfully removed from ${category.name}`,
+        "success"
+      );
+    } catch (error: any) {
+      addToast(error.error || error.message, "error");
       console.error(
         "An error occurred while removing beers from category:",
         error
@@ -292,6 +333,16 @@ const CategoryRow = ({
       // NEED updatedBeers to return the updated beers with the new category
       // If there are new categories, update the selectedBrewery
       if (newCategories.length > 0) {
+        // Update cache
+        mutateBrewery((prevBrewery: any) => {
+          if (!prevBrewery) return null;
+          return {
+            ...prevBrewery,
+            categories: [...(prevBrewery?.categories || []), ...newCategories],
+          };
+        });
+
+        // Update the selectedBrewery state
         setSelectedBrewery((prevBrewery) => {
           if (!prevBrewery) return null;
           return {
@@ -300,6 +351,19 @@ const CategoryRow = ({
           };
         });
       }
+
+      // Update cache
+      mutate((prevSelectedBeers: any) => {
+        if (!prevSelectedBeers) return null;
+        // Iterate over the previous selected beers and create a new array
+        return prevSelectedBeers?.map((prevBeer: any) => {
+          const updatedBeer = updatedBeers.find(
+            (beer) => beer?._id === prevBeer._id
+          );
+          return updatedBeer || prevBeer; // Replace the beer if it was updated, or keep it as is
+        });
+      });
+
       // Update the client state with the newly updated beers
       setSelectedBeers((prevSelectedBeers) => {
         if (!prevSelectedBeers) return null;
@@ -317,13 +381,18 @@ const CategoryRow = ({
         ...prevCheckedBeers,
         [categoryId]: {},
       }));
+
+      addToast(
+        `${getCheckedBeerNames()} were successfully moved to ${(
+          moveCategory as any
+        ).category.map((cat: any) => cat.value)}`,
+        "success"
+      );
     } catch (error) {
       console.error(
         "An error occurred while removing beers from category:",
         error
       );
-
-      // Optionally, show an error message to the user
     } finally {
       setMoveAlertOpen(false);
       setIsEmpty(!beersInCategory || beersInCategory.length === 0);
@@ -410,6 +479,20 @@ const CategoryRow = ({
     }, 200); // Show tooltip after 1 second of pressing
   };
 
+  const getCheckedBeerNames = () => {
+    const checkBeerNames = selectedBeers
+      ? selectedBeers
+          .filter((beer) => checkedBeers[category._id][beer._id])
+          .map((beer) => beer.name)
+      : [];
+    if (checkBeerNames.length === 1) {
+      return checkBeerNames[0];
+    }
+
+    const lastBeer = checkBeerNames.pop();
+    return `${checkBeerNames.join(", ")} & ${lastBeer}`;
+  };
+
   useEffect(() => {
     setIsEmpty(calculateIsEmpty());
   }, [selectedBeers]);
@@ -446,24 +529,28 @@ const CategoryRow = ({
       {/*  Remove Beer From Category */}
       {alertOpen && (
         <AlertDialog
-          title=""
-          message={`Selected beers will be removed from ${category.name}`}
+          title={`Remove Beer`}
+          message={`${getCheckedBeerNames()} will be removed from ${
+            category.name
+          }`}
           isOpen={alertOpen}
           onClose={() => setAlertOpen(false)}
           onConfirm={() => setToContinue(true)}
+          confirmButtonText="Remove"
         />
       )}
 
       {/* Move Beer to Category */}
       {moveAlertOpen && (
         <MoveBeerToCategory
-          title=""
-          message={`Selected beers will be moved to:`}
+          title="Move Beer"
+          message={`${getCheckedBeerNames()} will be moved to...`}
           checkedBeers={categoriesNotInCheckedBeers as Category[]}
           setValues={setMoveCategory}
           onClose={() => setMoveAlertOpen(false)}
           onConfirm={() => setToMoveContinue(true)}
           isOpen={moveAlertOpen}
+          confirmButtonText="Move"
         />
       )}
 
@@ -471,7 +558,7 @@ const CategoryRow = ({
         className={` lg:table-row table-row__effect relative ${
           isOpen ? " category-card__open !shadow-none hover:shadow-none" : ""
         } ${isChecked ? "table-row__checked" : ""}`}
-        key={index}
+        key={category._id}
       >
         <th className={` ${isOpen ? "rounded-tl-lg" : "rounded-l-lg"}`}>
           <label>
@@ -676,11 +763,12 @@ const CategoryRow = ({
                         <Scissors size={20} strokeWidth={1} />
                         <span className="flex items-center justify-center text-xs">
                           <p className=" m-0 ml-1">Remove</p>
-                          {(
-                            <p className=" m-0 ml-1">
+                          {(isRemoveAllButtonVisible && (
+                            <p className=" m-0 ml-1 disabled:hidden">
                               {checkedBeersCount[category._id] || null}
                             </p>
-                          ) || null}
+                          )) ||
+                            null}
                         </span>
                       </div>
                     </button>

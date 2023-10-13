@@ -10,6 +10,11 @@ import { useSession } from "next-auth/react";
 import { useToast } from "@/context/toast";
 import { FormValues } from "../UpdateCategory/types";
 import handleMoveBeerToCategory from "@/lib/handleSubmit/handleMoveBeerToCategory";
+import updateBeerCategory from "@/lib/PUT/updateBeerCategory";
+import useSWR from "swr";
+import getBreweryBeers from "@/lib/getBreweryBeers";
+import getSingleBrewery from "@/lib/getSingleBrewery";
+import { Brewery } from "@/app/types/brewery";
 
 type Props = {
   category: Category;
@@ -38,6 +43,22 @@ const CardItem = ({ category, beer, handleCheckbox, isChecked }: Props) => {
     setSelectedBrewery,
   } = useBreweryContext();
 
+  const { mutate } = useSWR(
+    [
+      `https://beer-bible-api.vercel.app/breweries/${selectedBrewery?._id}/beers`,
+      session?.user.accessToken,
+    ],
+    getBreweryBeers
+  );
+
+  const { mutate: mutateBrewery } = useSWR(
+    [
+      `https://beer-bible-api.vercel.app/breweries/${selectedBrewery?._id}`,
+      session?.user.accessToken,
+    ],
+    getSingleBrewery
+  );
+
   // Remove beers from category
   const removeSingleBeersFromCategory = async (beerId: string) => {
     if (checked) {
@@ -57,22 +78,29 @@ const CardItem = ({ category, beer, handleCheckbox, isChecked }: Props) => {
           accessToken: session?.user.accessToken,
         });
 
-        console.log({ updateBeer });
-
         if (updateBeer) {
-          // Update the client state
+          // // Update the client state
           setSelectedBeers((prevSelectedBeers) => {
             if (!prevSelectedBeers) return null;
             // Iterate over the previous selected beers and create a new array
-            return prevSelectedBeers?.map((beer) => {
-              // If this beer's ID is in the list of IDs to update, remove the category from its categories
-              const updatedCategories = beer.category.filter(
-                (cat) => cat._id !== category._id
-              );
-              return { ...beer, category: updatedCategories }; // Return the updated beer object
+
+            return prevSelectedBeers.map((b: Beer) => {
+              if (b._id === updateBeer._id) {
+                return updateBeer; // Assuming `movedBeer` is the updated beer object.
+              }
+              return b;
             });
           });
-
+          // Update cache
+          mutate((prevData: Beer[]) => {
+            if (!prevData) return null;
+            return prevData.map((b: Beer) => {
+              if (b._id === updateBeer._id) {
+                return updateBeer;
+              }
+              return b;
+            });
+          });
           addToast(`${beer.name} was removed from ${category.name}`, "success");
         }
         handleClick();
@@ -89,7 +117,6 @@ const CardItem = ({ category, beer, handleCheckbox, isChecked }: Props) => {
     }
     return;
   };
-  console.log({ moveCategory });
 
   // Move beers to category
   const moveSingleBeerToCategory = async () => {
@@ -101,7 +128,7 @@ const CardItem = ({ category, beer, handleCheckbox, isChecked }: Props) => {
           .filter((cat) => cat._id !== category._id) // Exclude current category
           .map((cat) => cat._id);
 
-        const movedBeer = handleMoveBeerToCategory({
+        const movedBeer = await handleMoveBeerToCategory({
           values: moveCategory,
           beerId: beer._id,
           updatedCategory: updatedCategoryIds,
@@ -132,28 +159,52 @@ const CardItem = ({ category, beer, handleCheckbox, isChecked }: Props) => {
               ],
             };
           });
+          // Update cache
+          mutateBrewery((prevBrewery: Brewery) => {
+            if (!prevBrewery) return null;
+            return {
+              ...prevBrewery,
+              categories: [
+                ...(prevBrewery?.categories || []),
+                ...newCategories,
+              ],
+            };
+          });
         }
-        // Update the client state with the newly updated beers
-        setSelectedBeers((prevSelectedBeers) => {
-          if (!prevSelectedBeers) return null;
+        if (movedBeer) {
+          // Update the client state with the newly updated beers
+          setSelectedBeers((prevSelectedBeers: any) => {
+            if (!prevSelectedBeers) return null;
 
-          return { ...prevSelectedBeers, movedBeer };
-        });
+            return prevSelectedBeers.map((b: Beer) => {
+              if (b._id === beer._id) {
+                return movedBeer; // Assuming `movedBeer` is the updated beer object.
+              }
+              return b;
+            });
+          });
+          // Update cache
+          mutate((prevData: Beer[]) => {
+            if (!prevData) return null;
+            return prevData.map((b: Beer) => {
+              if (b._id === movedBeer?._id) {
+                return movedBeer;
+              }
+              return b;
+            });
+          });
+          addToast(
+            `${beer.name} was moved to ${(moveCategory as any).category.map(
+              (cat: any) => cat.value
+            )}`,
+            "success"
+          );
 
-        addToast(
-          `${beer.name} was moved to ${(moveCategory as any).category.map(
-            (cat: any) => cat.value
-          )}`,
-          "success"
-        );
-
-        handleClick();
+          handleClick();
+        }
       } catch (error: any) {
         addToast(error.message, "error");
-        console.error(
-          "An error occurred while removing beers from category:",
-          error
-        );
+        console.error("An error occurred while moving beers:", error);
       } finally {
         setMoveSingleAlert(false);
         setIsMoveLoading(false);
@@ -181,7 +232,7 @@ const CardItem = ({ category, beer, handleCheckbox, isChecked }: Props) => {
       {/*  Remove Beer From Category */}
       {removeSingleAlert && (
         <AlertDialog
-          title="Remove Beer From Category"
+          title="Remove Beer"
           message={`${beer.name} will be removed from ${category.name}`}
           isOpen={removeSingleAlert}
           onClose={() => setRemoveSingleAlert(false)}
@@ -193,7 +244,7 @@ const CardItem = ({ category, beer, handleCheckbox, isChecked }: Props) => {
       {moveSingleAlert && (
         <MoveBeerToCategory
           title="Move Beer"
-          message={`Move ${beer.name} to a different category`}
+          message={`${beer.name} will be moved to...`}
           checkedBeers={
             selectedBrewery?.categories.filter(
               (cat) => cat._id !== category._id
