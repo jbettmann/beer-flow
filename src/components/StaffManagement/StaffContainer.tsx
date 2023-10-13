@@ -81,7 +81,6 @@ const StaffContainer = (props: Props) => {
             <MultipleInvites
               breweryId={selectedBrewery._id}
               setIsOpen={setIsOpen}
-            
             />
           </BottomDrawer>
         ) : (
@@ -89,7 +88,6 @@ const StaffContainer = (props: Props) => {
             <MultipleInvites
               breweryId={selectedBrewery._id}
               setIsOpen={setIsOpen}
-          
             />
           </EditModal>
         )}
