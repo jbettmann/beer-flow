@@ -6,7 +6,7 @@ type Props = {
 function SideDrawer({ isOpen, children }: Props) {
   return (
     <div className={`side-drawer z-20 ${isOpen ? "open" : ""}`}>
-      <div className="bg-third-color h-full overflow-y-auto">{children}</div>
+      <div className="bg-primary h-full overflow-y-auto">{children}</div>
     </div>
   );
 }
