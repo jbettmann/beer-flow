@@ -6,10 +6,10 @@ import React from "react";
 
 const SettingsPage = async () => {
   const session = await getServerSession(authOptions);
-  console.log(session);
+
   return (
     // Account info
-    <div >
+    <div className="hidden lg:block">
       <div className="settings-account__info">
         <p>Name</p>
         <p className="gray-text">{session?.user.name}</p>
