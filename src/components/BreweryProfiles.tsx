@@ -89,7 +89,7 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
               beersForCategory.map((beers, i) => {
                 return beers && beers.length > 0 ? (
                   <BeerCategory
-                    key={i}
+                    key={categories[i]._id}
                     category={categories[i]}
                     beers={beers}
                     onClick={() => handleCategoryClick(i)}
