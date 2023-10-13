@@ -1,4 +1,6 @@
 import BackArrow from "@/components/Buttons/BackArrow";
+import SideDrawer from "@/components/Drawers/SideDrawer";
+import SetSideDrawerSettings from "@/components/Settings/SetSideDrawerSettings";
 import SettingTabs from "@/components/Settings/SettingTabs";
 import Link from "next/link";
 
@@ -11,8 +13,9 @@ export default async function SettingsLayout({ children }: Props) {
     <div className=" p-3 md:p-8 text-primary">
       {/* @ts-expect-error Server component */}
       <BackArrow />
-      <SettingTabs />
-      <div className=" lg:w-3/4 px-10">{children}</div>
+      <SettingTabs>{children}</SettingTabs>
+
+      <div className="hidden lg:block lg:w-3/4 px-10">{children}</div>
     </div>
   );
 }
