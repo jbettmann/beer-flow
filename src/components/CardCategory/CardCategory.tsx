@@ -230,7 +230,7 @@ const CardCategory = ({
         } ${isChecked ? "category-card__selected" : ""} ${
           changeName ? " pb-14 " : ""
         } ${isEdit ? "category-card__edit" : ""} `}
-        key={index}
+        key={category._id}
       >
         <div
           className={`flex justify-between hover:cursor-pointer p-6 `}
@@ -367,7 +367,7 @@ const CardCategory = ({
                   beersInCategory?.map((beer, i) => (
                     <>
                       <CardItem
-                        key={i}
+                        key={beer._id}
                         beer={beer}
                         category={category}
                         handleCheckbox={(beerId, isChecked) =>
