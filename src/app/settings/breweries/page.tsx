@@ -21,7 +21,7 @@ const BreweriesSettingsPage = async (props: Props) => {
         <BrewerySettingsList
           key={brewery._id}
           brewery={brewery}
-          session={session}
+          session={session as any}
         />
       ))}
     </div>
