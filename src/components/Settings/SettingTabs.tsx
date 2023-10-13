@@ -3,10 +3,13 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { use, useState } from "react";
+import SetSideDrawerSettings from "./SetSideDrawerSettings";
 
-type Props = {};
+type Props = {
+  children: React.ReactNode;
+};
 
-const SettingTabs = (props: Props) => {
+const SettingTabs = ({ children }: Props) => {
   const pathname = usePathname();
 
   const isActive = (path: string) => {
@@ -20,12 +23,20 @@ const SettingTabs = (props: Props) => {
   };
 
   return (
-    <div className="m-6  ">
+    <div className="m-6  relative ">
       <h2>Settings</h2>
-      <div className="tabs mt-14 w-full  ">
+      <div className="flex flex-col lg:tabs lg:flex-row  mt-14 w-full">
         <Link
           href={`/settings`}
-          className={`tab tab-bordered  ${
+          className={`tab tab-bordered hidden lg:block ${
+            isActive(`/settings`) ? "tab-active" : ""
+          }`}
+        >
+          Account
+        </Link>
+        <Link
+          href={`/settings/account`}
+          className={`tab tab-bordered lg:hidden  ${
             isActive(`/settings`) ? "tab-active" : ""
           }`}
         >
@@ -58,6 +69,9 @@ const SettingTabs = (props: Props) => {
         <div
           className={` h-[2px] flex-1 bg-gray-400 opacity-20 hover:cursor-default `}
         ></div>
+        <div className="lg:hidden">
+          <SetSideDrawerSettings>{children}</SetSideDrawerSettings>
+        </div>
       </div>
     </div>
   );
