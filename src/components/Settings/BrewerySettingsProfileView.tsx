@@ -5,7 +5,7 @@ import { useToast } from "@/context/toast";
 import deleteBrewery from "@/lib/DELETE/deleteBrewery";
 import removeBreweryFromUser from "@/lib/DELETE/removeBreweryFromUser";
 import getSingleBrewery from "@/lib/getSingleBrewery";
-import { getInitials } from "@/lib/utils";
+import { debounce, getInitials } from "@/lib/utils";
 import { MoveLeft, PencilLine, Repeat2, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -16,12 +16,15 @@ import DeleteOrRemoveButton from "../Buttons/DeleteOrRemoveButton";
 import BottomDrawer from "../Drawers/BottomDrawer";
 import ImageDisplay from "../ImageDisplay/ImageDisplay";
 import EditBreweryProfile from "./EditBreweryProfile";
+import EditModal from "../Alerts/EditModal";
 
 type Props = {
   breweryId: string;
 };
 
 const BrewerySettingsProfileView = ({ breweryId }: Props) => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
   const { data: session, update } = useSession();
   const router = useRouter();
   const { addToast } = useToast();
@@ -104,6 +107,20 @@ const BrewerySettingsProfileView = ({ breweryId }: Props) => {
       setButtonLoading(null);
     }
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 1024);
+    };
+
+    const debouncedResize = debounce(handleResize, 250); // 250ms delay
+
+    window.addEventListener("resize", debouncedResize);
+
+    return () => {
+      window.removeEventListener("resize", debouncedResize);
+    };
+  }, []);
 
   useEffect(() => {
     if (brewery) {
@@ -245,12 +262,21 @@ const BrewerySettingsProfileView = ({ breweryId }: Props) => {
             )}
           </div>
         </div>
-        <BottomDrawer isOpen={isOpen}>
-          <EditBreweryProfile
-            brewery={brewery}
-            onClose={() => setIsOpen(false)}
-          />
-        </BottomDrawer>
+        {isMobile ? (
+          <BottomDrawer isOpen={isOpen}>
+            <EditBreweryProfile
+              brewery={brewery}
+              onClose={() => setIsOpen(false)}
+            />
+          </BottomDrawer>
+        ) : (
+          <EditModal isOpen={isOpen} title="Edit Brewery Profile">
+            <EditBreweryProfile
+              brewery={brewery}
+              onClose={() => setIsOpen(false)}
+            />
+          </EditModal>
+        )}
       </div>
     )
   );
