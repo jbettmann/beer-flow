@@ -61,8 +61,6 @@ const handleMoveBeerToCategory = async ({
 
     const newCategoryIds = [...categoryIds, ...updatedCategory];
 
-    console.log({ newCategoryIds });
-
     const updatedBeerRes = await updateBeerCategory({
       beerId,
       updatedCategory: newCategoryIds,
