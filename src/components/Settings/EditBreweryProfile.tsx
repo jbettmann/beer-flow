@@ -1,6 +1,6 @@
 import { Brewery } from "@/app/types/brewery";
 import { Save, X } from "lucide-react";
-import React, { useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import ImageDisplay from "../ImageDisplay/ImageDisplay";
 import { getInitials } from "@/lib/utils";
 import { updateImage } from "@/lib/supabase/updateImage";
@@ -27,6 +27,8 @@ const EditBreweryProfile = ({ brewery, onClose }: Props) => {
   const [editBrewery, setEditBrewery] = useState(brewery || {});
   const [companyName, setCompanyName] = useState(brewery.companyName || "");
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [hasEdited, setHasEdited] = useState<boolean>(false);
+  const [nameError, setNameError] = useState<string | null>(null);
 
   const { mutate } = useSWR(
     [
@@ -35,6 +37,21 @@ const EditBreweryProfile = ({ brewery, onClose }: Props) => {
     ],
     getSingleBrewery
   );
+
+  const validateCompanyName = () => {
+    if (companyName.length < 2) {
+      setNameError("Company name must be at least 2 characters");
+    } else {
+      setNameError(null);
+    }
+  };
+
+  const onDismiss = () => {
+    setNameError(null);
+    setHasEdited(false);
+
+    onClose();
+  };
 
   const handleSave = async () => {
     setIsLoading(true);
@@ -59,7 +76,7 @@ const EditBreweryProfile = ({ brewery, onClose }: Props) => {
       // If no updates, simply return and maybe show a notification
 
       setIsLoading(false);
-      onClose();
+      onDismiss();
       return;
     }
 
@@ -83,20 +100,33 @@ const EditBreweryProfile = ({ brewery, onClose }: Props) => {
         setPreviewImage(null);
       }
       setIsLoading(false);
-      onClose();
+      onDismiss();
     }
   };
+
+  useEffect(() => {
+    validateCompanyName();
+  }, [companyName]);
+  console.log(companyName.length, { nameError });
   return (
-    <div className="flex flex-col justify-center items-center z-50 text-background">
-      <div className="flex w-full h-full justify-between items-center">
-        <button onClick={onClose} className="btn m-4" type="button">
+    <div className="flex flex-col justify-center items-center z-50 text-background my-auto ">
+      <div className="flex w-full h-full justify-between items-center p-3 pb-0 sticky top-[-2px] bg-primary lg:hidden">
+        <button
+          onClick={() => {
+            onDismiss();
+            setCompanyName(brewery.companyName || "");
+          }}
+          className="btn btn-ghost bg-transparent text-background"
+          type="button"
+        >
           <X size={24} />
         </button>
         <h4>Edit Brewery Profile</h4>
         <SaveButton
           onClick={handleSave}
-          className="ghost m-4"
+          className="ghost "
           isLoading={isLoading}
+          disabled={!hasEdited}
         />
       </div>
       <div className="flex flex-col items-center p-6 pt-7 w-full">
@@ -162,12 +192,38 @@ const EditBreweryProfile = ({ brewery, onClose }: Props) => {
             id="fileUpload"
             className="form__input w-full !font-bold !text-2xl text-primary text-center focus:outline-none  "
             value={companyName}
-            onChange={(e) => setCompanyName(e.target.value)}
+            onChange={(e) => {
+              setHasEdited(true);
+              setCompanyName(e.target.value);
+            }}
           />
+          {nameError && <div className="error !text-xs">{nameError}</div>}
           <p className="mt-2 text-xs">
             This can be the company name or nickname.
             <br /> This is how brewery will appear to staff
           </p>
+        </div>
+      </div>
+      <div className="flex justify-between w-2/3 p-3 lg:mt-2 ">
+        <div className=" hidden lg:flex justify-between items-center w-full">
+          <button
+            className="btn border-none bg-transparent hover:bg-background hover:text-primary text-background"
+            onClick={() => {
+              onDismiss();
+              setCompanyName(brewery.companyName || "");
+            }}
+            type="button"
+          >
+            Cancel
+          </button>
+
+          <SaveButton
+            isLoading={isLoading}
+            type="submit"
+            onClick={handleSave}
+            className=" ml-2 inverse"
+            disabled={!hasEdited}
+          />
         </div>
       </div>
     </div>
