@@ -1,10 +1,7 @@
 "use client";
 import { Category } from "@/app/types/category";
-import React, { useEffect, useRef, useState } from "react";
-import Modal from "../Modal";
+import { useEffect, useRef } from "react";
 import CategorySelect from "../CategorySelect/CategorySelect";
-import { FormValues } from "../UpdateCategory/types";
-import { useBreweryContext } from "@/context/brewery-beer";
 
 type Props = {
   title?: string;
@@ -41,8 +38,6 @@ const MoveBeerToCategory = ({
     }
   }, [isOpen]);
 
-  console.log({ checkedBeers });
-
   return (
     <dialog ref={modalRef} id="alert_modal" className="modal modal-middle ">
       <form
@@ -68,10 +63,15 @@ const MoveBeerToCategory = ({
             <button
               className="btn border-none bg-transparent hover:bg-background hover:text-primary text-background"
               onClick={onClose}
+              type="button"
             >
               {cancelButtonText}
             </button>
-            <button className="ml-2 create-btn inverse " onClick={onConfirm}>
+            <button
+              className="ml-2 create-btn inverse "
+              onClick={onConfirm}
+              type="button"
+            >
               {confirmButtonText}
             </button>
           </div>
