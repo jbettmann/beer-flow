@@ -179,7 +179,7 @@ const BrewerySettingsProfileView = ({ breweryId }: Props) => {
           size={24}
           strokeWidth={1}
           onClick={() => router.back()}
-          className="hover:cursor-pointer"
+          className="hidden hover:cursor-pointer lg:block"
         />
         <div className="flex flex-col items-center">
           {brewery?.image ? (
