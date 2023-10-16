@@ -10,12 +10,12 @@ type Props = {
 
 export default async function SettingsLayout({ children }: Props) {
   return (
-    <div className=" p-3 md:p-8 text-primary">
+    <div className="h-full p-3 md:p-8 text-primary">
       {/* @ts-expect-error Server component */}
       <BackArrow />
       <SettingTabs>{children}</SettingTabs>
 
-      <div className="hidden lg:block lg:w-3/4 px-10">{children}</div>
+      <div className="hidden md:block md:w-3/4 px-10">{children}</div>
     </div>
   );
 }
