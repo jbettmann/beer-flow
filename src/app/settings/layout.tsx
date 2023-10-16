@@ -1,8 +1,5 @@
 import BackArrow from "@/components/Buttons/BackArrow";
-import SideDrawer from "@/components/Drawers/SideDrawer";
-import SetSideDrawerSettings from "@/components/Settings/SetSideDrawerSettings";
 import SettingTabs from "@/components/Settings/SettingTabs";
-import Link from "next/link";
 
 type Props = {
   children: React.ReactNode;

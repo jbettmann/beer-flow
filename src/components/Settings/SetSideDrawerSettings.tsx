@@ -1,7 +1,8 @@
 "use client";
-import React, { use, useEffect, useState } from "react";
-import SideDrawer from "../Drawers/SideDrawer";
+import { HelpCircle } from "lucide-react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import BackArrow from "../Buttons/BackArrow";
 
 type Props = {
@@ -26,19 +27,28 @@ const SetSideDrawerSettings = ({ children }: Props) => {
       setTitle("Profile");
     } else if (pathname === "/settings/notifications") {
       setTitle("Notifications");
+    } else if (pathname === "/settings/breweries") {
+      setTitle("Breweries");
     } else {
       setTitle("");
     }
   }, [pathname]);
 
   return (
-    <div
-      className={`side-drawer__settings z-20 bg-background p-4  ${
-        isOpen ? "open" : ""
-      }`}
-    >
-      <h2>{title}</h2>
-      <div className="bg-background h-full overflow-y-auto">{children}</div>
+    <div className={`side-drawer__settings   ${isOpen ? "open" : ""}`}>
+      <div className="flex justify-between items-center px-0 py-2">
+        {/* @ts-expect-error Server component */}
+        <BackArrow />
+
+        <h4>{title}</h4>
+        <Link href={"/help"} className=" flex flex-row items-center">
+          <HelpCircle size={24} />
+        </Link>
+      </div>
+      <div className="divider !m-0"></div>
+      <div className="bg-background h-full overflow-y-auto pt-10 px-4 ">
+        {children}
+      </div>
     </div>
   );
 };
