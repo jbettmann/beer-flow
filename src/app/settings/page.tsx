@@ -9,7 +9,7 @@ const SettingsPage = async () => {
 
   return (
     // Account info
-    <div className="hidden lg:block">
+    <div className="h-full">
       <div className="settings-account__info">
         <p>Name</p>
         <p className="gray-text">{session?.user.name}</p>
