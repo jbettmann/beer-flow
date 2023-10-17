@@ -20,6 +20,7 @@ const Invite = ({ invitee, handleChange, className, error }: Props) => {
           type="email"
           id="email"
           placeholder="Email"
+          inputMode="email"
           className={`${className} form__input w-full  `}
           value={invitee.email}
           onChange={(e) => {
