@@ -4,8 +4,6 @@ import { ErrorValues, FormValues } from "@/components/CreateBeerForm/types";
 const validateFields = (values: FormValues) => {
   const errors: ErrorValues = {};
 
-  console.log("values", values);
-
   // validate name
 
   if (!values.name || values.name.trim() === "") {
@@ -18,8 +16,12 @@ const validateFields = (values: FormValues) => {
   }
 
   // validate abv
-  if (!/^(\d+(\.\d{1,2})?)$/.test(values.abv as string)) {
-    errors.abv = "ABV must be a number.";
+  if (!values.abv) {
+    errors.abv = "ABV is required.";
+  } else if (!values.abv || isNaN(Number(values.abv))) {
+    errors.abv = "ABV must be a valid number.";
+  } else if (!/^(\d+(\.\d{1,2})?)$/.test(values.abv as any)) {
+    errors.abv = "ABV can only have up to two decimal places.";
   }
 
   if (!/^(\d+(\.\d{1,2})?)$/.test(values.ibu as string)) {
