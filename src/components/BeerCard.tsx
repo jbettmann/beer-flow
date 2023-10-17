@@ -90,7 +90,7 @@ const BeerCard = ({ beerId, beerForDrawer, onClose }: Props) => {
             <>
               <div className="flex items-center justify-around lg:p-6 lg:pb-3 relative gap-2 xs:gap-4 md:gap-6 ">
                 {/* Beer Image and Name */}
-                <figure className="rounded-lg overflow-hidden relative flex-initial h-40 lg:h-32 w-36 xs:w-2/5  2xl:w-1/4 p-2">
+                <figure className="rounded-lg overflow-hidden relative flex-initial h-auto  w-36 xs:w-2/5  2xl:w-1/4 p-2">
                   <ImageDisplay className="beer-card__image " item={beer} />
                 </figure>
                 <div className="flex flex-col justify-start">
