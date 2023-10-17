@@ -27,6 +27,7 @@ import getSingleBrewery from "@/lib/getSingleBrewery";
 import AlertDialog from "../Alerts/AlertDialog";
 import SaveButton from "../Buttons/SaveButton";
 import TrashCanIcon from "../Buttons/TrashCanIcon";
+import { Pencil } from "lucide-react";
 
 // import createBeer from "@/lib/createBeer";
 
@@ -278,24 +279,24 @@ const UpdateBeerForm = ({
       >
         <div className="flex flex-col md:flex-row-reverse justify-between w-full ">
           {/*  Beer Image */}
-          <div className="flex flex-col items-center justify-between xl:items-end w-full md:w-[45%] p-2 pt-4 md:pt-2">
+          <div className="flex flex-col items-center justify-between  w-full md:w-[45%] p-2 pt-4 md:pt-2">
             <div className="flex flex-col items-center md:items-start w-full h-full  max-h-[550px]">
               <label
-                htmlFor="image"
+                htmlFor="update_image"
                 className="beer-card__label-text hover:underline hover:cursor-pointer"
               >
                 Photo
               </label>
 
               <input
-                id="image"
-                name="image"
+                type="file"
+                id="update_image"
+                name="update_image"
                 ref={fieldRefs.image}
                 className="hidden"
-                type="file"
                 onChange={(e) => {
                   const file = e.target.files ? e.target.files[0] : null;
-                  if (file && file.size > 2 * 1024 * 1024) {
+                  if (file && file.size > 5 * 1024 * 1024) {
                     // Check if file size is greater than 2MB
                     addToast(
                       "File is too large. Please select a file less than 2MB.",
@@ -308,7 +309,7 @@ const UpdateBeerForm = ({
                       image: file,
                     });
                     // Generate a URL for the new image and set it as the preview
-                    const url = URL.createObjectURL(file as Blob);
+                    const url = URL.createObjectURL(file as any);
                     setPreviewImage(url as any);
                   }
                 }}
@@ -316,36 +317,50 @@ const UpdateBeerForm = ({
               />
 
               {/*  Beer Image */}
-              <div className="flex flex-col items-center justify-center p-3 relative">
-                {/*  Existing Beer Image */}
-                {!previewImage ? (
-                  <ImageDisplay
-                    className="bg-transparent border border-stone-400 rounded-xl w-48 h-60 lg:h-40 md:w-full  object-cover"
-                    item={beer}
-                  />
-                ) : (
-                  //  Preview of new image
-                  <>
-                    <Image
-                      className="beer-card__image"
-                      alt="New Beer Image preview"
-                      src={previewImage}
-                      width={50}
-                      height={50}
+              <div className="flex flex-col items-center justify-center p-3 relative w-2/3 lg:w-full h-full ">
+                <label
+                  htmlFor="update_image"
+                  className="hover:cursor-pointer h-auto w-full"
+                >
+                  {/*  Existing Beer Image */}
+                  {!previewImage ? (
+                    <ImageDisplay
+                      className="bg-transparent border border-stone-400 rounded-xl w-full h-full object-cover"
+                      item={beer}
                     />
-                  </>
-                )}
-                <div className="absolute bottom-0 right-0 p-4 z-10">
-                  <TrashCanIcon
-                    onClick={() => {
-                      URL.revokeObjectURL(previewImage as any);
-                      setPreviewImage(null);
-                      setValues({
-                        ...values,
-                        image: null,
-                      });
-                    }}
-                  />
+                  ) : (
+                    //  Preview of new image
+                    <>
+                      <Image
+                        className="bg-transparent border border-stone-400 rounded-xl  w-full object-cover"
+                        alt="New Beer Image preview"
+                        src={previewImage}
+                        width={50}
+                        height={50}
+                      />
+                    </>
+                  )}
+                </label>
+                <div className="absolute bottom-0 right-0 p-4 z-10 hover:cursor-pointer">
+                  {!previewImage ? (
+                    <label
+                      htmlFor="update_image"
+                      className=" hover:cursor-pointer"
+                    >
+                      <Pencil size={24} />
+                    </label>
+                  ) : (
+                    <TrashCanIcon
+                      onClick={() => {
+                        URL.revokeObjectURL(previewImage as any);
+                        setPreviewImage(null);
+                        setValues({
+                          ...values,
+                          image: null,
+                        });
+                      }}
+                    />
+                  )}
                 </div>
               </div>
             </div>
@@ -367,11 +382,14 @@ const UpdateBeerForm = ({
               />
             </div>
           </div>
-          <div className="flex flex-col items-start justify-between w- md:w-1/2">
+          <div className="flex flex-col items-start justify-between pt-2 md:w-1/2">
+            <span className="text-xs pl-4">
+              <span className="error">*</span> REQUIRED FIELD
+            </span>
             {/* Name */}
             <div className="container-create__form">
               <label className="beer-card__label-text" htmlFor="name">
-                Name
+                Name<span className="error">*</span>
               </label>
               <input
                 id="name"
@@ -390,7 +408,7 @@ const UpdateBeerForm = ({
             {/* Style */}
             <div className="container-create__form">
               <label className="beer-card__label-text" htmlFor="style">
-                Style
+                Style<span className="error">*</span>
               </label>
               <input
                 id="style"
@@ -412,7 +430,7 @@ const UpdateBeerForm = ({
             {/* ABV */}
             <div className="container-create__form">
               <label className="beer-card__label-text" htmlFor="abv">
-                ABV %
+                ABV %<span className="error">*</span>
               </label>
               <input
                 id="abv"
@@ -426,8 +444,17 @@ const UpdateBeerForm = ({
                 className="form__input"
                 placeholder="ABV %"
                 value={values.abv}
+                onKeyDown={(e) => {
+                  if (e.key === "e" || e.key === "E") {
+                    e.preventDefault();
+                  }
+                }}
                 onChange={(e) => {
-                  setValues({ ...values, abv: parseFloat(e.target.value) });
+                  const abvValue = Number(e.target.value);
+                  setValues({
+                    ...values,
+                    abv: isNaN(abvValue) || abvValue === 0 ? "" : abvValue,
+                  });
                 }}
                 onBlur={handleBlur("abv")}
               />
@@ -436,7 +463,7 @@ const UpdateBeerForm = ({
             {/* IBUs   */}
             <div className="container-create__form">
               <label className="beer-card__label-text" htmlFor="ibu">
-                IBUs
+                IBU
               </label>
               <input
                 id="ibu"

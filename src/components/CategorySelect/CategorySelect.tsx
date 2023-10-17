@@ -78,7 +78,9 @@ const CategorySelect = ({
 
   return (
     <>
-      <label className="beer-card__label-text">Category</label>
+      <label className="beer-card__label-text">
+        Category<span className="error">*</span>
+      </label>
 
       <CreatableSelect
         styles={{

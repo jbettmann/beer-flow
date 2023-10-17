@@ -21,6 +21,7 @@ import TrashCanIcon from "../Buttons/TrashCanIcon";
 import SaveButton from "../Buttons/SaveButton";
 import DefaultBeerImage from "../../assets/img/beer.png";
 import getSingleBrewery from "@/lib/getSingleBrewery";
+import { spawn } from "child_process";
 
 type pageProps = {
   setIsCreateBeer?: (value: boolean) => void;
@@ -50,7 +51,7 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<ErrorValues>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [previewImage, setPreviewImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState<null>(null);
 
   const [isClearing, setIsClearing] = useState<boolean>(false); // Track if form is being cleared
 
@@ -235,15 +236,17 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
     setSubmitError(null);
   }, [values]);
 
+  console.log(previewImage);
+
   return (
     <form
       onSubmit={handleSubmit}
-      className=" p-4 form flex flex-col justify-between mx-auto rounded-lg shadow-2xl"
+      className=" p-4 form md:!p-0 flex flex-col justify-between mx-auto rounded-lg "
     >
-      <div className="flex w-full justify-between mb-2  md:mb-0 bg-primary py-3 sticky top-[-2px] h-10 z-20 md:z-0 md:h-auto md:bg-transparent md:block md:py-0">
+      <div className="flex w-full justify-between mb-2  bg-primary py-3 md:px-4 sticky top-[-2px] h-10 md:h-auto z-20  ">
         <button
           type="button"
-          className="mr-auto text-sm lg:text-xs"
+          className="text-sm lg:text-xs"
           onClick={(e) => {
             e.stopPropagation();
             handleClear();
@@ -251,8 +254,9 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
         >
           Clear
         </button>
+        <h4>Create</h4>
         <button
-          className={`md:hidden link link-hover text-background`}
+          className={`link link-hover text-background`}
           onClick={(e) => {
             e.stopPropagation();
             setIsCreateBeer && setIsCreateBeer(false);
@@ -281,7 +285,7 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
               className="hidden"
               onChange={(e) => {
                 const file = e.target.files ? e.target.files[0] : null;
-                if (file && file.size > 2 * 1024 * 1024) {
+                if (file && file.size > 5 * 1024 * 1024) {
                   // Check if file size is greater than 2MB
                   addToast(
                     "File is too large. Please select a file less than 2MB.",
@@ -293,39 +297,19 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
                     ...values,
                     image: file,
                   });
+                  if (previewImage) {
+                    URL.revokeObjectURL(previewImage);
+                  }
                   // Generate a URL for the new image and set it as the preview
-                  const url = URL.createObjectURL(file as Blob);
+                  const url = URL.createObjectURL(file as any);
                   setPreviewImage(url as any);
                 }
               }}
               onBlur={handleBlur("image")}
             />
+
             {/* Preview of new image */}
-            {previewImage ? (
-              <>
-                <div className="flex flex-col items-center justify-center p-3 w-48 h-60 md:h-full md:w-full  relative">
-                  <Image
-                    className="bg-transparent border border-stone-400 rounded-xl  h-60 w-full  object-cover"
-                    alt="New Beer Image preview"
-                    src={previewImage as any}
-                    width={50}
-                    height={50}
-                  />
-                  <div className="absolute bottom-0 right-0 p-4 z-10">
-                    <TrashCanIcon
-                      onClick={() => {
-                        URL.revokeObjectURL(previewImage);
-                        setPreviewImage(null);
-                        setValues({
-                          ...values,
-                          image: null,
-                        });
-                      }}
-                    />
-                  </div>
-                </div>
-              </>
-            ) : (
+            {!previewImage ? (
               <label
                 htmlFor="image"
                 className="border border-stone-400 rounded-xl w-48 h-60 md:h-full md:w-full hover:cursor-pointer relative"
@@ -341,6 +325,33 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
                   height={50}
                 />
               </label>
+            ) : (
+              <div className="relative">
+                <label
+                  htmlFor="image"
+                  className="flex flex-col items-center justify-center p-3 w-48 h-60 md:h-full md:w-full hover:cursor-pointer "
+                >
+                  <Image
+                    className="bg-transparent border border-stone-400 rounded-xl  h-60 w-full object-cover"
+                    alt="New Beer Image preview"
+                    src={previewImage as any}
+                    width={50}
+                    height={50}
+                  />
+                </label>
+                <div className="absolute bottom-0 right-0 p-4 z-10">
+                  <TrashCanIcon
+                    onClick={() => {
+                      URL.revokeObjectURL(previewImage);
+                      setPreviewImage(null);
+                      setValues({
+                        ...values,
+                        image: null,
+                      });
+                    }}
+                  />
+                </div>
+              </div>
             )}
 
             {touched.image && errors.image && (
@@ -365,11 +376,14 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
             />
           </div>
         </div>
-        <div className="flex flex-col items-start justify-between w- md:w-1/2">
+        <div className="flex flex-col items-start justify-between pt-2 md:w-1/2">
+          <span className="text-xs pl-4">
+            <span className="error">*</span> REQUIRED FIELD
+          </span>
           {/* Name */}
           <div className="container-create__form">
             <label className="beer-card__label-text" htmlFor="name">
-              Name
+              Name<span className="error">*</span>
             </label>
             <input
               id="name"
@@ -389,7 +403,7 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
           {/* Style */}
           <div className="container-create__form">
             <label className="beer-card__label-text" htmlFor="style">
-              Style
+              Style<span className="error">*</span>
             </label>
             <input
               id="style"
@@ -410,7 +424,7 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
 
           <div className="container-create__form">
             <label className="beer-card__label-text" htmlFor="abv">
-              ABV %
+              ABV %<span className="error">*</span>
             </label>
             <input
               id="abv"
@@ -424,8 +438,17 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
               className="form__input"
               placeholder="ABV %"
               value={values.abv}
+              onKeyDown={(e) => {
+                if (e.key === "e" || e.key === "E") {
+                  e.preventDefault();
+                }
+              }}
               onChange={(e) => {
-                setValues({ ...values, abv: parseFloat(e.target.value) });
+                const abvValue = Number(e.target.value);
+                setValues({
+                  ...values,
+                  abv: isNaN(abvValue) || abvValue === 0 ? "" : abvValue,
+                });
               }}
               onBlur={handleBlur("abv")}
             />
@@ -435,7 +458,7 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
           <div className="container-create__form">
             {/* IBUs   */}
             <label className="beer-card__label-text" htmlFor="ibu">
-              IBUs
+              IBU
             </label>
             <input
               id="ibu"
