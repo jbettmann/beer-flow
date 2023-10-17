@@ -78,7 +78,7 @@ p {
 }
 
 .beer-card__image {
-  @apply bg-transparent absolute w-full h-full object-cover
+  @apply bg-transparent rounded-xl w-full h-full object-cover
 }
 
 
@@ -92,7 +92,7 @@ p {
 }
 
 .beer-card__label-text {
-  @apply label-text p-2 text-background lg:text-xs lg:p-1 font-semibold
+  @apply label-text p-1 text-background text-xs lg:text-xs font-semibold uppercase
 }
 
 .beer-card__title {
@@ -206,7 +206,7 @@ p {
 
 
 .error {
-  @apply text-red-500 text-sm
+  @apply text-error  text-sm
 }
 
 
