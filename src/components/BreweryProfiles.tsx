@@ -10,6 +10,9 @@ import { Beer } from "@/app/types/beer";
 import BottomDrawer from "./Drawers/BottomDrawer";
 import BeerCard from "./BeerCard";
 import CreateBeerForm from "./CreateBeerForm/CreateBeerForm";
+import EditModal from "./Alerts/EditModal";
+import { debounce } from "@/lib/utils";
+import CreateModal from "./Alerts/CreateModal";
 
 type pageProps = {
   breweryId: string;
@@ -33,6 +36,7 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
   const [beerForDrawer, setBeerForDrawer] = useState<Beer | null>(null);
   // Mobile Create Beer View
   const [isCreateBeer, setIsCreateBeer] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   const beersForCategory = useMemo(() => {
     return categories?.map((category, i) => {
@@ -57,6 +61,20 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
       }
     }
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    const debouncedResize = debounce(handleResize, 250); // 250ms delay
+
+    window.addEventListener("resize", debouncedResize);
+
+    return () => {
+      window.removeEventListener("resize", debouncedResize);
+    };
+  }, []);
 
   // watch for change in selected brewery and beer to update categories
   useEffect(() => {
@@ -115,13 +133,13 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
               />
             </div>
             <div className="hidden lg:flex mt-10 justify-center">
-              <Link
-                href={`/create/${selectedBrewery?._id}/beer`}
+              <button
+                onClick={() => setIsCreateBeer(true)}
                 className="create-btn "
               >
                 <span className="flex justify-center items-center">+ Beer</span>
                 <BeerIcon size={20} />
-              </Link>
+              </button>
             </div>
             {/* Small Screen New Category Button */}
             <div className="fixed right-5 bottom-20 p-1 z-[2] lg:hidden ">
@@ -148,9 +166,15 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
           />
         </BottomDrawer>
         {/* Create Beer for Mobile */}
-        <BottomDrawer isOpen={isCreateBeer}>
-          <CreateBeerForm setIsCreateBeer={setIsCreateBeer} />
-        </BottomDrawer>
+        {isMobile ? (
+          <BottomDrawer isOpen={isCreateBeer}>
+            <CreateBeerForm setIsCreateBeer={setIsCreateBeer} />
+          </BottomDrawer>
+        ) : (
+          <CreateModal isOpen={isCreateBeer}>
+            <CreateBeerForm setIsCreateBeer={setIsCreateBeer} />
+          </CreateModal>
+        )}
       </section>
     )
   );
