@@ -144,7 +144,7 @@ export const authOptions: NextAuthOptions = {
               token.refreshToken as string,
               process.env.REFRESH_TOKEN_SECRET as string
             ) as JwtPayload & { exp?: number };
-            // console.log("experation", exp, "Rest of Verify", rest);
+
             const newAccessToken = signJwtAccessToken(rest);
 
             token.accessToken = newAccessToken;
@@ -155,7 +155,7 @@ export const authOptions: NextAuthOptions = {
           }
         }
       }
-      console.log("User", user, "Token", token);
+
       return token;
     },
 
@@ -240,7 +240,7 @@ export const authOptions: NextAuthOptions = {
 
         return false;
       }
-      console.log("User", user);
+
       return false;
     },
     async session({ session, token, user }) {
@@ -251,7 +251,7 @@ export const authOptions: NextAuthOptions = {
         session.user.breweries = token.breweries as string[]; // sets user's breweries
         session.user.notifications = token.notifications as Notifications; // sets user's notifications
       }
-      console.log("User", user, "Session", session);
+
       return session;
     },
   },
