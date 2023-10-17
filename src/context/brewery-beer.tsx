@@ -52,11 +52,7 @@ export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
       `https://beer-bible-api.vercel.app/breweries/${breweryId}/beers`,
       session?.user.accessToken,
     ],
-    getBreweryBeers,
-    {
-      errorRetryCount: 3,
-      errorRetryInterval: 2000, // Retry every 5 seconds
-    }
+    getBreweryBeers
   );
 
   const {
@@ -69,11 +65,7 @@ export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
       `https://beer-bible-api.vercel.app/breweries/${breweryId}`,
       session?.user.accessToken,
     ],
-    getSingleBrewery,
-    {
-      errorRetryCount: 3,
-      errorRetryInterval: 2000, // Retry every 5 seconds
-    }
+    getSingleBrewery
   );
 
   useEffect(() => {
