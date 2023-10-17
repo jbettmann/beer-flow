@@ -439,6 +439,8 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
               id="ibu"
               name="ibu"
               type="number"
+              inputMode="decimal"
+              pattern="[0-9]*"
               step="1"
               min={0}
               className="form__input"
