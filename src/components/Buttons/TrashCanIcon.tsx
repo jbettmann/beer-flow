@@ -19,6 +19,7 @@ const TrashCanIcon = ({
       className={`border-none transition-all duration-150 hover:bg-transparent hover:scale-105 ${className}`}
       onClick={onClick}
       title={title}
+      type="button"
     >
       {isLoading ? (
         <span className="loading loading-spinner "></span>
