@@ -1,10 +1,12 @@
 "use client";
+import route from "@/app/api/auth/[...nextauth]/route";
 import { Beer } from "@/app/types/beer";
 import { Brewery } from "@/app/types/brewery";
 import getBreweryBeers from "@/lib/getBreweryBeers";
 import getSingleBrewery from "@/lib/getSingleBrewery";
 
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import React, {
   FC,
   createContext,
@@ -37,7 +39,7 @@ export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
   const [selectedBeers, setSelectedBeers] = useState<Beer[] | null>(null);
   const [beersLoading, setBeersLoading] = useState<boolean | null>(null);
   const [breweryLoading, setBreweryLoading] = useState<boolean | null>(null);
-
+  const router = useRouter();
   const { data: session } = useSession();
   const [breweryId, setBreweryId] = useState<string | null>(
     localStorage.getItem("selectedBreweryId") || null
@@ -94,8 +96,10 @@ export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
   useEffect(() => {
     if (breweryId) {
       localStorage.setItem("selectedBreweryId", breweryId);
+    } else if (!breweryId && session?.brewery?.length > 0) {
+      localStorage.setItem("selectedBreweryId", session?.brewery[0]._id);
     } else {
-      localStorage.removeItem("selectedBreweryId");
+      router.push("/breweries");
     }
   }, [breweryId]);
 
