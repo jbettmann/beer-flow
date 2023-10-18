@@ -107,7 +107,7 @@ const StaffMemberCard = ({
 
   const handleOwnerClick = () => {
     setTimeout(() => {
-      addToast("Owner can't be mess with!", "info");
+      addToast("Owner can't be messed with!", "info");
     }, 200); // Show tooltip after 1 second of pressing
   };
 
