@@ -49,9 +49,6 @@ const AcceptInvite = (props: Props) => {
           handleBreweryToStorage(response.brewery);
 
           router.push(`/breweries/${response.brewery._id}`);
-        } else {
-          addToast(response.message, "error");
-          setMessage(response.message);
         }
       } else {
         // router.push("/"); // Redirect to the home page if the user is not authenticate
