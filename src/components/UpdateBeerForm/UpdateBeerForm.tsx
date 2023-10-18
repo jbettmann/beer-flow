@@ -317,52 +317,51 @@ const UpdateBeerForm = ({
               />
 
               {/*  Beer Image */}
-              <div className="flex flex-col items-center justify-center p-3 relative w-2/3 lg:w-full h-full ">
+
+              {/*  Existing Beer Image */}
+              {!previewImage ? (
                 <label
                   htmlFor="update_image"
-                  className="hover:cursor-pointer h-auto w-full"
+                  className="border border-stone-400 rounded-xl w-48 h-60 md:h-full md:w-full hover:cursor-pointer relative"
                 >
-                  {/*  Existing Beer Image */}
-                  {!previewImage ? (
-                    <ImageDisplay
-                      className="bg-transparent border border-stone-400 rounded-xl w-full h-full object-cover"
-                      item={beer}
-                    />
-                  ) : (
-                    //  Preview of new image
-                    <>
-                      <Image
-                        className="bg-transparent border border-stone-400 rounded-xl  w-full object-cover"
-                        alt="New Beer Image preview"
-                        src={previewImage}
-                        width={50}
-                        height={50}
-                      />
-                    </>
-                  )}
+                  <ImageDisplay
+                    className=" rounded-xl w-full h-full object-cover"
+                    item={beer}
+                  />
+
+                  <Pencil
+                    size={24}
+                    className="absolute bottom-0 right-0 p-4 z-10 hover:cursor-pointer"
+                  />
                 </label>
-                <div className="absolute bottom-0 right-0 p-4 z-10 hover:cursor-pointer">
-                  {!previewImage ? (
-                    <label
-                      htmlFor="update_image"
-                      className=" hover:cursor-pointer"
-                    >
-                      <Pencil size={24} />
-                    </label>
-                  ) : (
-                    <TrashCanIcon
-                      onClick={() => {
-                        URL.revokeObjectURL(previewImage as any);
-                        setPreviewImage(null);
-                        setValues({
-                          ...values,
-                          image: null,
-                        });
-                      }}
+              ) : (
+                //  Preview of new image
+                <div className="relative">
+                  <label
+                    htmlFor="image"
+                    className="flex flex-col items-center justify-center p-3 w-48 h-60 md:h-full md:w-full hover:cursor-pointer "
+                  >
+                    <Image
+                      className="bg-transparent border border-stone-400 rounded-xl  h-60 w-full object-cover"
+                      alt="New Beer Image preview"
+                      src={previewImage}
+                      width={50}
+                      height={50}
                     />
-                  )}
+                  </label>
+                  <TrashCanIcon
+                    onClick={(e) => {
+                      URL.revokeObjectURL(previewImage as any);
+                      setPreviewImage(null);
+                      setValues({
+                        ...values,
+                        image: null,
+                      });
+                    }}
+                    className="absolute bottom-0 right-0 p-4 z-10 hover:cursor-pointer"
+                  />
                 </div>
-              </div>
+              )}
             </div>
             {/* Release Date */}
             <div className="flex flex-col items-center md:items-start w-full mt-4">
