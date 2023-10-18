@@ -53,7 +53,7 @@ const BeerCard = ({ beerId, beerForDrawer, onClose }: Props) => {
 
   return (
     beer && (
-      <div className=" card w-full  lg:mx-auto beer-card shadow-xl ">
+      <div className=" card w-full  lg:mx-auto beer-card lg:shadow-xl ">
         <div className="flex w-full justify-between mb-2  md:mb-0 bg-primary py-3 sticky top-[-2px] h-10 z-20 md:z-0 md:h-auto md:bg-transparent md:block md:py-0">
           <button
             className={`link link-hover text-sm lg:text-xs`}
