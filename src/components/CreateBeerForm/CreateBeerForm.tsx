@@ -268,7 +268,7 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
       </div>
       <div className="flex flex-col md:flex-row-reverse justify-between p-2 md:p-4 ">
         {/*  Beer Image */}
-        <div className="flex flex-col items-center justify-between xl:items-end w-full md:w-[45%] p-2 pt-4 md:pt-2">
+        <div className="flex flex-col items-center justify-between w-full md:w-[45%] p-2 pt-4 md:pt-2">
           <div className="flex flex-col items-center md:items-start w-full h-full max-h-[550px]">
             <label
               htmlFor="image"
