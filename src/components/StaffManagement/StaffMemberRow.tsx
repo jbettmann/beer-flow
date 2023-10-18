@@ -107,6 +107,12 @@ const StaffMemberRow = ({
     setHasChanged(false);
   };
 
+  const handleOwnerClick = () => {
+    setTimeout(() => {
+      addToast("Owner can't be messed with!", "info");
+    }, 200); // Show tooltip after 1 second of pressing
+  };
+
   const useOutsideClick = (
     ref: RefObject<HTMLDivElement>,
     callback: () => void
@@ -215,7 +221,12 @@ const StaffMemberRow = ({
         <td className=" z-[2]">
           <div className="flex items-center justify-end  z-[2]">
             {role === "Owner" ? (
-              <div className="btn btn-circle btn-ghost ">
+              <div
+                className="btn btn-circle btn-ghost "
+                onClick={(e) => {
+                  e.stopPropagation(), handleOwnerClick();
+                }}
+              >
                 <SkullIcon size={26} strokeWidth={1} />
               </div>
             ) : (
