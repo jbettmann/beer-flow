@@ -34,9 +34,9 @@ const SettingTabs = ({ children }: Props) => {
   };
 
   return (
-    <div className="h-full py-6 px-0 lg:p-6 flex flex-col  relative ">
+    <div className="h-full py-6 px-0 md:p-6 flex flex-col  relative ">
       <h2 className="mb-4">Settings</h2>
-      <div className="flex flex-col lg:tabs lg:flex-row bg-background justify-evenly space-y-4 w-full h-full">
+      <div className="flex flex-col md:tabs md:flex-row bg-background justify-evenly space-y-4 w-full h-full">
         <div className="md:hidden">
           <SetSideDrawerSettings>{children}</SetSideDrawerSettings>
         </div>

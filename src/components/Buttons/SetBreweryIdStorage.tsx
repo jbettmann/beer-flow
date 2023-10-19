@@ -27,10 +27,10 @@ const SetBreweryIdStorage = ({ href, brewery }: Props) => {
       className="flex flex-wrap  items-center justify-center gap-3"
     >
       {brewery?.image ? (
-        <ImageDisplay item={brewery} className="logo" />
+        <ImageDisplay item={brewery} className="logo w-12 h-12" />
       ) : (
         brewery?.companyName && (
-          <div className=" logo__default ">
+          <div className=" logo__default !p-3 ">
             {getInitials(brewery.companyName || "")}
           </div>
         )
