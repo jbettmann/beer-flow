@@ -22,10 +22,10 @@
 } 
 
 html {
-  @apply h-screen    mb-14 lg:mb-0
+  @apply h-screen bg-background 
 }
 body {
-  @apply p-2 pb-16 xxs:p-5 min-h-full  bg-background text-primary mb-14  lg:mb-0
+  @apply p-2 xxs:p-5 min-h-full  bg-background text-primary mt-10  
 }
 
 h1 {
