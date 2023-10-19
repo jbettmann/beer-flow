@@ -3,6 +3,7 @@ import { Brewery } from "@/app/types/brewery";
 import { useBreweryContext } from "@/context/brewery-beer";
 import { getInitials } from "@/lib/utils";
 import {
+  AlignJustify,
   Beer,
   Factory,
   FactoryIcon,
@@ -15,6 +16,7 @@ import {
   Search as SearchIcon,
   Settings,
   Shield,
+  ShieldBan,
   Skull,
   Users as Staff,
   User2,
@@ -24,7 +26,7 @@ import { Session, User } from "next-auth";
 import { signIn, signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 import SideDrawer from "./Drawers/SideDrawer";
 import ImageDisplay from "./ImageDisplay/ImageDisplay";
@@ -38,10 +40,11 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   // Reference to the drawer div
-  const drawerRef = useRef<HTMLDivElement>(null);
-  const breweryMenuRef = useRef<MutableRefObject | null>(null);
+
+  const breweryMenuRef = useRef<any>(null);
   const checkBoxRef = useRef<HTMLInputElement>(null);
 
+  const router = useRouter();
   const pathname = usePathname();
 
   const isActive = (path: string) => {
@@ -84,10 +87,6 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
     const event = new Event("selectedBreweryChanged");
     window.dispatchEvent(event);
     sessionStorage.removeItem("openCategory");
-
-    // Update the selected brewery
-    setSelectedBrewery(brewery);
-
     // Close the drawer
     closeDrawer();
   };
@@ -129,266 +128,88 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
         <Search isOpen={isSearchOpen} setIsOpen={setIsSearchOpen} />
       </SideDrawer>
 
-      <div className="navbar justify-between  ">
-        {/* Drawer for small screens */}
-        <div className="drawer w-fit p-3 lg:hidden">
-          <input
-            id="menu-drawer"
-            type="checkbox"
-            className="drawer-toggle"
-            ref={checkBoxRef}
-          />
-          <div className={`flex flex-row justify-between drawer-content`}>
-            <div className="text-xl font-medium" ref={drawerRef}>
-              <label
-                htmlFor="menu-drawer"
-                className="drawer-button flex flex-row items-center"
-              >
-                <div>
-                  {selectedBrewery?.image ? (
-                    <ImageDisplay item={selectedBrewery} className="logo" />
-                  ) : (
-                    selectedBrewery?.companyName && (
-                      <div className=" logo__default !p-1 !text-base ">
-                        {getInitials(selectedBrewery.companyName || "")}
-                      </div>
-                    )
-                  )}
+      {/* Drawer for small screens */}
+      <div className="drawer w-full md:hidden sticky top-0 py-1 bg-background text-primary">
+        <input
+          id="menu-drawer"
+          type="checkbox"
+          className="drawer-toggle"
+          ref={checkBoxRef}
+        />
+        <div className={`flex flex-row justify-between drawer-content gap-6`}>
+          <label
+            htmlFor="menu-drawer"
+            className="drawer-button flex flex-row items-center"
+          >
+            <AlignJustify />
+          </label>
+
+          <Link
+            href={`/breweries/${selectedBrewery?._id}`}
+            className="flex flex-row items-center justify-center gap-1"
+          >
+            {selectedBrewery?.image ? (
+              <ImageDisplay item={selectedBrewery} className="logo w-8 h-8" />
+            ) : (
+              selectedBrewery?.companyName && (
+                <div className=" logo__default !text-base ">
+                  {getInitials(selectedBrewery.companyName || "")}
                 </div>
-                <h6 className="pl-3 text-sm">{selectedBrewery?.companyName}</h6>
-              </label>
+              )
+            )}
+            <h6 className="text-xs">{selectedBrewery?.companyName}</h6>
+          </Link>
+          <div className="flex-none gap-2">
+            <div
+              className="form-control relative"
+              onClick={() => setIsSearchOpen(true)}
+            >
+              <SearchIcon size={24} strokeWidth={2} />
             </div>
           </div>
-          <div className="drawer-side z-50 text-background">
-            <label htmlFor="menu-drawer" className="drawer-overlay "></label>
-            <div className="h-full flex flex-col justify-between menu-drawer">
-              <div className="menu p-6 w-80 h-full gap-3">
-                <h4 className="py-4">Breweries</h4>
+        </div>
 
+        <div className="drawer-side z-50 text-background">
+          <label htmlFor="menu-drawer" className="drawer-overlay "></label>
+          <div className="h-full flex flex-col justify-between menu-drawer w-9/12 xxs:w-auto">
+            <div className="p-6">
+              <h4 className="py-4">Breweries</h4>
+              <ul className="w-full menu !flex-nowrap  h-full gap-3 overflow-y-scroll">
                 {breweries.map((brewery: Brewery) => (
                   <li
                     key={brewery._id}
-                    className="category-card rounded-xl p-2"
+                    className="category-card rounded-xl p-1"
                   >
                     <Link
                       key={brewery._id}
                       href={`/breweries/${brewery._id}`}
-                      className="flex flex-row items-center text-left"
+                      className="flex flex-col xs:flex-row items-center text-left "
                       onClick={() => handleBreweryClick(brewery)}
                     >
                       {brewery.image ? (
-                        <ImageDisplay item={brewery} className="logo" />
+                        <ImageDisplay
+                          item={brewery}
+                          className="logo w-10 h-10"
+                        />
                       ) : (
-                        <div className="logo__default !p-1 !text-base">
+                        <div className="logo__default !p-2 !text-base">
                           {getInitials(brewery.companyName)}
                         </div>
                       )}
-                      <h6 className="pl-3 text-left text-xs">
+                      <h6 className="pl-1 text-left text-xs">
                         {brewery.companyName}
                       </h6>
                     </Link>
                   </li>
                 ))}
-              </div>
-              <div className="flex flex-col justify-center border-t-2 p-3 menu">
-                <li onClick={closeDrawer}>
-                  <Link
-                    href={"/create/brewery"}
-                    className="  flex flex-row items-center"
-                  >
-                    <PlusCircle size={24} />
-                    <h6 className="pl-3">Create Brewery</h6>
-                  </Link>
-                </li>
-
-                <li onClick={closeDrawer}>
-                  <Link
-                    href={"/settings"}
-                    className="  flex flex-row items-center"
-                  >
-                    <Settings size={24} />
-                    <h6 className="pl-3">Settings</h6>
-                  </Link>
-                </li>
-
-                <li onClick={closeDrawer}>
-                  <Link href={"/help"} className=" flex flex-row items-center">
-                    <HelpCircle size={24} />
-                    <h6 className="pl-3">Help</h6>
-                  </Link>
-                </li>
-                <li>
-                  {breweries ? (
-                    <button
-                      className=" flex flex-row items-center text-accent"
-                      onClick={handleSignOut}
-                    >
-                      <LogOut size={24} className="invisible" />
-                      <h6 className="pl-3">Sign Out</h6>
-                    </button>
-                  ) : (
-                    <button
-                      className=" flex flex-row items-center"
-                      onClick={() => signIn()}
-                    >
-                      <h6 className="pl-3">Sign In</h6>
-                    </button>
-                  )}
-                </li>
-              </div>
+              </ul>
             </div>
-          </div>
-        </div>
-        {/* Dashboard horizontal */}
-        <div className="hidden lg:flex lg:fixed top-0 right-0 left-0 px-4 pl-12 py-2  w-full justify-between items-center bg-primary text-background ">
-          <ul className="menu menu-horizontal text-xs pounded-box pl-8 py-0 hover:text-accent">
-            <li className="">
-              <details className="">
-                <summary className="py-0" ref={breweryMenuRef}>
-                  {selectedBrewery?.image
-                    ? selectedBrewery.image && (
-                        <ImageDisplay
-                          item={selectedBrewery}
-                          className="logo !w-6 !h-6"
-                        />
-                      )
-                    : selectedBrewery?.companyName && (
-                        <div className="logo__default !p-1 !text-base">
-                          {getInitials(selectedBrewery?.companyName as string)}
-                        </div>
-                      )}
-                  {selectedBrewery?.companyName}
-                </summary>
-                <ul className="space-y-4 z-40">
-                  {breweries.map((brewery: Brewery) => (
-                    <li
-                      key={brewery._id}
-                      className="category-card rounded-xl p-2 "
-                    >
-                      <button
-                        key={brewery._id}
-                        className="flex flex-row items-center text-left"
-                        onClick={() => {
-                          handleBreweryClick(brewery);
-                          closeBreweryMenu();
-                        }}
-                      >
-                        {brewery.image
-                          ? brewery.image && (
-                              <ImageDisplay
-                                item={brewery}
-                                className="logo !w-6 !h-6"
-                              />
-                            )
-                          : brewery.companyName && (
-                              <div className="logo__default !p-1 !text-base ">
-                                {getInitials(brewery.companyName)}
-                              </div>
-                            )}
-                        <h6 className="pl-3 text-left text-xs">
-                          {brewery.companyName}
-                        </h6>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </details>
-            </li>
-          </ul>
-          {/* Profile Photo with Option Dropdown */}
-          <div className="flex dropdown dropdown-end">
-            <label
-              tabIndex={0}
-              className="btn btn-ghost btn-circle btn-sm justify-center items-center"
-            >
-              <Image
-                src={user?.picture}
-                alt={`profile picture of ${user?.name}`}
-                className="rounded-full my-auto avatar justify-center items-center"
-                width={50}
-                height={50}
-              />
-            </label>
-            <ul
-              tabIndex={0}
-              className="mt-3 z-[1] p-2 shadow menu menu-md dropdown-content bg-base-100 text-primary min-w-max w-56 rounded-box "
-            >
-              {adminAllowed && (
-                <div className="border-b-2">
-                  <p className="text-xs text-gray-400 mb-0">
-                    {selectedBrewery?.companyName} Management
-                  </p>
-                  <ul className="menu">
-                    <li>
-                      <Link
-                        href={`/breweries/${selectedBrewery?._id}/categories`}
-                        className="flex flex-row items-center"
-                      >
-                        <LayoutGrid size={24} />
-                        <h6 className="pl-3">Categories</h6>
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        href={`/breweries/${selectedBrewery?._id}/staff`}
-                        className="flex flex-row items-center"
-                      >
-                        <Staff size={24} />
-                        <h6 className="pl-3">Staff</h6>
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-              )}
-              <li className="pt-3">
-                <Link
-                  href={"/breweries"}
-                  className="flex flex-row items-center p-3"
-                >
-                  <Beer size={24} />
-                  <h6 className="pl-3">Breweries</h6>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href={"/settings"}
-                  className="flex flex-row items-center p-3"
-                >
-                  <UserCircle size={24} />
-                  <h6 className="pl-3">Account</h6>
-                </Link>
-              </li>
-              <li>
-                {breweries ? (
-                  <button onClick={handleSignOut}>Sign Out</button>
-                ) : (
-                  <button onClick={() => signIn()}>Sign In</button>
-                )}
-              </li>
-            </ul>
-          </div>
-        </div>
-        {/* Dashboard large screen */}
-        <div className="hidden lg:flex lg:fixed left-0 top-0 p-4 h-full flex-col justify-between items-center bg-primary text-background ">
-          <div>
-            <div className="flex flex-col justify-center items-center space-y-6">
-              <Link href={`/breweries`}>
-                <h1>B</h1>
-              </Link>
-              <Link
-                href={`/breweries/${selectedBrewery?._id}`}
-                className={`flex flex-row justify-between  tooltip tooltip-accent tooltip-right`}
-                data-tip="Home"
-              >
-                <HomeIcon size={22} strokeWidth={1} />
-              </Link>
-              <div className="divider-horizontal border !border-background/20 w-full"></div>
-            </div>
-            <div className="flex flex-col justify-center items-center space-y-6 mt-6">
-              {adminAllowed && (
-                <>
+            {adminAllowed && (
+              <>
+                <div className="divider-horizontal border !border-background/20 w-full !ml-0"></div>
+                <div className="flex flex-col justify-center  p-3 px-6 menu">
                   <div
-                    className="opacity-50"
+                    className="opacity-80 flex flex-row items-center"
                     data-tip={`${selectedBrewery?.companyName} Management`}
                     title={`${selectedBrewery?.companyName} Management`}
                   >
@@ -400,114 +221,333 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                           />
                         )
                       : selectedBrewery?.companyName && (
-                          <div className="logo__default !p-1 !text-base">
+                          <div className="logo__default !text-base">
                             {getInitials(
                               selectedBrewery?.companyName as string
                             )}
                           </div>
                         )}
+                    <p>{selectedBrewery?.companyName} Management</p>
                   </div>
-                  <Link
-                    href={`/breweries/${selectedBrewery?._id}/categories`}
-                    className="flex flex-row items-center  tooltip tooltip-accent tooltip-right"
-                    data-tip={`Categories Management`}
-                  >
-                    <LayoutGrid size={22} strokeWidth={1} />
-                  </Link>
-
-                  <Link
-                    href={`/breweries/${selectedBrewery?._id}/staff`}
-                    className="flex flex-row items-center tooltip tooltip-accent tooltip-right"
-                    data-tip="Staff Management"
-                  >
-                    <Staff size={22} strokeWidth={1} />
-                  </Link>
-
-                  <div className="divider-horizontal border !border-background/20 w-full"></div>
-                </>
-              )}
-            </div>
-          </div>
-          <div>
-            <div className="flex flex-col justify-center items-center space-y-6">
-              <div className="divider-horizontal border !border-background/20 w-full"></div>
-
-              <Link
-                href={"/settings"}
-                className="  flex flex-row items-center tooltip tooltip-accent tooltip-right"
-                data-tip="Settings"
-              >
-                <Settings size={22} strokeWidth={1} />
-              </Link>
-
-              <Link
-                href={"/help"}
-                className=" flex flex-row items-center tooltip tooltip-accent tooltip-right"
-                data-tip="Help"
-              >
-                <HelpCircle size={22} strokeWidth={1} />
-              </Link>
-              <div className="divider-horizontal border !border-background/20 w-full"></div>
-            </div>
-            <div className="flex flex-col justify-center items-center space-y-6 mt-6">
-              <div
-                className="form-control relative hover:cursor-pointer tooltip tooltip-accent tooltip-right"
-                data-tip="Search"
-                onClick={() => setIsSearchOpen(true)}
-              >
-                <SearchIcon size={22} strokeWidth={1} />
-              </div>
-              {/* Profile Photo with Option Dropdown */}
-              <div
-                className="hidden lg:block dropdown dropdown-top "
-                data-tip="Option Menu"
-              >
-                <label
-                  tabIndex={0}
-                  className="btn btn-ghost btn-circle btn-sm avatar"
-                >
-                  <User2 size={22} strokeWidth={1} />
-                </label>
-                <ul
-                  tabIndex={0}
-                  className="mt-3 z-20 shadow menu menu-sm dropdown-content  bg-base-100 text-primary min-w-max w-fit justify-end rounded-box p-3 "
-                >
-                  <li>
+                  <li onClick={closeDrawer}>
                     <Link
-                      href={"/settings/profile"}
-                      className="flex flex-row items-center p-3"
+                      href={`/breweries/${selectedBrewery?._id}/categories`}
+                      className="flex flex-row items-center "
+                      data-tip={`Categories Management`}
                     >
-                      <UserCircle size={18} strokeWidth={1} />
-                      <h6 className="pl-3">Profile</h6>
+                      <LayoutGrid size={22} strokeWidth={1} />
+                      <h6 className="pl-3">Category Management</h6>
                     </Link>
                   </li>
-                  <li>
-                    {breweries ? (
-                      <button
-                        className=" flex flex-row items-center text-primary"
-                        onClick={handleSignOut}
-                      >
-                        <LogOut size={18} strokeWidth={1} />
-                        <h6 className="pl-3">Sign Out</h6>
-                      </button>
-                    ) : (
-                      <button
-                        className=" flex flex-row items-center"
-                        onClick={() => signIn()}
-                      >
-                        <h6 className="pl-3">Sign In</h6>
-                      </button>
-                    )}
+                  <li onClick={closeDrawer}>
+                    <Link
+                      href={`/breweries/${selectedBrewery?._id}/staff`}
+                      className="flex flex-row items-center"
+                      data-tip="Staff Management"
+                    >
+                      <Staff size={22} strokeWidth={1} />
+                      <h6 className="pl-3">Staff Management</h6>
+                    </Link>
                   </li>
-                </ul>
-              </div>
+                </div>
+              </>
+            )}
+            <div className="divider-horizontal border !border-background/20 w-full !ml-0"></div>
+            <div className="flex flex-col justify-center  p-3 menu">
+              <li onClick={closeDrawer}>
+                <Link
+                  href={"/settings"}
+                  className="flex flex-row items-center"
+                  data-tip="Settings"
+                >
+                  <Settings size={22} strokeWidth={1} />
+                  <h6 className="pl-3">Settings</h6>
+                </Link>
+              </li>
+
+              <li onClick={closeDrawer}>
+                <Link
+                  href={"/help"}
+                  className=" flex flex-row items-center"
+                  data-tip="Help"
+                >
+                  <HelpCircle size={22} strokeWidth={1} />
+                  <h6 className="pl-3">Help</h6>
+                </Link>
+              </li>
+              <li>
+                {breweries ? (
+                  <button
+                    className=" flex flex-row items-center text-accent"
+                    onClick={handleSignOut}
+                    aria-label="Sign Out"
+                    data-tip="Sign Out"
+                  >
+                    <LogOut size={22} strokeWidth={1} />
+                    <h6 className="pl-3">Sign Out</h6>
+                  </button>
+                ) : (
+                  <button
+                    className=" flex flex-row items-center"
+                    onClick={() => signIn()}
+                    aria-label="Sign In"
+                    data-tip="Sign In"
+                  >
+                    <h6 className="pl-3">Sign In</h6>
+                  </button>
+                )}
+              </li>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Dashboard horizontal DESKTOP */}
+      <div className="hidden md:flex md:fixed top-0 right-0 left-0 px-4 pl-12 py-2  w-full justify-between items-center bg-primary text-background z-[1] ">
+        <ul className="menu menu-horizontal text-xs pounded-box pl-8 py-0">
+          <li>
+            <details>
+              <summary className="py-0 hover:text-accent" ref={breweryMenuRef}>
+                {selectedBrewery?.image
+                  ? selectedBrewery.image && (
+                      <ImageDisplay
+                        item={selectedBrewery}
+                        className="logo !w-6 !h-6"
+                      />
+                    )
+                  : selectedBrewery?.companyName && (
+                      <div className="logo__default  !text-base">
+                        {getInitials(selectedBrewery?.companyName as string)}
+                      </div>
+                    )}
+                {selectedBrewery?.companyName}
+              </summary>
+              <ul className="space-y-4">
+                {breweries.map((brewery: Brewery) => (
+                  <li
+                    key={brewery._id}
+                    className="category-card rounded-xl p-2 "
+                  >
+                    <Link
+                      href={`/breweries/${brewery._id}`}
+                      key={brewery._id}
+                      className="flex flex-row items-center text-left"
+                      onClick={() => {
+                        handleBreweryClick(brewery);
+                        closeBreweryMenu();
+                      }}
+                    >
+                      {brewery.image
+                        ? brewery.image && (
+                            <ImageDisplay
+                              item={brewery}
+                              className="logo w-9 h-9"
+                            />
+                          )
+                        : brewery.companyName && (
+                            <div className="logo__default !p-2 !text-base ">
+                              {getInitials(brewery.companyName)}
+                            </div>
+                          )}
+                      <h6 className="pl-3 text-left text-xs">
+                        {brewery.companyName}
+                      </h6>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          </li>
+        </ul>
+        {/* Profile Photo with Option Dropdown */}
+        <div className="flex dropdown dropdown-left">
+          <label
+            tabIndex={0}
+            className="btn btn-ghost btn-circle btn-sm justify-center items-center"
+          >
+            <Image
+              src={user?.picture}
+              alt={`profile picture of ${user?.name}`}
+              className="rounded-full my-auto avatar justify-center items-center"
+              width={50}
+              height={50}
+            />
+          </label>
+          <ul
+            tabIndex={0}
+            className="mt-3 z-[1] p-2 shadow menu menu-md dropdown-content bg-base-100 text-primary rounded-box p-3 "
+          >
+            <li>
+              <Link
+                href={"/breweries"}
+                className="flex flex-row items-center p-3"
+              >
+                <Beer size={24} strokeWidth={1} />
+                <h6 className="pl-3">Breweries</h6>
+              </Link>
+            </li>
+            <li>
+              <Link
+                href={"/settings"}
+                className="flex flex-row items-center p-3"
+              >
+                <ShieldBan size={24} strokeWidth={1} />
+                <h6 className="pl-3">Account</h6>
+              </Link>
+            </li>
+            <li>
+              {breweries ? (
+                <button
+                  onClick={handleSignOut}
+                  className="flex flex-row items-center p-3"
+                >
+                  <LogOut size={18} strokeWidth={1} />
+                  <h6 className="pl-3">Sign Out</h6>
+                </button>
+              ) : (
+                <button onClick={() => signIn()}>Sign In</button>
+              )}
+            </li>
+          </ul>
+        </div>
+      </div>
+      {/* Dashboard large screen */}
+      <div className="hidden md:flex md:fixed left-0 top-0 p-4 h-full flex-col justify-between items-center bg-primary text-background z-[1]">
+        <div>
+          <div className="flex flex-col justify-center items-center space-y-6">
+            <Link href={`/breweries`}>
+              <h1>B</h1>
+            </Link>
+            <Link
+              href={`/breweries/${selectedBrewery?._id}`}
+              className={`flex flex-row justify-between  tooltip tooltip-accent tooltip-right`}
+              data-tip="Home"
+            >
+              <HomeIcon size={22} strokeWidth={1} />
+            </Link>
+            <div className="divider-horizontal border !border-background/20 w-full"></div>
+          </div>
+          <div className="flex flex-col justify-center items-center space-y-6 mt-6">
+            {adminAllowed && (
+              <>
+                <div
+                  className="opacity-80"
+                  data-tip={`${selectedBrewery?.companyName} Management`}
+                  title={`${selectedBrewery?.companyName} Management`}
+                >
+                  {selectedBrewery?.image
+                    ? selectedBrewery.image && (
+                        <ImageDisplay
+                          item={selectedBrewery}
+                          className="logo w-9 h-9"
+                        />
+                      )
+                    : selectedBrewery?.companyName && (
+                        <div className="logo__default !text-base">
+                          {getInitials(selectedBrewery?.companyName as string)}
+                        </div>
+                      )}
+                </div>
+                <Link
+                  href={`/breweries/${selectedBrewery?._id}/categories`}
+                  className="flex flex-row items-center  tooltip tooltip-accent tooltip-right"
+                  data-tip={`Categories Management`}
+                >
+                  <LayoutGrid size={22} strokeWidth={1} />
+                </Link>
+
+                <Link
+                  href={`/breweries/${selectedBrewery?._id}/staff`}
+                  className="flex flex-row items-center tooltip tooltip-accent tooltip-right"
+                  data-tip="Staff Management"
+                >
+                  <Staff size={22} strokeWidth={1} />
+                </Link>
+
+                <div className="divider-horizontal border !border-background/20 w-full"></div>
+              </>
+            )}
+          </div>
+        </div>
+        <div>
+          <div className="flex flex-col justify-center items-center space-y-6">
+            <div className="divider-horizontal border !border-background/20 w-full"></div>
+
+            <Link
+              href={"/settings"}
+              className="  flex flex-row items-center tooltip tooltip-accent tooltip-right"
+              data-tip="Settings"
+            >
+              <Settings size={22} strokeWidth={1} />
+            </Link>
+
+            <Link
+              href={"/help"}
+              className=" flex flex-row items-center tooltip tooltip-accent tooltip-right"
+              data-tip="Help"
+            >
+              <HelpCircle size={22} strokeWidth={1} />
+            </Link>
+            <div className="divider-horizontal border !border-background/20 w-full"></div>
+          </div>
+          <div className="flex flex-col justify-center items-center space-y-6 mt-6">
+            <div
+              className="form-control relative hover:cursor-pointer tooltip tooltip-accent tooltip-right"
+              data-tip="Search"
+              onClick={() => setIsSearchOpen(true)}
+            >
+              <SearchIcon size={22} strokeWidth={1} />
+            </div>
+            {/* Profile Photo with Option Dropdown */}
+            <div
+              className="hidden md:block dropdown dropdown-top "
+              data-tip="Option Menu"
+            >
+              <label
+                tabIndex={0}
+                className="btn btn-ghost btn-circle btn-sm avatar"
+              >
+                <User2 size={22} strokeWidth={1} />
+              </label>
+              <ul
+                tabIndex={0}
+                className="mt-3 z-20 shadow menu menu-sm dropdown-content  bg-base-100 text-primary min-w-max w-fit justify-end rounded-box p-3 "
+              >
+                <li>
+                  <Link
+                    href={"/settings/profile"}
+                    className="flex flex-row items-center p-3"
+                  >
+                    <UserCircle size={18} strokeWidth={1} />
+                    <h6 className="pl-3">Profile</h6>
+                  </Link>
+                </li>
+                <li>
+                  {breweries ? (
+                    <button
+                      className=" flex flex-row items-center p-3 text-primary"
+                      onClick={handleSignOut}
+                    >
+                      <LogOut size={18} strokeWidth={1} />
+                      <h6 className="pl-3">Sign Out</h6>
+                    </button>
+                  ) : (
+                    <button
+                      className=" flex flex-row items-center p-3"
+                      onClick={() => signIn()}
+                    >
+                      <h6 className="pl-3">Sign In</h6>
+                    </button>
+                  )}
+                </li>
+              </ul>
             </div>
           </div>
         </div>
       </div>
 
       {/* Bottom Menu Nav */}
-      <div className=" lg:hidden btm-nav z-40 bg-primary text-background">
+      <div className=" md:hidden btm-nav z-40 bg-primary text-background">
         <button
           className={
             isActive(`/breweries/${selectedBrewery?._id}`) ? "active" : ""
