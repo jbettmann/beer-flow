@@ -17,13 +17,15 @@ const BreweriesSettingsPage = async (props: Props) => {
   return (
     <div>
       <h4>Brewery Settings</h4>
-      {breweries.map((brewery: Brewery) => (
-        <BrewerySettingsList
-          key={brewery._id}
-          brewery={brewery}
-          session={session as any}
-        />
-      ))}
+      <div className="flex flex-col justify-center items-start gap-4">
+        {breweries.map((brewery: Brewery) => (
+          <BrewerySettingsList
+            key={brewery._id}
+            brewery={brewery}
+            session={session as any}
+          />
+        ))}
+      </div>
     </div>
   );
 };
