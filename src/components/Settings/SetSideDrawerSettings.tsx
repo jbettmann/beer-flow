@@ -1,9 +1,10 @@
 "use client";
-import { HelpCircle } from "lucide-react";
+import { HelpCircle, Home } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import BackArrow from "../Buttons/BackArrow";
+import { useBreweryContext } from "@/context/brewery-beer";
 
 type Props = {
   children: React.ReactNode;
@@ -12,6 +13,7 @@ type Props = {
 const SetSideDrawerSettings = ({ children }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
+  const { selectedBrewery } = useBreweryContext();
   const pathname = usePathname();
 
   useEffect(() => {
@@ -41,8 +43,11 @@ const SetSideDrawerSettings = ({ children }: Props) => {
         <BackArrow />
 
         <h4>{title}</h4>
-        <Link href={"/help"} className=" flex flex-row items-center">
-          <HelpCircle size={24} />
+        <Link
+          href={`/breweries/${selectedBrewery?._id}`}
+          className=" flex flex-row items-center"
+        >
+          <Home size={24} />
         </Link>
       </div>
       <div className="divider !m-0"></div>
