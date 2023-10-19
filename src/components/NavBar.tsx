@@ -25,7 +25,7 @@ import { signIn, signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 import SideDrawer from "./Drawers/SideDrawer";
 import ImageDisplay from "./ImageDisplay/ImageDisplay";
 import { Search } from "./Search/Search";
@@ -39,6 +39,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
 
   // Reference to the drawer div
   const drawerRef = useRef<HTMLDivElement>(null);
+  const breweryMenuRef = useRef<MutableRefObject | null>(null);
   const checkBoxRef = useRef<HTMLInputElement>(null);
 
   const pathname = usePathname();
@@ -49,6 +50,10 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
 
   const closeDrawer = () => {
     checkBoxRef.current?.click();
+  };
+
+  const closeBreweryMenu = () => {
+    breweryMenuRef.current?.click();
   };
 
   const isUserAdmin = (brewery: Brewery, userId: string) => {
@@ -126,7 +131,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
 
       <div className="navbar justify-between  ">
         {/* Drawer for small screens */}
-        <div className="drawer w-fit p-3 md:hidden">
+        <div className="drawer w-fit p-3 lg:hidden">
           <input
             id="menu-drawer"
             type="checkbox"
@@ -235,11 +240,11 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
           </div>
         </div>
         {/* Dashboard horizontal */}
-        <div className="hidden md:flex md:fixed top-0 right-0 left-0 px-4 pl-12 py-2  w-full justify-between items-center bg-primary text-background ">
-          <ul className="menu menu-horizontal text-xs  rounded-box pl-8 ">
-            <li className="hover:text-accent">
-              <details open className="">
-                <summary className=" ">
+        <div className="hidden lg:flex lg:fixed top-0 right-0 left-0 px-4 pl-12 py-2  w-full justify-between items-center bg-primary text-background ">
+          <ul className="menu menu-horizontal text-xs pounded-box pl-8 py-0 hover:text-accent">
+            <li className="">
+              <details className="">
+                <summary className="py-0" ref={breweryMenuRef}>
                   {selectedBrewery?.image
                     ? selectedBrewery.image && (
                         <ImageDisplay
@@ -254,17 +259,19 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                       )}
                   {selectedBrewery?.companyName}
                 </summary>
-                <ul className="space-y-4 ">
+                <ul className="space-y-4 z-40">
                   {breweries.map((brewery: Brewery) => (
                     <li
                       key={brewery._id}
                       className="category-card rounded-xl p-2 "
                     >
-                      <Link
+                      <button
                         key={brewery._id}
-                        href={`/breweries/${brewery._id}`}
                         className="flex flex-row items-center text-left"
-                        onClick={() => handleBreweryClick(brewery)}
+                        onClick={() => {
+                          handleBreweryClick(brewery);
+                          closeBreweryMenu();
+                        }}
                       >
                         {brewery.image
                           ? brewery.image && (
@@ -281,7 +288,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                         <h6 className="pl-3 text-left text-xs">
                           {brewery.companyName}
                         </h6>
-                      </Link>
+                      </button>
                     </li>
                   ))}
                 </ul>
@@ -289,15 +296,15 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
             </li>
           </ul>
           {/* Profile Photo with Option Dropdown */}
-          <div className="hidden lg:block dropdown dropdown-end ">
+          <div className="flex dropdown dropdown-end">
             <label
               tabIndex={0}
-              className="btn btn-ghost btn-circle btn-sm avatar"
+              className="btn btn-ghost btn-circle btn-sm justify-center items-center"
             >
               <Image
                 src={user?.picture}
                 alt={`profile picture of ${user?.name}`}
-                className="beer-category__image"
+                className="rounded-full my-auto avatar justify-center items-center"
                 width={50}
                 height={50}
               />
@@ -362,7 +369,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
           </div>
         </div>
         {/* Dashboard large screen */}
-        <div className="hidden md:flex md:fixed left-0 top-0 p-4 h-full flex-col justify-between items-center bg-primary text-background ">
+        <div className="hidden lg:flex lg:fixed left-0 top-0 p-4 h-full flex-col justify-between items-center bg-primary text-background ">
           <div>
             <div className="flex flex-col justify-center items-center space-y-6">
               <Link href={`/breweries`}>
@@ -381,6 +388,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
               {adminAllowed && (
                 <>
                   <div
+                    className="opacity-50"
                     data-tip={`${selectedBrewery?.companyName} Management`}
                     title={`${selectedBrewery?.companyName} Management`}
                   >
