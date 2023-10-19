@@ -1,6 +1,6 @@
 "use client";
 import { useBreweryContext } from "@/context/brewery-beer";
-import { MoveLeft } from "lucide-react";
+import { ChevronLeft, MoveLeft } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -30,7 +30,7 @@ const BackArrow = (props: Props) => {
           homepage === pathname ? "hidden" : "block my-2 sm:my-4 lg:hidden"
         }`}
       >
-        <MoveLeft size={30} />
+        <ChevronLeft size={30} />
       </h2>
     )
   );
