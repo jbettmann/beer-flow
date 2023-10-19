@@ -1,4 +1,5 @@
 import { Brewery } from "@/app/types/brewery";
+import { Users } from "@/app/types/users";
 import ImageDisplay from "@/components/ImageDisplay/ImageDisplay";
 import { getInitials } from "@/lib/utils";
 import { ChevronRight } from "lucide-react";
@@ -11,8 +12,8 @@ type Props = {
 };
 
 const BrewerySettingsList = ({ brewery, session }: Props) => {
-  const owner = session?.user.id === brewery?.owner?._id;
-  const adminIds = new Set(brewery?.admin.map((admin) => admin._id));
+  const owner = (session?.user.id as any) === (brewery?.owner as Users)?._id;
+  const adminIds = new Set(brewery?.admin.map((admin: any) => admin._id));
   const role = owner
     ? "Owner"
     : adminIds.has(session?.user.id)
@@ -22,14 +23,14 @@ const BrewerySettingsList = ({ brewery, session }: Props) => {
     <Link
       href={`/settings/breweries/${brewery._id}`}
       key={brewery._id}
-      className="flex items-center justify-between p-6"
+      className="flex items-center justify-between p-2 w-full "
     >
       <div className="flex items-center">
         {brewery?.image ? (
-          <ImageDisplay item={brewery} className="logo" />
+          <ImageDisplay item={brewery} className="logo w-12 h-12" />
         ) : (
           brewery?.companyName && (
-            <div className=" logo__default ">
+            <div className=" logo__default !p-2">
               {getInitials(brewery.companyName || "")}
             </div>
           )
