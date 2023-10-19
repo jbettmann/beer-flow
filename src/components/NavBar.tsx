@@ -36,6 +36,7 @@ import { Users } from "@/app/types/users";
 const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
   const { selectedBrewery, setSelectedBrewery } = useBreweryContext();
   const [adminAllowed, setAdminAllowed] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
@@ -101,6 +102,20 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
     sessionStorage.removeItem("beerForm");
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      // If scrolled down, set isScrolled to true, otherwise false
+      setIsScrolled(window.scrollY > 10);
+    };
+
+    // Attach the scroll event listener
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      // Cleanup the event listener on component unmount
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   // On component mount, check if there's a brewery ID in local storage
   useEffect(() => {
     const savedBreweryId = localStorage.getItem("selectedBreweryId");
@@ -129,7 +144,11 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
       </SideDrawer>
 
       {/* Drawer for small screens */}
-      <div className="drawer w-full md:hidden sticky top-0 py-1 bg-background text-primary">
+      <div
+        className={`drawer w-full md:hidden fixed right-0 left-0 top-0 py-5 px-6 bg-background text-primary z-10 ${
+          isScrolled ? "shadow-lg" : ""
+        }`}
+      >
         <input
           id="menu-drawer"
           type="checkbox"
@@ -547,7 +566,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
       </div>
 
       {/* Bottom Menu Nav */}
-      <div className=" md:hidden btm-nav z-40 bg-primary text-background">
+      {/* <div className=" md:hidden btm-nav z-40 bg-primary text-background">
         <button
           className={
             isActive(`/breweries/${selectedBrewery?._id}`) ? "active" : ""
@@ -655,7 +674,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
             You
           </Link>
         </button>
-      </div>
+      </div> */}
     </>
   );
 };
