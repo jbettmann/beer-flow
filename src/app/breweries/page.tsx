@@ -10,7 +10,7 @@ const BreweriesPage = async () => {
   const breweries = await breweryData;
 
   return (
-    <section className="w-full h-screen py-3 sm:p-8">
+    <section className="w-full h-screen py-3 sm:p-8  lg:p-8 lg:w-10/12 mx-auto">
       <Suspense fallback={<BreweriesPageLS />}>
         <Breweries breweries={breweries} />
       </Suspense>
