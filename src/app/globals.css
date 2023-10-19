@@ -25,7 +25,7 @@ html {
   @apply h-screen    mb-14 lg:mb-0
 }
 body {
-  @apply p-2 pb-16 xxs:p-5 lg:pl-16 min-h-full  bg-background text-primary mb-14  lg:mb-0
+  @apply p-2 pb-16 xxs:p-5 min-h-full  bg-background text-primary mb-14  lg:mb-0
 }
 
 h1 {
@@ -261,11 +261,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 
 .logo {
-  @apply w-12 h-12 rounded-2xl bg-slate-50 p-[.5] object-contain
+  @apply rounded-2xl bg-slate-50 object-contain
 }
 
 .logo__default {
-  @apply flex p-3 bg-accent justify-center items-center text-third-color font-bold text-xl rounded-2xl
+  @apply flex px-1 py-[.5px] bg-accent justify-center items-center text-third-color font-bold text-xl rounded-2xl
 }
 
 .logo__settings {
