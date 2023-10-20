@@ -90,9 +90,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({
       token,
       user,
-
       trigger,
-
       session,
     }: {
       token: MyToken;
@@ -191,7 +189,7 @@ export const authOptions: NextAuthOptions = {
         if (existingUser.image !== picture) {
           console.log("Existing Image", existingUser.image, { picture });
           try {
-            const updatedUser = await updateUserInfoDBDirect({
+            await updateUserInfoDBDirect({
               userId: existingUser._id,
               updatedUserInfo: { image: picture },
             });
