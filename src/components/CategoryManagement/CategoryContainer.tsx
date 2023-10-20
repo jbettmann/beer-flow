@@ -35,7 +35,7 @@ const CategoryContainer = (props: Props) => {
         </div>
 
         {/* Small Screen New Category Button */}
-        <div className="fixed right-5 bottom-20 p-1 z-[2] lg:hidden ">
+        <div className="fixed right-5 bottom-10 p-1 z-[2] lg:hidden ">
           <button
             onClick={() => setCreateNewCategory(true)}
             className="btn btn-circle btn-white create-btn !btn-lg"
