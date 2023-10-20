@@ -412,7 +412,7 @@ const CategoryList = ({
       )}
       {/* Small Screen Filter and Edit */}
       <div
-        className={`lg:hidden flex justify-between sticky top-0 l z-20 bg-background xxs:px-4 w-full`}
+        className={`lg:hidden flex justify-between sticky top-0 l z-[1] bg-background xxs:px-4 w-full`}
       >
         {isEdit ? (
           <>
