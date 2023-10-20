@@ -63,17 +63,19 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
   };
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
+    if (typeof window !== "undefined") {
+      const handleResize = () => {
+        setIsMobile(window.innerWidth <= 768);
+      };
 
-    const debouncedResize = debounce(handleResize, 250); // 250ms delay
+      const debouncedResize = debounce(handleResize, 250); // 250ms delay
 
-    window.addEventListener("resize", debouncedResize);
+      window.addEventListener("resize", debouncedResize);
 
-    return () => {
-      window.removeEventListener("resize", debouncedResize);
-    };
+      return () => {
+        window.removeEventListener("resize", debouncedResize);
+      };
+    }
   }, []);
 
   // watch for change in selected brewery and beer to update categories
@@ -88,9 +90,9 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
       setOpenCategory(storedOpenCategory);
     }
 
-    if (typeof window !== "undefined" && selectedBrewery) {
-      localStorage.setItem("selectedBreweryId", selectedBrewery._id);
-    }
+    // if (typeof window !== "undefined" && selectedBrewery) {
+    //   localStorage.setItem("selectedBreweryId", selectedBrewery._id);
+    // }
   }, [selectedBrewery?._id]);
 
   return (

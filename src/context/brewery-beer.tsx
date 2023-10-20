@@ -41,9 +41,11 @@ export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
   const [breweryLoading, setBreweryLoading] = useState<boolean | null>(null);
   const router = useRouter();
   const { data: session } = useSession();
+  const storedBreweryId = localStorage.getItem("selectedBreweryId");
   const [breweryId, setBreweryId] = useState<string | null>(
-    localStorage.getItem("selectedBreweryId") || null
+    storedBreweryId || null
   );
+  console.log("Inital breweryId", breweryId, "session", session);
   const {
     data: beers,
     error: beersError,
@@ -76,30 +78,46 @@ export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
       const breweryId = localStorage.getItem("selectedBreweryId");
       setBreweryId(breweryId);
     };
-
-    // Add the event listener
-    window.addEventListener(
-      "selectedBreweryChanged",
-      handleSelectedBreweryChanged
-    );
-
-    // Cleanup function to remove the event listener
-    return () => {
-      window.removeEventListener(
+    // Check if window object exists before adding an event listener
+    if (typeof window !== "undefined") {
+      // Add the event listener
+      window.addEventListener(
         "selectedBreweryChanged",
         handleSelectedBreweryChanged
       );
-    };
+
+      // Cleanup function to remove the event listener
+      return () => {
+        window.removeEventListener(
+          "selectedBreweryChanged",
+          handleSelectedBreweryChanged
+        );
+      };
+    }
   }, []); // Empty dependency array, so this runs only on mount and unmount
 
   // Watch for changes in breweryId and synchronize with local storage
   useEffect(() => {
-    if (breweryId) {
-      localStorage.setItem("selectedBreweryId", breweryId);
-    } else if (!breweryId && session?.brewery?.length > 0) {
-      localStorage.setItem("selectedBreweryId", session?.brewery[0]._id);
-    } else {
+    // if no breweryId so set brewery to users first brewery
+    if (
+      (breweryId === null || breweryId === "undefined") &&
+      session?.user?.breweries?.length! > 0
+    ) {
+      console.log("No breweryId and breweries to go to first brewery");
+      localStorage.setItem(
+        "selectedBreweryId",
+        session?.user?.breweries[0] as string
+      );
+      setBreweryId(session?.user?.breweries[0] as string);
+      router.push(`/breweries/${session?.user?.breweries[0]}`);
+    } else if (breweryId === null || breweryId === "undefined") {
+      // no breweryId and no breweries to go to brewery page
+      console.log("No breweryId and no breweries to go to brewery page");
       router.push("/breweries");
+    } else {
+      //  breweryId so set brewery to breweryId
+      console.log("Setting breweryId", breweryId);
+      localStorage.setItem("selectedBreweryId", breweryId);
     }
   }, [breweryId]);
 

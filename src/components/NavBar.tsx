@@ -145,7 +145,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
 
       {/* Drawer for small screens */}
       <div
-        className={`drawer w-full md:hidden fixed right-0 left-0 top-0 py-5 px-6 bg-background text-primary z-10 ${
+        className={`drawer w-full md:hidden fixed right-0 left-0 top-0 py-5 px-6 bg-background text-primary z-10 transition-all ${
           isScrolled ? "shadow-lg" : ""
         }`}
       >
@@ -430,7 +430,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
           </ul>
         </div>
       </div>
-      {/* Dashboard large screen */}
+      {/* Dashboard vertical large screen */}
       <div className="hidden md:flex md:fixed left-0 top-0 p-4 h-full flex-col justify-between items-center bg-primary text-background z-[1]">
         <div>
           <div className="flex flex-col justify-center items-center space-y-6">
@@ -458,7 +458,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                     ? selectedBrewery.image && (
                         <ImageDisplay
                           item={selectedBrewery}
-                          className="logo w-9 h-9"
+                          className="logo w-7 h-7"
                         />
                       )
                     : selectedBrewery?.companyName && (
