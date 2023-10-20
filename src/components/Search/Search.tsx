@@ -53,16 +53,17 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
       const matchingHops = hopSuggestions
         .filter((hop) => hop.name.toLowerCase().includes(term))
         .slice(0, 5);
+
       const matchingMalts = maltSuggestions
         .filter((malt) => malt.name.toLowerCase().includes(term))
         .slice(0, 5);
       const matchingBeers = selectedBeers?.filter((beer) => {
         const { name, style, hops, malt, abv, ibu } = beer;
-        const searchStr = `${name} ${style} ${abv} ${ibu} ${hops.join(
-          " "
-        )} ${malt.join(" ")}`
-          .toLowerCase()
-          .slice(0, 5);
+        const searchStr =
+          `${name} ${style} ${abv.toString()} ${ibu.toString()} ${hops.join(
+            " "
+          )} ${malt.join(" ")}`.toLowerCase();
+
         return (
           searchStr.includes(term) ||
           hops.some((hop) =>
@@ -112,6 +113,19 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
     setRecentSearches([]);
   };
 
+  // close on escape key
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   // clean up
   useEffect(() => {
     return () => {
@@ -129,7 +143,7 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
   }, [isOpen]);
 
   return (
-    <div className="mx-auto w-full lg:w-1/2 mb-16 lg:mb-0 pt-6 text-white">
+    <div className="mx-auto w-full  mb-16 lg:mb-0 pt-6 md:pt-0 text-white">
       <div className="side-header">
         <div className="relative flex-auto">
           {/* Input with padding on the right */}
@@ -157,11 +171,12 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
           className="btn-link no-underline link-accent rounded-full pr-4"
           onClick={onClose}
         >
-          Cancel
+          <span className="md:hidden">Cancel</span>
+          <kbd className="hidden  md:kbd !bg-accent text-primary">Esc</kbd>
         </button>
       </div>
       {/* Recent Searches  */}
-      {!searchTerm && (
+      {!searchTerm && recentSearches.length > 0 && (
         <div className="flex p-4 justify-between items-start">
           <div className="search-result__container">
             <h4 className="text-accent">Recent Searches</h4>
