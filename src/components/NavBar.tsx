@@ -1,37 +1,30 @@
 "use client";
 import { Brewery } from "@/app/types/brewery";
 import { useBreweryContext } from "@/context/brewery-beer";
-import { getInitials } from "@/lib/utils";
+import { debounce, getInitials } from "@/lib/utils";
 import {
   AlignJustify,
   Beer,
-  Factory,
-  FactoryIcon,
   HelpCircle,
-  Home,
   HomeIcon,
   LayoutGrid,
   LogOut,
-  PlusCircle,
   Search as SearchIcon,
   Settings,
-  Shield,
   ShieldBan,
-  Skull,
   Users as Staff,
   User2,
   UserCircle,
 } from "lucide-react";
-import { Session, User } from "next-auth";
 import { signIn, signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import SearchModal from "./Alerts/SearchModal";
 import SideDrawer from "./Drawers/SideDrawer";
 import ImageDisplay from "./ImageDisplay/ImageDisplay";
 import { Search } from "./Search/Search";
-import { Users } from "@/app/types/users";
 
 const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
   const { selectedBrewery, setSelectedBrewery } = useBreweryContext();
@@ -39,7 +32,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
   const [isScrolled, setIsScrolled] = useState(false);
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   // Reference to the drawer div
 
   const breweryMenuRef = useRef<any>(null);
@@ -103,6 +96,22 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
   };
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const handleResize = () => {
+        setIsMobile(window.innerWidth <= 768);
+      };
+
+      const debouncedResize = debounce(handleResize, 250); // 250ms delay
+
+      window.addEventListener("resize", debouncedResize);
+
+      return () => {
+        window.removeEventListener("resize", debouncedResize);
+      };
+    }
+  }, []);
+
+  useEffect(() => {
     const handleScroll = () => {
       // If scrolled down, set isScrolled to true, otherwise false
       setIsScrolled(window.scrollY > 10);
@@ -139,13 +148,19 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
 
   return (
     <>
-      <SideDrawer isOpen={isSearchOpen}>
-        <Search isOpen={isSearchOpen} setIsOpen={setIsSearchOpen} />
-      </SideDrawer>
+      {isMobile ? (
+        <SideDrawer isOpen={isSearchOpen}>
+          <Search isOpen={isSearchOpen} setIsOpen={setIsSearchOpen} />
+        </SideDrawer>
+      ) : (
+        <SearchModal isOpen={isSearchOpen}>
+          <Search isOpen={isSearchOpen} setIsOpen={setIsSearchOpen} />
+        </SearchModal>
+      )}
 
       {/* Drawer for small screens */}
       <div
-        className={`drawer w-full md:hidden fixed right-0 left-0 top-0 py-5 px-6 bg-background text-primary z-10 transition-all ${
+        className={`drawer w-full md:hidden fixed right-0 left-0 top-0 py-5 px-6 bg-background text-primary z-20 transition-all ${
           isScrolled ? "shadow-lg" : ""
         }`}
       >
@@ -187,10 +202,10 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
             </div>
           </div>
         </div>
-
-        <div className="drawer-side z-50 text-background">
+        {/* Drawer */}
+        <div className="drawer-side z-20 text-background">
           <label htmlFor="menu-drawer" className="drawer-overlay "></label>
-          <div className="h-full flex flex-col justify-between menu-drawer w-9/12 xxs:w-auto">
+          <div className="h-full flex flex-col justify-between menu-drawer w-10/12 xs:w-auto">
             <div className="p-6">
               <h4 className="py-4">Breweries</h4>
               <ul className="w-full menu !flex-nowrap  h-full gap-3 overflow-y-scroll">
@@ -225,10 +240,10 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
             </div>
             {adminAllowed && (
               <>
-                <div className="divider-horizontal border !border-background/20 w-full !ml-0"></div>
-                <div className="flex flex-col justify-center  p-3 px-6 menu">
+                <div className="flex flex-col justify-center  menu">
+                  <div className="divider-horizontal border !border-background/20 w-full !ml-0"></div>
                   <div
-                    className="opacity-80 flex flex-row items-center"
+                    className="opacity-80 flex flex-row items-center  p-3 pb-0"
                     data-tip={`${selectedBrewery?.companyName} Management`}
                     title={`${selectedBrewery?.companyName} Management`}
                   >
@@ -271,8 +286,24 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                 </div>
               </>
             )}
-            <div className="divider-horizontal border !border-background/20 w-full !ml-0"></div>
+
             <div className="flex flex-col justify-center  p-3 menu">
+              <div className="divider-horizontal border !border-background/20 w-full !ml-0"></div>
+              <li onClick={closeDrawer}>
+                <Link
+                  href={`/settings/profile`}
+                  className="flex flex-row items-center"
+                >
+                  <Image
+                    src={user?.picture}
+                    alt={`profile picture of ${user?.name}`}
+                    className="rounded-full my-auto avatar justify-center items-center w-6"
+                    width={50}
+                    height={50}
+                  />
+                  <h6 className="pl-3">Profile</h6>
+                </Link>
+              </li>
               <li onClick={closeDrawer}>
                 <Link
                   href={"/settings"}
@@ -394,7 +425,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
           </label>
           <ul
             tabIndex={0}
-            className="mt-3 z-[1] p-2 shadow menu menu-md dropdown-content bg-base-100 text-primary rounded-box p-3 "
+            className="mt-3 z-[1] shadow menu menu-md dropdown-content bg-base-100 text-primary rounded-box p-3 "
           >
             <li>
               <Link
@@ -407,11 +438,11 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
             </li>
             <li>
               <Link
-                href={"/settings"}
+                href={"/settings/profile"}
                 className="flex flex-row items-center p-3"
               >
-                <ShieldBan size={24} strokeWidth={1} />
-                <h6 className="pl-3">Account</h6>
+                <UserCircle size={24} strokeWidth={1} />
+                <h6 className="pl-3">Profile</h6>
               </Link>
             </li>
             <li>
@@ -530,15 +561,15 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
               </label>
               <ul
                 tabIndex={0}
-                className="mt-3 z-20 shadow menu menu-sm dropdown-content  bg-base-100 text-primary min-w-max w-fit justify-end rounded-box p-3 "
+                className="mt-3 z-10 shadow menu menu-sm dropdown-content  bg-base-100 text-primary min-w-max w-fit justify-end rounded-box p-3 "
               >
                 <li>
                   <Link
                     href={"/settings/profile"}
                     className="flex flex-row items-center p-3"
                   >
-                    <UserCircle size={18} strokeWidth={1} />
-                    <h6 className="pl-3">Profile</h6>
+                    <ShieldBan size={18} strokeWidth={1} />
+                    <h6 className="pl-3">Account</h6>
                   </Link>
                 </li>
                 <li>
