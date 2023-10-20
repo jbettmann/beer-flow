@@ -43,11 +43,8 @@ const SetSideDrawerSettings = ({ children }: Props) => {
         <BackArrow />
 
         <h4>{title}</h4>
-        <Link
-          href={`/breweries/${selectedBrewery?._id}`}
-          className=" flex flex-row items-center"
-        >
-          <Home size={24} />
+        <Link href={"/help"} className=" flex flex-row items-center pr-2">
+          <HelpCircle size={24} />
         </Link>
       </div>
       <div className="divider !m-0"></div>
