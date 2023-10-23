@@ -24,7 +24,7 @@ export default async function Layout(props: {
   const session = await getServerSession(authOptions);
 
   return (
-    <html lang="en">
+    <html lang="en ">
       <Provider>
         <body className={inter.className}>
           {session && <NavBar breweries={breweries} user={session.user} />}
