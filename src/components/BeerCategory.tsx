@@ -285,6 +285,7 @@ export default function BeerCategory({
                         e.stopPropagation();
                         setBeerForDrawer(beer);
                         setBottomDrawerOpen(true);
+                        handleBeerView(beer._id);
                       }}
                     >
                       <div className="inline-flex items-center">
