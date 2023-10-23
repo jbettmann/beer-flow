@@ -29,7 +29,7 @@ export default async function Home() {
 
   console.log(session?.user);
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-background ">
       {session?.user.breweries ? (
         <div>
           {/* @ts-expect-error Server Component */}
