@@ -25,6 +25,7 @@ type BreweryContextProps = {
   setBeersLoading: (loading: boolean) => void;
   breweryLoading: boolean | null;
   setBreweryLoading: (loading: boolean) => void;
+  isAdmin: boolean;
 };
 
 const BreweryContext = createContext<BreweryContextProps | undefined>(
@@ -39,6 +40,8 @@ export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
   const [selectedBeers, setSelectedBeers] = useState<Beer[] | null>(null);
   const [beersLoading, setBeersLoading] = useState<boolean | null>(null);
   const [breweryLoading, setBreweryLoading] = useState<boolean | null>(null);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+
   const router = useRouter();
   const { data: session } = useSession();
   const storedBreweryId = localStorage.getItem("selectedBreweryId");
@@ -72,6 +75,26 @@ export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
     getSingleBrewery
   );
 
+  const isUserAdmin = (brewery: Brewery, userId: string | number) => {
+    if (brewery.admin) {
+      if (typeof brewery.admin[0] === "string") {
+        return brewery.admin.includes(userId as any);
+      } else if (typeof brewery.admin[0] === "object") {
+        return brewery.admin.some((admin: any) => admin._id === userId);
+      }
+    }
+    return false;
+  };
+
+  const isUserOwner = (brewery: Brewery, userId: string | number) => {
+    if (typeof brewery.owner === "string") {
+      return brewery.owner === userId;
+    } else if (brewery.owner && typeof brewery.owner === "object") {
+      return brewery.owner._id === userId;
+    }
+    return false;
+  };
+
   useEffect(() => {
     // Handler for the custom event
     const handleSelectedBreweryChanged = () => {
@@ -103,7 +126,6 @@ export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
       (breweryId === null || breweryId === "undefined") &&
       session?.user?.breweries?.length! > 0
     ) {
-      console.log("No breweryId and breweries to go to first brewery");
       localStorage.setItem(
         "selectedBreweryId",
         session?.user?.breweries[0] as string
@@ -112,11 +134,11 @@ export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
       router.push(`/breweries/${session?.user?.breweries[0]}`);
     } else if (breweryId === null || breweryId === "undefined") {
       // no breweryId and no breweries to go to brewery page
-      console.log("No breweryId and no breweries to go to brewery page");
+
       router.push("/breweries");
     } else {
       //  breweryId so set brewery to breweryId
-      console.log("Setting breweryId", breweryId);
+
       localStorage.setItem("selectedBreweryId", breweryId);
     }
   }, [breweryId]);
@@ -126,8 +148,15 @@ export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
     setSelectedBrewery(brewery);
     setBeersLoading(isBeersLoading);
     setBreweryLoading(isBreweryLoading);
-  }, [beers, brewery, isBeersLoading, isBreweryLoading]);
+    // set isAdmin
+    if (brewery) {
+      const isAdmin = isUserAdmin(brewery, session?.user?.id || "");
+      const isOwner = isUserOwner(brewery, session?.user?.id || "");
 
+      setIsAdmin(isAdmin || isOwner);
+    }
+  }, [beers, brewery, isBeersLoading, isBreweryLoading, session?.user?.id]);
+  console.log({ brewery, beers, isAdmin });
   return (
     <BreweryContext.Provider
       value={{
@@ -139,6 +168,7 @@ export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
         setBeersLoading,
         breweryLoading,
         setBreweryLoading,
+        isAdmin,
       }}
     >
       {children}

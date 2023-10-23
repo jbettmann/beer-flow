@@ -30,7 +30,7 @@ type pageProps = {
 const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
   const { data: session, status, update } = useSession();
 
-  const { selectedBeers, selectedBrewery } = useBreweryContext();
+  const { selectedBeers, selectedBrewery, isAdmin } = useBreweryContext();
 
   const { mutate } = useSWR(
     [
@@ -238,7 +238,7 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
 
   console.log(previewImage);
 
-  return (
+  return isAdmin ? (
     <form
       onSubmit={handleSubmit}
       className=" p-4 form md:!p-0 flex flex-col justify-between mx-auto rounded-lg "
@@ -602,6 +602,15 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
         />
       </div>
     </form>
+  ) : (
+    <div className=" flex flex-col h-full justify-center items-center bp-primary rounded-lg text-center">
+      <h4>⚠️ Admin Authorization </h4>
+      <div className="divider"></div>
+      <p className="font font-semibold">
+        You are not an admin of {selectedBrewery?.companyName}.
+      </p>
+      <p className="m-0">Only admins can create beers.</p>
+    </div>
   );
 };
 export default CreateBeerForm;

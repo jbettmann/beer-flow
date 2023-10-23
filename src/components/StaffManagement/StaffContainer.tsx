@@ -15,7 +15,7 @@ import { debounce } from "@/lib/utils";
 type Props = {};
 
 const StaffContainer = (props: Props) => {
-  const { selectedBrewery } = useBreweryContext();
+  const { selectedBrewery, isAdmin } = useBreweryContext();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [viewFilter, setViewFilter] = useState<string>("All Staff");
 
@@ -47,20 +47,24 @@ const StaffContainer = (props: Props) => {
               Owner {(selectedBrewery.owner as Users).fullName || ""}
             </div>
           </div>
-          <div className="hidden lg:block">
-            <button onClick={() => setIsOpen(true)} className="create-btn">
-              Invite <UserPlus size={20} />
-            </button>
-          </div>
+          {isAdmin && (
+            <div className="hidden lg:block">
+              <button onClick={() => setIsOpen(true)} className="create-btn">
+                Invite <UserPlus size={20} />
+              </button>
+            </div>
+          )}
         </div>
         {/* Small Screen New Category Button */}
         <div className="fixed right-5 bottom-10 p-1 z-[2] lg:hidden ">
-          <button
-            onClick={() => setIsOpen(true)}
-            className="btn btn-circle btn-white create-btn !btn-lg"
-          >
-            <Plus size={28} />
-          </button>
+          {isAdmin && (
+            <button
+              onClick={() => setIsOpen(true)}
+              className="btn btn-circle btn-white create-btn !btn-lg"
+            >
+              <Plus size={28} />
+            </button>
+          )}
         </div>
 
         {/* Layout */}
@@ -70,27 +74,39 @@ const StaffContainer = (props: Props) => {
             viewFilter={viewFilter}
           />
 
-          <StaffTable
-            viewFilter={viewFilter}
-            brewery={selectedBrewery}
-            setIsOpen={setIsOpen}
-          />
+          {isAdmin ? (
+            <StaffTable
+              viewFilter={viewFilter}
+              brewery={selectedBrewery}
+              setIsOpen={setIsOpen}
+            />
+          ) : (
+            <div className=" flex flex-col h-full justify-center items-center bp-primary rounded-lg text-center mt-6">
+              <h4>⚠️ Admin Authorization </h4>
+              <div className="divider"></div>
+              <p className="m-0">Only admins can access Staff Management.</p>
+              <p className="font font-semibold">
+                You are not an admin of {selectedBrewery?.companyName}.
+              </p>
+            </div>
+          )}
         </div>
-        {isMobile ? (
-          <BottomDrawer isOpen={isOpen}>
-            <MultipleInvites
-              breweryId={selectedBrewery._id}
-              setIsOpen={setIsOpen}
-            />
-          </BottomDrawer>
-        ) : (
-          <EditModal isOpen={isOpen} title="Invite">
-            <MultipleInvites
-              breweryId={selectedBrewery._id}
-              setIsOpen={setIsOpen}
-            />
-          </EditModal>
-        )}
+        {isAdmin &&
+          (isMobile ? (
+            <BottomDrawer isOpen={isOpen}>
+              <MultipleInvites
+                breweryId={selectedBrewery._id}
+                setIsOpen={setIsOpen}
+              />
+            </BottomDrawer>
+          ) : (
+            <EditModal isOpen={isOpen} title="Invite">
+              <MultipleInvites
+                breweryId={selectedBrewery._id}
+                setIsOpen={setIsOpen}
+              />
+            </EditModal>
+          ))}
       </>
     )
   );

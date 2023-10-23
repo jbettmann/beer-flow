@@ -41,7 +41,7 @@ export default function BeerCategory({
 }: Props) {
   // State for managing the visibility of the options container
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
-  const { selectedBeers, selectedBrewery } = useBreweryContext();
+  const { selectedBeers, selectedBrewery, isAdmin } = useBreweryContext();
   // manage archived cat arrow state
   const [isArchivedOpen, setIsArchivedOpen] = useState<string | null>(null);
   const [editName, setEditName] = useState<boolean>(false);
@@ -336,7 +336,7 @@ export default function BeerCategory({
         </div>
       </div>
 
-      {category.name !== "Archived" && (
+      {category.name !== "Archived" && isAdmin && (
         <OptionsButton
           handleOptions={handleOptions}
           className="btn btn-circle btn-ghost"

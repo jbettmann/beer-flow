@@ -108,7 +108,7 @@ const UpdateBeerForm = ({
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [deleteAlert, setDeleteAlert] = useState<boolean>(false); // delete alert confirmation
-  const { selectedBeers } = useBreweryContext();
+  const { selectedBeers, isAdmin } = useBreweryContext();
 
   const isSubmitting = useRef(false);
 
@@ -593,20 +593,22 @@ const UpdateBeerForm = ({
           </div>
         </div>
 
-        <div className="flex py-5 px-3 justify-between items-center">
-          {submitError && <div>Error: {submitError}</div>}
-          <DeleteBeerButton
-            isSubmitting={isSubmitting}
-            handleDelete={() => setDeleteAlert(true)}
-          />
-          <SaveButton
-            title="Save"
-            isLoading={isLoading}
-            disabled={isSubmitting.current}
-            className="inverse "
-            type="submit"
-          />
-        </div>
+        {isAdmin && (
+          <div className="flex py-5 px-3 justify-between items-center">
+            {submitError && <div>Error: {submitError}</div>}
+            <DeleteBeerButton
+              isSubmitting={isSubmitting}
+              handleDelete={() => setDeleteAlert(true)}
+            />
+            <SaveButton
+              title="Save"
+              isLoading={isLoading}
+              disabled={isSubmitting.current}
+              className="inverse "
+              type="submit"
+            />
+          </div>
+        )}
       </form>
     </>
   );

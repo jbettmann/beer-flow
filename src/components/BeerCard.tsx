@@ -26,7 +26,7 @@ type Props = {
 const BeerCard = ({ beerId, beerForDrawer, onClose }: Props) => {
   const [isEditing, setIsEditing] = useState(false);
 
-  const { selectedBeers, selectedBrewery } = useBreweryContext();
+  const { selectedBeers, selectedBrewery, isAdmin } = useBreweryContext();
 
   const [beer, setBeer] = useState<Beer | undefined>(undefined);
   const [toggleView, setToggleView] = useState<string>("Overview");
@@ -54,13 +54,17 @@ const BeerCard = ({ beerId, beerForDrawer, onClose }: Props) => {
   return (
     beer && (
       <div className=" card w-full  lg:mx-auto beer-card lg:shadow-xl ">
-        <div className="flex w-full justify-between mb-2  md:mb-0 bg-primary py-3 sticky top-[-2px] h-10 z-20 md:z-0 md:h-auto md:bg-transparent md:block md:py-0">
-          <button
-            className={`link link-hover text-sm lg:text-xs`}
-            onClick={() => setIsEditing(!isEditing)}
-          >
-            {isEditing ? "Cancel" : "Edit"}
-          </button>
+        <div className="flex w-full justify-between mb-2  md:mb-0 bg-primary py-3  sticky top-[-2px] h-10 z-20 md:z-0 md:h-auto md:bg-transparent md:block md:py-0">
+          {isAdmin ? (
+            <button
+              className={`link link-hover text-sm lg:text-xs`}
+              onClick={() => setIsEditing(!isEditing)}
+            >
+              {isEditing ? "Cancel" : "Edit"}
+            </button>
+          ) : (
+            <div></div>
+          )}
           <button
             className={`md:hidden link link-hover text-sm lg:text-xs`}
             onClick={() => {
@@ -72,7 +76,7 @@ const BeerCard = ({ beerId, beerForDrawer, onClose }: Props) => {
               if (isEditing) setIsEditing(false);
             }}
           >
-            <X size={20} strokeWidth={1} />
+            <X size={25} strokeWidth={2} />
           </button>
         </div>
 

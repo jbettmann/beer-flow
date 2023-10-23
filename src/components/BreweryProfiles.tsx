@@ -24,6 +24,9 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
     setSelectedBeers,
     selectedBrewery,
     selectedBeers,
+    beersLoading,
+    breweryLoading,
+    isAdmin,
   } = useBreweryContext();
 
   // check for previous open category to prises open state
@@ -95,6 +98,8 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
     // }
   }, [selectedBrewery?._id]);
 
+  if (breweryLoading || beersLoading) return <BreweryProfileSkeleton />;
+
   return (
     selectedBeers && (
       <section className="sm:w-3/4 md:w-1/2 lg:w-[40%] xl:w-1/3 mt-8 mx-auto py-3 md:mt-0 md:p-8">
@@ -121,6 +126,7 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
                   />
                 ) : null;
               })}
+
             <div className="mt-10">
               <BeerCategory
                 key="archived"
@@ -134,24 +140,31 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
                 setBottomDrawerOpen={setBottomDrawerOpen}
               />
             </div>
-            <div className="hidden lg:flex mt-10 justify-center">
-              <button
-                onClick={() => setIsCreateBeer(true)}
-                className="create-btn "
-              >
-                <span className="flex justify-center items-center">+ Beer</span>
-                <BeerIcon size={20} />
-              </button>
-            </div>
-            {/* Small Screen New Category Button */}
-            <div className="fixed right-5 bottom-10 p-1 z-[2] lg:hidden ">
-              <button
-                onClick={() => setIsCreateBeer(true)}
-                className="btn btn-circle btn-white create-btn !btn-lg"
-              >
-                <Plus size={28} />
-              </button>
-            </div>
+            {/* Create Beer button for Admins */}
+            {isAdmin && (
+              <>
+                <div className="hidden lg:flex mt-10 justify-center">
+                  <button
+                    onClick={() => setIsCreateBeer(true)}
+                    className="create-btn "
+                  >
+                    <span className="flex justify-center items-center">
+                      + Beer
+                    </span>
+                    <BeerIcon size={20} />
+                  </button>
+                </div>
+                {/* Small Screen New Category Button */}
+                <div className="fixed right-5 bottom-10 p-1 z-[2] lg:hidden ">
+                  <button
+                    onClick={() => setIsCreateBeer(true)}
+                    className="btn btn-circle btn-white create-btn !btn-lg"
+                  >
+                    <Plus size={28} />
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </Suspense>
         {/* Beer Card View for Mobile */}
@@ -168,15 +181,16 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
           />
         </BottomDrawer>
         {/* Create Beer for Mobile */}
-        {isMobile ? (
-          <BottomDrawer isOpen={isCreateBeer}>
-            <CreateBeerForm setIsCreateBeer={setIsCreateBeer} />
-          </BottomDrawer>
-        ) : (
-          <CreateModal isOpen={isCreateBeer}>
-            <CreateBeerForm setIsCreateBeer={setIsCreateBeer} />
-          </CreateModal>
-        )}
+        {isAdmin &&
+          (isMobile ? (
+            <BottomDrawer isOpen={isCreateBeer}>
+              <CreateBeerForm setIsCreateBeer={setIsCreateBeer} />
+            </BottomDrawer>
+          ) : (
+            <CreateModal isOpen={isCreateBeer}>
+              <CreateBeerForm setIsCreateBeer={setIsCreateBeer} />
+            </CreateModal>
+          ))}
       </section>
     )
   );

@@ -23,7 +23,7 @@ const MultipleInvites = ({ breweryId, setIsOpen }: pageProps) => {
   ]);
   const [hasStartedInvite, setHasStartedInvite] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { selectedBrewery } = useBreweryContext();
+  const { selectedBrewery, isAdmin } = useBreweryContext();
 
   const addInvitee = () => {
     setInvitees([...invitees, { email: "", isAdmin: false, error: "" }]);
@@ -206,22 +206,24 @@ const MultipleInvites = ({ breweryId, setIsOpen }: pageProps) => {
               Cancel
             </button>
 
-            <button
-              className="create-btn inverse"
-              type="submit"
-              disabled={
-                !hasStartedInvite ||
-                invitees.some((invitee) => !invitee.email || invitee.error)
-              }
-            >
-              {isLoading ? (
-                <span className="loading loading-spinner"></span>
-              ) : (
-                <>
-                  <Send size={25} /> Invite
-                </>
-              )}
-            </button>
+            {isAdmin && (
+              <button
+                className="create-btn inverse"
+                type="submit"
+                disabled={
+                  !hasStartedInvite ||
+                  invitees.some((invitee) => !invitee.email || invitee.error)
+                }
+              >
+                {isLoading ? (
+                  <span className="loading loading-spinner"></span>
+                ) : (
+                  <>
+                    <Send size={25} /> Invite
+                  </>
+                )}
+              </button>
+            )}
           </div>
         </form>
       )}

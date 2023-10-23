@@ -27,8 +27,8 @@ import ImageDisplay from "./ImageDisplay/ImageDisplay";
 import { Search } from "./Search/Search";
 
 const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
-  const { selectedBrewery, setSelectedBrewery } = useBreweryContext();
-  const [adminAllowed, setAdminAllowed] = useState(false);
+  const { selectedBrewery, setSelectedBrewery, isAdmin } = useBreweryContext();
+
   const [isScrolled, setIsScrolled] = useState(false);
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -51,26 +51,6 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
 
   const closeBreweryMenu = () => {
     breweryMenuRef.current?.click();
-  };
-
-  const isUserAdmin = (brewery: Brewery, userId: string) => {
-    if (brewery.admin) {
-      if (typeof brewery.admin[0] === "string") {
-        return brewery.admin.includes(userId as any);
-      } else if (typeof brewery.admin[0] === "object") {
-        return brewery.admin.some((admin: any) => admin._id === userId);
-      }
-    }
-    return false;
-  };
-
-  const isUserOwner = (brewery: Brewery, userId: string) => {
-    if (typeof brewery.owner === "string") {
-      return brewery.owner === userId;
-    } else if (brewery.owner && typeof brewery.owner === "object") {
-      return brewery.owner._id === userId;
-    }
-    return false;
   };
 
   // Sets local storage and selectedBrewery when a brewery is clicked
@@ -135,16 +115,6 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
       }
     }
   }, [breweries]);
-
-  // set user admin status
-  useEffect(() => {
-    if (selectedBrewery) {
-      const isAdmin = isUserAdmin(selectedBrewery, user?.id || "");
-      const isOwner = isUserOwner(selectedBrewery, user?.id || "");
-
-      setAdminAllowed(isAdmin || isOwner);
-    }
-  }, [selectedBrewery]);
 
   return (
     <>
@@ -238,7 +208,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                 ))}
               </ul>
             </div>
-            {adminAllowed && (
+            {isAdmin && (
               <>
                 <div className="flex flex-col justify-center  menu">
                   <div className="divider-horizontal border !border-background/20 w-full !ml-0"></div>
@@ -462,23 +432,31 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
         </div>
       </div>
       {/* Dashboard vertical large screen */}
-      <div className="hidden md:flex md:fixed left-0 top-0 p-4 h-full flex-col justify-between items-center bg-primary text-background z-[1]">
+      <div className="hidden md:flex md:fixed left-0 top-0 p-1 h-full flex-col justify-between items-center bg-primary text-background z-[1]">
         <div>
-          <div className="flex flex-col justify-center items-center space-y-6">
-            <Link href={`/breweries`}>
+          <div className="flex flex-col justify-center items-center space-y-3">
+            <Link
+              href={`/breweries ${
+                isActive(`/breweries`) ? "text-accent bg-fourth-color " : ""
+              }`}
+            >
               <h1>B</h1>
             </Link>
             <Link
               href={`/breweries/${selectedBrewery?._id}`}
-              className={`flex flex-row justify-between  tooltip tooltip-accent tooltip-right`}
+              className={`flex flex-row justify-between p-3  tooltip tooltip-accent tooltip-right ${
+                isActive(`/breweries/${selectedBrewery?._id}`)
+                  ? "text-accent bg-fourth-color shadow-inner rounded-lg "
+                  : ""
+              }`}
               data-tip="Home"
             >
               <HomeIcon size={22} strokeWidth={1} />
             </Link>
             <div className="divider-horizontal border !border-background/20 w-full"></div>
           </div>
-          <div className="flex flex-col justify-center items-center space-y-6 mt-6">
-            {adminAllowed && (
+          <div className="flex flex-col justify-center items-center space-y-3 mt-6">
+            {isAdmin && (
               <>
                 <div
                   className="opacity-80"
@@ -500,7 +478,11 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                 </div>
                 <Link
                   href={`/breweries/${selectedBrewery?._id}/categories`}
-                  className="flex flex-row items-center  tooltip tooltip-accent tooltip-right"
+                  className={`flex flex-row items-center p-3  tooltip tooltip-accent tooltip-right ${
+                    isActive(`/breweries/${selectedBrewery?._id}/categories`)
+                      ? "text-accent bg-fourth-color shadow-inner rounded-lg "
+                      : ""
+                  }`}
                   data-tip={`Categories Management`}
                 >
                   <LayoutGrid size={22} strokeWidth={1} />
@@ -508,7 +490,11 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
 
                 <Link
                   href={`/breweries/${selectedBrewery?._id}/staff`}
-                  className="flex flex-row items-center tooltip tooltip-accent tooltip-right"
+                  className={`flex flex-row items-center p-3 tooltip tooltip-accent tooltip-right ${
+                    isActive(`/breweries/${selectedBrewery?._id}/staff`)
+                      ? "text-accent bg-fourth-color shadow-inner rounded-lg "
+                      : ""
+                  }`}
                   data-tip="Staff Management"
                 >
                   <Staff size={22} strokeWidth={1} />
@@ -520,12 +506,16 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
           </div>
         </div>
         <div>
-          <div className="flex flex-col justify-center items-center space-y-6">
+          <div className="flex flex-col justify-center items-center space-y-3">
             <div className="divider-horizontal border !border-background/20 w-full"></div>
 
             <Link
               href={"/settings"}
-              className="  flex flex-row items-center tooltip tooltip-accent tooltip-right"
+              className={`flex flex-row items-center p-3 tooltip tooltip-accent tooltip-right ${
+                isActive(`/settings`)
+                  ? "text-accent bg-fourth-color shadow-inner rounded-lg "
+                  : ""
+              }`}
               data-tip="Settings"
             >
               <Settings size={22} strokeWidth={1} />
@@ -533,16 +523,20 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
 
             <Link
               href={"/help"}
-              className=" flex flex-row items-center tooltip tooltip-accent tooltip-right"
+              className={`flex flex-row items-center p-3 tooltip tooltip-accent tooltip-right ${
+                isActive(`/help`)
+                  ? "text-accent bg-fourth-color shadow-inner rounded-lg "
+                  : ""
+              }`}
               data-tip="Help"
             >
               <HelpCircle size={22} strokeWidth={1} />
             </Link>
             <div className="divider-horizontal border !border-background/20 w-full"></div>
           </div>
-          <div className="flex flex-col justify-center items-center space-y-6 mt-6">
+          <div className="flex flex-col justify-center items-center space-y-3 mt-6">
             <div
-              className="form-control relative hover:cursor-pointer tooltip tooltip-accent tooltip-right"
+              className="form-control relative hover:cursor-pointer p-3 tooltip tooltip-accent tooltip-right"
               data-tip="Search"
               onClick={() => setIsSearchOpen(true)}
             >
@@ -636,7 +630,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
             Breweries
           </Link>
         </button>
-        {adminAllowed ? (
+        {isAdmin ? (
           <>
             <button
               className={
