@@ -1,10 +1,11 @@
-import db from "@/lib/db";
+import dbConnect from "@/lib/db";
 import { signJwtAccessToken } from "@/lib/jwt";
 
 import * as bcyrpt from "bcrypt";
+import User from "../../../../models/user";
 
 interface RequestBody {
-  username: string;
+  email: string;
   password: string;
 }
 
@@ -12,10 +13,9 @@ export async function POST(req: Request, res: Response) {
   try {
     const body: RequestBody = await req.json();
 
-    const client = await db;
-    const collection = client.db().collection("users");
+    await dbConnect();
 
-    const user = await collection.findOne({ username: body.username });
+    const user = await User.findOne({ email: body.email });
 
     if (user) {
       const isPasswordValid = await bcyrpt.compare(
@@ -25,10 +25,9 @@ export async function POST(req: Request, res: Response) {
 
       if (isPasswordValid) {
         const { password, ...userWithoutPassword } = user;
-        const accessToken = signJwtAccessToken(userWithoutPassword);
+
         const result = {
           ...userWithoutPassword,
-          accessToken,
         };
         return new Response(JSON.stringify(result));
       }
