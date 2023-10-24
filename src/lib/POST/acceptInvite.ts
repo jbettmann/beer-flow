@@ -27,7 +27,7 @@ export const acceptInvite = async ({ token, accessToken }: pageProps) => {
       const data = await response.json();
       return data;
     }
-  } catch (err) {
+  } catch (err: any) {
     throw new Error(err.message);
   }
 };
