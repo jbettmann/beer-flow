@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 type Props = {};
 
@@ -43,19 +43,23 @@ const CreateAccount = (props: Props) => {
 
       const data = await response.json();
 
-      if (response.status === 201) {
-        console.log("User created successfully:", data);
+      if (!response.ok) {
         // Redirect or handle success
-      } else {
-        // Handle error responses
         if (data.errors) {
           setErrors(data.errors.map((error: any) => error.msg));
         }
+      } else {
+        // Handle error responses
+        console.log("User created successfully:", data);
       }
     } catch (err) {
       console.error(err);
     }
   };
+
+  useEffect(() => {
+    validateInputs();
+  }, [fullName, email, password, confirmPassword]);
 
   return (
     <form
