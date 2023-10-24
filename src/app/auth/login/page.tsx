@@ -1,6 +1,7 @@
 "use client";
 import { Loader2 } from "lucide-react";
 import { signIn, useSession } from "next-auth/react";
+import Link from "next/link";
 import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
@@ -77,6 +78,11 @@ const LoginPage = () => {
             )}
             Google
           </button>
+        </div>
+        <div>
+          <Link href={"/auth/create/account"}>
+            <p className="link link-accent">Create Account</p>
+          </Link>
         </div>
       </div>
     </div>
