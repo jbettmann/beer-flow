@@ -7,7 +7,7 @@ import getUser from "@/lib/getUser";
 import { signJwtAccessToken, signJwtRefreshToken } from "@/lib/jwt";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { NextApiRequest, NextApiResponse } from "next";
-import type { NextAuthOptions, Profile } from "next-auth";
+import type { Account, NextAuthOptions, Profile } from "next-auth";
 
 import { Notifications } from "@/app/types/notifications";
 import updateUserInfoDBDirect from "@/lib/PUT/updateUserInfoDBDirect";
@@ -31,14 +31,10 @@ interface Profiles extends Profile {
 }
 
 export const authOptions: NextAuthOptions = {
-  // pages: {
-  //   signIn: "/auth/login",
-  // },
+  pages: {
+    signIn: "/auth/login",
+  },
   providers: [
-    GitHubProvider({
-      clientId: process.env.GITHUB_ID || "",
-      clientSecret: process.env.GITHUB_SECRET || "",
-    }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
@@ -48,21 +44,24 @@ export const authOptions: NextAuthOptions = {
       name: "Credentials",
       // `credentials` is used to generate a form on the sign in page.
       // You can specify which fields should be submitted, by adding keys to the `credentials` object.
-      // e.g. domain, username, password, 2FA token, etc.
+      // e.g. domain, email, password, 2FA token, etc.
       // You can pass any HTML attribute to the <input> tag through the object.
       credentials: {
-        username: { label: "Username", type: "text", placeholder: "username" },
+        email: { label: "Email address", type: "text", placeholder: "email" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
+        const endpoints =
+          "https://beer-bible-api.vercel.app/api/login" ||
+          "http://localhost:3000/api/login";
         // Add logic here to look up the user from the credentials supplied
-        const res = await fetch("http://localhost:3000/api/login", {
+        const res = await fetch(endpoints, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            username: credentials?.username,
+            email: credentials?.email,
             password: credentials?.password,
           }),
         });
@@ -160,21 +159,47 @@ export const authOptions: NextAuthOptions = {
     async signIn({
       user,
       profile,
+      account,
     }: {
       user: AdapterUser | NextAuthUser;
       profile?: Profiles | undefined;
+      account?: Account | null;
     }): Promise<boolean> {
       // Get the user's name and email either from the 'user' object or the 'profile' object
       const name = user?.name ?? profile?.name;
       const email = user?.email ?? profile?.email;
       const picture = profile?.picture ?? user?.image;
 
+      console.log("User", user, "Profile", profile, "Account", account);
       // Connect to MongoDB
       // const client = await db.user.findFirst();
       // const collection = client.db().collection("users");
 
       if (!email) {
         // OAuth provider didn't return an email
+        return false;
+      }
+
+      if (account?.type === "credentials") {
+        if (user) {
+          if (user.image !== picture) {
+            console.log("Existing Image", user.image, { picture });
+            try {
+              await updateUserInfoDBDirect({
+                userId: user.id,
+                updatedUserInfo: { image: picture },
+              });
+            } catch (error: string | any) {
+              console.error("Error updating user info:", error.message);
+            }
+          }
+          // User exists in your DB
+          user.id = user.id.toString(); // or whatever the field for the user id is
+          user.breweries = user.breweries; // add breweries to user
+          user.notifications = user.notifications; // add notifications to user
+
+          return true;
+        }
         return false;
       }
 
