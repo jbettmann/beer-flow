@@ -47,7 +47,7 @@ const Breweries = ({ breweries }: Props) => {
         </div>
       </div>
       <div className="flex flex-col justify-center w-[80%] items-center mx-auto gap-8">
-        {breweries.length > 0 &&
+        {breweries.length > 0 ? (
           breweries.map((brewery) => {
             return (
               <>
@@ -62,7 +62,21 @@ const Breweries = ({ breweries }: Props) => {
                 </div>
               </>
             );
-          })}
+          })
+        ) : (
+          <div>
+            <h4>You have no breweries</h4>
+            <p>Let get started!</p>
+            <div className="hidden lg:flex justify-center items-center gap-2">
+              <button
+                onClick={() => setIsCreateBrewery(true)}
+                className="create-btn  "
+              >
+                + Brewery
+              </button>
+            </div>
+          </div>
+        )}
       </div>
       <div className="fixed right-5 bottom-10 p-1 z-[2] lg:hidden ">
         <button
