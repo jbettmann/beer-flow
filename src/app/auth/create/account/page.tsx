@@ -5,7 +5,7 @@ type Props = {};
 
 const CreateAccountPage = (props: Props) => {
   return (
-    <div className=" w-1/2 h-full mx-auto">
+    <div className="w-full h-full mx-auto">
       <CreateAccount />
     </div>
   );
