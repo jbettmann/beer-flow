@@ -41,7 +41,7 @@ export const authOptions: NextAuthOptions = {
     }),
     CredentialsProvider({
       // The name to display on the sign in form (e.g. "Sign in with...")
-      name: "Credentials",
+      name: "credentials",
       // `credentials` is used to generate a form on the sign in page.
       // You can specify which fields should be submitted, by adding keys to the `credentials` object.
       // e.g. domain, email, password, 2FA token, etc.
@@ -51,11 +51,12 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
+        console.log("credentials", credentials);
         const endpoints =
           "https://beer-bible-api.vercel.app/api/login" ||
           "http://localhost:3000/api/login";
         // Add logic here to look up the user from the credentials supplied
-        const res = await fetch(endpoints, {
+        const res = await fetch("http://localhost:3000/api/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -69,7 +70,7 @@ export const authOptions: NextAuthOptions = {
         if (user) {
           // Any object returned will be saved in `user` property of the JWT
           console.log(user);
-          return user;
+          return user._doc;
         } else {
           // If you return null then an error will be displayed advising the user to check their details.
           return null;
@@ -194,7 +195,7 @@ export const authOptions: NextAuthOptions = {
             }
           }
           // User exists in your DB
-          user.id = user.id.toString(); // or whatever the field for the user id is
+          user.id = user._id.toString(); // or whatever the field for the user id is
           user.breweries = user.breweries; // add breweries to user
           user.notifications = user.notifications; // add notifications to user
 
