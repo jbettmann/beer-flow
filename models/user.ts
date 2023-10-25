@@ -1,10 +1,11 @@
-import mongoose from "mongoose";
-const { Schema } = mongoose;
+import mongoose, { Schema } from 'mongoose';
+
 // user schema
 const userSchema = new Schema(
   {
     fullName: { type: String, required: true },
     email: { type: String, required: true },
+    password: String,
     breweries: [
       { type: mongoose.Schema.Types.ObjectId, ref: "Brewery", default: [] },
     ],
@@ -26,6 +27,7 @@ const userSchema = new Schema(
     timestamps: true, // This will create the `createdAt` and `updatedAt` fields automatically
   }
 );
+
 const User = mongoose.models?.User || mongoose.model("User", userSchema);
 
 export default User;
