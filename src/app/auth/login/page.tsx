@@ -1,5 +1,8 @@
 "use client";
+import SaveButton from "@/components/Buttons/SaveButton";
+import { useToast } from "@/context/toast";
 import { Loader2 } from "lucide-react";
+
 import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
 import { redirect, useRouter, useSearchParams } from "next/navigation";
@@ -12,39 +15,71 @@ const LoginPage = () => {
 
   const searchParams = useSearchParams();
   const { data: session } = useSession();
+  const { addToast } = useToast();
+  const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
+  const [isCreateLoading, setIsCreateLoading] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [loginError, setLoginError] = useState<any>(null);
 
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const acceptInviteUrl = searchParams.get("next");
   console.log({ acceptInviteUrl });
-  const onSignIn = async () => {
-    setIsLoading(true);
-    try {
-      await signIn("google", {
-        callbackUrl: acceptInviteUrl || "http://localhost:3000/",
-      });
-    } catch (error) {
-      alert(error);
-    } finally {
-      if (acceptInviteUrl) redirect(acceptInviteUrl);
-      setIsLoading(false);
+
+  const onSignIn = async (provider: string) => {
+    console.log("Running submit", provider);
+
+    if (provider === "google") {
+      setIsGoogleLoading(true);
+      try {
+        await signIn("google", {
+          callbackUrl: acceptInviteUrl || "http://localhost:3000/",
+        });
+      } catch (error: any) {
+        addToast(error, "error");
+        setLoginError(error);
+      } finally {
+        if (acceptInviteUrl) redirect(acceptInviteUrl);
+        setIsGoogleLoading(false);
+        setLoginError(null);
+      }
+    }
+    if (provider === "credentials") {
+      console.log("Running credentials");
+      setIsCreateLoading(true);
+      try {
+        await signIn("credentials", {
+          email: email,
+          password: password,
+          callbackUrl: acceptInviteUrl || "http://localhost:3000/",
+        });
+      } catch (error: any) {
+        addToast(error, "error");
+        setLoginError(error);
+      } finally {
+        if (acceptInviteUrl) redirect(acceptInviteUrl);
+        setIsCreateLoading(false);
+        setLoginError(null);
+      }
     }
   };
 
   if (session) redirect("/");
 
+  console.log({ session }, "login");
+
   return (
     <div className="h-screen w-full flex flex-col justify-center items-center">
       <h1>Brett</h1>
 
-      <div className="w-full md:w-1/2 lg:w-1/3 mx-auto justify-center items-center shadow-lg rounded-lg p-12 mt-6 bg-white ">
+      <div className="w-full md:w-1/2  mx-auto justify-center items-center shadow-lg rounded-lg p-12 mt-6 bg-white ">
         <h3 className="font-normal">Log in to your account</h3>
         <div className="pt-8">
           <button
-            onClick={onSignIn}
-            disabled={isLoading}
+            onClick={() => onSignIn("google")}
+            disabled={isGoogleLoading}
             className=" flex justify-center items-center w-full p-4 rounded-md bg-white border border-primary hover:shadow-xl transition-all ease-in-out"
           >
-            {isLoading ? (
+            {isGoogleLoading ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
               <svg
@@ -79,10 +114,58 @@ const LoginPage = () => {
             Google
           </button>
         </div>
-        <div>
-          <Link href={"/auth/create/account"}>
-            <p className="link link-accent">Create Account</p>
-          </Link>
+        <div className="divider my-6">
+          <h5 className="my-3">OR</h5>
+        </div>
+        <form>
+          <div className="flex flex-col">
+            <label
+              className="beer-card__label-text !text-primary"
+              htmlFor="email"
+            >
+              Email
+            </label>
+            <input
+              className="form-input__create-account"
+              type="email"
+              placeholder="Email"
+              name="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className="flex flex-col">
+            <label
+              className="beer-card__label-text !text-primary"
+              htmlFor="password"
+            >
+              Password
+            </label>
+            <input
+              className="form-input__create-account"
+              type="password"
+              placeholder="Password"
+              name="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          {loginError && <div className="error">{loginError}</div>}
+        </form>
+        <SaveButton
+          isLoading={isCreateLoading}
+          title="Log in"
+          className="create-btn !bg-accent !text-primary my-6 w-full "
+          onClick={() => onSignIn("credentials")}
+        />
+        <div className="text-sm inline-flex gap-2 justify-center w-full">
+          <p className="m-0 ">Don&rsquo;t have an account?</p>
+
+          <span className="link link-accent">
+            <Link href={"/auth/create/account"}>Sign up here</Link>
+          </span>
         </div>
       </div>
     </div>
