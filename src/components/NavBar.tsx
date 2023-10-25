@@ -264,13 +264,17 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                   href={`/settings/profile`}
                   className="flex flex-row items-center"
                 >
-                  <Image
-                    src={user?.picture}
-                    alt={`profile picture of ${user?.name}`}
-                    className="rounded-full my-auto avatar justify-center items-center w-6"
-                    width={50}
-                    height={50}
-                  />
+                  {user.picture ? (
+                    <Image
+                      src={user?.picture}
+                      alt={`profile picture of ${user?.name}`}
+                      className="rounded-full my-auto avatar justify-center items-center w-6"
+                      width={50}
+                      height={50}
+                    />
+                  ) : (
+                    <div className="logo__default !text-base">JJ</div>
+                  )}
                   <h6 className="pl-3">Profile</h6>
                 </Link>
               </li>
@@ -385,13 +389,17 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
             tabIndex={0}
             className="btn btn-ghost btn-circle btn-sm justify-center items-center"
           >
-            <Image
-              src={user?.picture}
-              alt={`profile picture of ${user?.name}`}
-              className="rounded-full my-auto avatar justify-center items-center"
-              width={50}
-              height={50}
-            />
+            {user?.picture ? (
+              <Image
+                src={user?.picture}
+                alt={`profile picture of ${user?.name}`}
+                className="rounded-full my-auto avatar justify-center items-center"
+                width={50}
+                height={50}
+              />
+            ) : (
+              <div className="logo__default !text-base">JJ</div>
+            )}
           </label>
           <ul
             tabIndex={0}
