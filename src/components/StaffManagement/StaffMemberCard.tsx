@@ -12,6 +12,7 @@ import deleteStaffMember from "@/lib/DELETE/deleteStaffMemeber";
 import TrashCanIcon from "../Buttons/TrashCanIcon";
 import AlertDialog from "../Alerts/AlertDialog";
 import { useToast } from "@/context/toast";
+import { getInitials } from "@/lib/utils";
 
 type Props = {
   staff: Users;
@@ -167,17 +168,23 @@ const StaffMemberCard = ({
           isEdit ? "items-start" : ""
         }`}
       >
-        <div className="avatar">
-          <div className="mask mask-squircle object-cover h-20">
-            <Image
-              src={staff.image || ""}
-              alt={`profile picture of ${staff.fullName}`}
-              className=""
-              width={50}
-              height={50}
-            />
+        {staff.image ? (
+          <div className="avatar">
+            <div className="mask mask-squircle object-cover h-20">
+              <Image
+                src={staff.image || ""}
+                alt={`profile picture of ${staff.fullName}`}
+                className=""
+                width={50}
+                height={50}
+              />
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="py-1 px-[.15rem] bg-accent text-primary font-bold text-3xl rounded-full">
+            {getInitials(staff.fullName)}
+          </div>
+        )}
         <div
           className={`xs:space-y-1 transition-all text-center xs:text-left space-y-1 ${
             isEdit ? "pb-14" : ""

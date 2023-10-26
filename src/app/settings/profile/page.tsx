@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth/next";
 import Image from "next/image";
 
 import BrewerySettingsList from "@/components/Settings/BrewerySettingsList";
+import { getInitials } from "@/lib/utils";
 
 type Props = {};
 
@@ -22,15 +23,25 @@ const ActualProfilePage = async (props: Props) => {
     // Profile info
     <div>
       <div className="settings-profile__info">
-        <Image
-          src={session?.user.picture}
-          alt={`profile picture of ${session?.user.name}`}
-          className="mask mask-squircle"
-          width={100}
-          height={100}
-        />
-        <div>
-          <p className="gray-text">{constructUserName(session?.user.name)}</p>
+        {session?.user.picture ? (
+          <Image
+            src={session?.user.picture as string}
+            alt={`profile picture of ${session?.user.name}`}
+            className="mask mask-squircle"
+            width={100}
+            height={100}
+          />
+        ) : (
+          <div className=" flex px-1 py-[.5px] bg-accent justify-center items-center text-primary font-bold text-3xl rounded-full w-24 h-24">
+            {getInitials(session?.user.fullName || "")}
+          </div>
+        )}
+        <div className="text-center xs:text-left">
+          <p className="gray-text">
+            {constructUserName(
+              session?.user.name || (session?.user.fullName as string)
+            )}
+          </p>
 
           <p className="gray-text">{session?.user.email}</p>
         </div>

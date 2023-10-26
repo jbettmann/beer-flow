@@ -12,6 +12,7 @@ import deleteStaffMember from "@/lib/DELETE/deleteStaffMemeber";
 import TrashCanIcon from "../Buttons/TrashCanIcon";
 import AlertDialog from "../Alerts/AlertDialog";
 import { useToast } from "@/context/toast";
+import { getInitials } from "@/lib/utils";
 
 type Props = {
   staff: Users;
@@ -177,17 +178,24 @@ const StaffMemberRow = ({
         </th>
         <td>
           <div className="flex items-center space-x-6">
-            <div className="avatar">
-              <div className="mask mask-squircle w-12 h-12">
-                <Image
-                  src={staff.image || ""}
-                  alt={`profile picture of ${staff.fullName}`}
-                  className=""
-                  width={50}
-                  height={50}
-                />
-              </div>
+            <div className="">
+              {staff.image ? (
+                <div className="mask mask-squircle avatar w-12 h-12">
+                  <Image
+                    src={staff.image || ""}
+                    alt={`profile picture of ${staff.fullName}`}
+                    className=""
+                    width={50}
+                    height={50}
+                  />
+                </div>
+              ) : (
+                <div className="py-1 px-[.15rem] bg-accent text-primary font-bold text-3xl rounded-full">
+                  {getInitials(staff.fullName)}
+                </div>
+              )}
             </div>
+
             <div className="space-y-1">
               <div className="font-bold">{staff.fullName}</div>
               <div className="text-sm opacity-50">{staff.email}</div>

@@ -5,6 +5,7 @@ import { debounce, getInitials } from "@/lib/utils";
 import {
   AlignJustify,
   Beer,
+  Factory,
   HelpCircle,
   HomeIcon,
   LayoutGrid,
@@ -176,8 +177,16 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
         <div className="drawer-side z-20 text-background">
           <label htmlFor="menu-drawer" className="drawer-overlay "></label>
           <div className="h-full flex flex-col justify-between menu-drawer w-10/12 xs:w-auto">
-            <div className="p-6">
-              <h4 className="py-4">Breweries</h4>
+            <div className="p-6 ">
+              <Link
+                href={"/breweries"}
+                onClick={closeDrawer}
+                className="flex items-center gap-2 py-4"
+              >
+                <Factory size={24} strokeWidth={1} />
+                <h4 className=" ">Breweries</h4>
+              </Link>
+
               <ul className="w-full menu !flex-nowrap  h-full gap-3 overflow-y-scroll">
                 {breweries.map((brewery: Brewery) => (
                   <li
@@ -257,70 +266,74 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
               </>
             )}
 
-            <div className="flex flex-col justify-center  p-3 menu">
+            <div className="flex flex-col justify-center ">
               <div className="divider-horizontal border !border-background/20 w-full !ml-0"></div>
-              <li onClick={closeDrawer}>
-                <Link
-                  href={`/settings/profile`}
-                  className="flex flex-row items-center"
-                >
-                  {user.picture ? (
-                    <Image
-                      src={user?.picture}
-                      alt={`profile picture of ${user?.name}`}
-                      className="rounded-full my-auto avatar justify-center items-center w-6"
-                      width={50}
-                      height={50}
-                    />
-                  ) : (
-                    <div className="logo__default !text-base">JJ</div>
-                  )}
-                  <h6 className="pl-3">Profile</h6>
-                </Link>
-              </li>
-              <li onClick={closeDrawer}>
-                <Link
-                  href={"/settings"}
-                  className="flex flex-row items-center"
-                  data-tip="Settings"
-                >
-                  <Settings size={22} strokeWidth={1} />
-                  <h6 className="pl-3">Settings</h6>
-                </Link>
-              </li>
+              <div className="flex flex-col justify-center  p-3 menu">
+                <li onClick={closeDrawer}>
+                  <Link
+                    href={`/settings/profile`}
+                    className="flex flex-row items-center"
+                  >
+                    {user.picture ? (
+                      <Image
+                        src={user?.picture}
+                        alt={`profile picture of ${user?.name}`}
+                        className="rounded-full my-auto avatar justify-center items-center w-6"
+                        width={50}
+                        height={50}
+                      />
+                    ) : (
+                      <div className=" logo__default !text-base ">
+                        {getInitials(user.fullName || "")}
+                      </div>
+                    )}
+                    <h6 className="pl-3">Profile</h6>
+                  </Link>
+                </li>
+                <li onClick={closeDrawer}>
+                  <Link
+                    href={"/settings"}
+                    className="flex flex-row items-center"
+                    data-tip="Settings"
+                  >
+                    <Settings size={22} strokeWidth={1} />
+                    <h6 className="pl-3">Settings</h6>
+                  </Link>
+                </li>
 
-              <li onClick={closeDrawer}>
-                <Link
-                  href={"/help"}
-                  className=" flex flex-row items-center"
-                  data-tip="Help"
-                >
-                  <HelpCircle size={22} strokeWidth={1} />
-                  <h6 className="pl-3">Help</h6>
-                </Link>
-              </li>
-              <li>
-                {breweries ? (
-                  <button
-                    className=" flex flex-row items-center text-accent"
-                    onClick={handleSignOut}
-                    aria-label="Sign Out"
-                    data-tip="Sign Out"
-                  >
-                    <LogOut size={22} strokeWidth={1} />
-                    <h6 className="pl-3">Sign Out</h6>
-                  </button>
-                ) : (
-                  <button
+                <li onClick={closeDrawer}>
+                  <Link
+                    href={"/help"}
                     className=" flex flex-row items-center"
-                    onClick={() => signIn()}
-                    aria-label="Sign In"
-                    data-tip="Sign In"
+                    data-tip="Help"
                   >
-                    <h6 className="pl-3">Sign In</h6>
-                  </button>
-                )}
-              </li>
+                    <HelpCircle size={22} strokeWidth={1} />
+                    <h6 className="pl-3">Help</h6>
+                  </Link>
+                </li>
+                <li>
+                  {breweries ? (
+                    <button
+                      className=" flex flex-row items-center text-accent"
+                      onClick={handleSignOut}
+                      aria-label="Sign Out"
+                      data-tip="Sign Out"
+                    >
+                      <LogOut size={22} strokeWidth={1} />
+                      <h6 className="pl-3">Sign Out</h6>
+                    </button>
+                  ) : (
+                    <button
+                      className=" flex flex-row items-center"
+                      onClick={() => signIn()}
+                      aria-label="Sign In"
+                      data-tip="Sign In"
+                    >
+                      <h6 className="pl-3">Sign In</h6>
+                    </button>
+                  )}
+                </li>
+              </div>
             </div>
           </div>
         </div>
@@ -329,7 +342,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
       {/* Dashboard horizontal DESKTOP */}
       <div className="hidden md:flex md:fixed top-0 right-0 left-0 px-4 pl-12 py-2  w-full justify-between items-center bg-primary text-background z-[1] ">
         <ul className="menu menu-horizontal text-xs pounded-box pl-8 py-0">
-          <li>
+          <li className="w-full">
             <details>
               <summary className="py-0 hover:text-accent" ref={breweryMenuRef}>
                 {selectedBrewery?.image
@@ -346,11 +359,11 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                     )}
                 {selectedBrewery?.companyName}
               </summary>
-              <ul className="space-y-4">
+              <ul className="menu  gap-4">
                 {breweries.map((brewery: Brewery) => (
                   <li
                     key={brewery._id}
-                    className="category-card rounded-xl p-2 "
+                    className="category-card rounded-xl p-2 w-60"
                   >
                     <Link
                       href={`/breweries/${brewery._id}`}
@@ -398,7 +411,9 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                 height={50}
               />
             ) : (
-              <div className="logo__default !text-base">JJ</div>
+              <div className=" logo__default !text-base ">
+                {getInitials(user.fullName || "")}
+              </div>
             )}
           </label>
           <ul
@@ -519,7 +534,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
 
             <Link
               href={"/settings"}
-              className={`flex flex-row items-center p-3 tooltip tooltip-accent tooltip-right ${
+              className={`flex flex-row items-center p-3 tooltip tooltip-accent tooltip-right  ${
                 isActive(`/settings`)
                   ? "text-accent bg-fourth-color shadow-inner rounded-lg "
                   : ""
@@ -567,7 +582,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
               >
                 <li>
                   <Link
-                    href={"/settings/profile"}
+                    href={"/settings"}
                     className="flex flex-row items-center p-3"
                   >
                     <ShieldBan size={18} strokeWidth={1} />
