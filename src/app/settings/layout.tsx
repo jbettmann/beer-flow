@@ -15,7 +15,7 @@ export default async function SettingsLayout({ children }: Props) {
       <div className="h-full p-4 md:p-8 text-primary md:py-16 md:w-10/12 mx-auto">
         <SettingTabs>{children}</SettingTabs>
 
-        <div className="hidden md:block md:w-2/3 px-10">{children}</div>
+        <div className="hidden md:block lg:w-2/3 px-10">{children}</div>
       </div>
     </>
   );
