@@ -566,7 +566,7 @@ const CategoryList = ({
               isLoading={isLoading}
             />
           )}
-          {categories &&
+          {categories.length > 0 && categories ? (
             categories.map((category, index) => {
               return (
                 <CategoryRow
@@ -583,7 +583,17 @@ const CategoryList = ({
                   handleDeleteAlert={handleDeleteAlert}
                 />
               );
-            })}
+            })
+          ) : (
+            <>
+              <th></th>
+              <th></th>
+              <th className="flex justify-center items-center text-primary text-opacity-50 ">
+                No categories
+              </th>
+              <th></th>
+            </>
+          )}
         </tbody>
         {/* foot */}
       </table>
@@ -620,7 +630,7 @@ const CategoryList = ({
             })
           ) : (
             <div className="mx-auto text-primary text-opacity-50">
-              There are no empty categories
+              No categories
             </div>
           )}
         </div>
