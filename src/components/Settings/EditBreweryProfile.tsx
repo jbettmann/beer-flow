@@ -131,14 +131,17 @@ const EditBreweryProfile = ({ brewery, onClose }: Props) => {
       </div>
       <div className="flex flex-col items-center p-6 pt-7 w-full">
         <div className="flex flex-col items-center">
-          <div className="flex flex-col  items-center bg-background rounded-full">
+          <div className="flex flex-col  items-center ">
             {/*  Existing Beer Image */}
             {editBrewery?.image && !previewImage ? (
-              <ImageDisplay item={editBrewery} className="logo__edit m-3" />
+              <ImageDisplay
+                item={editBrewery}
+                className="logo__edit m-3 bg-background !rounded-full"
+              />
             ) : (
               editBrewery?.companyName &&
               !previewImage && (
-                <div className=" logo__default m-3">
+                <div className=" flex px-1 py-[.5px] bg-accent justify-center items-center text-third-color font-bold text-3xl rounded-full w-24 h-24 m-3">
                   {getInitials(editBrewery.companyName || "")}
                 </div>
               )
