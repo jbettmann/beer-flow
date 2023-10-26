@@ -25,9 +25,9 @@ const SearchModal: FC<SearchModalProps> = ({
     <dialog
       ref={modalRef}
       id="alert_modal"
-      className="modal modal-middle bg-white/30  "
+      className="modal modal-middle bg-primary/50  "
     >
-      <div className="modal-box bg-fourth-color absolute top-1/4 h-fit max-h-[32rem] transition-all ease-in-out">
+      <div className=" w-1/2 overflow-y-auto bg-transparent absolute top-1/3 h-fit max-h-[32rem] transition-all ease-in-out">
         <div className="w-full p-0">{children}</div>
       </div>
     </dialog>
