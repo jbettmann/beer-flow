@@ -125,6 +125,7 @@ export const authOptions: NextAuthOptions = {
         return {
           ...token,
           breweries: user.breweries,
+          fullName: user.fullName,
           notifications: user.notifications,
           accessToken: accessToken,
           refreshToken: refreshToken,
