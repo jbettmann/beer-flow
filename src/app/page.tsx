@@ -32,7 +32,6 @@ export default async function Home() {
     <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-background ">
       {session?.user.breweries ? (
         <div>
-          {/* @ts-expect-error Server Component */}
           {/* <SingleBreweryPage breweryId={session?.user.breweries[0]} />{" "} */}
         </div>
       ) : (
