@@ -1,12 +1,5 @@
-import { Beer } from "@/app/types/beer";
-import { Brewery } from "@/app/types/brewery";
 import BeerCard from "@/components/BeerCard";
-import BeerCardLS from "@/components/LoadingSkeleton/BeerCardLS";
 import Modal from "@/components/Modal";
-import getBreweryBeers from "@/lib/getBreweryBeers";
-import getSingleBeer from "@/lib/getSingleBeer";
-import getSingleBrewery from "@/lib/getSingleBrewery";
-import React from "react";
 
 type pageProps = {
   params: {
