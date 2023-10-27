@@ -176,7 +176,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
         {/* Drawer */}
         <div className="drawer-side z-20 text-background">
           <label htmlFor="menu-drawer" className="drawer-overlay "></label>
-          <div className="h-full flex flex-col justify-between menu-drawer w-10/12 xs:w-auto">
+          <div className="min-h-full flex flex-col justify-between menu-drawer w-10/12 xs:w-auto">
             <div className="p-6 ">
               <Link
                 href={"/breweries"}
