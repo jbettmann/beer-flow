@@ -43,12 +43,12 @@ export default function Modal({
   return (
     <div
       ref={overlay}
-      className="fixed z-10 left-0 right-0 top-0 bottom-0 mx-auto bg-black/60  overflow-y-auto mb-16 lg:mb-0 pb-6"
+      className="fixed z-50 left-0 right-0 top-0 bottom-0 mx-auto bg-black/60  overflow-y-auto pb-6"
       onClick={onClick}
     >
       <div
         ref={wrapper}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full sm:w-10/12 md:w-8/12 lg:w-1/2 p-1 xxs:p-6 h-full "
+        className="absolute top-[55%] sm:top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full sm:w-10/12 md:w-8/12 lg:w-1/2 p-1 xxs:p-3 sm:p-6 h-full "
       >
         <button
           className="close-btn absolute p-1 xxs:p-7 top-2 xxs:top-4 right-2 xxs:right-4 z-10 text-background"
