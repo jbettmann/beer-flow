@@ -90,7 +90,6 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
 
   const router = useRouter();
   const { addToast } = useToast();
-  const isSubmitting = useRef(false);
 
   // Create a map that connects field names to their refs
   const fieldRefs: RefsType = {
@@ -109,7 +108,7 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    isSubmitting.current = true;
+
     // Mark all fields as touched
     setTouched({
       name: true,
@@ -138,7 +137,7 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
           behavior: "smooth",
         });
       }
-      isSubmitting.current = false;
+
       return;
     }
 
@@ -168,7 +167,7 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
         URL.revokeObjectURL(previewImage);
         setPreviewImage(null);
       }
-      isSubmitting.current = false;
+
       setIsLoading(false); // Set loading state to false
     }
   };
@@ -234,8 +233,6 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
     // Clear the error message when the form fields change
     setSubmitError(null);
   }, [values]);
-
-  console.log(previewImage);
 
   return isAdmin ? (
     <form
@@ -592,7 +589,6 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
           className="create-btn inverse"
           type="submit"
           disabled={
-            isSubmitting.current ||
             !values.name ||
             !values.style ||
             !(values.category && values.category.length) ||
