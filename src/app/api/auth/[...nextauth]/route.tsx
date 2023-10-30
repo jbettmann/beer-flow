@@ -16,6 +16,8 @@ import { JWT } from "next-auth/jwt";
 import User from "../../../../../models/user";
 
 import { AdapterUser } from "next-auth/adapters";
+import dbConnect from "@/lib/db";
+import * as bcyrpt from "bcrypt";
 
 interface MyToken extends JWT {
   id?: string;
@@ -51,35 +53,48 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        console.log("credentials", credentials);
-        const endpoints =
-          "https://beer-flow.vercel.app/api/login" ||
-          "http://localhost:3000/api/login";
-        // Add logic here to look up the user from the credentials supplied
-        const res = await fetch("https://beer-flow.vercel.app/api/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: credentials?.email,
-            password: credentials?.password,
-          }),
-        });
-        const user = await res.json();
-        if (user) {
-          // Any object returned will be saved in `user` property of the JWT
-          console.log(user);
-          return user._doc;
-        } else {
-          // If you return null then an error will be displayed advising the user to check their details.
-          return null;
+        if (!credentials?.email || !credentials.password) {
+          throw new Error("Missing credentials");
+        }
 
-          // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
+        try {
+          await dbConnect();
+
+          const user = await User.findOne({ email: credentials.email });
+
+          if (!user) {
+            console.error("User not found");
+            return null; // User not found
+          }
+
+          const passwordFromDB = user.get("password");
+
+          const isPasswordValid = await bcyrpt.compare(
+            credentials.password,
+            passwordFromDB
+          );
+
+          if (!isPasswordValid) {
+            console.error("Invalid password");
+            return null; // Invalid password
+          }
+
+          const { password, ...userWithoutPassword } = user.toObject();
+
+          return userWithoutPassword; // return the user without the password
+        } catch (error) {
+          console.error("Error in authorization:", error);
+          return null; // Return null on error
         }
       },
     }),
   ],
+
+  session: {
+    strategy: "jwt",
+  },
+  secret: process.env.NEXTAUTH_SECRET,
+  debug: process.env.NODE_ENV === "development",
 
   // An optional, but recommended, database for persisting user and session data
   // database: process.env.DATABASE_URL,

@@ -25,14 +25,15 @@ const LoginPage = () => {
   const acceptInviteUrl = searchParams.get("next");
   console.log({ acceptInviteUrl });
 
-  const onSignIn = async (provider: string) => {
+  const onSignIn = async (e: any, provider: string) => {
+    e.preventDefault();
     console.log("Running submit", provider);
 
     try {
       if (provider === "google") {
         setIsGoogleLoading(true);
         await signIn("google", {
-          callbackUrl: acceptInviteUrl || "https://beer-flow.vercel.app/",
+          callbackUrl: acceptInviteUrl || "/",
         });
       }
       if (provider === "credentials") {
@@ -41,7 +42,7 @@ const LoginPage = () => {
         await signIn("credentials", {
           email: email,
           password: password,
-          callbackUrl: acceptInviteUrl || "https://beer-flow.vercel.app/",
+          callbackUrl: acceptInviteUrl || "/",
         });
       }
     } catch (error: any) {
@@ -66,7 +67,7 @@ const LoginPage = () => {
         <h3 className="font-normal">Log in to your account</h3>
         <div className="pt-8">
           <button
-            onClick={() => onSignIn("google")}
+            onClick={(e) => onSignIn(e, "google")}
             disabled={isGoogleLoading}
             className=" flex justify-center items-center w-full p-4 rounded-md bg-white border border-primary hover:shadow-xl transition-all ease-in-out"
           >
@@ -149,7 +150,7 @@ const LoginPage = () => {
           isLoading={isCreateLoading}
           title="Log in"
           className="create-btn !bg-accent !text-primary my-6 w-full "
-          onClick={() => onSignIn("credentials")}
+          onClick={(e) => onSignIn(e, "credentials")}
         />
         <div className="text-sm inline-flex gap-2 justify-center w-full">
           <p className="m-0 ">Don&rsquo;t have an account?</p>
