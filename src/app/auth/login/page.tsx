@@ -51,7 +51,7 @@ const LoginPage = () => {
       addToast(error, "error");
       setLoginError(error);
     } finally {
-   
+      if (acceptInviteUrl) redirect(acceptInviteUrl);
       setIsGoogleLoading(false);
       setLoginError(null);
     }
