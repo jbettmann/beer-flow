@@ -9,6 +9,7 @@ import ErrorField from "./ErrorField/ErrorField";
 import SaveButton from "./Buttons/SaveButton";
 import { ImagePlus, X } from "lucide-react";
 import { useToast } from "@/context/toast";
+import { useBreweryContext } from "@/context/brewery-beer";
 
 interface FormValues {
   companyName: string;
@@ -40,6 +41,7 @@ const validateFields = (values: FormValues) => {
 };
 
 const CreateBreweryForm = ({ onClose }: Props) => {
+  const { setSelectedBrewery } = useBreweryContext();
   const [values, setValues] = useState<FormValues>({
     companyName: "",
     image: null,
@@ -106,6 +108,7 @@ const CreateBreweryForm = ({ onClose }: Props) => {
       await update({
         newBreweryId: responseBrewery.savedBrewery._id,
       });
+      setSelectedBrewery(responseBrewery.savedBrewery);
       router.push(`/breweries/${responseBrewery.savedBrewery._id}`);
     } catch (err: any) {
       console.error(err);
