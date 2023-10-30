@@ -27,18 +27,20 @@ const OptionsButton = ({ handleOptions, className, options }: Props) => {
 
       <ul
         tabIndex={0}
-        className="menu menu-sm dropdown-content z-[1] p-2 shadow rounded-box w-fit flex items-center bg-white text-primary"
+        className="menu menu-sm dropdown-content z-[1] p-2 shadow rounded-box w-[5.25rem] text-center  flex items-center justify-center bg-white text-primary"
       >
         {options.map((option, index) =>
           option.name === "Edit Name" ? (
-            <li key={index} className="w-full">
+            <li key={index} className="w-full text-center mx-auto">
               <button
                 key={index}
                 onClick={option.onClick}
                 aria-label="Edit Category Name"
                 className={`${option.disabled ? "disabled" : ""} p-1 w-full`}
               >
-                <p className="w-full text-center text-xs m-0">{option.name}</p>
+                <p className="w-full text-center mx-auto text-xs m-0">
+                  {option.name}
+                </p>
               </button>
             </li>
           ) : null

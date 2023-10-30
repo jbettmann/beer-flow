@@ -515,7 +515,6 @@ const CategoryRow = ({
   useEffect(() => {
     handleEmptyCategory(category._id, isEmpty);
     handleCategoryCheckbox(category._id, selectAll);
-    console.log("selectAll changed", selectAll);
   }, [selectAll]);
 
   // Closes category if category checkbox is checked

@@ -109,7 +109,7 @@ const UpdateCategory = ({ category, onClose }: Props) => {
 
           if (updatedCatName) {
             addToast(`Category ${updatedCatName.name} updated`, "success");
-            router.back();
+            onClose();
           }
         }
       } catch (err: any) {

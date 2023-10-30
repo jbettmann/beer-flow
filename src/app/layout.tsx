@@ -5,6 +5,9 @@ import { Metadata } from "next";
 import { getServerSession } from "next-auth";
 import { Inter } from "next/font/google";
 import { authOptions } from "./api/auth/[...nextauth]/route";
+import localFont from "next/font/local";
+
+const myFont = localFont({ src: "../assets/fonts/SF-Pro.ttf" });
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -26,7 +29,7 @@ export default async function Layout(props: {
   return (
     <html lang="en ">
       <Provider>
-        <body className={inter.className}>
+        <body className={myFont.className}>
           {session && <NavBar breweries={breweries} user={session.user} />}
 
           {/* <Chat /> */}
