@@ -13,6 +13,8 @@ import TrashCanIcon from "../Buttons/TrashCanIcon";
 import AlertDialog from "../Alerts/AlertDialog";
 import { useToast } from "@/context/toast";
 import { getInitials } from "@/lib/utils";
+import useSWR from "swr";
+import getSingleBrewery from "@/lib/getSingleBrewery";
 
 type Props = {
   staff: Users;
@@ -32,7 +34,7 @@ const StaffMemberRow = ({
   breweryId,
 }: Props) => {
   const { data: session } = useSession();
-  const { setSelectedBrewery } = useBreweryContext();
+
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isDeleteLoading, setIsDeleteLoading] = useState<boolean>(false);
@@ -46,6 +48,15 @@ const StaffMemberRow = ({
   const { addToast } = useToast();
 
   const rowRef = useRef(null);
+
+  const { mutate } = useSWR(
+    [
+      `https://beer-bible-api.vercel.app/breweries/${breweryId}`,
+      session?.user.accessToken,
+    ],
+    getSingleBrewery
+  );
+
   // update if user is admin or not of Brewery
   const handleAdminChange = async () => {
     if (initialIsAdmin !== isAdmin) {
@@ -61,16 +72,16 @@ const StaffMemberRow = ({
             accessToken: session?.user.accessToken,
           });
 
-          console.log(updatedAdmin.message);
           addToast(updatedAdmin.message, "success");
-          setSelectedBrewery(updatedAdmin.brewery);
+          mutate();
 
           // After successfully updating, set the initialIsAdmin to the current isAdmin value
           setInitialIsAdmin(isAdmin);
           setHasChanged(false);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.log(error);
+        addToast(error.message, "error");
       } finally {
         setIsEdit(false);
         setIsLoading(false);
@@ -92,7 +103,8 @@ const StaffMemberRow = ({
       });
 
       addToast(result.message, "success");
-      setSelectedBrewery(result.updatedBrewery);
+      mutate();
+
       // Display success message from the result
     } catch (err: any) {
       console.error(err);

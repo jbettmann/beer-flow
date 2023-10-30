@@ -1,7 +1,7 @@
 const BreweryProfileSkeleton = () => (
-  <section className="w-1/2 m-auto animate-pulse">
+  <section className=" w-full lg:w-1/2 m-auto mt-10 animate-pulse">
     {/* Brewery Name */}
-    <div className="h-8 w-1/2 mx-auto bg-gray-400 mb-4"></div>
+    <div className="h-8  w-1/2  mx-auto bg-gray-400 mb-4"></div>
 
     {/* Beer Categories */}
     <div className="space-y-4">

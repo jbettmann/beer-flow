@@ -13,6 +13,8 @@ import TrashCanIcon from "../Buttons/TrashCanIcon";
 import AlertDialog from "../Alerts/AlertDialog";
 import { useToast } from "@/context/toast";
 import { getInitials } from "@/lib/utils";
+import useSWR from "swr";
+import getSingleBrewery from "@/lib/getSingleBrewery";
 
 type Props = {
   staff: Users;
@@ -32,9 +34,11 @@ const StaffMemberCard = ({
   breweryId,
 }: Props) => {
   const { data: session } = useSession();
-  const { setSelectedBrewery } = useBreweryContext();
+ 
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isDeleteLoading, setIsDeleteLoading] = useState<boolean>(false);
+
   const [isChecked, setIsChecked] = useState(checkedStaffIds.has(staff._id));
   const [isAdmin, setIsAdmin] = useState<boolean>(admin);
   const [initialIsAdmin, setInitialIsAdmin] = useState(admin); // compare to isAdmin for change
@@ -44,6 +48,15 @@ const StaffMemberCard = ({
 
   const { addToast } = useToast();
   const rowRef = useRef(null);
+
+  const { mutate } = useSWR(
+    [
+      `https://beer-bible-api.vercel.app/breweries/${breweryId}`,
+      session?.user.accessToken,
+    ],
+    getSingleBrewery
+  );
+
   // update if user is admin or not of Brewery
   const handleAdminChange = async () => {
     if (initialIsAdmin !== isAdmin) {
@@ -59,16 +72,18 @@ const StaffMemberCard = ({
             accessToken: session?.user.accessToken,
           });
 
-          console.log(updatedAdmin.message);
           addToast(updatedAdmin.message, "success");
-          setSelectedBrewery(updatedAdmin.brewery);
+          mutate();
 
           // After successfully updating, set the initialIsAdmin to the current isAdmin value
           setInitialIsAdmin(isAdmin);
           setHasChanged(false);
+        } else {
+          throw new Error("Missing breweryId or accessToken");
         }
-      } catch (error) {
+      } catch (error: any) {
         console.log(error);
+        addToast(error.message, "error");
       } finally {
         setIsEdit(false);
         setIsLoading(false);
@@ -80,7 +95,7 @@ const StaffMemberCard = ({
   };
 
   const handleDeleteStaff = async () => {
-    setIsLoading(true);
+    setIsDeleteLoading(true);
     try {
       if (!isChecked || !breweryId || !session?.user.accessToken) return;
       const result = await deleteStaffMember({
@@ -90,13 +105,14 @@ const StaffMemberCard = ({
       });
 
       addToast(result.message, "success");
-      setSelectedBrewery(result.updatedBrewery);
+      mutate();
+
       // Display success message from the result
     } catch (err: any) {
       console.error(err);
       addToast(err.message, "error"); // Displaying the error message as an alert on the client side
     } finally {
-      setIsLoading(false);
+      setIsDeleteLoading(false);
     }
   };
 
@@ -181,9 +197,11 @@ const StaffMemberCard = ({
             </div>
           </div>
         ) : (
-          <div className="py-1 px-[.15rem] bg-accent text-primary font-bold text-3xl rounded-full">
-            {getInitials(staff.fullName)}
-          </div>
+          staff && (
+            <div className="py-1 px-[.15rem] bg-accent text-primary font-bold text-3xl rounded-full">
+              {getInitials(staff.fullName)}
+            </div>
+          )
         )}
         <div
           className={`xs:space-y-1 transition-all text-center xs:text-left space-y-1 ${
@@ -271,7 +289,7 @@ const StaffMemberCard = ({
                 onClick={(e) => {
                   e.stopPropagation(), setDeleteStaffMemberAlert(true);
                 }}
-                isLoading={isLoading}
+                isLoading={isDeleteLoading}
                 className="btn btn-circle btn-ghost"
               />
             </>
