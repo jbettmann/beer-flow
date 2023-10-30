@@ -158,7 +158,6 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
           mutateBrewery();
           handleClear(); // Clear the form
           addToast(`${newBeerRes.name} successfully created!`, "success");
-          onDismiss();
         }
       }
     } catch (err: string | any) {
