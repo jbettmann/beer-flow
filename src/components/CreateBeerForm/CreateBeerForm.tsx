@@ -24,7 +24,7 @@ import getSingleBrewery from "@/lib/getSingleBrewery";
 import { spawn } from "child_process";
 
 type pageProps = {
-  setIsCreateBeer?: (value: boolean) => void;
+  setIsCreateBeer: (value: boolean) => void;
 };
 
 const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
@@ -90,6 +90,7 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
 
   const router = useRouter();
   const { addToast } = useToast();
+  const isSubmitting = useRef(false);
 
   // Create a map that connects field names to their refs
   const fieldRefs: RefsType = {
@@ -108,7 +109,7 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
+    isSubmitting.current = true;
     // Mark all fields as touched
     setTouched({
       name: true,
@@ -137,7 +138,7 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
           behavior: "smooth",
         });
       }
-
+      isSubmitting.current = false;
       return;
     }
 
@@ -157,6 +158,7 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
           mutateBrewery();
           handleClear(); // Clear the form
           addToast(`${newBeerRes.name} successfully created!`, "success");
+          setIsCreateBeer(false);
         }
       }
     } catch (err: string | any) {
@@ -167,7 +169,7 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
         URL.revokeObjectURL(previewImage);
         setPreviewImage(null);
       }
-
+      isSubmitting.current = false;
       setIsLoading(false); // Set loading state to false
     }
   };
@@ -589,6 +591,7 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
           className="create-btn inverse"
           type="submit"
           disabled={
+            isSubmitting.current ||
             !values.name ||
             !values.style ||
             !(values.category && values.category.length) ||

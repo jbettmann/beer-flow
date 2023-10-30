@@ -24,10 +24,6 @@ const validateFields = (values: FormValues) => {
     errors.abv = "ABV can only have up to two decimal places.";
   }
 
-  if (!/^(\d+(\.\d{1,2})?)$/.test(values.ibu as string)) {
-    errors.ibu = "IBU must be a number.";
-  }
-
   // validate category
   if (values.category.length === 0) {
     errors.category = "A category is required.";
