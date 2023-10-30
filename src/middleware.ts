@@ -48,7 +48,7 @@ export default withAuth(
 
     const isAuth = !!token;
 
-    const isAuthPage = pathname.startsWith("auth/login");
+    const isAuthPage = pathname.startsWith("/auth/login");
 
     const acceptInvite = pathname.startsWith("/accept-invite");
 
