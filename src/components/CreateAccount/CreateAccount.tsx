@@ -109,7 +109,7 @@ const CreateAccount = (props: Props) => {
         await signIn("credentials", {
           email,
           password,
-          callbackUrl: acceptInviteUrl || "http://localhost:3000/",
+          callbackUrl: acceptInviteUrl || "http://localhost:3000/" || "/",
         });
       }
     } catch (err: any) {
