@@ -28,38 +28,29 @@ const LoginPage = () => {
   const onSignIn = async (provider: string) => {
     console.log("Running submit", provider);
 
-    if (provider === "google") {
-      setIsGoogleLoading(true);
-      try {
+    try {
+      if (provider === "google") {
+        setIsGoogleLoading(true);
         await signIn("google", {
           callbackUrl: acceptInviteUrl || "https://beer-flow.vercel.app/",
         });
-      } catch (error: any) {
-        addToast(error, "error");
-        setLoginError(error);
-      } finally {
-        if (acceptInviteUrl) redirect(acceptInviteUrl);
-        setIsGoogleLoading(false);
-        setLoginError(null);
       }
-    }
-    if (provider === "credentials") {
-      console.log("Running credentials");
-      setIsCreateLoading(true);
-      try {
+      if (provider === "credentials") {
+        console.log("Running credentials");
+        setIsCreateLoading(true);
         await signIn("credentials", {
           email: email,
           password: password,
           callbackUrl: acceptInviteUrl || "https://beer-flow.vercel.app/",
         });
-      } catch (error: any) {
-        addToast(error, "error");
-        setLoginError(error);
-      } finally {
-        if (acceptInviteUrl) redirect(acceptInviteUrl);
-        setIsCreateLoading(false);
-        setLoginError(null);
       }
+    } catch (error: any) {
+      addToast(error, "error");
+      setLoginError(error);
+    } finally {
+      if (acceptInviteUrl) redirect(acceptInviteUrl);
+      setIsGoogleLoading(false);
+      setLoginError(null);
     }
   };
 
