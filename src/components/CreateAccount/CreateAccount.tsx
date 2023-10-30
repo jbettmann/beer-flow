@@ -6,8 +6,7 @@ import { Loader2 } from "lucide-react";
 import SaveButton from "../Buttons/SaveButton";
 import { set } from "mongoose";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-
+import { useRouter, useSearchParams } from "next/navigation";
 type Props = {};
 
 interface Errors {
@@ -18,6 +17,8 @@ interface Errors {
 }
 
 const CreateAccount = (props: Props) => {
+  const router = useRouter();
+
   const searchParams = useSearchParams();
   const acceptInviteUrl = searchParams.get("next");
   const [fullName, setFullName] = useState<string>("");
@@ -106,11 +107,12 @@ const CreateAccount = (props: Props) => {
       } else {
         // Handle error responses
 
-        await signIn("credentials", {
+        const login = await signIn("credentials", {
           email,
           password,
-          callbackUrl: acceptInviteUrl || "https://beer-flow.vercel.app/",
+          redirect: false,
         });
+        if (login?.ok) router.push(acceptInviteUrl || (login.url as string));
       }
     } catch (err: any) {
       console.error(err);

@@ -32,24 +32,26 @@ const LoginPage = () => {
     try {
       if (provider === "google") {
         setIsGoogleLoading(true);
-        await signIn("google", {
-          callbackUrl: acceptInviteUrl || "/",
+        const login = await signIn("google", {
+          redirect: false,
         });
+        if (login?.ok) router.push(acceptInviteUrl || (login.url as string));
       }
       if (provider === "credentials") {
         console.log("Running credentials");
         setIsCreateLoading(true);
-        await signIn("credentials", {
+        const login = await signIn("credentials", {
           email: email,
           password: password,
-          callbackUrl: acceptInviteUrl || "/",
+          redirect: false,
         });
+        if (login?.ok) router.push(acceptInviteUrl || (login.url as string));
       }
     } catch (error: any) {
       addToast(error, "error");
       setLoginError(error);
     } finally {
-      if (acceptInviteUrl) redirect(acceptInviteUrl);
+   
       setIsGoogleLoading(false);
       setLoginError(null);
     }
