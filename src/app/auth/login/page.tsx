@@ -33,7 +33,7 @@ const LoginPage = () => {
       if (provider === "google") {
         setIsGoogleLoading(true);
         const login = await signIn("google", {
-          redirect: false,
+          callbackUrl: acceptInviteUrl || "/",
         });
         if (login?.ok) router.push(acceptInviteUrl || (login.url as string));
       }
@@ -43,9 +43,8 @@ const LoginPage = () => {
         const login = await signIn("credentials", {
           email: email,
           password: password,
-          redirect: false,
+          callbackUrl: acceptInviteUrl || "/",
         });
-        if (login?.ok) router.push(acceptInviteUrl || (login.url as string));
       }
     } catch (error: any) {
       addToast(error, "error");
