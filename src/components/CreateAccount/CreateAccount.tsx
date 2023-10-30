@@ -6,6 +6,7 @@ import { Loader2 } from "lucide-react";
 import SaveButton from "../Buttons/SaveButton";
 import { set } from "mongoose";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 type Props = {};
 
@@ -17,6 +18,8 @@ interface Errors {
 }
 
 const CreateAccount = (props: Props) => {
+  const searchParams = useSearchParams();
+  const acceptInviteUrl = searchParams.get("next");
   const [fullName, setFullName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -103,6 +106,11 @@ const CreateAccount = (props: Props) => {
       } else {
         // Handle error responses
         console.log("User created successfully:", data);
+        await signIn("credentials", {
+          email,
+          password,
+          callbackUrl: acceptInviteUrl || "http://localhost:3000/",
+        });
       }
     } catch (err: any) {
       console.error(err);
