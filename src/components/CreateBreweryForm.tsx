@@ -99,6 +99,10 @@ const CreateBreweryForm = ({ onClose }: Props) => {
         accessToken: session?.user?.accessToken as string,
       })) as any;
 
+      addToast(
+        `${responseBrewery.savedBrewery.companyName} successfully created!`,
+        "success"
+      );
       await update({
         newBreweryId: responseBrewery.savedBrewery._id,
       });
@@ -106,6 +110,7 @@ const CreateBreweryForm = ({ onClose }: Props) => {
     } catch (err: any) {
       console.error(err);
       setSubmitError(err.message);
+      addToast(`${err.message}`, "error");
     } finally {
       onDismiss();
       setIsLoading(false);
@@ -133,7 +138,7 @@ const CreateBreweryForm = ({ onClose }: Props) => {
         <h4>Create Brewery</h4>
         <SaveButton
           isLoading={isLoading}
-          type="submit"
+          onClick={handleSubmit}
           title="Create"
           className={`ghost`}
           disabled={!hasCreated}
