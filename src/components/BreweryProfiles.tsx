@@ -13,6 +13,7 @@ import CreateBeerForm from "./CreateBeerForm/CreateBeerForm";
 import EditModal from "./Alerts/EditModal";
 import { debounce } from "@/lib/utils";
 import CreateModal from "./Alerts/CreateModal";
+import { Users } from "@/app/types/users";
 
 type pageProps = {
   breweryId: string;
@@ -102,13 +103,51 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
 
   return (
     selectedBeers && (
-      <section className="sm:w-3/4 md:w-1/2 lg:w-[40%] xl:w-1/3 mt-8 mx-auto py-3 md:mt-0 md:p-8">
+      <section className="py-3 lg:p-8 lg:w-10/12 mx-auto mt-10">
         <Suspense fallback={<BreweryProfileSkeleton />}>
-          <div className="flex justify-center md:p-5">
-            <h3 className="text-center lg:text-left">Home</h3>
+          {/* Large Screen New Category Button */}
+          <div className="flex justify-between items-center ">
+            <div className="flex flex-col w-fit mx-auto lg:m-0 lg:my-auto ">
+              <h3 className="text-center lg:text-left">
+                {selectedBrewery?.companyName} Beers
+              </h3>
+              <div className="text-sm badge badge-ghost opacity-50 mt-2 ">
+                Owner{" "}
+                {(selectedBrewery &&
+                  (selectedBrewery?.owner as Users)?.fullName) ||
+                  ""}
+              </div>
+            </div>
+            {/* Desktop create button */}
+            {isAdmin && (
+              <div className="hidden lg:flex justify-center items-center">
+                <button
+                  onClick={() => setIsCreateBeer(true)}
+                  className="create-btn "
+                >
+                  <span className="flex justify-center items-center">
+                    + Beer
+                  </span>
+                  <BeerIcon size={20} />
+                </button>
+              </div>
+            )}
           </div>
 
-          <div>
+          {/* Small Screen New Category Button */}
+          {isAdmin && (
+            //  Small Screen New Category Button
+            <div className="fixed right-5 bottom-10 p-1 z-[2] lg:hidden ">
+              <button
+                onClick={() => setIsCreateBeer(true)}
+                className="btn btn-circle btn-white create-btn !btn-lg"
+              >
+                <Plus size={28} />
+              </button>
+            </div>
+          )}
+
+          <div className="sm:w-3/4 md:w-1/2 xl:w-[40%] 2xl:w-1/3 mt-8 mx-auto py-3 md:mt-0 md:p-8">
             {beersForCategory &&
               selectedBeers &&
               beersForCategory.map((beers, i) => {
@@ -140,31 +179,6 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
                 setBottomDrawerOpen={setBottomDrawerOpen}
               />
             </div>
-            {/* Create Beer button for Admins */}
-            {isAdmin && (
-              <>
-                <div className="hidden lg:flex mt-10 justify-center">
-                  <button
-                    onClick={() => setIsCreateBeer(true)}
-                    className="create-btn "
-                  >
-                    <span className="flex justify-center items-center">
-                      + Beer
-                    </span>
-                    <BeerIcon size={20} />
-                  </button>
-                </div>
-                {/* Small Screen New Category Button */}
-                <div className="fixed right-5 bottom-10 p-1 z-[2] lg:hidden ">
-                  <button
-                    onClick={() => setIsCreateBeer(true)}
-                    className="btn btn-circle btn-white create-btn !btn-lg"
-                  >
-                    <Plus size={28} />
-                  </button>
-                </div>
-              </>
-            )}
           </div>
         </Suspense>
         {/* Beer Card View for Mobile */}
