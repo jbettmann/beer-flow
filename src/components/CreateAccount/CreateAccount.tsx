@@ -109,7 +109,7 @@ const CreateAccount = (props: Props) => {
         await signIn("credentials", {
           email,
           password,
-          callbackUrl: acceptInviteUrl || "http://localhost:3000/" || "https://beer-flow.vercel.app/",
+          callbackUrl: acceptInviteUrl || "https://beer-flow.vercel.app/",
         });
       }
     } catch (err: any) {

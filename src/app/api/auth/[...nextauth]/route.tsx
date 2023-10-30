@@ -53,10 +53,10 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials, req) {
         console.log("credentials", credentials);
         const endpoints =
-          "https://beer-bible-api.vercel.app/api/login" ||
+          "https://beer-flow.vercel.app/api/login" ||
           "http://localhost:3000/api/login";
         // Add logic here to look up the user from the credentials supplied
-        const res = await fetch("http://localhost:3000/api/login", {
+        const res = await fetch("https://beer-flow.vercel.app/api/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -196,7 +196,7 @@ export const authOptions: NextAuthOptions = {
             }
           }
           // User exists in your DB
-          user.id = user.id.toString(); // or whatever the field for the user id is
+          user.id = user._id.toString(); // or whatever the field for the user id is
           user.breweries = user.breweries; // add breweries to user
           user.notifications = user.notifications; // add notifications to user
 

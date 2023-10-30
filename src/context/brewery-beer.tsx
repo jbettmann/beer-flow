@@ -44,11 +44,11 @@ export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
 
   const router = useRouter();
   const { data: session } = useSession();
-  const storedBreweryId = localStorage.getItem("selectedBreweryId");
+  const storedBreweryId = localStorage?.getItem("selectedBreweryId");
   const [breweryId, setBreweryId] = useState<string | null>(
     storedBreweryId || null
   );
-  console.log("Inital breweryId", breweryId, "session", session);
+
   const {
     data: beers,
     error: beersError,
