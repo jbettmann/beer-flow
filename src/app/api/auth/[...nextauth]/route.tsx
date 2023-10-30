@@ -196,7 +196,7 @@ export const authOptions: NextAuthOptions = {
             }
           }
           // User exists in your DB
-          user.id = user._id.toString(); // or whatever the field for the user id is
+          user.id = user.id.toString(); // or whatever the field for the user id is
           user.breweries = user.breweries; // add breweries to user
           user.notifications = user.notifications; // add notifications to user
 
