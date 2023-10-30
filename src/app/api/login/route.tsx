@@ -11,7 +11,7 @@ interface RequestBody {
 
 export async function POST(req: Request, res: Response) {
   console.log("running login");
-  
+
   try {
     const body: RequestBody = await req.json();
 
@@ -20,12 +20,9 @@ export async function POST(req: Request, res: Response) {
     const user = await User.findOne({ email: body.email });
 
     if (user) {
-      const password = user.get("password")
-      console.log(body.password, password);
-      const isPasswordValid = await bcyrpt.compare(
-        body.password,
-        password
-      );
+      const password = user.get("password");
+
+      const isPasswordValid = await bcyrpt.compare(body.password, password);
 
       if (isPasswordValid) {
         const { password, ...userWithoutPassword } = user;
@@ -48,8 +45,6 @@ export async function POST(req: Request, res: Response) {
         })
       );
     }
-
-
   } catch (error) {
     console.error("Error handling POST request:", error);
     return new Error(JSON.stringify(error));
