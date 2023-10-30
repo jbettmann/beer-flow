@@ -26,7 +26,7 @@ export default withAuth(
   async function middleware(req: NextRequest) {
     const pathname = req.nextUrl.pathname; // relative path
 
-    if (pathname.startsWith("/api")) {
+    if (pathname.startsWith("/api/message")) {
       const ip = req.ip ?? "127.0.0.1";
 
       try {
