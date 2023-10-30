@@ -7,6 +7,7 @@ import SaveButton from "../Buttons/SaveButton";
 import { set } from "mongoose";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useToast } from "@/context/toast";
 type Props = {};
 
 interface Errors {
@@ -17,8 +18,7 @@ interface Errors {
 }
 
 const CreateAccount = (props: Props) => {
-  const router = useRouter();
-
+  const { addToast } = useToast();
   const searchParams = useSearchParams();
   const acceptInviteUrl = searchParams.get("next");
   const [fullName, setFullName] = useState<string>("");
@@ -100,19 +100,17 @@ const CreateAccount = (props: Props) => {
       const data = await response.json();
 
       if (!response.ok) {
+        console.log("Error", data);
         // Redirect or handle success
-        if (data.errors) {
-          setErrors(data.errors.map((error: any) => error.msg));
-        }
+        setSubmitError(data.message);
       } else {
         // Handle error responses
-
-        const login = await signIn("credentials", {
+        addToast("Account successfully created!", "success");
+        await signIn("credentials", {
           email,
           password,
-          redirect: false,
+          callbackUrl: acceptInviteUrl || "/",
         });
-        if (login?.ok) router.push(acceptInviteUrl || (login.url as string));
       }
     } catch (err: any) {
       console.error(err);
@@ -273,7 +271,10 @@ const CreateAccount = (props: Props) => {
             )}
           </div>
         </div>
-        {submitError && <div className="error"> {submitError}</div>}
+        <div className="text-center sm:text-left">
+          {submitError && <ErrorField message={submitError} />}
+        </div>
+
         <SaveButton
           isLoading={isCreateLoading}
           title="Create Account"
