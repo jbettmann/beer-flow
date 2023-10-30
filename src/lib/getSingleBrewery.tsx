@@ -9,7 +9,7 @@ type pageProps = [url: string, token: string];
 
 // url: https://beer-bible-api.vercel.app/breweries/${breweryId}`
 
-export default async function getSingleBrewery([url, token]: pageProps) {
+export default async function getSingleBrewery([url, token]: any) {
   if (token) {
     try {
       const response = await fetch(url, {

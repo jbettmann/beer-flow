@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 
 type pageProps = [url: string, token: string];
 
-export default async function getBreweryBeers([url, token]: pageProps) {
+export default async function getBreweryBeers([url, token]: any) {
   if (token) {
     try {
       const response = await fetch(url, {
