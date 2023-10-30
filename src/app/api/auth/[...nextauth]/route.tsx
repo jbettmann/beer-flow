@@ -52,9 +52,9 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials, req) {
         console.log("credentials", credentials);
-        const endpoints =
-          "https://beer-flow.vercel.app/api/login" ||
-          "http://localhost:3000/api/login";
+        // const endpoints =
+        //   "https://beer-flow.vercel.app/api/login" ||
+        //   "http://localhost:3000/api/login";
         // Add logic here to look up the user from the credentials supplied
         const res = await fetch("https://beer-flow.vercel.app/api/login", {
           method: "POST",
