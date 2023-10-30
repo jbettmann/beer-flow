@@ -40,7 +40,7 @@ const CreateAccount = (props: Props) => {
     password: "",
     confirmPassword: "",
   });
-  console.log({ errors });
+
   // changes the interactedFields state to true
   const handleInputInteraction = (field: keyof typeof interactedFields) => {
     setInteractedFields((prev) => ({ ...prev, [field]: true }));
@@ -105,11 +105,11 @@ const CreateAccount = (props: Props) => {
         }
       } else {
         // Handle error responses
-        console.log("User created successfully:", data);
+
         await signIn("credentials", {
           email,
           password,
-          callbackUrl: acceptInviteUrl || "http://localhost:3000/" || "/",
+          callbackUrl: acceptInviteUrl || "http://localhost:3000/" || "https://beer-flow.vercel.app/",
         });
       }
     } catch (err: any) {

@@ -32,7 +32,10 @@ const LoginPage = () => {
       setIsGoogleLoading(true);
       try {
         await signIn("google", {
-          callbackUrl: acceptInviteUrl || "http://localhost:3000/" || "/",
+          callbackUrl:
+            acceptInviteUrl ||
+            "http://localhost:3000/" ||
+            "https://beer-flow.vercel.app/",
         });
       } catch (error: any) {
         addToast(error, "error");
@@ -50,7 +53,10 @@ const LoginPage = () => {
         await signIn("credentials", {
           email: email,
           password: password,
-          callbackUrl: acceptInviteUrl || "http://localhost:3000/" || "/",
+          callbackUrl:
+            acceptInviteUrl ||
+            "http://localhost:3000/" ||
+            "https://beer-flow.vercel.app/",
         });
       } catch (error: any) {
         addToast(error, "error");
