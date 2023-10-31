@@ -38,7 +38,7 @@ const BeerCard = ({ beerId, beerForDrawer, onClose }: Props) => {
 
   const handleMaltClick = (malt: string) => {
     const maltDetail = maltSuggestions.find((m) => m.name === malt);
-    return maltDetail?.id;
+    return maltDetail?.id || malt;
   };
   const router = useRouter();
   useEffect(() => {
