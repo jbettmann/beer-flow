@@ -22,7 +22,7 @@ export default async function SingleBreweryPage({
   // const singleBrewery: Promise<Brewery> = getSingleBrewery(breweryId);
 
   // const promise = await Promise.all([singleBrewery]);
-  if (!breweryId) redirect("/breweries");
+  if (!breweryId || breweryId === "undefined") redirect("/breweries");
 
   if (!breweryId) return notFound();
   return (
