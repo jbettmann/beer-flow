@@ -42,7 +42,6 @@ const CreateAccount = (props: Props) => {
     password: "",
     confirmPassword: "",
   });
-
   // changes the interactedFields state to true
   const handleInputInteraction = (field: keyof typeof interactedFields) => {
     setInteractedFields((prev) => ({ ...prev, [field]: true }));
