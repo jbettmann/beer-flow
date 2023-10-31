@@ -136,7 +136,7 @@ const BrewerySettingsProfileView = ({ breweryId }: Props) => {
 
   return (
     brewery && (
-      <div>
+      <div className="w-full sm:w-2/3 sm:mx-auto lg:mx-0 lg:w-full ">
         {/* Remove Access Alert */}
         <AlertDialog
           title=""
@@ -220,12 +220,12 @@ const BrewerySettingsProfileView = ({ breweryId }: Props) => {
           )}
           <div className="divider"></div>
 
-          <div className={`text-center ${owner ? "flex" : ""}`}>
+          <div className={`text-center ${owner ? "flex flex-col w-full" : ""}`}>
             {owner ? (
               <>
                 {/* Transfer Ownership */}
                 <DeleteOrRemoveButton
-                  icon={<Repeat2 />}
+                  icon={<Repeat2 strokeWidth={1} />}
                   onClick={() => console.log("transfer-ownership")}
                   buttonClassName="btn btn-success btn-outline"
                   title="Transfer Ownership"
@@ -236,7 +236,7 @@ const BrewerySettingsProfileView = ({ breweryId }: Props) => {
                 />
                 {/* Delete Brewery */}
                 <DeleteOrRemoveButton
-                  icon={<Trash2 strokeWidth={2} />}
+                  icon={<Trash2 strokeWidth={1} />}
                   onClick={() => setIsDeleteAlertOpen(true)}
                   buttonClassName="btn btn-error btn-outline"
                   title="Delete Brewery"
