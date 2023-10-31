@@ -50,8 +50,12 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        if (!credentials?.email || !credentials.password) {
-          throw new Error("Missing credentials");
+        if (!credentials?.email) {
+          throw new Error("Email address is required");
+        }
+
+        if (!credentials.password) {
+          throw new Error("You'll need to provide a password to login");
         }
 
         try {
@@ -60,8 +64,16 @@ export const authOptions: NextAuthOptions = {
           const user = await User.findOne({ email: credentials.email });
 
           if (!user) {
-            console.error("User not found");
-            return null; // User not found
+            console.error("Invalid email address. User not found");
+            throw new Error("Invalid email address. User not found");
+          }
+
+          // Check if user registered using OAuth (i.e., doesn't have a password)
+          if (!user.get("password")) {
+            console.error("User registered using OAuth");
+            throw new Error(
+              "This account was created using Google. Please try log in using Googles OAuth method above."
+            ); // Send specific error message
           }
 
           const passwordFromDB = user.get("password");
@@ -73,15 +85,15 @@ export const authOptions: NextAuthOptions = {
 
           if (!isPasswordValid) {
             console.error("Invalid password");
-            return null; // Invalid password
+            throw new Error("Invalid password");
           }
 
           const { password, ...userWithoutPassword } = user.toObject();
 
           return userWithoutPassword; // return the user without the password
-        } catch (error) {
+        } catch (error: any) {
           console.error("Error in authorization:", error);
-          return null; // Return null on error
+          throw new Error(error); // Return null on error
         }
       },
     }),
@@ -222,6 +234,14 @@ export const authOptions: NextAuthOptions = {
         existingUser = await getUser(email);
       } catch (err: string | any) {
         console.error(err);
+      }
+      // Check if user exists and was registered with credentials
+      if (existingUser && existingUser.password) {
+        console.error(
+          "User tried to sign in with OAuth but was registered with credentials"
+        );
+
+        return false;
       }
 
       if (existingUser) {
