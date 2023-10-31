@@ -163,7 +163,13 @@ const LoginPage = () => {
           <p className="m-0 ">Don&rsquo;t have an account?</p>
 
           <span className="link link-accent">
-            <Link href={"/auth/create/account"}>Sign up here</Link>
+            <Link
+              href={`/auth/create/account${
+                acceptInviteUrl ? `?next=${acceptInviteUrl}` : ""
+              }`}
+            >
+              Sign up here
+            </Link>
           </span>
         </div>
       </div>

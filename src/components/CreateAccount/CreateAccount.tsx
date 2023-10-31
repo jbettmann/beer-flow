@@ -20,7 +20,7 @@ interface Errors {
 const CreateAccount = (props: Props) => {
   const { addToast } = useToast();
   const searchParams = useSearchParams();
-  const acceptInviteUrl = searchParams.get("next");
+  const [acceptInviteUrl, setAcceptInviteUrl] = useState<string | null>(null);
   const [fullName, setFullName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -28,6 +28,7 @@ const CreateAccount = (props: Props) => {
   const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
   const [isCreateLoading, setIsCreateLoading] = useState<boolean>(false);
   const [submitError, setSubmitError] = useState<any>(null);
+  const next = searchParams.get("next");
 
   const [interactedFields, setInteractedFields] = useState({
     fullName: false,
@@ -119,6 +120,11 @@ const CreateAccount = (props: Props) => {
       setIsCreateLoading(false);
     }
   };
+  useEffect(() => {
+    if (next) {
+      setAcceptInviteUrl(next);
+    }
+  }, []);
 
   useEffect(() => {
     validateInputs();
