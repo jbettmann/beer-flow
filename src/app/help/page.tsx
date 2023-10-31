@@ -5,7 +5,7 @@ type Props = {};
 const HelpPage = (props: Props) => {
   return (
     <div className="h-full lg:h-screen mb-auto w-full flex flex-col justify-center items-center text-primary bg-background gap-2">
-      <h2>Help!</h2>
+      <h2>Help Recourse</h2>
       <h5>We are currently working on getting you all the answers.</h5>
       <p className="w-full md:w-1/2 text-center">
         In the meantime, please feel free to send an email to{" "}
