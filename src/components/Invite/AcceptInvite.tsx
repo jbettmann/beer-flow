@@ -51,10 +51,11 @@ const AcceptInvite = (props: Props) => {
           router.push(`/breweries/${response.brewery._id}`);
         }
       } else {
-        // router.push("/"); // Redirect to the home page if the user is not authenticate
+        addToast("Unable to process invite. Please try again later", "error");
+        setMessage("Unable to process invite. Please try again later");
       }
     } catch (err: string | any) {
-      addToast(err.message, "error");
+      console.error(err);
       setMessage(err.message);
     } finally {
       setLoading(false);
