@@ -8,7 +8,7 @@ type Props = {
 export default async function SettingsLayout({ children }: Props) {
   return (
     <>
-      <div className="pt-4 md:hidden">
+      <div className="mt-14 md:hidden">
         {/* @ts-expect-error Server component */}
         <BackArrow />
       </div>
