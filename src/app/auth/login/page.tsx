@@ -2,6 +2,7 @@
 import SaveButton from "@/components/Buttons/SaveButton";
 import { useToast } from "@/context/toast";
 import { Loader2 } from "lucide-react";
+import { set } from "mongoose";
 
 import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
@@ -27,30 +28,39 @@ const LoginPage = () => {
   const onSignIn = async (e: any, provider: string) => {
     e.preventDefault();
     console.log("Running submit", provider);
+    setLoginError(null);
 
     try {
       if (provider === "google") {
         setIsGoogleLoading(true);
-        await signIn("google", {
+        const login = await signIn("google", {
           callbackUrl: acceptInviteUrl || "/",
         });
+        if (!login?.ok) {
+          setLoginError(login?.error?.split(":")[1]);
+          setIsGoogleLoading(false);
+        }
       }
       if (provider === "credentials") {
         console.log("Running credentials");
         setIsCreateLoading(true);
-        await signIn("credentials", {
+        const login = await signIn("credentials", {
           email: email,
           password: password,
+          redirect: false,
           callbackUrl: acceptInviteUrl || "/",
         });
+        if (!login?.ok) {
+          console.log(login?.error);
+          setLoginError(login?.error?.split(":")[1]);
+          setIsCreateLoading(false);
+        }
       }
     } catch (error: any) {
-      addToast(error, "error");
       setLoginError(error);
     } finally {
       if (acceptInviteUrl) redirect(acceptInviteUrl);
       setIsGoogleLoading(false);
-      setLoginError(null);
     }
   };
 
@@ -151,7 +161,7 @@ const LoginPage = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          {loginError && <div className="error">{loginError}</div>}
+          {loginError && <div className="error ml-3 text-xs">{loginError}</div>}
         </form>
         <SaveButton
           isLoading={isCreateLoading}
