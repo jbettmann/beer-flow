@@ -47,7 +47,7 @@ const LoginPage = () => {
         const login = await signIn("credentials", {
           email: email,
           password: password,
-          redirect: false,
+          // redirect: false,
           callbackUrl: acceptInviteUrl || "/",
         });
         if (!login?.ok) {
