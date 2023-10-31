@@ -25,7 +25,7 @@ const DeleteOrRemoveButton = ({
 }: Props) => {
   const isThisButtonLoading = isLoading === true || isLoading === buttonId;
   return (
-    <div>
+    <div className="flex flex-col">
       <button onClick={onClick} className={buttonClassName}>
         {isThisButtonLoading ? (
           <span className="loading loading-spinner text-primary"></span>
