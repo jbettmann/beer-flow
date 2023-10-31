@@ -6,7 +6,7 @@ import getBreweryBeers from "@/lib/getBreweryBeers";
 import getSingleBeer from "@/lib/getSingleBeer";
 import getSingleBrewery from "@/lib/getSingleBrewery";
 
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 type pageProps = {
   params: {
@@ -22,6 +22,7 @@ export default async function SingleBreweryPage({
   // const singleBrewery: Promise<Brewery> = getSingleBrewery(breweryId);
 
   // const promise = await Promise.all([singleBrewery]);
+  if (!breweryId) redirect("/breweries");
 
   if (!breweryId) return notFound();
   return (
