@@ -1,12 +1,17 @@
 "use client";
 import { Brewery } from "@/app/types/brewery";
+import { useBreweryContext } from "@/context/brewery-beer";
 import { useToast } from "@/context/toast";
 import { acceptInvite } from "@/lib/POST/acceptInvite";
+import getBreweries from "@/lib/getBreweries";
+import getSingleBrewery from "@/lib/getSingleBrewery";
 import { useSession } from "next-auth/react";
+import { revalidatePath } from "next/cache";
 import Link from "next/link";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { mutate } from "swr";
 
 type Props = {};
 
@@ -20,12 +25,44 @@ const AcceptInvite = (props: Props) => {
 
   const { data: session, update } = useSession();
 
-  const handleBreweryToStorage = (brewery: Brewery) => {
+  const handleBreweryToStorage = async (brewery: Brewery) => {
     localStorage.setItem("selectedBreweryId", brewery._id);
     // Create a new event
     const selectedBreweryChangedEvent = new Event("selectedBreweryChanged");
     // Dispatch the event
     window.dispatchEvent(selectedBreweryChangedEvent);
+
+    const fetcher = async (url: string) => {
+      if (session?.user.accessToken) {
+        try {
+          const response = await fetch(url, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${session?.user.accessToken}`,
+            },
+            method: "POST",
+            body: JSON.stringify({ breweryIds: session.user.breweries }),
+          });
+
+          if (!response.ok) {
+            throw new Error(response.statusText);
+          }
+
+          const responseData = await response.json();
+          return responseData.breweries;
+        } catch (err) {
+          console.error(err);
+          return []; // Return empty array on error
+        }
+      } else {
+        return []; // Return empty array if user has no breweries
+      }
+    };
+
+    mutate(
+      "https://beer-bible-api.vercel.app/users/breweries",
+      fetcher("https://beer-bible-api.vercel.app/users/breweries")
+    );
   };
 
   const fetchInvite = async (token: string) => {
