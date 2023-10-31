@@ -78,7 +78,7 @@ const CreateBreweryForm = ({ onClose }: Props) => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
+    console.log(session?.user);
     // Don't submit if there are validation errors
     if (Object.keys(errors).length > 0) {
       return;
@@ -100,20 +100,28 @@ const CreateBreweryForm = ({ onClose }: Props) => {
         brewery: newBrewery,
         accessToken: session?.user?.accessToken as string,
       })) as any;
-
-      addToast(
-        `${responseBrewery.savedBrewery.companyName} successfully created!`,
-        "success"
-      );
-      await update({
-        newBreweryId: responseBrewery.savedBrewery._id,
-      });
-      setSelectedBrewery(responseBrewery.savedBrewery);
-      router.push(`/breweries/${responseBrewery.savedBrewery._id}`);
+      console.log({ responseBrewery }, session?.user);
+      if (responseBrewery) {
+        addToast(
+          `${responseBrewery.savedBrewery.companyName} successfully created!`,
+          "success"
+        );
+        await update({
+          newBreweryId: responseBrewery.savedBrewery._id,
+        });
+        localStorage.setItem(
+          "selectedBreweryId",
+          responseBrewery.savedBrewery._id
+        );
+        setSelectedBrewery(responseBrewery.savedBrewery);
+        router.push(`/breweries/${responseBrewery.savedBrewery._id}`);
+      } else {
+        addToast(`Error creating brewery`, "error");
+      }
     } catch (err: any) {
       console.error(err);
       setSubmitError(err.message);
-      addToast(`${err.message}`, "error");
+      addToast(err.message, "error");
     } finally {
       onDismiss();
       setIsLoading(false);
