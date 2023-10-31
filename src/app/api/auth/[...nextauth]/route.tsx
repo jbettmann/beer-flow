@@ -33,9 +33,6 @@ interface Profiles extends Profile {
 }
 
 export const authOptions: NextAuthOptions = {
-  pages: {
-    signIn: "/auth/login",
-  },
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",

@@ -48,7 +48,7 @@ export default withAuth(
 
     const isAuth = !!token;
 
-    const isAuthPage = pathname.startsWith("auth/login");
+    const isAuthPage = pathname.startsWith("/auth/login");
 
     const acceptInvite = pathname.startsWith("/accept-invite");
 
@@ -78,7 +78,7 @@ export default withAuth(
         return NextResponse.redirect(loginUrl);
       }
 
-      return NextResponse.redirect(new URL("auth/login", req.url));
+      return NextResponse.redirect(new URL("/auth/login", req.url));
     }
   },
   {

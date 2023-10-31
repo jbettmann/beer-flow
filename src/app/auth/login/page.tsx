@@ -6,7 +6,7 @@ import { Loader2 } from "lucide-react";
 import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
 import { redirect, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Props = {};
 
@@ -21,9 +21,8 @@ const LoginPage = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [loginError, setLoginError] = useState<any>(null);
-
-  const acceptInviteUrl = searchParams.get("next");
-  console.log({ acceptInviteUrl });
+  const [acceptInviteUrl, setAcceptInviteUrl] = useState<string | null>(null);
+  const next = searchParams.get("next");
 
   const onSignIn = async (e: any, provider: string) => {
     e.preventDefault();
@@ -32,14 +31,14 @@ const LoginPage = () => {
     try {
       if (provider === "google") {
         setIsGoogleLoading(true);
-        const login = await signIn("google", {
+        await signIn("google", {
           callbackUrl: acceptInviteUrl || "/",
         });
       }
       if (provider === "credentials") {
         console.log("Running credentials");
         setIsCreateLoading(true);
-        const login = await signIn("credentials", {
+        await signIn("credentials", {
           email: email,
           password: password,
           callbackUrl: acceptInviteUrl || "/",
@@ -55,9 +54,17 @@ const LoginPage = () => {
     }
   };
 
-  if (session) redirect("/");
+  useEffect(() => {
+    if (next) {
+      setAcceptInviteUrl(next);
+    }
+  }, []);
 
-  console.log({ session }, "login");
+  console.log({ acceptInviteUrl });
+
+  if (session) {
+    redirect("/");
+  }
 
   return (
     <div className="h-screen w-full flex flex-col justify-center items-center">
