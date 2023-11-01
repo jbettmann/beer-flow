@@ -88,8 +88,7 @@ const LoginPage = () => {
           </h2>
           <p className="font-thin md:w-1/2 text-sm md:text-base leading-7 mx-auto text-center">
             Brett is the vital bridge between your front and back of house,
-            ensuring accurate and detailed information, in real-time, that is
-            readily available.
+            ensuring accurate and detailed information, in real-time.
           </p>
         </div>
 

@@ -135,9 +135,11 @@ const CreateAccount = (props: Props) => {
 
       <div className="pt-8">
         <button
-          onClick={() => {
+          onClick={async () => {
             setIsGoogleLoading(true);
-            signIn("google");
+            await signIn("google", {
+              callbackUrl: acceptInviteUrl || "/",
+            });
           }}
           disabled={isGoogleLoading}
           className=" flex justify-center items-center w-full p-4 mx-auto rounded-md bg-white border border-primary hover:shadow-xl transition-all ease-in-out"
