@@ -282,6 +282,7 @@ const CardItem = ({ category, beer, handleCheckbox, isChecked }: Props) => {
                   <span
                     className=" text-gray-600 cursor-pointer "
                     title={`Beer is in more than one category`}
+                  
                   >
                     <Flame size={12} strokeWidth={2} />
                   </span>
