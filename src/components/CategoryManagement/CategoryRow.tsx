@@ -752,7 +752,16 @@ const CategoryRow = ({
 
                     <button
                       className={`btn btn-sm border-none bg-transparent disabled:bg-transparent text-primary hover:btn-error  ml-2`}
-                      onClick={() => setAlertOpen(true)}
+                      onClick={() => {
+                        if (!isRemoveAllButtonVisible) {
+                          addToast(
+                            "Only beers that are in more than one category can be removed",
+                            "error"
+                          );
+                        } else {
+                          setAlertOpen(true);
+                        }
+                      }}
                       disabled={!isRemoveAllButtonVisible}
                     >
                       <div
