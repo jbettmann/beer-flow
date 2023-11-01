@@ -109,7 +109,7 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
           <div className="flex justify-between items-center ">
             <div className="flex flex-col w-fit mx-auto lg:m-0 lg:my-auto ">
               <h3 className="text-center lg:text-left">
-                {selectedBrewery?.companyName} Beers
+                {selectedBrewery?.companyName}
               </h3>
               <div className="text-sm badge badge-ghost opacity-50 mt-2 ">
                 Owner{" "}
@@ -148,6 +148,7 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
           )}
 
           <div className="sm:w-3/4 md:w-1/2 xl:w-[40%] 2xl:w-1/3 mt-8 mx-auto py-3 md:mt-0 md:p-8">
+            <h3 className="font-semibold">Beer List</h3>
             {beersForCategory &&
               selectedBeers &&
               beersForCategory.map((beers, i) => {
