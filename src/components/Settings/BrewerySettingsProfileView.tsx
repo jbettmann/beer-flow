@@ -224,7 +224,7 @@ const BrewerySettingsProfileView = ({ breweryId }: Props) => {
             {owner ? (
               <>
                 {/* Transfer Ownership */}
-                <DeleteOrRemoveButton
+                {/* <DeleteOrRemoveButton
                   icon={<Repeat2 strokeWidth={1} />}
                   onClick={() => console.log("transfer-ownership")}
                   buttonClassName="btn btn-success btn-outline"
@@ -233,7 +233,7 @@ const BrewerySettingsProfileView = ({ breweryId }: Props) => {
                   descriptionClassName="delete-remove-btn__text"
                   buttonId="transfer-ownership"
                   isLoading={buttonLoading}
-                />
+                /> */}
                 {/* Delete Brewery */}
                 <DeleteOrRemoveButton
                   icon={<Trash2 strokeWidth={1} />}

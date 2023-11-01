@@ -363,7 +363,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                 {breweries.map((brewery: Brewery) => (
                   <li
                     key={brewery._id}
-                    className="category-card rounded-xl p-2 w-60"
+                    className="category-card rounded-xl p-2 min-w-60 w-fit"
                   >
                     <Link
                       href={`/breweries/${brewery._id}`}
