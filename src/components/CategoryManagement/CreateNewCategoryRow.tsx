@@ -34,7 +34,7 @@ const CreateNewCategoryRow = ({
             <input
               type="text"
               value={inputValue}
-              className="input bg-primary text-background rounded-full border-none  font-semibold "
+              className="input w-full rounded-full border-none font-semibold h-10"
               autoFocus
               placeholder="Category name"
               onChange={(e) => setInputValue(e.target.value)}
