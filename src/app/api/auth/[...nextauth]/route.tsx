@@ -270,7 +270,7 @@ export const authOptions: NextAuthOptions = {
             fullName: name,
             email: email,
             breweries: [],
-            image: picture,
+            image: picture || null,
             notifications: {
               allow: true,
               newBeerRelease: {
