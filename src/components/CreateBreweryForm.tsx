@@ -3,7 +3,7 @@ import saveImage from "@/lib/supabase/saveImage";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { FC, useCallback, useEffect, useRef, useState } from "react";
-
+import Image from "next/image";
 import createBrewery from "@/lib/createBrewery";
 import ErrorField from "./ErrorField/ErrorField";
 import SaveButton from "./Buttons/SaveButton";
@@ -50,6 +50,7 @@ const CreateBreweryForm = ({ onClose }: Props) => {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [hasCreated, setHasCreated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const { data: session, status, update } = useSession();
   const { addToast } = useToast();
   const router = useRouter();
@@ -123,6 +124,10 @@ const CreateBreweryForm = ({ onClose }: Props) => {
       setSubmitError(err.message);
       addToast(err.message, "error");
     } finally {
+      if (previewImage) {
+        URL.revokeObjectURL(previewImage);
+        setPreviewImage(null);
+      }
       onDismiss();
       setIsLoading(false);
       isSubmitting.current = false;
@@ -169,7 +174,17 @@ const CreateBreweryForm = ({ onClose }: Props) => {
               htmlFor="image"
               className="absolute top-0 left-0 w-full h-full flex justify-center items-center rounded-full border border-background bg-background/50 object-cover overflow-hidden text-primary"
             >
-              <ImagePlus size={120} strokeWidth={1} />
+              {previewImage ? (
+                <Image
+                  className="bg-transparent border border-stone-400 rounded-xl w-full object-cover"
+                  alt="Company image preview"
+                  src={previewImage as any}
+                  width={50}
+                  height={50}
+                />
+              ) : (
+                <ImagePlus size={120} strokeWidth={1} />
+              )}
             </label>
           </div>
 
@@ -180,10 +195,10 @@ const CreateBreweryForm = ({ onClose }: Props) => {
             className="hidden"
             onChange={(e) => {
               const file = e.target.files ? e.target.files[0] : null;
-              if (file && file.size > 2 * 1024 * 1024) {
+              if (file && file.size > 5 * 1024 * 1024) {
                 // Check if file size is greater than 2MB
                 addToast(
-                  "File is too large. Please select a file less than 2MB.",
+                  "File is too large. Please select a file less than 5MB.",
                   "error"
                 );
                 e.target.value = ""; // Clear the selected file
@@ -192,6 +207,12 @@ const CreateBreweryForm = ({ onClose }: Props) => {
                   ...values,
                   image: file,
                 });
+                if (previewImage) {
+                  URL.revokeObjectURL(previewImage);
+                }
+                // Generate a URL for the new image and set it as the preview
+                const url = URL.createObjectURL(file as any);
+                setPreviewImage(url as any);
               }
             }}
             onBlur={handleBlur("image")}
