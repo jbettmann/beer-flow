@@ -59,10 +59,9 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
         .slice(0, 5);
       const matchingBeers = selectedBeers?.filter((beer) => {
         const { name, style, hops, malt, abv, ibu } = beer;
-        const searchStr =
-          `${name} ${style} ${abv.toString()} ${ibu.toString()} ${hops.join(
-            " "
-          )} ${malt.join(" ")}`.toLowerCase();
+        const searchStr = `${name} ${style} ${abv.toString()} ${
+          ibu ? ibu.toString() : null
+        } ${hops.join(" ")} ${malt.join(" ")}`.toLowerCase();
 
         return (
           searchStr.includes(term) ||
