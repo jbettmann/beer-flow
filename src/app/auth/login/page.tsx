@@ -77,7 +77,7 @@ const LoginPage = () => {
   }
 
   return (
-    <div className="h-screen w-full flex flex-col pt-12 items-center">
+    <div className="w-full flex flex-col py-12 mb-10 items-center min-h-fit h-screen">
       <h1 className="text-primary font-medium absolute top-0 left-5 p-4">
         Brett
       </h1>
