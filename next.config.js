@@ -5,18 +5,13 @@ const nextConfig = {
     appDir: true,
   },
   images: {
+    domains: ["lh3.googleusercontent.com"],
     remotePatterns: [
       {
         protocol: "https",
         hostname: "npaxzbaiagyllapbxeps.supabase.co",
         port: "",
         pathname: "/storage/**",
-      },
-      {
-        protocol: "https",
-        hostname: "lh3.googleusercontent.com",
-        port: "",
-        pathname: "/a/**",
       },
     ],
   },
