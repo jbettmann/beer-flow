@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema } from "mongoose";
 
 // user schema
 const userSchema = new Schema(
@@ -9,7 +9,7 @@ const userSchema = new Schema(
     breweries: [
       { type: mongoose.Schema.Types.ObjectId, ref: "Brewery", default: [] },
     ],
-    image: String,
+    image: { type: String, default: null },
     notifications: {
       allow: { type: Boolean, default: true }, // or false
       newBeerRelease: {
