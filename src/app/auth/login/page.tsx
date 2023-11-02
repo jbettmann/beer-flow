@@ -85,7 +85,7 @@ const LoginPage = () => {
         </Link>
       </div>
       <div className="w-[90%] flex flex-col justify-center items-center">
-        <div className=" md:w-1/2 mx-auto justify-center items-center shadow-lg rounded-lg p-12 mt-6 bg-white ">
+        <div className=" md:w-1/2 mx-auto justify-center items-center shadow-lg rounded-lg p-4 xs:p-12 mt-6 bg-white ">
           <h3 className="font-normal">Log in to your account</h3>
           <div className="pt-8">
             <button
