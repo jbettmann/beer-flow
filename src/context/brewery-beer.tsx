@@ -143,7 +143,7 @@ export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
         localStorage.setItem("selectedBreweryId", breweryId);
       }
     }
-  }, [breweryId]);
+  }, [breweryId, session]);
 
   useEffect(() => {
     setSelectedBeers(beers);
