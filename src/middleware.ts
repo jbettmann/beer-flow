@@ -10,14 +10,15 @@ import { authOptions } from "./app/api/auth/[...nextauth]/route";
 // Directs middleware to check url path for these routes
 export const config = {
   matcher: [
-    "/",
     "/api/:path*",
     "/api/message/:path*",
     "/accept-invite/:path*",
+    "/accept-invite",
+    "/breweries",
     "/breweries/:path*",
+    "/beers/",
     "/beers/:path*",
-    "/create/:path*",
-    "/admin/:path*",
+    "/settings/",
     "/settings/:path*",
   ],
 };
@@ -56,15 +57,12 @@ export default withAuth(
 
     if (isAuthPage) {
       if (isAuth) {
-        return NextResponse.redirect(new URL("/", req.url));
+        return NextResponse.redirect(new URL("/breweries", req.url));
       }
       return null;
     }
 
-    if (
-      !isAuth &&
-      sensitiveRoutes.some((route) => pathname.startsWith(route))
-    ) {
+    if (!isAuth && config.matcher.some((route) => pathname.startsWith(route))) {
       // Redirect unauthenticated users trying to access the accept-invite URL to the login page
       if (acceptInvite) {
         console.log({ acceptInvite });
