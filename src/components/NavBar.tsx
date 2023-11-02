@@ -463,7 +463,8 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
           <div>
             <div className="flex flex-col justify-center items-center space-y-3">
               <Link
-                href={`/breweries ${
+                href={`/breweries`}
+                className={`${
                   isActive(`/breweries`) ? "text-accent bg-fourth-color " : ""
                 }`}
               >
