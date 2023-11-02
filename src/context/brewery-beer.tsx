@@ -121,25 +121,27 @@ export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
 
   // Watch for changes in breweryId and synchronize with local storage
   useEffect(() => {
-    // if no breweryId so set brewery to users first brewery
-    if (
-      (breweryId === null || breweryId === "undefined") &&
-      session?.user?.breweries?.length! > 0
-    ) {
-      localStorage.setItem(
-        "selectedBreweryId",
-        session?.user?.breweries[0] as string
-      );
-      setBreweryId(session?.user?.breweries[0] as string);
-      router.push(`/breweries/${session?.user?.breweries[0]}`);
-    } else if (breweryId === null || breweryId === "undefined") {
-      // no breweryId and no breweries to go to brewery page
+    if (session) {
+      // if no breweryId so set brewery to users first brewery
+      if (
+        (breweryId === null || breweryId === "undefined") &&
+        session?.user?.breweries?.length! > 0
+      ) {
+        localStorage.setItem(
+          "selectedBreweryId",
+          session?.user?.breweries[0] as string
+        );
+        setBreweryId(session?.user?.breweries[0] as string);
+        router.push(`/breweries/${session?.user?.breweries[0]}`);
+      } else if (breweryId === null || breweryId === "undefined") {
+        // no breweryId and no breweries to go to brewery page
 
-      router.push("/breweries");
-    } else {
-      //  breweryId so set brewery to breweryId
+        router.push("/breweries");
+      } else {
+        //  breweryId so set brewery to breweryId
 
-      localStorage.setItem("selectedBreweryId", breweryId);
+        localStorage.setItem("selectedBreweryId", breweryId);
+      }
     }
   }, [breweryId]);
 
