@@ -1,4 +1,5 @@
 "use client";
+import GoogleSignInButton from "@/components/Buttons/GoogleSignInButton";
 import SaveButton from "@/components/Buttons/SaveButton";
 import { useToast } from "@/context/toast";
 import { Loader2 } from "lucide-react";
@@ -16,7 +17,7 @@ const LoginPage = () => {
 
   const searchParams = useSearchParams();
   const { data: session } = useSession();
-  const { addToast } = useToast();
+
   const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
   const [isCreateLoading, setIsCreateLoading] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
@@ -78,21 +79,13 @@ const LoginPage = () => {
 
   return (
     <div className="w-full flex flex-col py-12 mb-10 items-center min-h-fit h-screen">
-      <h1 className="text-primary font-medium absolute top-0 left-5 p-4">
-        Brett
-      </h1>
-      <div className="relative flex flex-col justify-center items-center">
-        <div className="w-screen md:h-96 bg-accent/30 text-primary p-8 relative">
-          <h2 className="font-semibold leading-[1.25] text-2xl md:text-5xl text-center md:w-2/3 mx-auto">
-            Keep your brewery up-to-date.
-          </h2>
-          <p className="font-thin md:w-1/2 text-sm md:text-base leading-7 mx-auto text-center">
-            Brett is the vital bridge between your front and back of house,
-            ensuring accurate and detailed information, in real-time.
-          </p>
-        </div>
-
-        <div className="w-[90%] md:w-1/2  mx-auto justify-center items-center shadow-lg rounded-lg p-12 mt-6 bg-white absolute top-[77%] md:top-1/2 md:left-1/4">
+      <div className=" flex justify-between text-primary  absolute top-0 left-0 right-0 p-4">
+        <Link href={"/"}>
+          <h1 className="text-primary font-medium xxs:px-4">Brett</h1>
+        </Link>
+      </div>
+      <div className="w-[90%] flex flex-col justify-center items-center">
+        <div className=" md:w-1/2 mx-auto justify-center items-center shadow-lg rounded-lg p-12 mt-6 bg-white ">
           <h3 className="font-normal">Log in to your account</h3>
           <div className="pt-8">
             <button
