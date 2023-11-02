@@ -35,7 +35,7 @@ const LoginPage = () => {
       if (provider === "google") {
         setIsGoogleLoading(true);
         const login = await signIn("google", {
-          callbackUrl: acceptInviteUrl || "/",
+          callbackUrl: acceptInviteUrl || "/breweries",
         });
         if (!login?.ok) {
           setLoginError(login?.error?.split(":")[1]);
@@ -49,7 +49,7 @@ const LoginPage = () => {
           email: email,
           password: password,
           // redirect: false,
-          callbackUrl: acceptInviteUrl || "/",
+          callbackUrl: acceptInviteUrl || "/breweries",
         });
         if (!login?.ok) {
           console.log(login?.error);
@@ -74,7 +74,7 @@ const LoginPage = () => {
   console.log({ acceptInviteUrl });
 
   if (session) {
-    redirect("/");
+    redirect("/breweries");
   }
 
   return (
