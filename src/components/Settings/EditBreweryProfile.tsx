@@ -170,18 +170,22 @@ const EditBreweryProfile = ({ brewery, onClose }: Props) => {
             className="hidden"
             onChange={(e) => {
               const file = e.target.files ? e.target.files[0] : null;
-              if (file && file.size > 2 * 1024 * 1024) {
+              if (file && file.size > 5 * 1024 * 1024) {
                 // Check if file size is greater than 2MB
                 addToast(
-                  "File is too large. Please select a file less than 2MB.",
+                  "File is too large. Please select a file less than 5MB.",
                   "error"
                 );
+
                 e.target.value = ""; // Clear the selected file
               } else {
                 setEditBrewery({
                   ...editBrewery,
                   image: file as any,
                 });
+                if (previewImage) {
+                  URL.revokeObjectURL(previewImage);
+                }
                 // Generate a URL for the new image and set it as the preview
                 const url = URL.createObjectURL(file as File);
                 setPreviewImage(url);
