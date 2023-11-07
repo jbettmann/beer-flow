@@ -26,6 +26,7 @@ import SearchModal from "./Alerts/SearchModal";
 import SideDrawer from "./Drawers/SideDrawer";
 import ImageDisplay from "./ImageDisplay/ImageDisplay";
 import { Search } from "./Search/Search";
+import logo from "../../public/Brett_Logo_light.svg";
 
 const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
   const { selectedBrewery, setSelectedBrewery, isAdmin } = useBreweryContext();
@@ -465,10 +466,18 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
               <Link
                 href={`/breweries`}
                 className={`${
-                  isActive(`/breweries`) ? "text-accent bg-fourth-color " : ""
+                  isActive(`/breweries`)
+                    ? "text-accent bg-fourth-color rounded-lg shadow-inner "
+                    : ""
                 }`}
               >
-                <h1>B</h1>
+                <Image
+                  src={logo}
+                  width={50}
+                  height={50}
+                  alt="Brett Logo"
+                  className="w-12"
+                />
               </Link>
               <Link
                 href={`/breweries/${selectedBrewery?._id}`}
