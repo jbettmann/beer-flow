@@ -37,7 +37,7 @@ export default async function Layout(props: {
   return (
     <html lang="en ">
       <Provider>
-        <body className={`${myFont.variable} font-sans`}>
+        <body className={`${myFont.variable} ${inter.className}`}>
           {session && <NavBar breweries={breweries} user={session.user} />}
 
           {/* <Chat /> */}

@@ -4,7 +4,10 @@
 
 
 
-
+@font-face {
+  font-family: "SF Pro";
+  src: url(../assets/fonts/SF-Pro.ttf) format("truetype");
+}
 
 
 /* ... continue for other styles/weights if you have them ... */
@@ -21,6 +24,7 @@
   --indigo: rgb(165, 180, 252);
   --selected: linear-gradient(to bottom left, var(--accent) 40%, #05afa0 100%);
   --indigo-selected: linear-gradient(to bottom left, var(--indigo) 40%, #7988cf 100%);
+  --font-sf-pro: "SF Pro", sans-serif;
 
 } 
 
@@ -29,7 +33,7 @@ html {
 }
 body {
   @apply p-2 xxs:p-5 min-h-full  bg-background text-primary pt-10 ; 
-  font-family: var(--font-sf-pro), -apple-system,"SF Pro", BlinkMacSystemFont,  Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: var(--font-sf-pro), sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
