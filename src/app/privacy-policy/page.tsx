@@ -17,9 +17,9 @@ const Policy = (props: Props) => {
           <strong>
             <span style={{ fontSize: 26 }}>
               <span data-custom-class="title">
-                <bdt className="block-component" />
-                <bdt className="question">PRIVACY POLICY</bdt>
-                <bdt className="statement-end-if-in-editor" />
+                <br className="block-component" />
+                <br className="question">PRIVACY POLICY</br>
+                <br className="statement-end-if-in-editor" />
               </span>
             </span>
           </strong>
@@ -32,7 +32,7 @@ const Policy = (props: Props) => {
             <strong>
               <span style={{ fontSize: 15 }}>
                 <span data-custom-class="subtitle">
-                  Last updated <bdt className="question">November 07, 2023</bdt>
+                  Last updated <br className="question">November 07, 2023</br>
                 </span>
               </span>
             </strong>
@@ -52,22 +52,22 @@ const Policy = (props: Props) => {
             <span style={{ color: "rgb(89, 89, 89)", fontSize: 15 }}>
               <span data-custom-class="body_text">
                 This privacy notice for{" "}
-                <bdt className="question">
+                <br className="question">
                   Brett Inc.
-                  <bdt className="block-component" />
-                </bdt>{" "}
-                (<bdt className="block-component" />"<strong>we</strong>," "
+                  <br className="block-component" />
+                </br>{" "}
+                (<br className="block-component" />"<strong>we</strong>," "
                 <strong>us</strong>," or "<strong>our</strong>"
-                <bdt className="statement-end-if-in-editor" />
+                <br className="statement-end-if-in-editor" />
               </span>
               <span data-custom-class="body_text">
                 ), describes how and why we might collect, store, use, and/or
-                share (<bdt className="block-component" />"
+                share (<br className="block-component" />"
                 <strong>process</strong>"
-                <bdt className="statement-end-if-in-editor" />) your information
-                when you use our services (<bdt className="block-component" />"
+                <br className="statement-end-if-in-editor" />) your information
+                when you use our services (<br className="block-component" />"
                 <strong>Services</strong>"
-                <bdt className="statement-end-if-in-editor" />
+                <br className="statement-end-if-in-editor" />
                 ), such as when you:
               </span>
             </span>
@@ -77,7 +77,7 @@ const Policy = (props: Props) => {
               <span data-custom-class="body_text">
                 <span style={{ color: "rgb(89, 89, 89)" }}>
                   <span data-custom-class="body_text">
-                    <bdt className="block-component" />
+                    <br className="block-component" />
                   </span>
                 </span>
               </span>
@@ -90,9 +90,9 @@ const Policy = (props: Props) => {
               <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
                 <span data-custom-class="body_text">
                   Visit our website
-                  <bdt className="block-component" /> at{" "}
+                  <br className="block-component" /> at{" "}
                   <span style={{ color: "rgb(0, 58, 250)" }}>
-                    <bdt className="question">
+                    <br className="question">
                       <a
                         href="https://beer-flow.vercel.app/"
                         target="_blank"
@@ -100,17 +100,17 @@ const Policy = (props: Props) => {
                       >
                         https://beer-flow.vercel.app/
                       </a>
-                    </bdt>
+                    </br>
                   </span>
                   <span style={{ fontSize: 15 }}>
                     <span style={{ color: "rgb(89, 89, 89)" }}>
                       <span data-custom-class="body_text">
                         <span style={{ fontSize: 15 }}>
                           <span style={{ color: "rgb(89, 89, 89)" }}>
-                            <bdt className="statement-end-if-in-editor">
+                            <br className="statement-end-if-in-editor">
                               , or any website of ours that links to this
                               privacy notice
-                            </bdt>
+                            </br>
                           </span>
                         </span>
                       </span>
@@ -122,21 +122,21 @@ const Policy = (props: Props) => {
           </li>
         </ul>
         <div>
-          <bdt className="block-component">
+          <br className="block-component">
             <span style={{ fontSize: 15 }}>
               <span style={{ fontSize: 15 }}>
                 <span style={{ color: "rgb(127, 127, 127)" }}>
                   <span data-custom-class="body_text">
                     <span style={{ color: "rgb(89, 89, 89)" }}>
                       <span data-custom-class="body_text">
-                        <bdt className="block-component" />
+                        <br className="block-component" />
                       </span>
                     </span>
                   </span>
                 </span>
               </span>
             </span>
-          </bdt>
+          </br>
         </div>
         <ul>
           <li style={{ lineHeight: "1.5" }}>
@@ -144,9 +144,9 @@ const Policy = (props: Props) => {
               <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
                 <span data-custom-class="body_text">
                   Download and use
-                  <bdt className="block-component" /> our mobile application
-                  <bdt className="block-component" /> (
-                  <bdt className="question">
+                  <br className="block-component" /> our mobile application
+                  <br className="block-component" /> (
+                  <br className="question">
                     Brett)
                     <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
                       <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
@@ -156,9 +156,9 @@ const Policy = (props: Props) => {
                               <span data-custom-class="body_text">
                                 <span style={{ fontSize: 15 }}>
                                   <span style={{ color: "rgb(89, 89, 89)" }}>
-                                    <bdt className="statement-end-if-in-editor">
+                                    <br className="statement-end-if-in-editor">
                                       ,
-                                    </bdt>
+                                    </br>
                                   </span>
                                 </span>
                               </span>
@@ -167,7 +167,7 @@ const Policy = (props: Props) => {
                         </span>
                       </span>
                     </span>
-                  </bdt>
+                  </br>
                 </span>
                 <span data-custom-class="body_text">
                   <span style={{ fontSize: 15 }}>
@@ -175,13 +175,13 @@ const Policy = (props: Props) => {
                       <span data-custom-class="body_text">
                         <span style={{ fontSize: 15 }}>
                           <span style={{ color: "rgb(89, 89, 89)" }}>
-                            <bdt className="statement-end-if-in-editor">
-                              <bdt className="block-component">
+                            <br className="statement-end-if-in-editor">
+                              <br className="block-component">
                                 {" "}
                                 or any other application of ours that links to
                                 this privacy notice
-                              </bdt>
-                            </bdt>
+                              </br>
+                            </br>
                           </span>
                         </span>
                       </span>
@@ -198,7 +198,7 @@ const Policy = (props: Props) => {
               <span data-custom-class="body_text">
                 <span style={{ color: "rgb(89, 89, 89)" }}>
                   <span data-custom-class="body_text">
-                    <bdt className="block-component" />
+                    <br className="block-component" />
                   </span>
                 </span>
               </span>
@@ -217,7 +217,7 @@ const Policy = (props: Props) => {
                       <span data-custom-class="body_text">
                         <span style={{ fontSize: 15 }}>
                           <span style={{ color: "rgb(89, 89, 89)" }}>
-                            <bdt className="statement-end-if-in-editor" />
+                            <br className="statement-end-if-in-editor" />
                           </span>
                         </span>
                       </span>
@@ -236,9 +236,9 @@ const Policy = (props: Props) => {
                 privacy notice will help you understand your privacy rights and
                 choices. If you do not agree with our policies and practices,
                 please do not use our Services.
-                <bdt className="block-component" /> If you still have any
+                <br className="block-component" /> If you still have any
                 questions or concerns, please contact us at{" "}
-                <bdt className="question">hello@jordanbettmann.com</bdt>.
+                <br className="question">hello@jordanbettmann.com</br>.
               </span>
             </span>
           </span>
@@ -318,9 +318,9 @@ const Policy = (props: Props) => {
           <span style={{ fontSize: 15 }}>
             <span data-custom-class="body_text">
               <strong>Do we process any sensitive personal information?</strong>{" "}
-              <bdt className="block-component" />
+              <br className="block-component" />
               We do not process sensitive personal information.
-              <bdt className="else-block" />
+              <br className="else-block" />
             </span>
           </span>
         </div>
@@ -331,7 +331,7 @@ const Policy = (props: Props) => {
           <span style={{ fontSize: 15 }}>
             <span data-custom-class="body_text">
               <strong>Do we receive any information from third parties?</strong>{" "}
-              <bdt className="block-component" />
+              <br className="block-component" />
               We may receive information from public databases, marketing
               partners, social media platforms, and other outside sources. Learn
               more about&nbsp;
@@ -347,7 +347,7 @@ const Policy = (props: Props) => {
           <span data-custom-class="body_text">.</span>
           <span style={{ fontSize: 15 }}>
             <span data-custom-class="body_text">
-              <bdt className="statement-end-if-in-editor" />
+              <br className="statement-end-if-in-editor" />
             </span>
           </span>
         </div>
@@ -382,11 +382,11 @@ const Policy = (props: Props) => {
             <span data-custom-class="body_text">
               <strong>
                 In what situations and with which{" "}
-                <bdt className="block-component" />
+                <br className="block-component" />
                 parties do we share personal information?
               </strong>{" "}
               We may share information in specific situations and with specific{" "}
-              <bdt className="block-component" />
+              <br className="block-component" />
               third parties. Learn more about&nbsp;
             </span>
           </span>
@@ -399,7 +399,7 @@ const Policy = (props: Props) => {
           </a>
           <span style={{ fontSize: 15 }}>
             <span data-custom-class="body_text">
-              .<bdt className="block-component" />
+              .<br className="block-component" />
             </span>
           </span>
         </div>
@@ -410,16 +410,16 @@ const Policy = (props: Props) => {
           <span style={{ fontSize: 15 }}>
             <span data-custom-class="body_text">
               <strong>How do we keep your information safe?</strong> We have{" "}
-              <bdt className="block-component" />
+              <br className="block-component" />
               organizational
-              <bdt className="statement-end-if-in-editor" /> and technical
+              <br className="statement-end-if-in-editor" /> and technical
               processes and procedures in place to protect your personal
               information. However, no electronic transmission over the internet
               or information storage technology can be guaranteed to be 100%
               secure, so we cannot promise or guarantee that hackers,
-              cybercriminals, or other <bdt className="block-component" />
+              cybercriminals, or other <br className="block-component" />
               unauthorized
-              <bdt className="statement-end-if-in-editor" /> third parties will
+              <br className="statement-end-if-in-editor" /> third parties will
               not be able to defeat our security and improperly collect, access,
               steal, or modify your information. Learn more about&nbsp;
             </span>
@@ -434,7 +434,7 @@ const Policy = (props: Props) => {
           <span data-custom-class="body_text">.</span>
           <span style={{ fontSize: 15 }}>
             <span data-custom-class="body_text">
-              <bdt className="statement-end-if-in-editor" />
+              <br className="statement-end-if-in-editor" />
             </span>
           </span>
         </div>
@@ -465,7 +465,7 @@ const Policy = (props: Props) => {
             <span data-custom-class="body_text">
               <strong>How do you exercise your rights?</strong> The easiest way
               to exercise your rights is by{" "}
-              <bdt className="block-component">submitting a&nbsp;</bdt>
+              <br className="block-component">submitting a&nbsp;</br>
             </span>
           </span>
           <a
@@ -482,7 +482,7 @@ const Policy = (props: Props) => {
           </a>
           <span style={{ fontSize: 15 }}>
             <span data-custom-class="body_text">
-              <bdt className="block-component" />, or by contacting us. We will
+              <br className="block-component" />, or by contacting us. We will
               consider and act upon any request in accordance with applicable
               data protection laws.
             </span>
@@ -543,7 +543,7 @@ const Policy = (props: Props) => {
             <a data-custom-class="link" href="#infouse">
               <span style={{ color: "rgb(0, 58, 250)" }}>
                 2. HOW DO WE PROCESS YOUR INFORMATION?
-                <bdt className="block-component" />
+                <br className="block-component" />
               </span>
             </a>
           </span>
@@ -556,12 +556,12 @@ const Policy = (props: Props) => {
               </a>
             </span>
             <span data-custom-class="body_text">
-              <bdt className="block-component" />
+              <br className="block-component" />
               <span style={{ color: "rgb(127, 127, 127)" }}>
                 <span style={{ color: "rgb(89, 89, 89)" }}>
                   <span data-custom-class="body_text">
                     <span style={{ color: "rgb(89, 89, 89)" }}>
-                      <bdt className="block-component" />
+                      <br className="block-component" />
                     </span>
                   </span>
                 </span>
@@ -580,14 +580,14 @@ const Policy = (props: Props) => {
               <span style={{ color: "rgb(89, 89, 89)" }}>
                 <span data-custom-class="body_text">
                   <span style={{ color: "rgb(89, 89, 89)" }}>
-                    <bdt className="statement-end-if-in-editor" />
+                    <br className="statement-end-if-in-editor" />
                   </span>
                 </span>
                 <span data-custom-class="body_text">
                   <span style={{ color: "rgb(89, 89, 89)" }}>
                     <span style={{ color: "rgb(89, 89, 89)" }}>
                       <span style={{ color: "rgb(89, 89, 89)" }}>
-                        <bdt className="block-component" />
+                        <br className="block-component" />
                       </span>
                     </span>
                   </span>
@@ -613,10 +613,10 @@ const Policy = (props: Props) => {
                   <span style={{ color: "rgb(89, 89, 89)" }}>
                     <span style={{ color: "rgb(89, 89, 89)" }}>
                       <span style={{ color: "rgb(89, 89, 89)" }}>
-                        <bdt className="statement-end-if-in-editor" />
+                        <br className="statement-end-if-in-editor" />
                       </span>
                     </span>
-                    <bdt className="block-component" />
+                    <br className="block-component" />
                   </span>
                 </span>
               </span>
@@ -635,7 +635,7 @@ const Policy = (props: Props) => {
                 <span data-custom-class="body_text">
                   <span style={{ color: "rgb(89, 89, 89)" }}>
                     <span style={{ color: "rgb(89, 89, 89)" }}>
-                      <bdt className="block-component" />
+                      <br className="block-component" />
                     </span>
                   </span>
                 </span>
@@ -654,8 +654,8 @@ const Policy = (props: Props) => {
               <span style={{ color: "rgb(89, 89, 89)" }}>
                 <span data-custom-class="body_text">
                   <span style={{ color: "rgb(89, 89, 89)" }}>
-                    <bdt className="statement-end-if-in-editor" />
-                    <bdt className="block-component" />
+                    <br className="statement-end-if-in-editor" />
+                    <br className="block-component" />
                   </span>
                 </span>
               </span>
@@ -673,7 +673,7 @@ const Policy = (props: Props) => {
               <span style={{ color: "rgb(89, 89, 89)" }}>
                 <span data-custom-class="body_text">
                   <span style={{ color: "rgb(89, 89, 89)" }}>
-                    <bdt className="statement-end-if-in-editor" />
+                    <br className="statement-end-if-in-editor" />
                   </span>
                 </span>
               </span>
@@ -694,7 +694,7 @@ const Policy = (props: Props) => {
             <a data-custom-class="link" href="#DNT">
               <span style={{ color: "rgb(0, 58, 250)" }}>
                 10. CONTROLS FOR DO-NOT-TRACK FEATURES
-                <bdt className="block-component" />
+                <br className="block-component" />
               </span>
             </a>
           </span>
@@ -707,25 +707,25 @@ const Policy = (props: Props) => {
               </span>
             </a>
           </span>
-          <bdt className="block-component">
+          <br className="block-component">
             <span style={{ fontSize: 15 }}>
               <span data-custom-class="body_text" />
             </span>
-          </bdt>
+          </br>
         </div>
         <div style={{ lineHeight: "1.5" }}>
-          <bdt className="block-component">
+          <br className="block-component">
             <span style={{ fontSize: 15 }} />
-          </bdt>
-          <bdt className="block-component" />
-          <bdt className="block-component" />
-          <bdt className="block-component" />
-          <bdt className="block-component" />
-          <bdt className="block-component" />
-          <bdt className="block-component" />
-          <bdt className="block-component" />
-          <bdt className="block-component" />
-          <bdt className="block-component" />
+          </br>
+          <br className="block-component" />
+          <br className="block-component" />
+          <br className="block-component" />
+          <br className="block-component" />
+          <br className="block-component" />
+          <br className="block-component" />
+          <br className="block-component" />
+          <br className="block-component" />
+          <br className="block-component" />
         </div>
         <div style={{ lineHeight: "1.5" }}>
           <span style={{ fontSize: 15 }}>
@@ -831,14 +831,14 @@ const Policy = (props: Props) => {
                 We collect personal information that you voluntarily provide to
                 us when you{" "}
                 <span style={{ fontSize: 15 }}>
-                  <bdt className="block-component" />
+                  <br className="block-component" />
                 </span>
                 register on the Services,&nbsp;
               </span>
               <span style={{ fontSize: 15 }}>
                 <span data-custom-class="body_text">
                   <span style={{ fontSize: 15 }}>
-                    <bdt className="statement-end-if-in-editor" />
+                    <br className="statement-end-if-in-editor" />
                   </span>
                 </span>
                 <span data-custom-class="body_text">
@@ -858,7 +858,7 @@ const Policy = (props: Props) => {
             <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
               <span data-custom-class="body_text">
                 <span style={{ fontSize: 15 }}>
-                  <bdt className="block-component" />
+                  <br className="block-component" />
                 </span>
               </span>
             </span>
@@ -875,7 +875,7 @@ const Policy = (props: Props) => {
                 information we collect may include the following:
                 <span style={{ fontSize: 15 }}>
                   <span data-custom-class="body_text">
-                    <bdt className="forloop-component" />
+                    <br className="forloop-component" />
                   </span>
                 </span>
               </span>
@@ -889,7 +889,7 @@ const Policy = (props: Props) => {
                 <span data-custom-class="body_text">
                   <span style={{ fontSize: 15 }}>
                     <span data-custom-class="body_text">
-                      <bdt className="question">names</bdt>
+                      <br className="question">names</br>
                     </span>
                   </span>
                 </span>
@@ -903,7 +903,7 @@ const Policy = (props: Props) => {
               <span data-custom-class="body_text">
                 <span style={{ fontSize: 15 }}>
                   <span data-custom-class="body_text">
-                    <bdt className="forloop-component" />
+                    <br className="forloop-component" />
                   </span>
                 </span>
               </span>
@@ -917,7 +917,7 @@ const Policy = (props: Props) => {
                 <span data-custom-class="body_text">
                   <span style={{ fontSize: 15 }}>
                     <span data-custom-class="body_text">
-                      <bdt className="question">email addresses</bdt>
+                      <br className="question">email addresses</br>
                     </span>
                   </span>
                 </span>
@@ -931,7 +931,7 @@ const Policy = (props: Props) => {
               <span data-custom-class="body_text">
                 <span style={{ fontSize: 15 }}>
                   <span data-custom-class="body_text">
-                    <bdt className="forloop-component" />
+                    <br className="forloop-component" />
                   </span>
                 </span>
               </span>
@@ -945,7 +945,7 @@ const Policy = (props: Props) => {
                 <span data-custom-class="body_text">
                   <span style={{ fontSize: 15 }}>
                     <span data-custom-class="body_text">
-                      <bdt className="question">passwords</bdt>
+                      <br className="question">passwords</br>
                     </span>
                   </span>
                 </span>
@@ -959,7 +959,7 @@ const Policy = (props: Props) => {
               <span data-custom-class="body_text">
                 <span style={{ fontSize: 15 }}>
                   <span data-custom-class="body_text">
-                    <bdt className="forloop-component" />
+                    <br className="forloop-component" />
                   </span>
                 </span>
               </span>
@@ -973,9 +973,9 @@ const Policy = (props: Props) => {
                 <span data-custom-class="body_text">
                   <span style={{ fontSize: 15 }}>
                     <span data-custom-class="body_text">
-                      <bdt className="question">
+                      <br className="question">
                         contact or authentication data
-                      </bdt>
+                      </br>
                     </span>
                   </span>
                 </span>
@@ -989,7 +989,7 @@ const Policy = (props: Props) => {
               <span data-custom-class="body_text">
                 <span style={{ fontSize: 15 }}>
                   <span data-custom-class="body_text">
-                    <bdt className="forloop-component" />
+                    <br className="forloop-component" />
                   </span>
                 </span>
               </span>
@@ -1003,7 +1003,7 @@ const Policy = (props: Props) => {
                 <span data-custom-class="body_text">
                   <span style={{ fontSize: 15 }}>
                     <span data-custom-class="body_text">
-                      <bdt className="question">image</bdt>
+                      <br className="question">image</br>
                     </span>
                   </span>
                 </span>
@@ -1017,10 +1017,10 @@ const Policy = (props: Props) => {
               <span data-custom-class="body_text">
                 <span style={{ fontSize: 15 }}>
                   <span data-custom-class="body_text">
-                    <bdt className="forloop-component" />
+                    <br className="forloop-component" />
                   </span>
                   <span data-custom-class="body_text">
-                    <bdt className="statement-end-if-in-editor" />
+                    <br className="statement-end-if-in-editor" />
                   </span>
                 </span>
               </span>
@@ -1031,7 +1031,7 @@ const Policy = (props: Props) => {
           <span style={{ fontSize: 15 }}>
             <span data-custom-class="body_text">
               <strong>Sensitive Information.</strong>{" "}
-              <bdt className="block-component" />
+              <br className="block-component" />
               We do not process sensitive information.
             </span>
           </span>
@@ -1042,7 +1042,7 @@ const Policy = (props: Props) => {
         <div style={{ lineHeight: "1.5" }}>
           <span style={{ fontSize: 15 }}>
             <span data-custom-class="body_text">
-              <bdt className="else-block" />
+              <br className="else-block" />
             </span>
           </span>
           <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
@@ -1050,9 +1050,9 @@ const Policy = (props: Props) => {
               <span data-custom-class="body_text">
                 <span style={{ fontSize: 15 }}>
                   <span data-custom-class="body_text">
-                    <bdt className="block-component">
-                      <bdt className="block-component" />
-                    </bdt>
+                    <br className="block-component">
+                      <br className="block-component" />
+                    </br>
                   </span>
                 </span>
               </span>
@@ -1068,8 +1068,8 @@ const Policy = (props: Props) => {
                 social media account details, like your Facebook, Twitter, or
                 other social media account. If you choose to register in this
                 way, we will collect the information described in the section
-                called <bdt className="block-component" />"
-                <bdt className="statement-end-if-in-editor" />
+                called <br className="block-component" />"
+                <br className="statement-end-if-in-editor" />
                 <span style={{ fontSize: 15 }}>
                   <span data-custom-class="body_text">
                     <span style={{ fontSize: 15 }}>
@@ -1081,8 +1081,8 @@ const Policy = (props: Props) => {
                     </span>
                   </span>
                 </span>
-                <bdt className="block-component" />"
-                <bdt className="statement-end-if-in-editor" /> below.
+                <br className="block-component" />"
+                <br className="statement-end-if-in-editor" /> below.
               </span>
             </span>
           </span>
@@ -1095,16 +1095,16 @@ const Policy = (props: Props) => {
             <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
               <span data-custom-class="body_text">
                 <span style={{ fontSize: 15 }}>
-                  <bdt className="statement-end-if-in-editor">
-                    <bdt className="statement-end-if-in-editor" />
-                  </bdt>
+                  <br className="statement-end-if-in-editor">
+                    <br className="statement-end-if-in-editor" />
+                  </br>
                 </span>
               </span>
             </span>
           </span>
-          <bdt className="block-component">
-            <bdt className="block-component" />
-          </bdt>
+          <br className="block-component">
+            <br className="block-component" />
+          </br>
         </div>
         <div style={{ lineHeight: "1.5" }}>
           <span data-custom-class="body_text">
@@ -1112,15 +1112,15 @@ const Policy = (props: Props) => {
               <strong>Application Data.</strong> If you use our application(s),
               we also may collect the following information if you choose to
               provide us with access or permission:
-              <bdt className="block-component" />
+              <br className="block-component" />
             </span>
           </span>
           <div style={{ lineHeight: "1.5" }}>
-            <bdt className="block-component">
+            <br className="block-component">
               <span style={{ fontSize: 15 }}>
                 <span data-custom-class="body_text" />
               </span>
-            </bdt>
+            </br>
           </div>
           <ul>
             <li style={{ lineHeight: "1.5" }}>
@@ -1129,28 +1129,28 @@ const Policy = (props: Props) => {
                   <em>Mobile Device Access.</em> We may request access or
                   permission to certain features from your mobile device,
                   including your mobile device's{" "}
-                  <bdt className="forloop-component" />
-                  <bdt className="question">camera</bdt>,{" "}
-                  <bdt className="forloop-component" />
+                  <br className="forloop-component" />
+                  <br className="question">camera</br>,{" "}
+                  <br className="forloop-component" />
                   and other features. If you wish to change our access or
                   permissions, you may do so in your device's settings.
-                  <bdt className="statement-end-if-in-editor" />
+                  <br className="statement-end-if-in-editor" />
                 </span>
               </span>
             </li>
           </ul>
           <div style={{ lineHeight: "1.5" }}>
-            <bdt className="block-component">
+            <br className="block-component">
               <span style={{ fontSize: 15 }}>
                 <span data-custom-class="body_text" />
               </span>
-            </bdt>
+            </br>
             <div style={{ lineHeight: "1.5" }}>
-              <bdt className="block-component">
+              <br className="block-component">
                 <span style={{ fontSize: 15 }}>
                   <span data-custom-class="body_text" />
                 </span>
-              </bdt>
+              </br>
             </div>
             <ul>
               <li style={{ lineHeight: "1.5" }}>
@@ -1161,7 +1161,7 @@ const Policy = (props: Props) => {
                     the application(s). If you wish to opt out from receiving
                     these types of communications, you may turn them off in your
                     device's settings.
-                    <bdt className="statement-end-if-in-editor" />
+                    <br className="statement-end-if-in-editor" />
                   </span>
                 </span>
               </li>
@@ -1179,11 +1179,11 @@ const Policy = (props: Props) => {
               <br />
             </div>
             <div style={{ lineHeight: "1.5" }}>
-              <bdt className="statement-end-if-in-editor">
+              <br className="statement-end-if-in-editor">
                 <span style={{ fontSize: 15 }}>
                   <span data-custom-class="body_text" />
                 </span>
-              </bdt>
+              </br>
             </div>
             <div style={{ lineHeight: "1.5" }}>
               <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
@@ -1203,7 +1203,7 @@ const Policy = (props: Props) => {
               <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
                 <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
                   <span data-custom-class="body_text">
-                    <bdt className="block-component" />
+                    <br className="block-component" />
                   </span>
                   <span data-custom-class="body_text">
                     <span style={{ color: "rgb(89, 89, 89)", fontSize: 15 }}>
@@ -1212,9 +1212,9 @@ const Policy = (props: Props) => {
                           style={{ color: "rgb(89, 89, 89)", fontSize: 15 }}
                         >
                           <span data-custom-class="body_text">
-                            <bdt className="statement-end-if-in-editor">
-                              <bdt className="block-component" />
-                            </bdt>
+                            <br className="statement-end-if-in-editor">
+                              <br className="block-component" />
+                            </br>
                           </span>
                         </span>
                       </span>
@@ -1256,9 +1256,9 @@ const Policy = (props: Props) => {
                                 <span style={{ fontSize: 15 }}>
                                   <em>
                                     <span data-custom-class="body_text">
-                                      <bdt className="block-component" />
+                                      <br className="block-component" />
                                       social media platforms,{" "}
-                                      <bdt className="statement-end-if-in-editor" />
+                                      <br className="statement-end-if-in-editor" />
                                     </span>
                                   </em>
                                 </span>
@@ -1288,9 +1288,9 @@ const Policy = (props: Props) => {
                     <span style={{ color: "rgb(89, 89, 89)" }}>
                       <span style={{ fontSize: 15 }}>
                         <span data-custom-class="body_text">
-                          <bdt className="block-component" /> social media
+                          <br className="block-component" /> social media
                           platforms,
-                          <bdt className="statement-end-if-in-editor" />
+                          <br className="statement-end-if-in-editor" />
                         </span>
                       </span>
                       &nbsp;
@@ -1298,9 +1298,9 @@ const Policy = (props: Props) => {
                     and from other third parties. This information includes
                     mailing addresses, job titles, email addresses, phone
                     numbers, intent data (or user{" "}
-                    <bdt className="block-component" />
+                    <br className="block-component" />
                     behavior
-                    <bdt className="statement-end-if-in-editor" /> data),
+                    <br className="statement-end-if-in-editor" /> data),
                     Internet Protocol (IP) addresses, social media profiles,
                     social media URLs, and custom profiles, for purposes of
                     targeted advertising and event promotion.
@@ -1310,20 +1310,20 @@ const Policy = (props: Props) => {
                           <span style={{ color: "rgb(89, 89, 89)" }}>
                             <span style={{ fontSize: 15 }}>
                               <span data-custom-class="body_text">
-                                <bdt className="block-component" />
+                                <br className="block-component" />
                               </span>
                             </span>
                             &nbsp;
                           </span>
                           If you interact with us on a social media platform
                           using your social media account (e.g.
-                          <bdt className="block-component" />,
-                          <bdt className="statement-end-if-in-editor" />{" "}
-                          Facebook or Twitter), we receive personal information
-                          about you such as your name, email address, and
-                          gender. Any personal information that we collect from
-                          your social media account depends on your social media
-                          account's privacy settings.
+                          <br className="block-component" />,
+                          <br className="statement-end-if-in-editor" /> Facebook
+                          or Twitter), we receive personal information about you
+                          such as your name, email address, and gender. Any
+                          personal information that we collect from your social
+                          media account depends on your social media account's
+                          privacy settings.
                         </span>
                       </span>
                     </span>
@@ -1338,7 +1338,7 @@ const Policy = (props: Props) => {
                                 <span style={{ color: "rgb(89, 89, 89)" }}>
                                   <span style={{ fontSize: 15 }}>
                                     <span data-custom-class="body_text">
-                                      <bdt className="statement-end-if-in-editor" />
+                                      <br className="statement-end-if-in-editor" />
                                     </span>
                                   </span>
                                 </span>
@@ -1364,7 +1364,7 @@ const Policy = (props: Props) => {
                         <span data-custom-class="body_text">
                           <span style={{ color: "rgb(89, 89, 89)" }}>
                             <span style={{ color: "rgb(89, 89, 89)" }}>
-                              <bdt className="block-component">
+                              <br className="block-component">
                                 <span
                                   style={{
                                     color: "rgb(89, 89, 89)",
@@ -1379,14 +1379,14 @@ const Policy = (props: Props) => {
                                       }}
                                     >
                                       <span data-custom-class="body_text">
-                                        <bdt className="statement-end-if-in-editor">
-                                          <bdt className="statement-end-if-in-editor" />
-                                        </bdt>
+                                        <br className="statement-end-if-in-editor">
+                                          <br className="statement-end-if-in-editor" />
+                                        </br>
                                       </span>
                                     </span>
                                   </span>
                                 </span>
-                              </bdt>
+                              </br>
                             </span>
                           </span>
                         </span>
@@ -1397,7 +1397,7 @@ const Policy = (props: Props) => {
               </span>
               <span style={{ fontSize: 15 }}>
                 <span data-custom-class="body_text">
-                  <bdt className="block-component" />
+                  <br className="block-component" />
                 </span>
               </span>
             </div>
@@ -1461,7 +1461,7 @@ const Policy = (props: Props) => {
                       reasons, depending on how you interact with our Services,
                       including:
                     </strong>
-                    <bdt className="block-component" />
+                    <br className="block-component" />
                   </span>
                 </span>
               </span>
@@ -1489,7 +1489,7 @@ const Policy = (props: Props) => {
                                   <span style={{ fontSize: 15 }}>
                                     <span style={{ color: "rgb(89, 89, 89)" }}>
                                       <span data-custom-class="body_text">
-                                        <bdt className="statement-end-if-in-editor" />
+                                        <br className="statement-end-if-in-editor" />
                                       </span>
                                     </span>
                                   </span>
@@ -1508,7 +1508,7 @@ const Policy = (props: Props) => {
               <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
                 <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
                   <span data-custom-class="body_text">
-                    <bdt className="block-component" />
+                    <br className="block-component" />
                   </span>
                 </span>
               </span>
@@ -1516,7 +1516,7 @@ const Policy = (props: Props) => {
                 <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
                   <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
                     <span data-custom-class="body_text">
-                      <bdt className="block-component" />
+                      <br className="block-component" />
                     </span>
                   </span>
                 </span>
@@ -1524,7 +1524,7 @@ const Policy = (props: Props) => {
                   <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
                     <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
                       <span data-custom-class="body_text">
-                        <bdt className="block-component" />
+                        <br className="block-component" />
                       </span>
                     </span>
                   </span>
@@ -1532,14 +1532,14 @@ const Policy = (props: Props) => {
                     <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
                       <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
                         <span data-custom-class="body_text">
-                          <bdt className="block-component" />
+                          <br className="block-component" />
                         </span>
                       </span>
                     </span>
                     <div style={{ lineHeight: "1.5" }}>
-                      <bdt className="block-component">
+                      <br className="block-component">
                         <span style={{ fontSize: 15 }} />
-                      </bdt>
+                      </br>
                     </div>
                     <ul>
                       <li style={{ lineHeight: "1.5" }}>
@@ -1570,7 +1570,7 @@ const Policy = (props: Props) => {
                                   }}
                                 >
                                   <span data-custom-class="body_text">
-                                    <bdt className="statement-end-if-in-editor" />
+                                    <br className="statement-end-if-in-editor" />
                                   </span>
                                 </span>
                               </span>
@@ -1580,129 +1580,129 @@ const Policy = (props: Props) => {
                       </li>
                     </ul>
                     <div style={{ lineHeight: "1.5" }}>
-                      <bdt className="block-component">
+                      <br className="block-component">
                         <span style={{ fontSize: 15 }} />
-                      </bdt>
+                      </br>
                       <div style={{ lineHeight: "1.5" }}>
-                        <bdt className="block-component">
+                        <br className="block-component">
                           <span style={{ fontSize: 15 }} />
-                        </bdt>
+                        </br>
                         <div style={{ lineHeight: "1.5" }}>
-                          <bdt className="block-component">
+                          <br className="block-component">
                             <span style={{ fontSize: 15 }}>
                               <span data-custom-class="body_text" />
                             </span>
-                          </bdt>
+                          </br>
                           <p style={{ fontSize: 15, lineHeight: "1.5" }}>
-                            <bdt className="block-component">
+                            <br className="block-component">
                               <span style={{ fontSize: 15 }} />
-                            </bdt>
+                            </br>
                           </p>
                           <p style={{ fontSize: 15, lineHeight: "1.5" }}>
-                            <bdt className="block-component">
+                            <br className="block-component">
                               <span style={{ fontSize: 15 }} />
-                            </bdt>
+                            </br>
                           </p>
                           <p style={{ fontSize: 15, lineHeight: "1.5" }}>
-                            <bdt className="block-component" />
+                            <br className="block-component" />
                           </p>
                           <p style={{ fontSize: 15, lineHeight: "1.5" }}>
-                            <bdt className="block-component" />
+                            <br className="block-component" />
                           </p>
                           <div style={{ lineHeight: "1.5" }}>
-                            <bdt className="block-component">
+                            <br className="block-component">
                               <span style={{ fontSize: 15 }}>
                                 <span data-custom-class="body_text" />
                               </span>
-                            </bdt>
+                            </br>
                             <div style={{ lineHeight: "1.5" }}>
-                              <bdt className="block-component">
+                              <br className="block-component">
                                 <span style={{ fontSize: 15 }} />
-                              </bdt>
+                              </br>
                               <div style={{ lineHeight: "1.5" }}>
-                                <bdt className="block-component">
+                                <br className="block-component">
                                   <span style={{ fontSize: 15 }} />
-                                </bdt>
+                                </br>
                                 <div style={{ lineHeight: "1.5" }}>
                                   <span style={{ fontSize: 15 }}>
-                                    <bdt className="block-component">
+                                    <br className="block-component">
                                       <span data-custom-class="body_text" />
-                                    </bdt>
+                                    </br>
                                   </span>
                                   <div style={{ lineHeight: "1.5" }}>
-                                    <bdt className="block-component">
+                                    <br className="block-component">
                                       <span style={{ fontSize: 15 }}>
                                         <span data-custom-class="body_text" />
                                       </span>
-                                    </bdt>
+                                    </br>
                                     <div style={{ lineHeight: "1.5" }}>
-                                      <bdt className="block-component">
+                                      <br className="block-component">
                                         <span style={{ fontSize: 15 }}>
                                           <span data-custom-class="body_text" />
                                         </span>
-                                      </bdt>
+                                      </br>
                                       <div style={{ lineHeight: "1.5" }}>
-                                        <bdt className="block-component">
+                                        <br className="block-component">
                                           <span style={{ fontSize: 15 }}>
                                             <span data-custom-class="body_text" />
                                           </span>
-                                        </bdt>
+                                        </br>
                                         <div style={{ lineHeight: "1.5" }}>
-                                          <bdt className="block-component">
+                                          <br className="block-component">
                                             <span style={{ fontSize: 15 }}>
                                               <span data-custom-class="body_text" />
                                             </span>
-                                          </bdt>
+                                          </br>
                                           <div style={{ lineHeight: "1.5" }}>
-                                            <bdt className="block-component">
+                                            <br className="block-component">
                                               <span style={{ fontSize: 15 }}>
                                                 <span data-custom-class="body_text" />
                                               </span>
-                                            </bdt>
+                                            </br>
                                             <div style={{ lineHeight: "1.5" }}>
-                                              <bdt className="block-component">
+                                              <br className="block-component">
                                                 <span style={{ fontSize: 15 }}>
                                                   <span data-custom-class="body_text" />
                                                 </span>
-                                              </bdt>
+                                              </br>
                                               <div
                                                 style={{ lineHeight: "1.5" }}
                                               >
-                                                <bdt className="block-component">
+                                                <br className="block-component">
                                                   <span
                                                     style={{ fontSize: 15 }}
                                                   >
                                                     <span data-custom-class="body_text" />
                                                   </span>
-                                                </bdt>
+                                                </br>
                                                 <div
                                                   style={{ lineHeight: "1.5" }}
                                                 >
-                                                  <bdt className="block-component">
+                                                  <br className="block-component">
                                                     <span
                                                       style={{ fontSize: 15 }}
                                                     >
                                                       <span data-custom-class="body_text" />
                                                     </span>
-                                                  </bdt>
+                                                  </br>
                                                   <div
                                                     style={{
                                                       lineHeight: "1.5",
                                                     }}
                                                   >
-                                                    <bdt className="block-component">
+                                                    <br className="block-component">
                                                       <span
                                                         style={{ fontSize: 15 }}
                                                       >
                                                         <span data-custom-class="body_text" />
                                                       </span>
-                                                    </bdt>
+                                                    </br>
                                                     <div
                                                       style={{
                                                         lineHeight: "1.5",
                                                       }}
                                                     >
-                                                      <bdt className="block-component">
+                                                      <br className="block-component">
                                                         <span
                                                           style={{
                                                             fontSize: 15,
@@ -1710,13 +1710,13 @@ const Policy = (props: Props) => {
                                                         >
                                                           <span data-custom-class="body_text" />
                                                         </span>
-                                                      </bdt>
+                                                      </br>
                                                       <div
                                                         style={{
                                                           lineHeight: "1.5",
                                                         }}
                                                       >
-                                                        <bdt className="block-component">
+                                                        <br className="block-component">
                                                           <span
                                                             style={{
                                                               fontSize: 15,
@@ -1724,13 +1724,13 @@ const Policy = (props: Props) => {
                                                           >
                                                             <span data-custom-class="body_text" />
                                                           </span>
-                                                        </bdt>
+                                                        </br>
                                                         <div
                                                           style={{
                                                             lineHeight: "1.5",
                                                           }}
                                                         >
-                                                          <bdt className="block-component">
+                                                          <br className="block-component">
                                                             <span
                                                               style={{
                                                                 fontSize: 15,
@@ -1738,8 +1738,8 @@ const Policy = (props: Props) => {
                                                             >
                                                               <span data-custom-class="body_text" />
                                                             </span>
-                                                          </bdt>
-                                                          <bdt className="block-component">
+                                                          </br>
+                                                          <br className="block-component">
                                                             <span
                                                               style={{
                                                                 fontSize: 15,
@@ -1747,8 +1747,8 @@ const Policy = (props: Props) => {
                                                             >
                                                               <span data-custom-class="body_text" />
                                                             </span>
-                                                          </bdt>
-                                                          <bdt className="block-component">
+                                                          </br>
+                                                          <br className="block-component">
                                                             <span
                                                               style={{
                                                                 fontSize: 15,
@@ -1756,8 +1756,8 @@ const Policy = (props: Props) => {
                                                             >
                                                               <span data-custom-class="body_text" />
                                                             </span>
-                                                          </bdt>
-                                                          <bdt className="block-component">
+                                                          </br>
+                                                          <br className="block-component">
                                                             <span
                                                               style={{
                                                                 fontSize: 15,
@@ -1765,7 +1765,7 @@ const Policy = (props: Props) => {
                                                             >
                                                               <span data-custom-class="body_text" />
                                                             </span>
-                                                          </bdt>
+                                                          </br>
                                                         </div>
                                                         <div
                                                           style={{
@@ -1873,7 +1873,7 @@ const Policy = (props: Props) => {
                                                                   this section
                                                                   and/or with
                                                                   the following{" "}
-                                                                  <bdt className="block-component" />
+                                                                  <br className="block-component" />
                                                                   third parties.
                                                                 </em>
                                                               </span>
@@ -1900,7 +1900,7 @@ const Policy = (props: Props) => {
                                                               }}
                                                             >
                                                               <span data-custom-class="body_text">
-                                                                <bdt className="block-component" />
+                                                                <br className="block-component" />
                                                               </span>
                                                             </span>
                                                           </span>
@@ -1924,7 +1924,7 @@ const Policy = (props: Props) => {
                                                           >
                                                             <span data-custom-class="body_text">
                                                               We{" "}
-                                                              <bdt className="block-component" />
+                                                              <br className="block-component" />
                                                               may need to share
                                                               your personal
                                                               information in the
@@ -1979,7 +1979,7 @@ const Policy = (props: Props) => {
                                                             }}
                                                           >
                                                             <span data-custom-class="body_text">
-                                                              <bdt className="block-component" />
+                                                              <br className="block-component" />
                                                             </span>
                                                           </span>
                                                           <div
@@ -1992,9 +1992,9 @@ const Policy = (props: Props) => {
                                                                 fontSize: 15,
                                                               }}
                                                             >
-                                                              <bdt className="block-component">
+                                                              <br className="block-component">
                                                                 <span data-custom-class="body_text" />
-                                                              </bdt>
+                                                              </br>
                                                             </span>
                                                             <div
                                                               style={{
@@ -2002,7 +2002,7 @@ const Policy = (props: Props) => {
                                                                   "1.5",
                                                               }}
                                                             >
-                                                              <bdt className="block-component">
+                                                              <br className="block-component">
                                                                 <span
                                                                   style={{
                                                                     fontSize: 15,
@@ -2010,14 +2010,14 @@ const Policy = (props: Props) => {
                                                                 >
                                                                   <span data-custom-class="body_text" />
                                                                 </span>
-                                                              </bdt>
+                                                              </br>
                                                               <div
                                                                 style={{
                                                                   lineHeight:
                                                                     "1.5",
                                                                 }}
                                                               >
-                                                                <bdt className="block-component">
+                                                                <br className="block-component">
                                                                   <span
                                                                     style={{
                                                                       fontSize: 15,
@@ -2025,14 +2025,14 @@ const Policy = (props: Props) => {
                                                                   >
                                                                     <span data-custom-class="body_text" />
                                                                   </span>
-                                                                </bdt>
+                                                                </br>
                                                                 <div
                                                                   style={{
                                                                     lineHeight:
                                                                       "1.5",
                                                                   }}
                                                                 >
-                                                                  <bdt className="block-component">
+                                                                  <br className="block-component">
                                                                     <span
                                                                       style={{
                                                                         fontSize: 15,
@@ -2040,17 +2040,17 @@ const Policy = (props: Props) => {
                                                                     >
                                                                       <span data-custom-class="body_text" />
                                                                     </span>
-                                                                  </bdt>
+                                                                  </br>
                                                                   <span data-custom-class="body_text">
                                                                     <span
                                                                       style={{
                                                                         fontSize: 15,
                                                                       }}
                                                                     >
-                                                                      <bdt className="block-component" />
+                                                                      <br className="block-component" />
                                                                     </span>
                                                                   </span>
-                                                                  <bdt className="statement-end-if-in-editor">
+                                                                  <br className="statement-end-if-in-editor">
                                                                     <span
                                                                       style={{
                                                                         fontSize: 15,
@@ -2058,14 +2058,14 @@ const Policy = (props: Props) => {
                                                                     >
                                                                       <span data-custom-class="body_text" />
                                                                     </span>
-                                                                  </bdt>
+                                                                  </br>
                                                                   <div
                                                                     style={{
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
                                                                   >
-                                                                    <bdt className="block-component">
+                                                                    <br className="block-component">
                                                                       <span
                                                                         style={{
                                                                           fontSize: 15,
@@ -2073,7 +2073,7 @@ const Policy = (props: Props) => {
                                                                       >
                                                                         <span data-custom-class="body_text" />
                                                                       </span>
-                                                                    </bdt>
+                                                                    </br>
                                                                     <span
                                                                       style={{
                                                                         color:
@@ -2103,9 +2103,9 @@ const Policy = (props: Props) => {
                                                                                   "rgb(89, 89, 89)",
                                                                               }}
                                                                             >
-                                                                              <bdt className="block-component">
+                                                                              <br className="block-component">
                                                                                 <span data-custom-class="heading_1" />
-                                                                              </bdt>
+                                                                              </br>
                                                                             </span>
                                                                           </span>
                                                                         </span>
@@ -2308,7 +2308,7 @@ const Policy = (props: Props) => {
                                                                             }}
                                                                           >
                                                                             <span data-custom-class="body_text">
-                                                                              <bdt className="block-component" />
+                                                                              <br className="block-component" />
                                                                               .
                                                                             </span>
                                                                             <span
@@ -2341,7 +2341,7 @@ const Policy = (props: Props) => {
                                                                                       }}
                                                                                     >
                                                                                       <span data-custom-class="body_text">
-                                                                                        <bdt className="statement-end-if-in-editor" />
+                                                                                        <br className="statement-end-if-in-editor" />
                                                                                       </span>
                                                                                     </span>
                                                                                   </span>
@@ -2395,7 +2395,7 @@ const Policy = (props: Props) => {
                                                                                         }}
                                                                                       >
                                                                                         <span data-custom-class="body_text">
-                                                                                          <bdt className="block-component" />
+                                                                                          <br className="block-component" />
                                                                                         </span>
                                                                                       </span>
                                                                                     </span>
@@ -2664,7 +2664,7 @@ const Policy = (props: Props) => {
                                                                               }}
                                                                             >
                                                                               <span data-custom-class="body_text">
-                                                                                <bdt className="block-component" />
+                                                                                <br className="block-component" />
                                                                               </span>
                                                                             </span>
                                                                           </span>
@@ -2835,13 +2835,13 @@ const Policy = (props: Props) => {
                                                                                           }}
                                                                                         >
                                                                                           <span data-custom-class="body_text">
-                                                                                            <bdt className="statement-end-if-in-editor" />
+                                                                                            <br className="statement-end-if-in-editor" />
                                                                                           </span>
-                                                                                          <bdt className="block-component">
+                                                                                          <br className="block-component">
                                                                                             <span data-custom-class="body_text">
-                                                                                              <bdt className="block-component" />
+                                                                                              <br className="block-component" />
                                                                                             </span>
-                                                                                          </bdt>
+                                                                                          </br>
                                                                                         </span>
                                                                                       </span>
                                                                                     </span>
@@ -2967,9 +2967,9 @@ const Policy = (props: Props) => {
                                                                             as
                                                                             necessary
                                                                             to{" "}
-                                                                            <bdt className="block-component" />
+                                                                            <br className="block-component" />
                                                                             fulfill
-                                                                            <bdt className="statement-end-if-in-editor" />{" "}
+                                                                            <br className="statement-end-if-in-editor" />{" "}
                                                                             the
                                                                             purposes
                                                                             outlined
@@ -3054,7 +3054,7 @@ const Policy = (props: Props) => {
                                                                           other
                                                                           legal
                                                                           requirements).
-                                                                          <bdt className="block-component" />{" "}
+                                                                          <br className="block-component" />{" "}
                                                                           No
                                                                           purpose
                                                                           in
@@ -3082,12 +3082,12 @@ const Policy = (props: Props) => {
                                                                               }}
                                                                             >
                                                                               <span data-custom-class="body_text">
-                                                                                <bdt className="block-component" />
+                                                                                <br className="block-component" />
                                                                               </span>
                                                                             </span>
                                                                             &nbsp;
                                                                           </span>{" "}
-                                                                          <bdt className="block-component" />
+                                                                          <br className="block-component" />
                                                                           the
                                                                           period
                                                                           of
@@ -3100,7 +3100,7 @@ const Policy = (props: Props) => {
                                                                           account
                                                                           with
                                                                           us
-                                                                          <bdt className="block-component" />
+                                                                          <br className="block-component" />
                                                                           <span
                                                                             style={{
                                                                               fontSize: 15,
@@ -3113,7 +3113,7 @@ const Policy = (props: Props) => {
                                                                               }}
                                                                             >
                                                                               <span data-custom-class="body_text">
-                                                                                <bdt className="else-block" />
+                                                                                <br className="else-block" />
                                                                               </span>
                                                                             </span>
                                                                           </span>
@@ -3169,9 +3169,9 @@ const Policy = (props: Props) => {
                                                                           either
                                                                           delete
                                                                           or{" "}
-                                                                          <bdt className="block-component" />
+                                                                          <br className="block-component" />
                                                                           anonymize
-                                                                          <bdt className="statement-end-if-in-editor" />{" "}
+                                                                          <br className="statement-end-if-in-editor" />{" "}
                                                                           such
                                                                           information,
                                                                           or, if
@@ -3215,7 +3215,7 @@ const Policy = (props: Props) => {
                                                                                 "rgb(89, 89, 89)",
                                                                             }}
                                                                           >
-                                                                            <bdt className="block-component" />
+                                                                            <br className="block-component" />
                                                                           </span>
                                                                         </span>
                                                                       </span>
@@ -3335,9 +3335,9 @@ const Policy = (props: Props) => {
                                                                             a
                                                                             system
                                                                             of{" "}
-                                                                            <bdt className="block-component" />
+                                                                            <br className="block-component" />
                                                                             organizational
-                                                                            <bdt className="statement-end-if-in-editor" />{" "}
+                                                                            <br className="statement-end-if-in-editor" />{" "}
                                                                             and
                                                                             technical
                                                                             security
@@ -3384,9 +3384,9 @@ const Policy = (props: Props) => {
                                                                           reasonable
                                                                           technical
                                                                           and{" "}
-                                                                          <bdt className="block-component" />
+                                                                          <br className="block-component" />
                                                                           organizational
-                                                                          <bdt className="statement-end-if-in-editor" />{" "}
+                                                                          <br className="statement-end-if-in-editor" />{" "}
                                                                           security
                                                                           measures
                                                                           designed
@@ -3434,9 +3434,9 @@ const Policy = (props: Props) => {
                                                                           cybercriminals,
                                                                           or
                                                                           other{" "}
-                                                                          <bdt className="block-component" />
+                                                                          <br className="block-component" />
                                                                           unauthorized
-                                                                          <bdt className="statement-end-if-in-editor" />{" "}
+                                                                          <br className="statement-end-if-in-editor" />{" "}
                                                                           third
                                                                           parties
                                                                           will
@@ -3493,7 +3493,7 @@ const Policy = (props: Props) => {
                                                                                 "rgb(89, 89, 89)",
                                                                             }}
                                                                           >
-                                                                            <bdt className="statement-end-if-in-editor" />
+                                                                            <br className="statement-end-if-in-editor" />
                                                                           </span>
                                                                           <span
                                                                             style={{
@@ -3503,7 +3503,7 @@ const Policy = (props: Props) => {
                                                                             }}
                                                                           >
                                                                             <span data-custom-class="body_text">
-                                                                              <bdt className="block-component" />
+                                                                              <br className="block-component" />
                                                                             </span>
                                                                           </span>
                                                                         </span>
@@ -3622,12 +3622,12 @@ const Policy = (props: Props) => {
                                                                             or
                                                                             market
                                                                             to{" "}
-                                                                            <bdt className="block-component" />
+                                                                            <br className="block-component" />
                                                                             minors
-                                                                            <bdt className="statement-end-if-in-editor" />
+                                                                            <br className="statement-end-if-in-editor" />
                                                                             .
                                                                           </em>
-                                                                          <bdt className="block-component" />
+                                                                          <br className="block-component" />
                                                                         </span>
                                                                       </span>
                                                                     </span>
@@ -3661,7 +3661,7 @@ const Policy = (props: Props) => {
                                                                         }}
                                                                       >
                                                                         <span data-custom-class="body_text">
-                                                                          <bdt className="question">
+                                                                          <br className="question">
                                                                             Our
                                                                             Service
                                                                             is
@@ -3905,7 +3905,7 @@ const Policy = (props: Props) => {
                                                                             Service
                                                                             by
                                                                             minors.
-                                                                          </bdt>
+                                                                          </br>
                                                                         </span>
                                                                         <span data-custom-class="body_text">
                                                                           <span
@@ -3923,7 +3923,7 @@ const Policy = (props: Props) => {
                                                                               }}
                                                                             >
                                                                               <span data-custom-class="body_text">
-                                                                                <bdt className="statement-end-if-in-editor" />
+                                                                                <br className="statement-end-if-in-editor" />
                                                                               </span>
                                                                             </span>
                                                                           </span>
@@ -4046,7 +4046,7 @@ const Policy = (props: Props) => {
                                                                               >
                                                                                 <span data-custom-class="body_text">
                                                                                   <em>
-                                                                                    <bdt className="block-component" />
+                                                                                    <br className="block-component" />
                                                                                   </em>
                                                                                 </span>
                                                                               </span>
@@ -4075,9 +4075,9 @@ const Policy = (props: Props) => {
                                                                                 fontSize: 15,
                                                                               }}
                                                                             >
-                                                                              <bdt className="block-component">
-                                                                                <bdt className="block-component" />
-                                                                              </bdt>
+                                                                              <br className="block-component">
+                                                                                <br className="block-component" />
+                                                                              </br>
                                                                             </span>
                                                                           </span>
                                                                         </span>
@@ -4132,7 +4132,7 @@ const Policy = (props: Props) => {
                                                                           your
                                                                           personal
                                                                           information,
-                                                                          <bdt className="block-component" />{" "}
+                                                                          <br className="block-component" />{" "}
                                                                           which
                                                                           may be
                                                                           express
@@ -4143,7 +4143,7 @@ const Policy = (props: Props) => {
                                                                           on the
                                                                           applicable
                                                                           law,
-                                                                          <bdt className="statement-end-if-in-editor" />{" "}
+                                                                          <br className="statement-end-if-in-editor" />{" "}
                                                                           you
                                                                           have
                                                                           the
@@ -4171,9 +4171,9 @@ const Policy = (props: Props) => {
                                                                           provided
                                                                           in the
                                                                           section{" "}
-                                                                          <bdt className="block-component" />
+                                                                          <br className="block-component" />
                                                                           "
-                                                                          <bdt className="statement-end-if-in-editor" />
+                                                                          <br className="statement-end-if-in-editor" />
                                                                         </span>
                                                                       </span>
                                                                     </span>
@@ -4223,11 +4223,11 @@ const Policy = (props: Props) => {
                                                                         }}
                                                                       >
                                                                         <span data-custom-class="body_text">
-                                                                          <bdt className="block-component" />
+                                                                          <br className="block-component" />
                                                                           "
-                                                                          <bdt className="statement-end-if-in-editor" />{" "}
+                                                                          <br className="statement-end-if-in-editor" />{" "}
                                                                           below
-                                                                          <bdt className="block-component" />
+                                                                          <br className="block-component" />
                                                                           .
                                                                         </span>
                                                                       </span>
@@ -4268,12 +4268,12 @@ const Policy = (props: Props) => {
                                                                         its
                                                                         withdrawal
                                                                         nor,
-                                                                        <bdt className="block-component" />{" "}
+                                                                        <br className="block-component" />{" "}
                                                                         when
                                                                         applicable
                                                                         law
                                                                         allows,
-                                                                        <bdt className="statement-end-if-in-editor" />{" "}
+                                                                        <br className="statement-end-if-in-editor" />{" "}
                                                                         will it
                                                                         affect
                                                                         the
@@ -4291,10 +4291,10 @@ const Policy = (props: Props) => {
                                                                         other
                                                                         than
                                                                         consent.
-                                                                        <bdt className="block-component" />
+                                                                        <br className="block-component" />
                                                                       </span>
                                                                     </span>
-                                                                    <bdt className="block-component">
+                                                                    <br className="block-component">
                                                                       <span
                                                                         style={{
                                                                           fontSize: 15,
@@ -4302,7 +4302,7 @@ const Policy = (props: Props) => {
                                                                       >
                                                                         <span data-custom-class="body_text" />
                                                                       </span>
-                                                                    </bdt>
+                                                                    </br>
                                                                   </div>
                                                                   <div
                                                                     style={{
@@ -4367,7 +4367,7 @@ const Policy = (props: Props) => {
                                                                         your
                                                                         account,
                                                                         you can:
-                                                                        <bdt className="forloop-component" />
+                                                                        <br className="forloop-component" />
                                                                       </span>
                                                                     </span>
                                                                   </div>
@@ -4384,7 +4384,7 @@ const Policy = (props: Props) => {
                                                                             fontSize: 15,
                                                                           }}
                                                                         >
-                                                                          <bdt className="question">
+                                                                          <br className="question">
                                                                             Log
                                                                             in
                                                                             to
@@ -4396,7 +4396,7 @@ const Policy = (props: Props) => {
                                                                             your
                                                                             user
                                                                             account.
-                                                                          </bdt>
+                                                                          </br>
                                                                         </span>
                                                                       </span>
                                                                     </li>
@@ -4413,7 +4413,7 @@ const Policy = (props: Props) => {
                                                                           fontSize: 15,
                                                                         }}
                                                                       >
-                                                                        <bdt className="forloop-component" />
+                                                                        <br className="forloop-component" />
                                                                       </span>
                                                                     </span>
                                                                   </div>
@@ -4473,7 +4473,7 @@ const Policy = (props: Props) => {
                                                                         requirements.
                                                                       </span>
                                                                     </span>
-                                                                    <bdt className="statement-end-if-in-editor">
+                                                                    <br className="statement-end-if-in-editor">
                                                                       <span
                                                                         style={{
                                                                           fontSize: 15,
@@ -4481,7 +4481,7 @@ const Policy = (props: Props) => {
                                                                       >
                                                                         <span data-custom-class="body_text" />
                                                                       </span>
-                                                                    </bdt>
+                                                                    </br>
                                                                     <span
                                                                       style={{
                                                                         fontSize: 15,
@@ -4531,7 +4531,7 @@ const Policy = (props: Props) => {
                                                                                             "rgb(89, 89, 89)",
                                                                                         }}
                                                                                       >
-                                                                                        <bdt className="block-component" />
+                                                                                        <br className="block-component" />
                                                                                       </span>
                                                                                     </span>
                                                                                   </span>
@@ -4621,7 +4621,7 @@ const Policy = (props: Props) => {
                                                                           services
                                                                           of our
                                                                           Services.{" "}
-                                                                          <bdt className="block-component">
+                                                                          <br className="block-component">
                                                                             <span
                                                                               style={{
                                                                                 fontSize: 15,
@@ -4634,7 +4634,7 @@ const Policy = (props: Props) => {
                                                                                 }}
                                                                               >
                                                                                 <span data-custom-class="body_text">
-                                                                                  <bdt className="block-component" />
+                                                                                  <br className="block-component" />
                                                                                   <span
                                                                                     style={{
                                                                                       fontSize: 15,
@@ -4668,7 +4668,7 @@ const Policy = (props: Props) => {
                                                                                                   "rgb(89, 89, 89)",
                                                                                               }}
                                                                                             >
-                                                                                              <bdt className="statement-end-if-in-editor" />
+                                                                                              <br className="statement-end-if-in-editor" />
                                                                                             </span>
                                                                                           </span>
                                                                                         </span>
@@ -4678,11 +4678,11 @@ const Policy = (props: Props) => {
                                                                                 </span>
                                                                               </span>
                                                                             </span>
-                                                                          </bdt>
+                                                                          </br>
                                                                         </span>
                                                                       </span>
                                                                     </span>
-                                                                    <bdt className="block-component">
+                                                                    <br className="block-component">
                                                                       <span
                                                                         style={{
                                                                           fontSize: 15,
@@ -4690,7 +4690,7 @@ const Policy = (props: Props) => {
                                                                       >
                                                                         <span data-custom-class="body_text" />
                                                                       </span>
-                                                                    </bdt>
+                                                                    </br>
                                                                   </div>
                                                                   <div
                                                                     style={{
@@ -4724,13 +4724,13 @@ const Policy = (props: Props) => {
                                                                         you may
                                                                         email us
                                                                         at{" "}
-                                                                        <bdt className="question">
+                                                                        <br className="question">
                                                                           hello@jordanbettmann.com
-                                                                        </bdt>
+                                                                        </br>
                                                                         .
                                                                       </span>
                                                                     </span>
-                                                                    <bdt className="statement-end-if-in-editor">
+                                                                    <br className="statement-end-if-in-editor">
                                                                       <span
                                                                         style={{
                                                                           fontSize: 15,
@@ -4738,7 +4738,7 @@ const Policy = (props: Props) => {
                                                                       >
                                                                         <span data-custom-class="body_text" />
                                                                       </span>
-                                                                    </bdt>
+                                                                    </br>
                                                                   </div>
                                                                   <div
                                                                     style={{
@@ -4848,9 +4848,9 @@ const Policy = (props: Props) => {
                                                                           a
                                                                           Do-Not-Track
                                                                           (
-                                                                          <bdt className="block-component" />
+                                                                          <br className="block-component" />
                                                                           "DNT"
-                                                                          <bdt className="statement-end-if-in-editor" />
+                                                                          <br className="statement-end-if-in-editor" />
                                                                           )
                                                                           feature
                                                                           or
@@ -4882,18 +4882,18 @@ const Policy = (props: Props) => {
                                                                           technology
                                                                           standard
                                                                           for{" "}
-                                                                          <bdt className="block-component" />
+                                                                          <br className="block-component" />
                                                                           recognizing
-                                                                          <bdt className="statement-end-if-in-editor" />{" "}
+                                                                          <br className="statement-end-if-in-editor" />{" "}
                                                                           and
                                                                           implementing
                                                                           DNT
                                                                           signals
                                                                           has
                                                                           been{" "}
-                                                                          <bdt className="block-component" />
+                                                                          <br className="block-component" />
                                                                           finalized
-                                                                          <bdt className="statement-end-if-in-editor" />
+                                                                          <br className="statement-end-if-in-editor" />
                                                                           . As
                                                                           such,
                                                                           we do
@@ -4942,7 +4942,7 @@ const Policy = (props: Props) => {
                                                                           this
                                                                           privacy
                                                                           notice.
-                                                                          <bdt className="block-component" />
+                                                                          <br className="block-component" />
                                                                         </span>
                                                                       </span>
                                                                     </span>
@@ -5057,16 +5057,16 @@ const Policy = (props: Props) => {
                                                                             a
                                                                             resident
                                                                             of{" "}
-                                                                            <bdt className="forloop-component" />
-                                                                            <bdt className="block-component" />
-                                                                            <bdt className="forloop-component" />
-                                                                            <bdt className="forloop-component" />{" "}
+                                                                            <br className="forloop-component" />
+                                                                            <br className="block-component" />
+                                                                            <br className="forloop-component" />
+                                                                            <br className="forloop-component" />{" "}
                                                                             Colorado
-                                                                            <bdt className="forloop-component" />
-                                                                            <bdt className="forloop-component" />
-                                                                            <bdt className="forloop-component" />
-                                                                            <bdt className="block-component" />
-                                                                            <bdt className="forloop-component" />
+                                                                            <br className="forloop-component" />
+                                                                            <br className="forloop-component" />
+                                                                            <br className="forloop-component" />
+                                                                            <br className="block-component" />
+                                                                            <br className="forloop-component" />
                                                                             ,
                                                                             you
                                                                             are
@@ -5438,13 +5438,13 @@ const Policy = (props: Props) => {
                                                                                 }}
                                                                               >
                                                                                 <span data-custom-class="body_text">
-                                                                                  <bdt className="block-component">
-                                                                                    <bdt className="block-component" />
-                                                                                  </bdt>
+                                                                                  <br className="block-component">
+                                                                                    <br className="block-component" />
+                                                                                  </br>
                                                                                   YES
-                                                                                  <bdt className="else-block">
-                                                                                    <bdt className="block-component" />
-                                                                                  </bdt>
+                                                                                  <br className="else-block">
+                                                                                    <br className="block-component" />
+                                                                                  </br>
                                                                                 </span>
                                                                               </span>
                                                                             </span>
@@ -5467,7 +5467,7 @@ const Policy = (props: Props) => {
                                                                         "1.5",
                                                                     }}
                                                                   >
-                                                                    <bdt className="block-component" />
+                                                                    <br className="block-component" />
                                                                   </div>
                                                                   <table
                                                                     style={{
@@ -5510,9 +5510,9 @@ const Policy = (props: Props) => {
                                                                                 }}
                                                                               >
                                                                                 <span data-custom-class="body_text">
-                                                                                  <bdt className="block-component" />
+                                                                                  <br className="block-component" />
                                                                                   B
-                                                                                  <bdt className="statement-end-if-in-editor" />
+                                                                                  <br className="statement-end-if-in-editor" />
 
                                                                                   .
                                                                                   Protected
@@ -5596,15 +5596,15 @@ const Policy = (props: Props) => {
                                                                                 "1.5",
                                                                             }}
                                                                           >
-                                                                            <bdt className="forloop-component">
+                                                                            <br className="forloop-component">
                                                                               <span data-custom-class="body_text">
-                                                                                <bdt className="block-component" />
-                                                                                <bdt className="block-component" />
+                                                                                <br className="block-component" />
+                                                                                <br className="block-component" />
                                                                                 NO
-                                                                                <bdt className="statement-end-if-in-editor" />
-                                                                                <bdt className="block-component" />
+                                                                                <br className="statement-end-if-in-editor" />
+                                                                                <br className="block-component" />
                                                                               </span>
-                                                                            </bdt>
+                                                                            </br>
                                                                           </div>
                                                                           <div
                                                                             style={{
@@ -5650,9 +5650,9 @@ const Policy = (props: Props) => {
                                                                                 }}
                                                                               >
                                                                                 <span data-custom-class="body_text">
-                                                                                  <bdt className="block-component" />
+                                                                                  <br className="block-component" />
                                                                                   C
-                                                                                  <bdt className="statement-end-if-in-editor" />
+                                                                                  <br className="statement-end-if-in-editor" />
 
                                                                                   .
                                                                                   Commercial
@@ -5734,16 +5734,16 @@ const Policy = (props: Props) => {
                                                                                 "1.5",
                                                                             }}
                                                                           >
-                                                                            <bdt className="forloop-component">
+                                                                            <br className="forloop-component">
                                                                               <span data-custom-class="body_text">
-                                                                                <bdt className="block-component" />
-                                                                                <bdt className="block-component" />
+                                                                                <br className="block-component" />
+                                                                                <br className="block-component" />
                                                                                 NO
-                                                                                <bdt className="statement-end-if-in-editor">
-                                                                                  <bdt className="block-component" />
-                                                                                </bdt>
+                                                                                <br className="statement-end-if-in-editor">
+                                                                                  <br className="block-component" />
+                                                                                </br>
                                                                               </span>
-                                                                            </bdt>
+                                                                            </br>
                                                                           </div>
                                                                           <div
                                                                             style={{
@@ -5789,9 +5789,9 @@ const Policy = (props: Props) => {
                                                                                 }}
                                                                               >
                                                                                 <span data-custom-class="body_text">
-                                                                                  <bdt className="block-component" />
+                                                                                  <br className="block-component" />
                                                                                   D
-                                                                                  <bdt className="statement-end-if-in-editor" />
+                                                                                  <br className="statement-end-if-in-editor" />
 
                                                                                   .
                                                                                   Biometric
@@ -5867,17 +5867,17 @@ const Policy = (props: Props) => {
                                                                                 "1.5",
                                                                             }}
                                                                           >
-                                                                            <bdt className="forloop-component">
+                                                                            <br className="forloop-component">
                                                                               <span data-custom-class="body_text">
-                                                                                <bdt className="block-component">
-                                                                                  <bdt className="block-component">
+                                                                                <br className="block-component">
+                                                                                  <br className="block-component">
                                                                                     NO
-                                                                                  </bdt>
-                                                                                  <bdt className="statement-end-if-in-editor" />
-                                                                                  <bdt className="block-component" />
-                                                                                </bdt>
+                                                                                  </br>
+                                                                                  <br className="statement-end-if-in-editor" />
+                                                                                  <br className="block-component" />
+                                                                                </br>
                                                                               </span>
-                                                                            </bdt>
+                                                                            </br>
                                                                           </div>
                                                                           <div
                                                                             style={{
@@ -5923,9 +5923,9 @@ const Policy = (props: Props) => {
                                                                                 }}
                                                                               >
                                                                                 <span data-custom-class="body_text">
-                                                                                  <bdt className="block-component" />
+                                                                                  <br className="block-component" />
                                                                                   E
-                                                                                  <bdt className="statement-end-if-in-editor" />
+                                                                                  <br className="statement-end-if-in-editor" />
 
                                                                                   .
                                                                                   Internet
@@ -5975,9 +5975,9 @@ const Policy = (props: Props) => {
                                                                                   search
                                                                                   history,
                                                                                   online{" "}
-                                                                                  <bdt className="block-component" />
+                                                                                  <br className="block-component" />
                                                                                   behavior
-                                                                                  <bdt className="statement-end-if-in-editor" />
+                                                                                  <br className="statement-end-if-in-editor" />
 
                                                                                   ,
                                                                                   interest
@@ -6025,15 +6025,15 @@ const Policy = (props: Props) => {
                                                                                 "1.5",
                                                                             }}
                                                                           >
-                                                                            <bdt className="forloop-component">
+                                                                            <br className="forloop-component">
                                                                               <span data-custom-class="body_text">
-                                                                                <bdt className="block-component" />
-                                                                                <bdt className="block-component" />
+                                                                                <br className="block-component" />
+                                                                                <br className="block-component" />
                                                                                 NO
-                                                                                <bdt className="statement-end-if-in-editor" />
-                                                                                <bdt className="block-component" />
+                                                                                <br className="statement-end-if-in-editor" />
+                                                                                <br className="block-component" />
                                                                               </span>
-                                                                            </bdt>
+                                                                            </br>
                                                                           </div>
                                                                           <div
                                                                             style={{
@@ -6079,9 +6079,9 @@ const Policy = (props: Props) => {
                                                                                 }}
                                                                               >
                                                                                 <span data-custom-class="body_text">
-                                                                                  <bdt className="block-component" />
+                                                                                  <br className="block-component" />
                                                                                   F
-                                                                                  <bdt className="statement-end-if-in-editor" />
+                                                                                  <br className="statement-end-if-in-editor" />
 
                                                                                   .
                                                                                   Geolocation
@@ -6156,15 +6156,15 @@ const Policy = (props: Props) => {
                                                                                 "1.5",
                                                                             }}
                                                                           >
-                                                                            <bdt className="forloop-component">
+                                                                            <br className="forloop-component">
                                                                               <span data-custom-class="body_text">
-                                                                                <bdt className="block-component" />
-                                                                                <bdt className="block-component" />
+                                                                                <br className="block-component" />
+                                                                                <br className="block-component" />
                                                                                 NO
-                                                                                <bdt className="statement-end-if-in-editor" />
-                                                                                <bdt className="block-component" />
+                                                                                <br className="statement-end-if-in-editor" />
+                                                                                <br className="block-component" />
                                                                               </span>
-                                                                            </bdt>
+                                                                            </br>
                                                                           </div>
                                                                           <div
                                                                             style={{
@@ -6210,9 +6210,9 @@ const Policy = (props: Props) => {
                                                                                 }}
                                                                               >
                                                                                 <span data-custom-class="body_text">
-                                                                                  <bdt className="block-component" />
+                                                                                  <br className="block-component" />
                                                                                   G
-                                                                                  <bdt className="statement-end-if-in-editor" />
+                                                                                  <br className="statement-end-if-in-editor" />
 
                                                                                   .
                                                                                   Audio,
@@ -6305,15 +6305,15 @@ const Policy = (props: Props) => {
                                                                                 "1.5",
                                                                             }}
                                                                           >
-                                                                            <bdt className="forloop-component">
+                                                                            <br className="forloop-component">
                                                                               <span data-custom-class="body_text">
-                                                                                <bdt className="block-component" />
-                                                                                <bdt className="block-component" />
+                                                                                <br className="block-component" />
+                                                                                <br className="block-component" />
                                                                                 NO
-                                                                                <bdt className="statement-end-if-in-editor" />
-                                                                                <bdt className="block-component" />
+                                                                                <br className="statement-end-if-in-editor" />
+                                                                                <br className="block-component" />
                                                                               </span>
-                                                                            </bdt>
+                                                                            </br>
                                                                           </div>
                                                                           <div
                                                                             style={{
@@ -6359,9 +6359,9 @@ const Policy = (props: Props) => {
                                                                                 }}
                                                                               >
                                                                                 <span data-custom-class="body_text">
-                                                                                  <bdt className="block-component" />
+                                                                                  <br className="block-component" />
                                                                                   H
-                                                                                  <bdt className="statement-end-if-in-editor" />
+                                                                                  <br className="statement-end-if-in-editor" />
 
                                                                                   .
                                                                                   Professional
@@ -6466,15 +6466,15 @@ const Policy = (props: Props) => {
                                                                                 "1.5",
                                                                             }}
                                                                           >
-                                                                            <bdt className="forloop-component">
+                                                                            <br className="forloop-component">
                                                                               <span data-custom-class="body_text">
-                                                                                <bdt className="block-component" />
-                                                                                <bdt className="block-component" />
+                                                                                <br className="block-component" />
+                                                                                <br className="block-component" />
                                                                                 NO
-                                                                                <bdt className="statement-end-if-in-editor" />
-                                                                                <bdt className="block-component" />
+                                                                                <br className="statement-end-if-in-editor" />
+                                                                                <br className="block-component" />
                                                                               </span>
-                                                                            </bdt>
+                                                                            </br>
                                                                           </div>
                                                                           <div
                                                                             style={{
@@ -6520,9 +6520,9 @@ const Policy = (props: Props) => {
                                                                                 }}
                                                                               >
                                                                                 <span data-custom-class="body_text">
-                                                                                  <bdt className="block-component" />
+                                                                                  <br className="block-component" />
                                                                                   I
-                                                                                  <bdt className="statement-end-if-in-editor" />
+                                                                                  <br className="statement-end-if-in-editor" />
 
                                                                                   .
                                                                                   Education
@@ -6600,15 +6600,15 @@ const Policy = (props: Props) => {
                                                                                 "1.5",
                                                                             }}
                                                                           >
-                                                                            <bdt className="forloop-component">
+                                                                            <br className="forloop-component">
                                                                               <span data-custom-class="body_text">
-                                                                                <bdt className="block-component" />
-                                                                                <bdt className="block-component" />
+                                                                                <br className="block-component" />
+                                                                                <br className="block-component" />
                                                                                 NO
-                                                                                <bdt className="statement-end-if-in-editor" />
-                                                                                <bdt className="block-component" />
+                                                                                <br className="statement-end-if-in-editor" />
+                                                                                <br className="block-component" />
                                                                               </span>
-                                                                            </bdt>
+                                                                            </br>
                                                                           </div>
                                                                           <div
                                                                             style={{
@@ -6653,9 +6653,9 @@ const Policy = (props: Props) => {
                                                                                 }}
                                                                               >
                                                                                 <span data-custom-class="body_text">
-                                                                                  <bdt className="block-component" />
+                                                                                  <br className="block-component" />
                                                                                   J
-                                                                                  <bdt className="statement-end-if-in-editor" />
+                                                                                  <br className="statement-end-if-in-editor" />
 
                                                                                   .
                                                                                   Inferences
@@ -6762,7 +6762,7 @@ const Policy = (props: Props) => {
                                                                             }}
                                                                           >
                                                                             <span data-custom-class="body_text">
-                                                                              <bdt className="block-component" />
+                                                                              <br className="block-component" />
                                                                               NO
                                                                               <span
                                                                                 style={{
@@ -6786,7 +6786,7 @@ const Policy = (props: Props) => {
                                                                                       }}
                                                                                     >
                                                                                       <span data-custom-class="body_text">
-                                                                                        <bdt className="statement-end-if-in-editor" />
+                                                                                        <br className="statement-end-if-in-editor" />
                                                                                       </span>
                                                                                     </span>
                                                                                   </span>
@@ -6818,9 +6818,9 @@ const Policy = (props: Props) => {
                                                                           }}
                                                                         >
                                                                           <span data-custom-class="body_text">
-                                                                            <bdt className="block-component" />
+                                                                            <br className="block-component" />
                                                                             K
-                                                                            <bdt className="statement-end-if-in-editor" />
+                                                                            <br className="statement-end-if-in-editor" />
                                                                             .
                                                                             Sensitive
                                                                             personal
@@ -6837,9 +6837,9 @@ const Policy = (props: Props) => {
                                                                               "1.5",
                                                                           }}
                                                                         >
-                                                                          <bdt className="block-component">
+                                                                          <br className="block-component">
                                                                             <span data-custom-class="body_text" />
-                                                                          </bdt>
+                                                                          </br>
                                                                         </td>
                                                                         <td
                                                                           style={{
@@ -6868,13 +6868,13 @@ const Policy = (props: Props) => {
                                                                                 "1.5",
                                                                             }}
                                                                           >
-                                                                            <bdt className="block-component">
+                                                                            <br className="block-component">
                                                                               <span data-custom-class="body_text" />
-                                                                            </bdt>
+                                                                            </br>
                                                                             NO
-                                                                            <bdt className="statement-end-if-in-editor">
+                                                                            <br className="statement-end-if-in-editor">
                                                                               <span data-custom-class="body_text" />
-                                                                            </bdt>
+                                                                            </br>
                                                                           </div>
                                                                           <div
                                                                             data-empty="true"
@@ -6903,9 +6903,9 @@ const Policy = (props: Props) => {
                                                                         "1.5",
                                                                     }}
                                                                   >
-                                                                    <bdt className="block-component">
+                                                                    <br className="block-component">
                                                                       <span data-custom-class="body_text" />
-                                                                    </bdt>
+                                                                    </br>
                                                                     <span data-custom-class="body_text">
                                                                       We will
                                                                       use and
@@ -6918,7 +6918,7 @@ const Policy = (props: Props) => {
                                                                       the
                                                                       Services
                                                                       or for:
-                                                                      <bdt className="block-component" />
+                                                                      <br className="block-component" />
                                                                     </span>
                                                                   </div>
                                                                   <ul>
@@ -6931,7 +6931,7 @@ const Policy = (props: Props) => {
                                                                       <span data-custom-class="body_text">
                                                                         Category
                                                                         A -{" "}
-                                                                        <bdt className="question">
+                                                                        <br className="question">
                                                                           As
                                                                           long
                                                                           as the
@@ -6940,8 +6940,8 @@ const Policy = (props: Props) => {
                                                                           account
                                                                           with
                                                                           us
-                                                                        </bdt>
-                                                                        <bdt className="statement-end-if-in-editor" />
+                                                                        </br>
+                                                                        <br className="statement-end-if-in-editor" />
                                                                       </span>
                                                                     </li>
                                                                   </ul>
@@ -6952,7 +6952,7 @@ const Policy = (props: Props) => {
                                                                     }}
                                                                   >
                                                                     <span data-custom-class="body_text">
-                                                                      <bdt className="block-component" />
+                                                                      <br className="block-component" />
                                                                     </span>
                                                                     <div
                                                                       style={{
@@ -6961,7 +6961,7 @@ const Policy = (props: Props) => {
                                                                       }}
                                                                     >
                                                                       <span data-custom-class="body_text">
-                                                                        <bdt className="block-component" />
+                                                                        <br className="block-component" />
                                                                       </span>
                                                                       <div
                                                                         style={{
@@ -6970,7 +6970,7 @@ const Policy = (props: Props) => {
                                                                         }}
                                                                       >
                                                                         <span data-custom-class="body_text">
-                                                                          <bdt className="block-component" />
+                                                                          <br className="block-component" />
                                                                         </span>
                                                                         <div
                                                                           style={{
@@ -6979,7 +6979,7 @@ const Policy = (props: Props) => {
                                                                           }}
                                                                         >
                                                                           <span data-custom-class="body_text">
-                                                                            <bdt className="block-component" />
+                                                                            <br className="block-component" />
                                                                           </span>
                                                                           <div
                                                                             style={{
@@ -6988,7 +6988,7 @@ const Policy = (props: Props) => {
                                                                             }}
                                                                           >
                                                                             <span data-custom-class="body_text">
-                                                                              <bdt className="block-component" />
+                                                                              <br className="block-component" />
                                                                             </span>
                                                                             <div
                                                                               style={{
@@ -6997,7 +6997,7 @@ const Policy = (props: Props) => {
                                                                               }}
                                                                             >
                                                                               <span data-custom-class="body_text">
-                                                                                <bdt className="block-component" />
+                                                                                <br className="block-component" />
                                                                               </span>
                                                                               <div
                                                                                 style={{
@@ -7006,7 +7006,7 @@ const Policy = (props: Props) => {
                                                                                 }}
                                                                               >
                                                                                 <span data-custom-class="body_text">
-                                                                                  <bdt className="block-component" />
+                                                                                  <br className="block-component" />
                                                                                 </span>
                                                                                 <div
                                                                                   style={{
@@ -7015,7 +7015,7 @@ const Policy = (props: Props) => {
                                                                                   }}
                                                                                 >
                                                                                   <span data-custom-class="body_text">
-                                                                                    <bdt className="block-component" />
+                                                                                    <br className="block-component" />
                                                                                   </span>
                                                                                   <div
                                                                                     style={{
@@ -7024,7 +7024,7 @@ const Policy = (props: Props) => {
                                                                                     }}
                                                                                   >
                                                                                     <span data-custom-class="body_text">
-                                                                                      <bdt className="block-component" />
+                                                                                      <br className="block-component" />
                                                                                     </span>
                                                                                     <div
                                                                                       style={{
@@ -7033,7 +7033,7 @@ const Policy = (props: Props) => {
                                                                                       }}
                                                                                     >
                                                                                       <span data-custom-class="body_text">
-                                                                                        <bdt className="block-component" />
+                                                                                        <br className="block-component" />
                                                                                       </span>
                                                                                       <div
                                                                                         style={{
@@ -7042,11 +7042,11 @@ const Policy = (props: Props) => {
                                                                                         }}
                                                                                       >
                                                                                         <span data-custom-class="body_text">
-                                                                                          <bdt className="block-component" />
+                                                                                          <br className="block-component" />
                                                                                         </span>
-                                                                                        <bdt className="statement-end-if-in-editor">
+                                                                                        <br className="statement-end-if-in-editor">
                                                                                           <span data-custom-class="body_text" />
-                                                                                        </bdt>
+                                                                                        </br>
                                                                                         <div
                                                                                           style={{
                                                                                             lineHeight:
@@ -7068,7 +7068,7 @@ const Policy = (props: Props) => {
                                                                                               }}
                                                                                             >
                                                                                               <span data-custom-class="body_text">
-                                                                                                <bdt className="block-component" />
+                                                                                                <br className="block-component" />
                                                                                               </span>
                                                                                             </span>
                                                                                           </span>
@@ -7147,7 +7147,7 @@ const Policy = (props: Props) => {
                                                                                                         }}
                                                                                                       >
                                                                                                         <span data-custom-class="body_text">
-                                                                                                          <bdt className="block-component" />
+                                                                                                          <br className="block-component" />
                                                                                                         </span>
                                                                                                       </span>
                                                                                                     </span>
@@ -7231,7 +7231,7 @@ const Policy = (props: Props) => {
                                                                                                                     }}
                                                                                                                   >
                                                                                                                     <span data-custom-class="body_text">
-                                                                                                                      <bdt className="statement-end-if-in-editor" />
+                                                                                                                      <br className="statement-end-if-in-editor" />
                                                                                                                     </span>
                                                                                                                   </span>
                                                                                                                 </span>
@@ -7286,7 +7286,7 @@ const Policy = (props: Props) => {
                                                                                                         }}
                                                                                                       >
                                                                                                         <span data-custom-class="body_text">
-                                                                                                          <bdt className="block-component" />
+                                                                                                          <br className="block-component" />
                                                                                                         </span>
                                                                                                       </span>
                                                                                                     </span>
@@ -7370,7 +7370,7 @@ const Policy = (props: Props) => {
                                                                                                                     }}
                                                                                                                   >
                                                                                                                     <span data-custom-class="body_text">
-                                                                                                                      <bdt className="statement-end-if-in-editor" />
+                                                                                                                      <br className="statement-end-if-in-editor" />
                                                                                                                     </span>
                                                                                                                   </span>
                                                                                                                 </span>
@@ -7425,7 +7425,7 @@ const Policy = (props: Props) => {
                                                                                                         }}
                                                                                                       >
                                                                                                         <span data-custom-class="body_text">
-                                                                                                          <bdt className="block-component" />
+                                                                                                          <br className="block-component" />
                                                                                                         </span>
                                                                                                       </span>
                                                                                                     </span>
@@ -7515,7 +7515,7 @@ const Policy = (props: Props) => {
                                                                                                                     }}
                                                                                                                   >
                                                                                                                     <span data-custom-class="body_text">
-                                                                                                                      <bdt className="statement-end-if-in-editor" />
+                                                                                                                      <br className="statement-end-if-in-editor" />
                                                                                                                     </span>
                                                                                                                   </span>
                                                                                                                 </span>
@@ -7598,9 +7598,9 @@ const Policy = (props: Props) => {
                                                                                             in
                                                                                             the
                                                                                             section,{" "}
-                                                                                            <bdt className="block-component" />
+                                                                                            <br className="block-component" />
                                                                                             "
-                                                                                            <bdt className="statement-end-if-in-editor" />
+                                                                                            <br className="statement-end-if-in-editor" />
                                                                                           </span>
                                                                                           <a
                                                                                             data-custom-class="link"
@@ -7627,18 +7627,18 @@ const Policy = (props: Props) => {
                                                                                               fontSize: 15,
                                                                                             }}
                                                                                           >
-                                                                                            <bdt className="block-component" />
+                                                                                            <br className="block-component" />
 
                                                                                             "
                                                                                           </span>
-                                                                                          <bdt className="statement-end-if-in-editor">
+                                                                                          <br className="statement-end-if-in-editor">
                                                                                             <span
                                                                                               data-custom-class="body_text"
                                                                                               style={{
                                                                                                 fontSize: 15,
                                                                                               }}
                                                                                             />
-                                                                                          </bdt>
+                                                                                          </br>
                                                                                         </div>
                                                                                         <div
                                                                                           style={{
@@ -7677,7 +7677,7 @@ const Policy = (props: Props) => {
                                                                                                   }}
                                                                                                 >
                                                                                                   <span data-custom-class="body_text">
-                                                                                                    <bdt className="block-component" />
+                                                                                                    <br className="block-component" />
                                                                                                   </span>
                                                                                                 </span>
                                                                                               </span>
@@ -7781,9 +7781,9 @@ const Policy = (props: Props) => {
                                                                                                 in
                                                                                                 the
                                                                                                 section,{" "}
-                                                                                                <bdt className="block-component" />
+                                                                                                <br className="block-component" />
                                                                                                 "
-                                                                                                <bdt className="statement-end-if-in-editor" />
+                                                                                                <br className="statement-end-if-in-editor" />
                                                                                               </span>
                                                                                             </span>
                                                                                           </span>
@@ -7833,9 +7833,9 @@ const Policy = (props: Props) => {
                                                                                               }}
                                                                                             >
                                                                                               <span data-custom-class="body_text">
-                                                                                                <bdt className="block-component" />
+                                                                                                <br className="block-component" />
                                                                                                 "
-                                                                                                <bdt className="statement-end-if-in-editor" />
+                                                                                                <br className="statement-end-if-in-editor" />
                                                                                               </span>
                                                                                             </span>
                                                                                           </span>
@@ -7897,9 +7897,9 @@ const Policy = (props: Props) => {
                                                                                                 considered
                                                                                                 to
                                                                                                 be{" "}
-                                                                                                <bdt className="block-component" />
+                                                                                                <br className="block-component" />
                                                                                                 "selling"
-                                                                                                <bdt className="statement-end-if-in-editor" />{" "}
+                                                                                                <br className="statement-end-if-in-editor" />{" "}
                                                                                                 of
                                                                                                 your
                                                                                                 personal
@@ -7912,7 +7912,7 @@ const Policy = (props: Props) => {
                                                                                                   }}
                                                                                                 >
                                                                                                   <span data-custom-class="body_text">
-                                                                                                    <bdt className="block-component" />
+                                                                                                    <br className="block-component" />
                                                                                                   </span>
                                                                                                 </span>
                                                                                               </span>
@@ -8021,12 +8021,12 @@ const Policy = (props: Props) => {
                                                                                                           }}
                                                                                                         >
                                                                                                           <span data-custom-class="body_text">
-                                                                                                            <bdt className="statement-end-if-in-editor" />
+                                                                                                            <br className="statement-end-if-in-editor" />
                                                                                                           </span>
                                                                                                         </span>
                                                                                                       </span>
                                                                                                     </span>
-                                                                                                    <bdt className="block-component" />
+                                                                                                    <br className="block-component" />
                                                                                                   </span>
                                                                                                 </span>
                                                                                               </span>
@@ -8040,11 +8040,11 @@ const Policy = (props: Props) => {
                                                                                               }}
                                                                                             >
                                                                                               <span data-custom-class="body_text">
-                                                                                                <bdt className="block-component" />
+                                                                                                <br className="block-component" />
                                                                                               </span>
                                                                                             </span>
                                                                                           </span>
-                                                                                          <bdt className="block-component" />
+                                                                                          <br className="block-component" />
                                                                                         </div>
                                                                                         <div
                                                                                           style={{
@@ -8052,13 +8052,13 @@ const Policy = (props: Props) => {
                                                                                               "1.5",
                                                                                           }}
                                                                                         >
-                                                                                          <bdt className="block-component">
+                                                                                          <br className="block-component">
                                                                                             <span
                                                                                               style={{
                                                                                                 fontSize: 15,
                                                                                               }}
                                                                                             />
-                                                                                          </bdt>
+                                                                                          </br>
                                                                                         </div>
                                                                                         <div
                                                                                           style={{
@@ -8158,7 +8158,7 @@ const Policy = (props: Props) => {
                                                                                               by
                                                                                               law.
                                                                                             </span>
-                                                                                            <bdt className="block-component" />
+                                                                                            <br className="block-component" />
                                                                                           </span>
                                                                                         </div>
                                                                                         <ul>
@@ -8188,7 +8188,7 @@ const Policy = (props: Props) => {
                                                                                                 personal
                                                                                                 data
                                                                                               </span>
-                                                                                              <bdt className="statement-end-if-in-editor" />
+                                                                                              <br className="statement-end-if-in-editor" />
                                                                                             </span>
                                                                                           </li>
                                                                                         </ul>
@@ -8203,7 +8203,7 @@ const Policy = (props: Props) => {
                                                                                               fontSize: 15,
                                                                                             }}
                                                                                           >
-                                                                                            <bdt className="block-component" />
+                                                                                            <br className="block-component" />
                                                                                           </span>
                                                                                         </div>
                                                                                         <ul>
@@ -8226,7 +8226,7 @@ const Policy = (props: Props) => {
                                                                                                 personal
                                                                                                 data
                                                                                               </span>
-                                                                                              <bdt className="statement-end-if-in-editor" />
+                                                                                              <br className="statement-end-if-in-editor" />
                                                                                             </span>
                                                                                           </li>
                                                                                         </ul>
@@ -8236,7 +8236,7 @@ const Policy = (props: Props) => {
                                                                                               "1.5",
                                                                                           }}
                                                                                         >
-                                                                                          <bdt className="block-component" />
+                                                                                          <br className="block-component" />
                                                                                         </div>
                                                                                         <ul>
                                                                                           <li
@@ -8261,7 +8261,7 @@ const Policy = (props: Props) => {
                                                                                                 data
                                                                                               </span>
                                                                                             </span>
-                                                                                            <bdt className="statement-end-if-in-editor" />
+                                                                                            <br className="statement-end-if-in-editor" />
                                                                                           </li>
                                                                                         </ul>
                                                                                         <div
@@ -8270,7 +8270,7 @@ const Policy = (props: Props) => {
                                                                                               "1.5",
                                                                                           }}
                                                                                         >
-                                                                                          <bdt className="block-component" />
+                                                                                          <br className="block-component" />
                                                                                         </div>
                                                                                         <ul>
                                                                                           <li
@@ -8295,7 +8295,7 @@ const Policy = (props: Props) => {
                                                                                                 data
                                                                                               </span>
                                                                                             </span>
-                                                                                            <bdt className="statement-end-if-in-editor" />
+                                                                                            <br className="statement-end-if-in-editor" />
                                                                                           </li>
                                                                                         </ul>
                                                                                         <div
@@ -8309,7 +8309,7 @@ const Policy = (props: Props) => {
                                                                                               fontSize: 15,
                                                                                             }}
                                                                                           >
-                                                                                            <bdt className="block-component" />
+                                                                                            <br className="block-component" />
                                                                                           </span>
                                                                                         </div>
                                                                                         <ul>
@@ -8340,7 +8340,7 @@ const Policy = (props: Props) => {
                                                                                                 with
                                                                                                 us
                                                                                               </span>
-                                                                                              <bdt className="statement-end-if-in-editor" />
+                                                                                              <br className="statement-end-if-in-editor" />
                                                                                             </span>
                                                                                           </li>
                                                                                         </ul>
@@ -8350,7 +8350,7 @@ const Policy = (props: Props) => {
                                                                                               "1.5",
                                                                                           }}
                                                                                         >
-                                                                                          <bdt className="block-component" />
+                                                                                          <br className="block-component" />
                                                                                         </div>
                                                                                         <ul>
                                                                                           <li
@@ -8402,14 +8402,14 @@ const Policy = (props: Props) => {
                                                                                                 significant
                                                                                                 effects
                                                                                                 (
-                                                                                                <bdt className="block-component" />
+                                                                                                <br className="block-component" />
                                                                                                 "profiling"
-                                                                                                <bdt className="statement-end-if-in-editor" />
+                                                                                                <br className="statement-end-if-in-editor" />
 
                                                                                                 )
                                                                                               </span>
                                                                                             </span>
-                                                                                            <bdt className="statement-end-if-in-editor" />
+                                                                                            <br className="statement-end-if-in-editor" />
                                                                                           </li>
                                                                                         </ul>
                                                                                         <div
@@ -8419,9 +8419,9 @@ const Policy = (props: Props) => {
                                                                                               "1.5",
                                                                                           }}
                                                                                         >
-                                                                                          <bdt className="block-component">
+                                                                                          <br className="block-component">
                                                                                             <span data-custom-class="body_text" />
-                                                                                          </bdt>
+                                                                                          </br>
                                                                                           <span
                                                                                             style={{
                                                                                               fontSize: 15,
@@ -8434,7 +8434,7 @@ const Policy = (props: Props) => {
                                                                                             to
                                                                                             exercise
                                                                                           </span>{" "}
-                                                                                          <bdt
+                                                                                          <br
                                                                                             className="block-component"
                                                                                             style={{
                                                                                               fontSize: 15,
@@ -8447,7 +8447,7 @@ const Policy = (props: Props) => {
                                                                                           >
                                                                                             these
                                                                                           </span>{" "}
-                                                                                          <bdt
+                                                                                          <br
                                                                                             className="statement-end-if-in-editor"
                                                                                             style={{
                                                                                               fontSize: 15,
@@ -8462,17 +8462,17 @@ const Policy = (props: Props) => {
                                                                                             described
                                                                                             above,
                                                                                             please{" "}
-                                                                                            <bdt className="block-component" />
+                                                                                            <br className="block-component" />
                                                                                             email
                                                                                           </span>{" "}
-                                                                                          <bdt
+                                                                                          <br
                                                                                             className="question"
                                                                                             style={{
                                                                                               fontSize: 15,
                                                                                             }}
                                                                                           >
                                                                                             hello@jordanbettmann.com
-                                                                                          </bdt>
+                                                                                          </br>
                                                                                           <span
                                                                                             style={{
                                                                                               fontSize: 15,
@@ -8480,7 +8480,7 @@ const Policy = (props: Props) => {
                                                                                           >
                                                                                             &nbsp;or&nbsp;
                                                                                           </span>
-                                                                                          <bdt
+                                                                                          <br
                                                                                             className="block-component"
                                                                                             style={{
                                                                                               fontSize: 15,
@@ -8515,7 +8515,7 @@ const Policy = (props: Props) => {
                                                                                               </span>
                                                                                             </span>
                                                                                           </a>
-                                                                                          <bdt
+                                                                                          <br
                                                                                             className="block-component"
                                                                                             style={{
                                                                                               fontSize: 15,
@@ -8571,11 +8571,11 @@ const Policy = (props: Props) => {
                                                                                               email
                                                                                               us
                                                                                               at{" "}
-                                                                                              <bdt className="block-component" />
-                                                                                              <bdt className="question">
+                                                                                              <br className="block-component" />
+                                                                                              <br className="question">
                                                                                                 hello@jordanbettmann.com
-                                                                                              </bdt>
-                                                                                              <bdt className="else-block" />
+                                                                                              </br>
+                                                                                              <br className="else-block" />
 
                                                                                               .
                                                                                               Within
@@ -8616,7 +8616,7 @@ const Policy = (props: Props) => {
                                                                                               the
                                                                                               decisions.
                                                                                             </span>
-                                                                                            <bdt className="statement-end-if-in-editor" />
+                                                                                            <br className="statement-end-if-in-editor" />
                                                                                           </span>
                                                                                         </div>
                                                                                         <div
@@ -8625,21 +8625,21 @@ const Policy = (props: Props) => {
                                                                                               "1.5",
                                                                                           }}
                                                                                         >
-                                                                                          <bdt className="block-component" />
-                                                                                          <bdt className="block-component">
+                                                                                          <br className="block-component" />
+                                                                                          <br className="block-component">
                                                                                             <span
                                                                                               style={{
                                                                                                 fontSize: 15,
                                                                                               }}
                                                                                             />
-                                                                                          </bdt>
-                                                                                          <bdt className="block-component">
+                                                                                          </br>
+                                                                                          <br className="block-component">
                                                                                             <span
                                                                                               style={{
                                                                                                 fontSize: 15,
                                                                                               }}
                                                                                             />
-                                                                                          </bdt>
+                                                                                          </br>
                                                                                           <span
                                                                                             style={{
                                                                                               fontSize: 15,
@@ -8686,7 +8686,7 @@ const Policy = (props: Props) => {
                                                                                                             }}
                                                                                                           >
                                                                                                             <span data-custom-class="body_text">
-                                                                                                              <bdt className="statement-end-if-in-editor">
+                                                                                                              <br className="statement-end-if-in-editor">
                                                                                                                 <span data-custom-class="body_text">
                                                                                                                   <span
                                                                                                                     style={{
@@ -8734,9 +8734,9 @@ const Policy = (props: Props) => {
                                                                                                                                     }}
                                                                                                                                   >
                                                                                                                                     <span data-custom-class="body_text">
-                                                                                                                                      <bdt className="statement-end-if-in-editor">
-                                                                                                                                        <bdt className="statement-end-if-in-editor" />
-                                                                                                                                      </bdt>
+                                                                                                                                      <br className="statement-end-if-in-editor">
+                                                                                                                                        <br className="statement-end-if-in-editor" />
+                                                                                                                                      </br>
                                                                                                                                     </span>
                                                                                                                                   </span>
                                                                                                                                 </span>
@@ -8748,7 +8748,7 @@ const Policy = (props: Props) => {
                                                                                                                     </span>
                                                                                                                   </span>
                                                                                                                 </span>
-                                                                                                              </bdt>
+                                                                                                              </br>
                                                                                                             </span>
                                                                                                           </span>
                                                                                                         </span>
@@ -8759,20 +8759,20 @@ const Policy = (props: Props) => {
                                                                                               </span>
                                                                                             </span>
                                                                                           </span>
-                                                                                          <bdt className="block-component">
+                                                                                          <br className="block-component">
                                                                                             <span
                                                                                               style={{
                                                                                                 fontSize: 15,
                                                                                               }}
                                                                                             />
-                                                                                          </bdt>
-                                                                                          <bdt className="block-component">
+                                                                                          </br>
+                                                                                          <br className="block-component">
                                                                                             <span
                                                                                               style={{
                                                                                                 fontSize: 15,
                                                                                               }}
                                                                                             />
-                                                                                          </bdt>
+                                                                                          </br>
                                                                                         </div>
                                                                                         <div
                                                                                           style={{
@@ -8942,9 +8942,9 @@ const Policy = (props: Props) => {
                                                                                                 by
                                                                                                 an
                                                                                                 updated{" "}
-                                                                                                <bdt className="block-component" />
+                                                                                                <br className="block-component" />
                                                                                                 "Revised"
-                                                                                                <bdt className="statement-end-if-in-editor" />{" "}
+                                                                                                <br className="statement-end-if-in-editor" />{" "}
                                                                                                 date
                                                                                                 and
                                                                                                 the
@@ -9127,19 +9127,19 @@ const Policy = (props: Props) => {
                                                                                                   }}
                                                                                                 >
                                                                                                   <span data-custom-class="body_text">
-                                                                                                    <bdt className="block-component">
-                                                                                                      <bdt className="block-component" />
-                                                                                                    </bdt>
+                                                                                                    <br className="block-component">
+                                                                                                      <br className="block-component" />
+                                                                                                    </br>
                                                                                                     email
                                                                                                     us
                                                                                                     at{" "}
-                                                                                                    <bdt className="question">
+                                                                                                    <br className="question">
                                                                                                       hello@jordanbettmann.com
                                                                                                       or&nbsp;
-                                                                                                    </bdt>
-                                                                                                    <bdt className="statement-end-if-in-editor">
-                                                                                                      <bdt className="block-component" />
-                                                                                                    </bdt>
+                                                                                                    </br>
+                                                                                                    <br className="statement-end-if-in-editor">
+                                                                                                      <br className="block-component" />
+                                                                                                    </br>
                                                                                                   </span>
                                                                                                 </span>
                                                                                                 <span
@@ -9216,10 +9216,10 @@ const Policy = (props: Props) => {
                                                                                                       }}
                                                                                                     >
                                                                                                       <span data-custom-class="body_text">
-                                                                                                        <bdt className="question">
+                                                                                                        <br className="question">
                                                                                                           Brett
                                                                                                           Inc.
-                                                                                                        </bdt>
+                                                                                                        </br>
                                                                                                       </span>
                                                                                                     </span>
                                                                                                   </span>
@@ -9233,7 +9233,7 @@ const Policy = (props: Props) => {
                                                                                                   }}
                                                                                                 >
                                                                                                   <span data-custom-class="body_text">
-                                                                                                    <bdt className="block-component" />
+                                                                                                    <br className="block-component" />
                                                                                                   </span>
                                                                                                 </span>
                                                                                               </span>
@@ -9252,11 +9252,11 @@ const Policy = (props: Props) => {
                                                                                             }}
                                                                                           >
                                                                                             <span data-custom-class="body_text">
-                                                                                              <bdt className="question">
+                                                                                              <br className="question">
                                                                                                 264
                                                                                                 Galapago
                                                                                                 St
-                                                                                              </bdt>
+                                                                                              </br>
                                                                                               <span
                                                                                                 style={{
                                                                                                   color:
@@ -9268,7 +9268,7 @@ const Policy = (props: Props) => {
                                                                                                     fontSize: 15,
                                                                                                   }}
                                                                                                 >
-                                                                                                  <bdt className="block-component" />
+                                                                                                  <br className="block-component" />
                                                                                                 </span>
                                                                                               </span>
                                                                                             </span>
@@ -9286,9 +9286,9 @@ const Policy = (props: Props) => {
                                                                                             }}
                                                                                           >
                                                                                             <span data-custom-class="body_text">
-                                                                                              <bdt className="question">
+                                                                                              <br className="question">
                                                                                                 Denver
-                                                                                              </bdt>
+                                                                                              </br>
                                                                                               <span
                                                                                                 style={{
                                                                                                   color:
@@ -9300,23 +9300,23 @@ const Policy = (props: Props) => {
                                                                                                     fontSize: 15,
                                                                                                   }}
                                                                                                 >
-                                                                                                  <bdt className="block-component" />
-                                                                                                  <bdt className="block-component" />
+                                                                                                  <br className="block-component" />
+                                                                                                  <br className="block-component" />
 
                                                                                                   ,{" "}
-                                                                                                  <bdt className="question">
+                                                                                                  <br className="question">
                                                                                                     CO
-                                                                                                  </bdt>
-                                                                                                  <bdt className="statement-end-if-in-editor" />
-                                                                                                  <bdt className="block-component" />
-                                                                                                  <bdt className="block-component" />{" "}
-                                                                                                  <bdt className="question">
+                                                                                                  </br>
+                                                                                                  <br className="statement-end-if-in-editor" />
+                                                                                                  <br className="block-component" />
+                                                                                                  <br className="block-component" />{" "}
+                                                                                                  <br className="question">
                                                                                                     80223
-                                                                                                  </bdt>
-                                                                                                  <bdt className="statement-end-if-in-editor" />
-                                                                                                  <bdt className="block-component" />
-                                                                                                  <bdt className="block-component" />
-                                                                                                  <bdt className="block-component" />
+                                                                                                  </br>
+                                                                                                  <br className="statement-end-if-in-editor" />
+                                                                                                  <br className="block-component" />
+                                                                                                  <br className="block-component" />
+                                                                                                  <br className="block-component" />
                                                                                                 </span>
                                                                                               </span>
                                                                                             </span>
@@ -9334,7 +9334,7 @@ const Policy = (props: Props) => {
                                                                                               fontSize: 15,
                                                                                             }}
                                                                                           >
-                                                                                            <bdt className="question">
+                                                                                            <br className="question">
                                                                                               United
                                                                                               States
                                                                                               <span data-custom-class="body_text">
@@ -9373,7 +9373,7 @@ const Policy = (props: Props) => {
                                                                                                                   fontSize: 15,
                                                                                                                 }}
                                                                                                               >
-                                                                                                                <bdt className="statement-end-if-in-editor" />
+                                                                                                                <br className="statement-end-if-in-editor" />
                                                                                                               </span>
                                                                                                             </span>
                                                                                                           </span>
@@ -9383,9 +9383,9 @@ const Policy = (props: Props) => {
                                                                                                   </span>
                                                                                                 </span>
                                                                                               </span>
-                                                                                            </bdt>
+                                                                                            </br>
                                                                                           </span>
-                                                                                          <bdt className="block-component">
+                                                                                          <br className="block-component">
                                                                                             <span
                                                                                               style={{
                                                                                                 fontSize: 15,
@@ -9393,8 +9393,8 @@ const Policy = (props: Props) => {
                                                                                             >
                                                                                               <span data-custom-class="body_text" />
                                                                                             </span>
-                                                                                          </bdt>
-                                                                                          <bdt className="statement-end-if-in-editor" />
+                                                                                          </br>
+                                                                                          <br className="statement-end-if-in-editor" />
                                                                                           <span data-custom-class="body_text">
                                                                                             <span
                                                                                               style={{
@@ -9407,7 +9407,7 @@ const Policy = (props: Props) => {
                                                                                                   fontSize: 15,
                                                                                                 }}
                                                                                               >
-                                                                                                <bdt className="statement-end-if-in-editor" />
+                                                                                                <br className="statement-end-if-in-editor" />
                                                                                               </span>
                                                                                             </span>
                                                                                           </span>
@@ -9424,7 +9424,7 @@ const Policy = (props: Props) => {
                                                                                                       "rgb(89, 89, 89)",
                                                                                                   }}
                                                                                                 >
-                                                                                                  <bdt className="statement-end-if-in-editor">
+                                                                                                  <br className="statement-end-if-in-editor">
                                                                                                     <span
                                                                                                       style={{
                                                                                                         color:
@@ -9437,23 +9437,23 @@ const Policy = (props: Props) => {
                                                                                                         }}
                                                                                                       >
                                                                                                         <span data-custom-class="body_text">
-                                                                                                          <bdt className="block-component">
-                                                                                                            <bdt className="block-component" />
-                                                                                                          </bdt>
+                                                                                                          <br className="block-component">
+                                                                                                            <br className="block-component" />
+                                                                                                          </br>
                                                                                                         </span>
                                                                                                       </span>
                                                                                                     </span>
-                                                                                                  </bdt>
+                                                                                                  </br>
                                                                                                 </span>
                                                                                               </span>
                                                                                             </span>
-                                                                                            <bdt className="block-component">
+                                                                                            <br className="block-component">
                                                                                               <span
                                                                                                 style={{
                                                                                                   fontSize: 15,
                                                                                                 }}
                                                                                               />
-                                                                                            </bdt>
+                                                                                            </br>
                                                                                             <span
                                                                                               style={{
                                                                                                 fontSize: 15,
@@ -9473,9 +9473,9 @@ const Policy = (props: Props) => {
                                                                                                     }}
                                                                                                   >
                                                                                                     <span data-custom-class="body_text">
-                                                                                                      <bdt className="statement-end-if-in-editor">
-                                                                                                        <bdt className="block-component" />
-                                                                                                      </bdt>
+                                                                                                      <br className="statement-end-if-in-editor">
+                                                                                                        <br className="block-component" />
+                                                                                                      </br>
                                                                                                     </span>
                                                                                                   </span>
                                                                                                 </span>
@@ -9585,7 +9585,7 @@ const Policy = (props: Props) => {
                                                                                               }}
                                                                                             >
                                                                                               <span data-custom-class="body_text">
-                                                                                                <bdt className="block-component" />
+                                                                                                <br className="block-component" />
                                                                                                 You
                                                                                                 have
                                                                                                 the
@@ -9607,7 +9607,7 @@ const Policy = (props: Props) => {
                                                                                                 or
                                                                                                 delete
                                                                                                 it.{" "}
-                                                                                                <bdt className="statement-end-if-in-editor" />
+                                                                                                <br className="statement-end-if-in-editor" />
                                                                                                 To
                                                                                                 request
                                                                                                 to
@@ -9619,7 +9619,7 @@ const Policy = (props: Props) => {
                                                                                                 personal
                                                                                                 information,
                                                                                                 please{" "}
-                                                                                                <bdt className="block-component" />
+                                                                                                <br className="block-component" />
                                                                                                 fill
                                                                                                 out
                                                                                                 and
@@ -9654,9 +9654,9 @@ const Policy = (props: Props) => {
                                                                                                   </span>
                                                                                                 </span>
                                                                                               </span>
-                                                                                              <bdt className="block-component">
+                                                                                              <br className="block-component">
                                                                                                 <span data-custom-class="body_text" />
-                                                                                              </bdt>
+                                                                                              </br>
                                                                                             </span>
                                                                                           </span>
                                                                                           <span data-custom-class="body_text">
