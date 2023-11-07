@@ -56,17 +56,17 @@ const Policy = (props: Props) => {
                   Brett Inc.
                   <br className="block-component" />
                 </br>{" "}
-                (<br className="block-component" />"<strong>we</strong>," "
-                <strong>us</strong>," or "<strong>our</strong>"
+                (<br className="block-component" />
+                <strong>we</strong>,<strong>us</strong>, or <strong>our</strong>
                 <br className="statement-end-if-in-editor" />
               </span>
               <span data-custom-class="body_text">
                 ), describes how and why we might collect, store, use, and/or
-                share (<br className="block-component" />"
-                <strong>process</strong>"
+                share (<br className="block-component" />
+                <strong>process</strong>
                 <br className="statement-end-if-in-editor" />) your information
-                when you use our services (<br className="block-component" />"
-                <strong>Services</strong>"
+                when you use our services (<br className="block-component" />
+                <strong>Services</strong>
                 <br className="statement-end-if-in-editor" />
                 ), such as when you:
               </span>
@@ -1068,7 +1068,7 @@ const Policy = (props: Props) => {
                 social media account details, like your Facebook, Twitter, or
                 other social media account. If you choose to register in this
                 way, we will collect the information described in the section
-                called <br className="block-component" />"
+                called <br className="block-component" />
                 <br className="statement-end-if-in-editor" />
                 <span style={{ fontSize: 15 }}>
                   <span data-custom-class="body_text">
@@ -1081,7 +1081,7 @@ const Policy = (props: Props) => {
                     </span>
                   </span>
                 </span>
-                <br className="block-component" />"
+                <br className="block-component" />
                 <br className="statement-end-if-in-editor" /> below.
               </span>
             </span>
@@ -1128,12 +1128,12 @@ const Policy = (props: Props) => {
                 <span data-custom-class="body_text">
                   <em>Mobile Device Access.</em> We may request access or
                   permission to certain features from your mobile device,
-                  including your mobile device's{" "}
+                  including your mobile devices{" "}
                   <br className="forloop-component" />
                   <br className="question">camera</br>,{" "}
                   <br className="forloop-component" />
                   and other features. If you wish to change our access or
-                  permissions, you may do so in your device's settings.
+                  permissions, you may do so in your devices settings.
                   <br className="statement-end-if-in-editor" />
                 </span>
               </span>
@@ -1160,7 +1160,7 @@ const Policy = (props: Props) => {
                     notifications regarding your account or certain features of
                     the application(s). If you wish to opt out from receiving
                     these types of communications, you may turn them off in your
-                    device's settings.
+                    devices settings.
                     <br className="statement-end-if-in-editor" />
                   </span>
                 </span>
@@ -1322,7 +1322,7 @@ const Policy = (props: Props) => {
                           or Twitter), we receive personal information about you
                           such as your name, email address, and gender. Any
                           personal information that we collect from your social
-                          media account depends on your social media account's
+                          media account depends on your social media accounts
                           privacy settings.
                         </span>
                       </span>
@@ -4172,7 +4172,6 @@ const Policy = (props: Props) => {
                                                                           in the
                                                                           section{" "}
                                                                           <br className="block-component" />
-                                                                          "
                                                                           <br className="statement-end-if-in-editor" />
                                                                         </span>
                                                                       </span>
@@ -4224,7 +4223,6 @@ const Policy = (props: Props) => {
                                                                       >
                                                                         <span data-custom-class="body_text">
                                                                           <br className="block-component" />
-                                                                          "
                                                                           <br className="statement-end-if-in-editor" />{" "}
                                                                           below
                                                                           <br className="block-component" />
@@ -4849,7 +4847,7 @@ const Policy = (props: Props) => {
                                                                           Do-Not-Track
                                                                           (
                                                                           <br className="block-component" />
-                                                                          "DNT"
+                                                                          DNT
                                                                           <br className="statement-end-if-in-editor" />
                                                                           )
                                                                           feature
@@ -7599,7 +7597,6 @@ const Policy = (props: Props) => {
                                                                                             the
                                                                                             section,{" "}
                                                                                             <br className="block-component" />
-                                                                                            "
                                                                                             <br className="statement-end-if-in-editor" />
                                                                                           </span>
                                                                                           <a
@@ -7628,8 +7625,6 @@ const Policy = (props: Props) => {
                                                                                             }}
                                                                                           >
                                                                                             <br className="block-component" />
-
-                                                                                            "
                                                                                           </span>
                                                                                           <br className="statement-end-if-in-editor">
                                                                                             <span
@@ -7782,7 +7777,6 @@ const Policy = (props: Props) => {
                                                                                                 the
                                                                                                 section,{" "}
                                                                                                 <br className="block-component" />
-                                                                                                "
                                                                                                 <br className="statement-end-if-in-editor" />
                                                                                               </span>
                                                                                             </span>
@@ -7834,7 +7828,7 @@ const Policy = (props: Props) => {
                                                                                             >
                                                                                               <span data-custom-class="body_text">
                                                                                                 <br className="block-component" />
-                                                                                                "
+
                                                                                                 <br className="statement-end-if-in-editor" />
                                                                                               </span>
                                                                                             </span>
@@ -7898,7 +7892,7 @@ const Policy = (props: Props) => {
                                                                                                 to
                                                                                                 be{" "}
                                                                                                 <br className="block-component" />
-                                                                                                "selling"
+                                                                                                selling
                                                                                                 <br className="statement-end-if-in-editor" />{" "}
                                                                                                 of
                                                                                                 your
@@ -8403,7 +8397,7 @@ const Policy = (props: Props) => {
                                                                                                 effects
                                                                                                 (
                                                                                                 <br className="block-component" />
-                                                                                                "profiling"
+                                                                                                profiling
                                                                                                 <br className="statement-end-if-in-editor" />
 
                                                                                                 )
@@ -8943,7 +8937,7 @@ const Policy = (props: Props) => {
                                                                                                 an
                                                                                                 updated{" "}
                                                                                                 <br className="block-component" />
-                                                                                                "Revised"
+                                                                                                Revised
                                                                                                 <br className="statement-end-if-in-editor" />{" "}
                                                                                                 date
                                                                                                 and
@@ -9686,7 +9680,7 @@ const Policy = (props: Props) => {
                                                                                         was
                                                                                         created
                                                                                         using
-                                                                                        Termly's{" "}
+                                                                                        Termlys{" "}
                                                                                         <a
                                                                                           style={{
                                                                                             color:
