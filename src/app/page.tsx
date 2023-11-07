@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import homepageImage from "../assets/img/homepage.png";
 import mobilePhoneImage from "../assets/img/mobile.png";
+import logo from "../../public/Brett_Logo.svg";
 
 export default async function Home() {
   // let savedBreweryId;
@@ -27,8 +28,19 @@ export default async function Home() {
     <main className="flex min-h-screen flex-col items-center justify-between  bg-background ">
       <div className="w-full mx-auto max-w-7xl">
         <div className=" mx-auto flex justify-between text-primary absolute top-0 left-0 right-0 p-4 md:px-10 lg:px-12 2xl:px-32 ">
-          <Link href={"/"}>
-            <h1 className="text-primary font-medium xxs:px-4">Brett</h1>
+          <Link
+            href={"/"}
+            className="inline-flex justify-center items-center xxs:px-4"
+          >
+            <Image
+              width={50}
+              height={50}
+              src={logo}
+              alt="Brett Logo"
+              className="w-16"
+            />
+
+            <h1 className="text-primary font-medium ">Brett</h1>
           </Link>
           <div className="flex gap-1 xxs:gap-3 xxs:px-4 ">
             <Link
