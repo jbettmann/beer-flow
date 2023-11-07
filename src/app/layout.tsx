@@ -7,7 +7,15 @@ import { Inter } from "next/font/google";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 import localFont from "next/font/local";
 
-const myFont = localFont({ src: "../assets/fonts/SF-Pro.ttf" });
+const myFont = localFont({
+  src: [
+    { path: "../assets/fonts/SF-Pro.ttf", weight: "normal", style: "normal" },
+    { path: "../assets/fonts/SF-Pro.ttf", weight: "bold", style: "bold" },
+    { path: "../assets/fonts/SF-Pro.ttf", weight: "normal", style: "italic" },
+  ],
+  display: "swap",
+  variable: "--font-sf-pro",
+});
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -29,7 +37,7 @@ export default async function Layout(props: {
   return (
     <html lang="en ">
       <Provider>
-        <body className={myFont.className}>
+        <body className={`${myFont.variable} font-sans`}>
           {session && <NavBar breweries={breweries} user={session.user} />}
 
           {/* <Chat /> */}
