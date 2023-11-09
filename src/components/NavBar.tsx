@@ -20,13 +20,13 @@ import {
 import { signIn, signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import logo from "../../public/Brett_Logo_light.svg";
 import SearchModal from "./Alerts/SearchModal";
 import SideDrawer from "./Drawers/SideDrawer";
 import ImageDisplay from "./ImageDisplay/ImageDisplay";
 import { Search } from "./Search/Search";
-import logo from "../../public/Brett_Logo_light.svg";
 
 const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
   const { selectedBrewery, setSelectedBrewery, isAdmin } = useBreweryContext();

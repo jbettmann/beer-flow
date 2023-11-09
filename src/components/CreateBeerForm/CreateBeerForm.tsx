@@ -286,7 +286,7 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
                 if (file && file.size > 5 * 1024 * 1024) {
                   // Check if file size is greater than 2MB
                   addToast(
-                    "File is too large. Please select a file less than 2MB.",
+                    "File is too large. Please select a file less than 5MB.",
                     "error"
                   );
                   e.target.value = ""; // Clear the selected file
