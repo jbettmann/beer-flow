@@ -40,7 +40,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
   const breweryMenuRef = useRef<any>(null);
   const checkBoxRef = useRef<HTMLInputElement>(null);
 
-  const router = useRouter();
+  console.log({ user });
   const pathname = usePathname();
 
   const isActive = (path: string) => {
@@ -286,7 +286,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                         />
                       ) : (
                         <div className=" logo__default !text-base ">
-                          {getInitials(user.fullName || "")}
+                          {getInitials(user.name)}
                         </div>
                       )}
                       <h6 className="pl-3">Profile</h6>
@@ -417,7 +417,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                 />
               ) : (
                 <div className=" logo__default !text-base ">
-                  {getInitials(user.fullName || "")}
+                  {getInitials(user.name)}
                 </div>
               )}
             </label>

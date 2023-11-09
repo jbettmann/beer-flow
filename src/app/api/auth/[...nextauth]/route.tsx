@@ -194,9 +194,8 @@ export const authOptions: NextAuthOptions = {
       // Get the user's name and email either from the 'user' object or the 'profile' object
       const name = user?.name ?? profile?.name;
       const email = user?.email ?? profile?.email;
-      const picture = profile?.picture ?? user?.image;
+      let picture = profile?.picture ?? user?.image;
 
-      console.log("User", user, "Profile", profile, "Account", account);
       // Connect to MongoDB
       // const client = await db.user.findFirst();
       // const collection = client.db().collection("users");
@@ -246,16 +245,17 @@ export const authOptions: NextAuthOptions = {
 
       if (existingUser) {
         if (existingUser.image !== picture) {
-          console.log("Existing Image", existingUser.image, { picture });
           try {
-            await updateUserInfoDBDirect({
+            const userWithNewImage = await updateUserInfoDBDirect({
               userId: existingUser._id,
               updatedUserInfo: { image: picture },
             });
+            picture = userWithNewImage.image;
           } catch (error: string | any) {
             console.error("Error updating user info:", error.message);
           }
         }
+
         // User exists in your DB
         user.id = existingUser.id.toString(); // or whatever the field for the user id is
         user.breweries = existingUser.breweries; // add breweries to user
