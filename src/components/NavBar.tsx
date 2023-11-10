@@ -286,7 +286,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                         />
                       ) : (
                         <div className=" logo__default !text-base ">
-                          {getInitials(user.name)}
+                          {getInitials(user.name || user.fullName)}
                         </div>
                       )}
                       <h6 className="pl-3">Profile</h6>
@@ -417,7 +417,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                 />
               ) : (
                 <div className=" logo__default !text-base ">
-                  {getInitials(user.name)}
+                  {getInitials(user.name || user.fullName)}
                 </div>
               )}
             </label>
