@@ -237,6 +237,7 @@ const CardItem = ({ category, beer, handleCheckbox, isChecked }: Props) => {
           isOpen={removeSingleAlert}
           onClose={() => setRemoveSingleAlert(false)}
           onConfirm={() => removeSingleBeersFromCategory(beer._id)}
+          confirmButtonText="Remove"
         />
       )}
 
@@ -254,6 +255,7 @@ const CardItem = ({ category, beer, handleCheckbox, isChecked }: Props) => {
           onClose={() => setMoveSingleAlert(false)}
           onConfirm={moveSingleBeerToCategory}
           isOpen={moveSingleAlert}
+          confirmButtonText="Move"
         />
       )}
       <div
@@ -282,7 +284,6 @@ const CardItem = ({ category, beer, handleCheckbox, isChecked }: Props) => {
                   <span
                     className=" text-gray-600 cursor-pointer "
                     title={`Beer is in more than one category`}
-                  
                   >
                     <Flame size={12} strokeWidth={2} />
                   </span>

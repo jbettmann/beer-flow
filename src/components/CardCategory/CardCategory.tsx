@@ -1,22 +1,17 @@
 "use client";
 import { Category, NewCategory } from "@/app/types/category";
 import { useBreweryContext } from "@/context/brewery-beer";
-import updateBeerCategory from "@/lib/PUT/updateBeerCategory";
 import { ChevronDown, LayoutGrid, PencilLine, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
 import { Beer } from "@/app/types/beer";
 import { useToast } from "@/context/toast";
-import handleMoveBeerToCategory from "@/lib/handleSubmit/handleMoveBeerToCategory";
 import handleUpdateCategory from "@/lib/handleSubmit/handleUpdateCategory";
-import AlertDialog from "../Alerts/AlertDialog";
-import MoveBeerToCategory from "../Alerts/MoveBeerToCategory";
 import BeerMugBadge from "../Badges/BeerMugBadge";
 
 import SaveButton from "../Buttons/SaveButton";
 import TrashCanIcon from "../Buttons/TrashCanIcon";
-import { FormValues } from "../UpdateCategory/types";
 import CardItem from "./CardItem";
 
 type Props = {
