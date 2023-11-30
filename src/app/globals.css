@@ -161,13 +161,13 @@ p {
 }
 
 .create-btn {
-  @apply btn bg-primary text-background border-none rounded-full transition-all duration-300 hover:bg-primary hover:scale-105 hover:shadow-xl 
+  @apply btn bg-primary lg:bg-transparent border lg:border-primary text-background lg:text-primary rounded-full transition-all duration-300 hover:bg-primary hover:text-background  
   
 }
 
 .create-btn.inverse 
 {
-  @apply bg-background text-primary hover:shadow-lg hover:shadow-[#413c33]   hover:bg-background hover:scale-105 disabled:bg-opacity-20;
+  @apply  border-background text-background  hover:bg-background hover:text-primary disabled:bg-opacity-20  disabled:text-opacity-20 disabled:border-opacity-20;
   
 } 
 
