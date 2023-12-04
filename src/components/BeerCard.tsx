@@ -16,7 +16,7 @@ import ImageDisplay from "./ImageDisplay/ImageDisplay";
 import UpdateBeerForm from "./UpdateBeerForm/UpdateBeerForm";
 import { hopSuggestions, maltSuggestions } from "@/lib/suggestionsDB";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 type Props = {
   beerId: string;
   beerForDrawer?: Beer | null;
@@ -71,7 +71,7 @@ const BeerCard = ({ beerId, beerForDrawer, onClose }: Props) => {
               if (onClose) {
                 onClose();
               } else {
-                router.back();
+                redirect(`/breweries/${selectedBrewery?._id}`);
               }
               if (isEditing) setIsEditing(false);
             }}
@@ -147,8 +147,8 @@ const BeerCard = ({ beerId, beerForDrawer, onClose }: Props) => {
 
                     {/* Description */}
                     <div className="flex justify-between w-full">
-                      <div>
-                        <p className="beer-card__description">
+                      <div className="w-full">
+                        <p className="beer-card__description break-words">
                           {beer?.description}
                         </p>
                         <p className="beer-card__title">Description</p>

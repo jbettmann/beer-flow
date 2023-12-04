@@ -134,9 +134,9 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
             )}
           </div>
 
-          {/* Small Screen New Category Button */}
+          {/* Small Screen New Beer Button */}
           {isAdmin && (
-            //  Small Screen New Category Button
+            //  Small Screen New Beer Button
             <div className="fixed right-5 bottom-10 p-1 z-[2] lg:hidden ">
               <button
                 onClick={() => setIsCreateBeer(true)}
