@@ -2,7 +2,14 @@
 import saveImage from "@/lib/supabase/saveImage";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import React, { FC, useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  FC,
+  use,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import Image from "next/image";
 import createBrewery from "@/lib/createBrewery";
 import ErrorField from "./ErrorField/ErrorField";
@@ -77,62 +84,85 @@ const CreateBreweryForm = ({ onClose }: Props) => {
     onClose();
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    console.log(session?.user);
-    // Don't submit if there are validation errors
-    if (Object.keys(errors).length > 0) {
-      return;
-    }
-    setIsLoading(true);
-    isSubmitting.current = true;
-
-    try {
-      const companyImage = values.image
-        ? await saveImage({ file: values.image } as any)
-        : undefined;
-
-      const newBrewery = {
-        companyName: values.companyName,
-        image: companyImage,
-      };
-
-      const responseBrewery = (await createBrewery({
-        brewery: newBrewery,
-        accessToken: session?.user?.accessToken as string,
-      })) as any;
-      console.log({ responseBrewery }, session?.user);
-      if (responseBrewery) {
-        addToast(
-          `${responseBrewery.savedBrewery.companyName} successfully created!`,
-          "success"
-        );
-        await update({
-          newBreweryId: responseBrewery.savedBrewery._id,
-        });
-        localStorage.setItem(
-          "selectedBreweryId",
-          responseBrewery.savedBrewery._id
-        );
-        setSelectedBrewery(responseBrewery.savedBrewery);
-        router.push(`/breweries/${responseBrewery.savedBrewery._id}`);
-      } else {
-        addToast(`Error creating brewery`, "error");
+  const handleSubmit = useCallback(
+    async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      console.log(session?.user);
+      // Don't submit if there are validation errors
+      if (Object.keys(errors).length > 0) {
+        return;
       }
-    } catch (err: any) {
-      console.error(err);
-      setSubmitError(err.message);
-      addToast(err.message, "error");
-    } finally {
-      if (previewImage) {
-        URL.revokeObjectURL(previewImage);
-        setPreviewImage(null);
+      setIsLoading(true);
+      isSubmitting.current = true;
+
+      try {
+        const companyImage = values.image
+          ? await saveImage({ file: values.image } as any)
+          : undefined;
+
+        const newBrewery = {
+          companyName: values.companyName,
+          image: companyImage,
+        };
+
+        const responseBrewery = (await createBrewery({
+          brewery: newBrewery,
+          accessToken: session?.user?.accessToken as string,
+        })) as any;
+        console.log({ responseBrewery }, session?.user);
+        if (responseBrewery) {
+          addToast(
+            `${responseBrewery.savedBrewery.companyName} successfully created!`,
+            "success"
+          );
+          await update({
+            newBreweryId: responseBrewery.savedBrewery._id,
+          });
+          localStorage.setItem(
+            "selectedBreweryId",
+            responseBrewery.savedBrewery._id
+          );
+          setSelectedBrewery(responseBrewery.savedBrewery);
+          router.push(`/breweries/${responseBrewery.savedBrewery._id}`);
+        } else {
+          addToast(`Error creating brewery`, "error");
+        }
+      } catch (err: any) {
+        console.error(err);
+        setSubmitError(err.message);
+        addToast(err.message, "error");
+      } finally {
+        if (previewImage) {
+          URL.revokeObjectURL(previewImage);
+          setPreviewImage(null);
+        }
+        onDismiss();
+        setIsLoading(false);
+        isSubmitting.current = false;
       }
-      onDismiss();
-      setIsLoading(false);
-      isSubmitting.current = false;
-    }
-  };
+    },
+    [errors, values, session, router, update, setSelectedBrewery]
+  );
+
+  // Handling Enter key press within input fields
+  const handleEnterKeyPress = useCallback(
+    (event: KeyboardEvent) => {
+      if (event.key === "Enter" && !isSubmitting.current) {
+        handleSubmit(event as any); // Typecasting to align with expected event type
+      }
+    },
+    [handleSubmit]
+  );
+
+  useEffect(() => {
+    // Adding Enter key press event listener
+    window.addEventListener("keydown", handleEnterKeyPress);
+
+    return () => {
+      // Removing the event listener on cleanup
+      window.removeEventListener("keydown", handleEnterKeyPress);
+    };
+  }, [handleEnterKeyPress]);
 
   // Validate fields and persist state on every render
   useEffect(() => {
