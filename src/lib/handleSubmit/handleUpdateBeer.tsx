@@ -61,7 +61,7 @@ const handleUpdateBeer = async (
       accessToken,
     });
 
-    if (updatedBeerRes) revalidatePath(`/breweries/[breweryId]`);
+    // if (updatedBeerRes) revalidatePath(`/breweries/[breweryId]`);
 
     return updatedBeerRes;
   } catch (error) {

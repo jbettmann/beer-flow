@@ -68,12 +68,13 @@ const BeerCard = ({ beerId, beerForDrawer, onClose }: Props) => {
           <button
             className={`md:hidden link link-hover text-sm lg:text-xs`}
             onClick={() => {
+              if (isEditing) setIsEditing(false);
+
               if (onClose) {
                 onClose();
               } else {
                 redirect(`/breweries/${selectedBrewery?._id}`);
               }
-              if (isEditing) setIsEditing(false);
             }}
           >
             <X size={25} strokeWidth={2} />
