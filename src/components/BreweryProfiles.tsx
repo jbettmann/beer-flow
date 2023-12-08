@@ -206,7 +206,7 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
               {beerSearch && (
                 <button
                   aria-label="Clear input"
-                  className="absolute inset-y-0 right-2  flex items-center opacity-50 cursor-pointer focus:outline-none"
+                  className="absolute inset-y-0 right-3  flex items-center opacity-50 cursor-pointer focus:outline-none"
                   onClick={() => {
                     setBeerSearch(undefined), setBeerSearchTerm("");
                   }}
