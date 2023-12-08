@@ -16,6 +16,7 @@ import BottomDrawer from "./Drawers/BottomDrawer";
 import UpdateCategory from "./UpdateCategory/UpdateCategory";
 import EditModal from "./Alerts/EditModal";
 import { set } from "mongoose";
+import BeerSnippet from "./BeerCardComponents/BeerSnippet";
 
 type Props = {
   category: Category | NewCategory;
@@ -277,60 +278,13 @@ export default function BeerCategory({
             {category.name === "Archived"
               ? renderArchivedBeers()
               : filteredBeers.map((beer) => (
-                  <>
-                    {/* Small screen bottom drawer view */}
-                    <button
-                      className="flex items-center justify-between md:hidden md:disabled"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setBeerForDrawer(beer);
-                        setBottomDrawerOpen(true);
-                        handleBeerView(beer._id);
-                      }}
-                    >
-                      <div className="inline-flex items-center">
-                        <ImageDisplay
-                          className="beer-category__image"
-                          item={beer}
-                        />
-
-                        <p className="beer-category__name">{beer.name}</p>
-                      </div>
-                      <div className="inline-flex justify-center items-center ">
-                        {isNew(beer) && (
-                          <Sparkles size={18} strokeWidth={1} color="#a5b4fc" />
-                        )}
-
-                        <ChevronRight size={24} strokeWidth={1} />
-                      </div>
-                    </button>
-                    {/* Desktop modal page  */}
-                    <Link
-                      className="hidden md:flex items-center justify-between"
-                      href={`/breweries/${breweryId}/beers/${beer._id}`}
-                      key={beer._id}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleBeerView(beer._id);
-                      }}
-                    >
-                      <div className="inline-flex items-center">
-                        <ImageDisplay
-                          className="beer-category__image"
-                          item={beer}
-                        />
-
-                        <p className="beer-category__name">{beer.name}</p>
-                      </div>
-                      <div className="inline-flex justify-center items-center ">
-                        {isNew(beer) && (
-                          <Sparkles size={18} strokeWidth={1} color="#a5b4fc" />
-                        )}
-
-                        <ChevronRight size={24} strokeWidth={1} />
-                      </div>
-                    </Link>
-                  </>
+                  <BeerSnippet
+                    key={beer._id}
+                    beer={beer}
+                    breweryId={breweryId as string}
+                    setBeerForDrawer={setBeerForDrawer}
+                    setBottomDrawerOpen={setBottomDrawerOpen}
+                  />
                 ))}
           </div>
         </div>

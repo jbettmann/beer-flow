@@ -338,6 +338,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 }
 
+.search__input {
+
+    @apply input bg-white text-primary rounded-full border-none  lg:h-9 lg:text-sm 
+ 
+}
+
 .settings-account__info {
   @apply flex justify-between items-center
 }
