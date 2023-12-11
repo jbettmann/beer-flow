@@ -22,7 +22,7 @@ const BeerSnippet = ({
     <>
       {/* Small screen bottom drawer view */}
       <button
-        className="flex items-center justify-between md:hidden md:disabled"
+        className="flex items-center justify-between w-full md:hidden md:disabled"
         onClick={(e) => {
           e.stopPropagation();
           setBeerForDrawer(beer);
