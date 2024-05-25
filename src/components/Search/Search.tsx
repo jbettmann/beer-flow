@@ -230,7 +230,7 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
             ))
           )}
           {searchBeerResult.length === 0 && (
-            <p className="text-primary0">No results found for {searchTerm}</p>
+            <p className="text-primary">No results found for {searchTerm}</p>
           )}
         </div>
       )}
