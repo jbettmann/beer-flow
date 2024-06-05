@@ -161,7 +161,7 @@ export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
       setIsAdmin(isAdmin || isOwner);
     }
   }, [beers, brewery, isBeersLoading, isBreweryLoading, session?.user?.id]);
-  console.log({ brewery, beers, isAdmin });
+
   return (
     <BreweryContext.Provider
       value={{

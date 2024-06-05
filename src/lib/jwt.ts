@@ -16,7 +16,7 @@ export function signJwtAccessToken(
   // Incorporating a unique value in the payload
   payload.iat = Math.floor(Date.now() / 1000); // `iat` stands for "Issued At"
   const token = jwt.sign(payload, secret_key!, options); // signs with payload, secret_key and options (expiration time).
-  console.log("accessToken Signed", token);
+
   return token;
 }
 

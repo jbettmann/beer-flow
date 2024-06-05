@@ -10,8 +10,6 @@ interface RequestBody {
 }
 
 export async function POST(req: Request, res: Response) {
-  console.log("running login");
-
   try {
     const body: RequestBody = await req.json();
 

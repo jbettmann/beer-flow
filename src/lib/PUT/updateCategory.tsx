@@ -18,7 +18,6 @@ export default async function updateCategory({
   accessToken,
 }: pageProps) {
   if (accessToken) {
-    console.log({ updatedCategory, categoryId, accessToken });
     try {
       const response = await fetch(
         `https://beer-bible-api.vercel.app/categories/${categoryId}`,

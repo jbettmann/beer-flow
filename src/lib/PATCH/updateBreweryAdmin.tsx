@@ -15,7 +15,6 @@ export default async function updateBreweryAdmin({
   accessToken,
 }: pageProps) {
   if (accessToken && breweryId) {
-    console.log("updateBreweryAdmin", action, breweryId);
     try {
       const response = await fetch(
         `https://beer-bible-api.vercel.app/breweries/${breweryId}/admins/${userId}`,

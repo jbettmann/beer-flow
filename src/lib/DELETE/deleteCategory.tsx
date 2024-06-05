@@ -9,8 +9,6 @@ export default async function deleteCategory({
   categoryId,
   token,
 }: pageProps) {
-  console.log({ breweryId, categoryId, token });
-
   if (token && categoryId) {
     try {
       const response = await fetch(
@@ -25,7 +23,6 @@ export default async function deleteCategory({
       );
 
       if (!response.ok) {
-        console.log(response);
         throw new Error(response.statusText);
       }
 

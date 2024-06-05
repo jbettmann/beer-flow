@@ -50,7 +50,6 @@ export const handleDeleteCategory = async ({
       return;
     }
 
-    console.log({ categoryId, breweryId, token });
     // If no beer has the category, delete the category
     const deletedCategory = await deleteCategory({
       breweryId,
@@ -66,8 +65,6 @@ export const handleDeleteCategory = async ({
           (cat) => cat._id !== categoryId
         ),
       };
-
-      console.log({ selectedBrewery, updatedBrewery });
 
       alert(deletedCategory.message);
 

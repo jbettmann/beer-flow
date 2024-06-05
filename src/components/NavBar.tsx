@@ -40,7 +40,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
   const breweryMenuRef = useRef<any>(null);
   const checkBoxRef = useRef<HTMLInputElement>(null);
 
-  console.log({ user });
+ 
   const pathname = usePathname();
 
   const isActive = (path: string) => {

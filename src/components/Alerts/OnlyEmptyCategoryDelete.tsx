@@ -22,11 +22,9 @@ const OnlyEmptyCategoryDelete = ({
         modalRef.current.showModal();
       }
     }
-    console.log({ modalRef });
   }, [alertOpen]);
 
   const closeModal = () => {
-    console.log("Close modal called"); // Debugging
     if (modalRef.current) {
       modalRef.current.close();
       setAlertOpen(false);
@@ -69,10 +67,9 @@ const OnlyEmptyCategoryDelete = ({
             <button
               className="ml-2 btn btn-sm btn-accent"
               onClick={(e) => {
-                console.log("Delete button clicked!"); // Debugging
                 e.preventDefault();
                 setToContinue(true);
-                console.log("setToContinue called with true"); // Debugging
+
                 closeModal();
               }}
             >

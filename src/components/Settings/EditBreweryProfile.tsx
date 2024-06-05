@@ -107,7 +107,7 @@ const EditBreweryProfile = ({ brewery, onClose }: Props) => {
   useEffect(() => {
     validateCompanyName();
   }, [companyName]);
-  console.log(companyName.length, { nameError });
+
   return (
     <div className="flex flex-col justify-center items-center z-50 text-background my-auto ">
       <div className="flex w-full h-full justify-between items-center p-3 pb-0 sticky top-[-2px] bg-primary lg:hidden">

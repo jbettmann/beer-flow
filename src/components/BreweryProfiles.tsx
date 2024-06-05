@@ -140,7 +140,6 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
     //   localStorage.setItem("selectedBreweryId", selectedBrewery._id);
     // }
   }, [selectedBrewery?._id]);
-  console.log({ selectedBeers, beersForCategory });
 
   if (breweryLoading || beersLoading) return <BreweryProfileSkeleton />;
 

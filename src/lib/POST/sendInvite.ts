@@ -15,7 +15,6 @@ export async function sendInvite({
   breweryId,
   accessToken,
 }: Props) {
-  console.log({ inviteData, breweryId, accessToken });
   if (breweryId && accessToken) {
     const response = await fetch(
       `https://beer-bible-api.vercel.app/breweries/${breweryId}/invite`,

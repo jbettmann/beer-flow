@@ -36,7 +36,6 @@ export default async function Layout(props: {
 
   revalidatePath("/breweries", "page");
 
-  console.log({ session });
   return (
     <html lang="en ">
       <Provider>

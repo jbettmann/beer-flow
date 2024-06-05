@@ -8,7 +8,6 @@ type Props = {
 
 // Update Image file in Supabase Storage
 export const updateImage = async (prevImage: string, newImage: File) => {
-  console.log({ prevImage, newImage });
   if (!prevImage && newImage) {
     return saveImage({ file: newImage });
   }

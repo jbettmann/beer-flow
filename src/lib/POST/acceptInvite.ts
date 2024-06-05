@@ -3,7 +3,6 @@ type pageProps = {
   accessToken: string;
 };
 export const acceptInvite = async ({ token, accessToken }: pageProps) => {
-  console.log({ token, accessToken });
   try {
     if (token && accessToken) {
       const response = await fetch(
@@ -18,7 +17,6 @@ export const acceptInvite = async ({ token, accessToken }: pageProps) => {
       );
 
       if (!response.ok) {
-        console.log(response.statusText);
         throw new Error(
           `Invitation could not be accepted at this time. Please try again later.`
         );

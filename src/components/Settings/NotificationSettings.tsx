@@ -21,7 +21,6 @@ const NotificationSettings = () => {
     )
   );
 
-  console.log({ notifications, notificationKeys });
   const saveChanges = async () => {
     if (hasChanges) {
       try {

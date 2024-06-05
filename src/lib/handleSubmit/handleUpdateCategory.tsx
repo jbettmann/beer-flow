@@ -35,8 +35,6 @@ const handleUpdateCategory = async ({
     );
     updatedBrewery.categories[catIndex] = updatedCatRes;
 
-    console.log({ updatedCatRes, updatedCategory, updatedBrewery });
-
     setBreweryState.setSelectedBrewery(updatedBrewery);
   }
 

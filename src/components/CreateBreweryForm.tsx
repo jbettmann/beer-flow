@@ -87,7 +87,7 @@ const CreateBreweryForm = ({ onClose }: Props) => {
   const handleSubmit = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      console.log(session?.user);
+
       // Don't submit if there are validation errors
       if (Object.keys(errors).length > 0) {
         return;
@@ -109,7 +109,7 @@ const CreateBreweryForm = ({ onClose }: Props) => {
           brewery: newBrewery,
           accessToken: session?.user?.accessToken as string,
         })) as any;
-        console.log({ responseBrewery }, session?.user);
+
         if (responseBrewery) {
           addToast(
             `${responseBrewery.savedBrewery.companyName} successfully created!`,

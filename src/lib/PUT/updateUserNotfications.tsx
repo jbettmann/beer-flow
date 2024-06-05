@@ -13,7 +13,6 @@ export default async function updateUserNotifications({
   userId,
   accessToken,
 }: NotificationUpdateProps) {
-  console.log({ notifications, userId, accessToken });
   if (accessToken && userId) {
     try {
       const response = await fetch(

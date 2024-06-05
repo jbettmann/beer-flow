@@ -17,7 +17,7 @@ type Props = {
 const Breweries = ({ breweries }: Props) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [isCreateBrewery, setIsCreateBrewery] = useState<boolean>(false);
-  const { data: session } = useSession();
+
   const router = useRouter();
 
   useEffect(() => {
@@ -25,7 +25,6 @@ const Breweries = ({ breweries }: Props) => {
     if (credentialsLogin) {
       sessionStorage.removeItem("credentialsLogin");
       router.refresh();
-      console.log("refreshed");
     }
   }, []);
 

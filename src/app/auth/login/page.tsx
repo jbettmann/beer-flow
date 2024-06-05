@@ -25,7 +25,7 @@ const LoginPage = () => {
 
   const onSignIn = async (e: any, provider: string) => {
     // e.preventDefault();
-    console.log("Running submit", provider);
+
     setLoginError(null);
 
     try {
@@ -43,7 +43,6 @@ const LoginPage = () => {
         setIsCreateLoading(true);
         let login;
         if (acceptInviteUrl) {
-          console.log("acceptInviteUrl");
           login = await signIn("credentials", {
             email: email,
             password: password,
@@ -52,7 +51,7 @@ const LoginPage = () => {
           });
         } else {
           // e.preventDefault();
-          console.log("No accept invite url");
+
           login = await signIn("credentials", {
             email: email,
             password: password,
@@ -64,7 +63,6 @@ const LoginPage = () => {
         }
 
         if (!login?.ok) {
-          console.log(login);
           setLoginError(login?.error?.split(":")[1]);
           setIsCreateLoading(false);
         }
@@ -82,8 +80,6 @@ const LoginPage = () => {
       setAcceptInviteUrl(next);
     }
   }, []);
-
-  console.log({ acceptInviteUrl });
 
   if (session) {
     redirect("/breweries");

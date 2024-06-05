@@ -61,10 +61,6 @@ const TagInput = ({
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
 
-  useEffect(() => {
-    console.log({ values });
-  }, [values]);
-
   return (
     <>
       <label htmlFor={valueInput} className="beer-card__label-text pl-2">
