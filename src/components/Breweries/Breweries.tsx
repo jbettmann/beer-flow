@@ -1,13 +1,14 @@
 "use client";
 import { Brewery } from "@/app/types/brewery";
-import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import SetBreweryIdStorage from "../Buttons/SetBreweryIdStorage";
-import { Plus } from "lucide-react";
 import { debounce } from "@/lib/utils";
-import BottomDrawer from "../Drawers/BottomDrawer";
+import { Plus, Router } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { use, useEffect, useState } from "react";
 import EditModal from "../Alerts/EditModal";
+import SetBreweryIdStorage from "../Buttons/SetBreweryIdStorage";
 import CreateBreweryForm from "../CreateBreweryForm";
+import BottomDrawer from "../Drawers/BottomDrawer";
 
 type Props = {
   breweries: Brewery[];
@@ -16,6 +17,17 @@ type Props = {
 const Breweries = ({ breweries }: Props) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [isCreateBrewery, setIsCreateBrewery] = useState<boolean>(false);
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    const credentialsLogin = sessionStorage.getItem("credentialsLogin");
+    if (credentialsLogin) {
+      sessionStorage.removeItem("credentialsLogin");
+      router.refresh();
+      console.log("refreshed");
+    }
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {

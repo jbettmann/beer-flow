@@ -4,6 +4,8 @@ import { Brewery } from "../types/brewery";
 import Breweries from "@/components/Breweries/Breweries";
 import { Suspense } from "react";
 import BreweriesPageLS from "@/components/LoadingSkeleton/BreweriesPageLS";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../api/auth/[...nextauth]/route";
 
 const BreweriesPage = async () => {
   const breweryData: Promise<Brewery[]> = getBreweries();

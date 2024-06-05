@@ -1,9 +1,6 @@
 "use client";
-import GoogleSignInButton from "@/components/Buttons/GoogleSignInButton";
 import SaveButton from "@/components/Buttons/SaveButton";
-import { useToast } from "@/context/toast";
 import { Loader2 } from "lucide-react";
-import { set } from "mongoose";
 
 import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
@@ -13,7 +10,7 @@ import { useEffect, useState } from "react";
 type Props = {};
 
 const LoginPage = () => {
-  const router = useRouter();
+  const { update } = useSession();
 
   const searchParams = useSearchParams();
   const { data: session } = useSession();
@@ -27,7 +24,7 @@ const LoginPage = () => {
   const next = searchParams.get("next");
 
   const onSignIn = async (e: any, provider: string) => {
-    e.preventDefault();
+    // e.preventDefault();
     console.log("Running submit", provider);
     setLoginError(null);
 
@@ -43,16 +40,31 @@ const LoginPage = () => {
         }
       }
       if (provider === "credentials") {
-        console.log("Running credentials");
         setIsCreateLoading(true);
-        const login = await signIn("credentials", {
-          email: email,
-          password: password,
-          // redirect: false,
-          callbackUrl: acceptInviteUrl || "/breweries",
-        });
+        let login;
+        if (acceptInviteUrl) {
+          console.log("acceptInviteUrl");
+          login = await signIn("credentials", {
+            email: email,
+            password: password,
+            redirect: false,
+            callbackUrl: acceptInviteUrl,
+          });
+        } else {
+          // e.preventDefault();
+          console.log("No accept invite url");
+          login = await signIn("credentials", {
+            email: email,
+            password: password,
+            redirect: false,
+            callbackUrl: "/breweries",
+          });
+          // Manually revalidate session to get Nav Bar to show
+          sessionStorage.setItem("credentialsLogin", "true");
+        }
+
         if (!login?.ok) {
-          console.log(login?.error);
+          console.log(login);
           setLoginError(login?.error?.split(":")[1]);
           setIsCreateLoading(false);
         }

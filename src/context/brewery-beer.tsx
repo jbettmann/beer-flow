@@ -44,7 +44,10 @@ export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
 
   const router = useRouter();
   const { data: session } = useSession();
-  const storedBreweryId = localStorage?.getItem("selectedBreweryId");
+  const storedBreweryId =
+    typeof window !== "undefined"
+      ? localStorage?.getItem("selectedBreweryId")
+      : null;
   const [breweryId, setBreweryId] = useState<string | null>(
     storedBreweryId || null
   );

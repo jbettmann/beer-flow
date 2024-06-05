@@ -111,77 +111,6 @@ export const authOptions: NextAuthOptions = {
   //   jwt: true,
   // },
   callbacks: {
-    async jwt({
-      token,
-      user,
-      trigger,
-      session,
-    }: {
-      token: MyToken;
-      user: AdapterUser | NextAuthUser;
-
-      trigger?: "signIn" | "signUp" | "update";
-
-      session?: any;
-    }) {
-      // Persist the OAuth access_token and or the user id to the token right after signin
-
-      if (trigger && trigger === "update") {
-        if (session.newBreweryId) {
-          (token.breweries as string[]).push(session.newBreweryId);
-        }
-        if (session.removeBreweryId) {
-          token.breweries = (token.breweries as string[]).filter(
-            (breweryId: string) =>
-              breweryId !== (session.removeBreweryId as string)
-          );
-        }
-        if (session.updatedNotifications) {
-          token.notifications = session.updatedNotifications as Notifications;
-        }
-        return token;
-      }
-
-      if (user) {
-        const accessToken = signJwtAccessToken(user); // creates accessToken for API authorization
-        const refreshToken = signJwtRefreshToken(user); // sends for new accessToken after expires
-        token.id = user.id as string;
-        return {
-          ...token,
-          breweries: user.breweries,
-          fullName: user.fullName,
-          notifications: user.notifications,
-          accessToken: accessToken,
-          refreshToken: refreshToken,
-        };
-      } // If the access token has expired, try to refresh it
-      else if (token.accessToken && token.refreshToken) {
-        try {
-          jwt.verify(
-            token.accessToken as string,
-            process.env.NEXTAUTH_SECRET as string
-          );
-        } catch (e) {
-          try {
-            const { exp, ...rest } = jwt.verify(
-              token.refreshToken as string,
-              process.env.REFRESH_TOKEN_SECRET as string
-            ) as JwtPayload & { exp?: number };
-
-            const newAccessToken = signJwtAccessToken(rest);
-
-            token.accessToken = newAccessToken;
-          } catch (err: string | any) {
-            console.error("Error refreshing access token", err);
-
-            return { ...token, error: "RefreshAccessTokenError" };
-          }
-        }
-      }
-
-      return token;
-    },
-
     async signIn({
       user,
       profile,
@@ -208,7 +137,6 @@ export const authOptions: NextAuthOptions = {
       if (account?.type === "credentials") {
         if (user) {
           if (user.image !== picture) {
-            console.log("Existing Image", user.image, { picture });
             try {
               await updateUserInfoDBDirect({
                 userId: user.id,
@@ -300,6 +228,78 @@ export const authOptions: NextAuthOptions = {
 
       return false;
     },
+
+    async jwt({
+      token,
+      user,
+      trigger,
+      session,
+    }: {
+      token: MyToken;
+      user: AdapterUser | NextAuthUser;
+
+      trigger?: "signIn" | "signUp" | "update";
+
+      session?: any;
+    }) {
+      // Persist the OAuth access_token and or the user id to the token right after signin
+
+      if (trigger && trigger === "update") {
+        if (session.newBreweryId) {
+          (token.breweries as string[]).push(session.newBreweryId);
+        }
+        if (session.removeBreweryId) {
+          token.breweries = (token.breweries as string[]).filter(
+            (breweryId: string) =>
+              breweryId !== (session.removeBreweryId as string)
+          );
+        }
+        if (session.updatedNotifications) {
+          token.notifications = session.updatedNotifications as Notifications;
+        }
+        return token;
+      }
+
+      if (user) {
+        const accessToken = signJwtAccessToken(user); // creates accessToken for API authorization
+        const refreshToken = signJwtRefreshToken(user); // sends for new accessToken after expires
+        token.id = user.id as string;
+        return {
+          ...token,
+          breweries: user.breweries,
+          fullName: user.fullName,
+          notifications: user.notifications,
+          accessToken: accessToken,
+          refreshToken: refreshToken,
+        };
+      } // If the access token has expired, try to refresh it
+      else if (token.accessToken && token.refreshToken) {
+        try {
+          jwt.verify(
+            token.accessToken as string,
+            process.env.NEXTAUTH_SECRET as string
+          );
+        } catch (e) {
+          try {
+            const { exp, ...rest } = jwt.verify(
+              token.refreshToken as string,
+              process.env.REFRESH_TOKEN_SECRET as string
+            ) as JwtPayload & { exp?: number };
+
+            const newAccessToken = signJwtAccessToken(rest);
+
+            token.accessToken = newAccessToken;
+          } catch (err: string | any) {
+            console.error("Error refreshing access token", err);
+
+            return { ...token, error: "RefreshAccessTokenError" };
+          }
+        }
+      }
+
+      return token;
+    },
+
     async session({ session, token, user }) {
       if (token.accessToken) {
         session.user = token as any;

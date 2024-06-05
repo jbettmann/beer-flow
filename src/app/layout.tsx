@@ -6,7 +6,7 @@ import { getServerSession } from "next-auth";
 import { Inter } from "next/font/google";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 import localFont from "next/font/local";
-
+import { revalidatePath } from "next/cache";
 const myFont = localFont({
   src: [
     { path: "../assets/fonts/SF-Pro.ttf", weight: "normal", style: "normal" },
@@ -34,6 +34,9 @@ export default async function Layout(props: {
   const breweries = await getBreweries();
   const session = await getServerSession(authOptions);
 
+  revalidatePath("/breweries", "page");
+
+  console.log({ session });
   return (
     <html lang="en ">
       <Provider>
