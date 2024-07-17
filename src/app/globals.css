@@ -29,10 +29,10 @@
 } 
 
 html {
-  @apply h-screen bg-background 
+  @apply h-screen !bg-background; 
 }
 body {
-  @apply p-2 xxs:p-5 min-h-full  bg-background text-primary pt-10 ; 
+  @apply p-2 xxs:p-5 min-h-full  text-primary pt-10 ; 
   font-family: var(--font-sf-pro), sans-serif;
   -webkit-font-smoothing: antialiased;
 }
