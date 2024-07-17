@@ -30,6 +30,8 @@
 
 html {
   @apply h-screen !bg-background; 
+
+  
 }
 body {
   @apply p-2 xxs:p-5 min-h-full  text-primary pt-10 ; 
@@ -469,4 +471,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
  }
 
 
+
+ /* flatflie override */
  
+.flatfile_iframe-wrapper.flatfile_displayAsModal {
+  @apply !w-full !h-screen md:!pl-24;
+}

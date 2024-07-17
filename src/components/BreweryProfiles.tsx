@@ -16,6 +16,7 @@ import CreateModal from "./Alerts/CreateModal";
 import { Users } from "@/app/types/users";
 import BeerSnippet from "./BeerCardComponents/BeerSnippet";
 import { hopSuggestions, maltSuggestions } from "@/lib/suggestionsDB";
+import FlatfilePortal from "./FlatfilePortal/FlatfilePortal";
 
 type pageProps = {
   breweryId: string;
@@ -172,6 +173,7 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
                   </span>
                   <BeerIcon size={20} />
                 </button>
+                <FlatfilePortal />
               </div>
             )}
           </div>
