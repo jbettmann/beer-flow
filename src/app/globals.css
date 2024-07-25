@@ -475,5 +475,5 @@ input[type="date"]::-webkit-calendar-picker-indicator {
  /* flatflie override */
  
 .flatfile_iframe-wrapper.flatfile_displayAsModal {
-  @apply !w-full !h-screen md:!pl-24;
+  @apply !w-full !h-screen !pt-16 md:!pl-24;
 }

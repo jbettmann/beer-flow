@@ -12,11 +12,7 @@ const blueprint = {
         },
       ],
     },
-    {
-      key: "image",
-      label: "Photo",
-      type: "string",
-    },
+
     {
       key: "style",
       label: "Style",
@@ -74,13 +70,18 @@ const blueprint = {
     },
     {
       key: "notes",
-      label: "notes",
+      label: "Notes",
       type: "string",
     },
     {
+      key: "release_date",
+      label: "Release Date",
+      type: "date",
+    },
+    {
       key: "archived",
-      label: "archived",
-      type: "string",
+      label: "Archived",
+      type: "boolean",
     },
   ],
 };
