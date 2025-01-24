@@ -173,7 +173,7 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
                   </span>
                   <BeerIcon size={20} />
                 </button>
-                <FlatfilePortal />
+                {/* <FlatfilePortal /> */}
               </div>
             )}
           </div>
