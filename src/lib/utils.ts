@@ -1,9 +1,9 @@
 import { ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { supabase } from "./supabase";
 import { v4 as uuidv4 } from "uuid";
 import { Beer } from "@/app/types/beer";
 import { Category, NewCategory } from "@/app/types/category";
+import { supabase } from "./supabase";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -19,7 +19,7 @@ export const setAuthToken = (token: string) => {
 // create Public URL for images
 export const getImagePublicURL = (image: string) => {
   if (image) {
-    const { data } = supabase.storage.from("Images").getPublicUrl(image);
+    const { data } = supabase.storage.from("Brett_bucket").getPublicUrl(image);
 
     if (!data) {
       console.error("Error fetching image URL: ", data);

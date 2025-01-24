@@ -12,7 +12,9 @@ export const deleteImage = async (image: string) => {
     return;
   }
 
-  const { data, error } = await supabase.storage.from("Images").remove([image]);
+  const { data, error } = await supabase.storage
+    .from("Brett_bucket")
+    .remove([image]);
 
   if (error) {
     console.error("Error removing previous image: ", error);

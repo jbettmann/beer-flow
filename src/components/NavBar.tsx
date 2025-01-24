@@ -40,7 +40,6 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
   const breweryMenuRef = useRef<any>(null);
   const checkBoxRef = useRef<HTMLInputElement>(null);
 
- 
   const pathname = usePathname();
 
   const isActive = (path: string) => {
@@ -61,7 +60,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
     localStorage.setItem("selectedBreweryId", brewery._id);
     // Dispatch a custom event to notify other parts of the app
     const event = new Event("selectedBreweryChanged");
-    window.dispatchEvent(event);
+    window?.dispatchEvent(event);
     sessionStorage.removeItem("openCategory");
     // Close the drawer
     closeDrawer();
@@ -70,7 +69,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
   // clear local storage when sign out
   const handleSignOut = () => {
     // After sign out, redirects next user to homepage
-    signOut({ callbackUrl: `${window.location.origin}/` });
+    signOut({ callbackUrl: `${window?.location.origin}/` });
     // Clear local & session storage
     localStorage.removeItem("selectedBreweryId");
     sessionStorage.removeItem("openCategory");
@@ -80,7 +79,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const handleResize = () => {
-        setIsMobile(window.innerWidth <= 768);
+        setIsMobile(window?.innerWidth <= 768);
       };
 
       const debouncedResize = debounce(handleResize, 250); // 250ms delay
@@ -208,7 +207,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                           />
                         ) : (
                           <div className="logo__default !p-2 !text-base">
-                            {getInitials(brewery.companyName)}
+                            {getInitials(brewery?.companyName)}
                           </div>
                         )}
                         <h6 className="pl-1 text-left text-xs">
@@ -365,7 +364,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                   {selectedBrewery?.companyName}
                 </summary>
                 <ul className="menu  gap-4">
-                  {breweries.map((brewery: Brewery) => (
+                  {breweries?.map((brewery: Brewery) => (
                     <li
                       key={brewery._id}
                       className="category-card rounded-xl p-2 w-fit min-w-[15rem] "
@@ -388,7 +387,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                             )
                           : brewery.companyName && (
                               <div className="logo__default !p-2 !text-base ">
-                                {getInitials(brewery.companyName)}
+                                {getInitials(brewery?.companyName)}
                               </div>
                             )}
                         <h6 className="pl-3 text-left text-xs">

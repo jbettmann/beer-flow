@@ -7,25 +7,31 @@ type Props = {
 };
 
 const saveImage = async ({ file }: Props) => {
-
   if (!file) {
     console.error("No file selected");
     alert("No file selected");
-    return;
+    return null;
   }
 
-  // upload image
-  const filename = `${uuidv4()}-${file.name}`;
+  // Clean and generate filename
+  const sanitizedFileName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
+  const filename = `${uuidv4()}-${sanitizedFileName}`;
 
+  // Upload image
   const { data, error } = await supabase.storage
-    .from("Images")
+    .from("Brett_bucket")
     .upload(filename, file, {
       cacheControl: "3600",
       upsert: false,
     });
 
-  const filepath = data?.path;
+  if (error) {
+    console.error("Error uploading file:", error.message);
+    alert("Error uploading file: " + error.message);
+    return null;
+  }
 
+  const filepath = data?.path;
   return filepath;
 };
 
