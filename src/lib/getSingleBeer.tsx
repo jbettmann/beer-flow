@@ -1,8 +1,8 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { getServerSession } from "next-auth/next";
+import { auth } from "@/auth";
 
 export default async function getSingleBeer() {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
 
   if (session?.user) {
     try {

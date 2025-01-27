@@ -1,6 +1,6 @@
 import axios from "axios";
 import React from "react";
-import { getServerSession } from "next-auth/next";
+import { auth } from "@/auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { Users } from "@/app/types/users";
 import { Session } from "next-auth";

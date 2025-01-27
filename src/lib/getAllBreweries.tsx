@@ -1,10 +1,10 @@
 import axios from "axios";
 import React from "react";
-import { getServerSession } from "next-auth/next";
+import { auth } from "@/auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export default async function getAllBreweries() {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
 
   const res = await fetch(`https://beer-bible-api.vercel.app/breweries`, {
     method: "GET",

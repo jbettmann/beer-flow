@@ -34,7 +34,7 @@ export default async function updateBeer({
       }
 
       const responseData: Beer = await response.json();
-      // revalidatePath(`/breweries/[breweryId]`);
+      // revalidatePath(`/dashboard/breweries/[breweryId]`);
       // console.log({ responseData });
       return responseData;
     } catch (err) {
