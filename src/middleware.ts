@@ -1,84 +1,64 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
+import { auth } from "@/auth";
 import { rateLimiter } from "./lib/rate-limiter";
-import { withAuth } from "next-auth/middleware";
-import { getToken } from "next-auth/jwt";
 
-import { authOptions } from "./app/api/auth/[...nextauth]/route";
-
-// export { default } from "next-auth/middleware";
-
-// Directs middleware to check url path for these routes
 export const config = {
   matcher: [
     "/api/:path*",
     "/api/message/:path*",
     "/accept-invite/:path*",
     "/accept-invite",
-    "/breweries",
-    "/breweries/:path*",
-    "/beers/",
-    "/beers/:path*",
+    "/dashboard/breweries",
+    "/dashboard/breweries/:path*",
+    "/dashboard/breweries/beers/",
+    "/dashboard/breweries/beers/:path*",
     "/settings/",
     "/settings/:path*",
+    "/((?!api|_next/static|_next/image|favicon.ico).*)",
   ],
 };
 
-export default withAuth(
-  async function middleware(req: NextRequest) {
-    const pathname = req.nextUrl.pathname; // relative path
+export default auth(async function middleware(req: NextRequest) {
+  const pathname = req.nextUrl.pathname;
+  const session = await auth();
 
-    if (pathname.startsWith("/api/message")) {
-      const ip = req.ip ?? "127.0.0.1";
+  // Rate limiting for message endpoint
+  // if (pathname.startsWith("/api/message")) {
+  //   const ip = req.ip ?? "127.0.0.1";
 
-      try {
-        const { success } = await rateLimiter.limit(ip);
+  //   try {
+  //     const { success } = await rateLimiter.limit(ip);
+  //     if (!success)
+  //       return new NextResponse("You are writing messages too fast.");
+  //     return NextResponse.next();
+  //   } catch (error) {
+  //     return new NextResponse(
+  //       "Sorry, something went wrong processing your message. Please try again later."
+  //     );
+  //   }
+  // }
 
-        if (!success)
-          return new NextResponse("You are writing messages too fast.");
-        return NextResponse.next();
-      } catch (error) {
-        return new NextResponse(
-          "Sorry, something went wrong processing your message. Please try again later."
-        );
-      }
-    }
+  // Authentication checks
+  const isAuth = !!session?.user;
+  const isAuthPage = pathname.startsWith("/auth/login");
+  const acceptInvite = pathname.startsWith("/accept-invite");
 
-    // Manage route protection
-
-    const token = await getToken({ req });
-
-    const isAuth = !!token;
-
-    const isAuthPage = pathname.startsWith("/auth/login");
-
-    const acceptInvite = pathname.startsWith("/accept-invite");
-
-    const sensitiveRoutes = ["/"];
-
-    if (isAuthPage) {
-      if (isAuth) {
-        return NextResponse.redirect(new URL("/breweries", req.url));
-      }
-      return null;
-    }
-
-    if (!isAuth && config.matcher.some((route) => pathname.startsWith(route))) {
-      // Redirect unauthenticated users trying to access the accept-invite URL to the login page
-      if (acceptInvite) {
-        const loginUrl = new URL("/auth/login", req.url);
-        loginUrl.searchParams.set("next", req.url); // store the original URL
-
-        return NextResponse.redirect(loginUrl);
-      }
-
-      return NextResponse.redirect(new URL("/auth/login", req.url));
-    }
-  },
-  {
-    callbacks: {
-      async authorized() {
-        return true;
-      },
-    },
+  // Handle auth pages
+  if (isAuthPage) {
+    return isAuth
+      ? NextResponse.redirect(new URL("/dashboard/breweries", req.url))
+      : undefined;
   }
-);
+
+  // Protect sensitive routes
+  if (!isAuth && config.matcher.some((route) => pathname.startsWith(route))) {
+    if (acceptInvite) {
+      const loginUrl = new URL("/auth/login", req.url);
+      loginUrl.searchParams.set("next", req.url);
+      return NextResponse.redirect(loginUrl);
+    }
+    return NextResponse.redirect(new URL("/auth/login", req.url));
+  }
+
+  return NextResponse.next();
+}) as any;
