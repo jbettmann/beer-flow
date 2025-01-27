@@ -12,7 +12,7 @@ const CategoriesPage = async ({
 }: pageProps) => {
   return (
     <div className="w-1/2 h-full m-auto">
-      <UpdateCategory breweryId={breweryId} categoryId={categoryId} />
+      {/* <UpdateCategory breweryId={breweryId} categoryId={categoryId} /> */}
     </div>
   );
 };

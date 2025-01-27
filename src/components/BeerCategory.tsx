@@ -17,6 +17,7 @@ import UpdateCategory from "./UpdateCategory/UpdateCategory";
 import EditModal from "./Alerts/EditModal";
 import { set } from "mongoose";
 import BeerSnippet from "./BeerCardComponents/BeerSnippet";
+import { User } from "next-auth";
 
 type Props = {
   category: Category | NewCategory;
@@ -91,7 +92,7 @@ export default function BeerCategory({
     {
       name: "Edit Name",
       onClick: () => setEditName(true),
-      href: `/breweries/${breweryId}/categories/${category._id}`,
+      href: `/dashboard/breweries/${breweryId}/categories/${category._id}`,
       disabled: false,
     },
     {
@@ -105,7 +106,7 @@ export default function BeerCategory({
           token: session?.user?.accessToken as any,
         });
 
-        if (updateBrewCats) setSelectedBrewery(updateBrewCats as Brewery);
+        setSelectedBrewery(updateBrewCats as Brewery);
       },
 
       disabled: beersInCategory.length > 0, // Disable this option if there are beers in the category
@@ -131,7 +132,7 @@ export default function BeerCategory({
   //           <div className="collapse-content">
   //             {beersInCategory.map((beer) => (
   //               <Link
-  //                 href={`/breweries/${breweryId}/beers/${beer._id}`}
+  //                 href={`/dashboard/breweries/${breweryId}/beers/${beer._id}`}
   //                 key={beer._id}
   //               >
   //                 {beer.name}
@@ -177,7 +178,7 @@ export default function BeerCategory({
                   {/* Desktop  */}
                   <Link
                     className="hidden md:flex items-center justify-between"
-                    href={`/breweries/${breweryId}/beers/${beer._id}`}
+                    href={`/dashboard/breweries/${breweryId}/beers/${beer._id}`}
                     key={beer._id}
                   >
                     <div className="inline-flex items-center">

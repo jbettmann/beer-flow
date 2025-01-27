@@ -1,5 +1,4 @@
 "use client";
-import route from "@/app/api/auth/[...nextauth]/route";
 import { Beer } from "@/app/types/beer";
 import { Brewery } from "@/app/types/brewery";
 import getBreweryBeers from "@/lib/getBreweryBeers";

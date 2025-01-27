@@ -1,12 +1,12 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import DeleteAccount from "@/components/Settings/DeleteAccount";
-import { getServerSession } from "next-auth/next";
+import { auth } from "@/auth";
 import React from "react";
 
 type Props = {};
 
 const AccountPage = async (props: Props) => {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   return (
     <div className="">
       <div className="settings-account__info">

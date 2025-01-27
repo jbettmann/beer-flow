@@ -218,7 +218,7 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
                   saveSearchTerm(beer.name);
                   onClose();
                 }}
-                href={`/breweries/${selectedBrewery?._id}/beers/${beer._id}`}
+                href={`/dashboard/breweries/${selectedBrewery?._id}/beers/${beer._id}`}
                 className=" p-4 search-result__item "
               >
                 <div className="search-result__icon-name">

@@ -1,11 +1,9 @@
 // import { PageProps } from "../../../.next/types/app/layout";
-import getBreweries from "@/lib/getBreweries";
-import { Brewery } from "../types/brewery";
 import Breweries from "@/components/Breweries/Breweries";
-import { Suspense } from "react";
 import BreweriesPageLS from "@/components/LoadingSkeleton/BreweriesPageLS";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+import getBreweries from "@/lib/getBreweries";
+import { Suspense } from "react";
+import { Brewery } from "../../types/brewery";
 
 const BreweriesPage = async () => {
   const breweryData: Promise<Brewery[]> = getBreweries();

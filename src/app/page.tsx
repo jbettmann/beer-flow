@@ -12,7 +12,7 @@ export default async function Home() {
   //   savedBreweryId = localStorage.getItem("selectedBreweryId");
   // }
   // if (session?.user && savedBreweryId) {
-  //   redirect(`/breweries/${savedBreweryId}`);
+  //   redirect(`/dashboard/breweries/${savedBreweryId}`);
   // }
 
   // if (session?.user && !savedBreweryId && session.user.breweries.length > 0) {
@@ -21,11 +21,11 @@ export default async function Home() {
 
   // if (session?.user && !savedBreweryId) {
   //   let savedBreweryId = session?.user.breweries[0];
-  //   redirect(`/breweries/${savedBreweryId}`);
+  //   redirect(`/dashboard/breweries/${savedBreweryId}`);
   // }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between  bg-background ">
+    <main className="flex min-h-screen flex-col items-center justify-between w-full">
       <div className="w-full mx-auto max-w-7xl">
         <div className=" mx-auto flex justify-between text-primary absolute top-0 left-0 right-0 p-4 md:px-10 lg:px-12 2xl:px-32 ">
           <Link

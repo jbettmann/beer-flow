@@ -151,7 +151,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
             </label>
 
             <Link
-              href={`/breweries/${selectedBrewery?._id}`}
+              href={`/dashboard/breweries/${selectedBrewery?._id}`}
               className="flex flex-row items-center justify-center gap-1"
             >
               {selectedBrewery?.image ? (
@@ -189,14 +189,14 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                 </Link>
 
                 <ul className="w-full menu !flex-nowrap  h-full gap-3 overflow-y-scroll">
-                  {breweries.map((brewery: Brewery) => (
+                  {breweries?.map((brewery: Brewery) => (
                     <li
                       key={brewery._id}
                       className="category-card rounded-xl p-1"
                     >
                       <Link
                         key={brewery._id}
-                        href={`/breweries/${brewery._id}`}
+                        href={`/dashboard/breweries/${brewery._id}`}
                         className="flex flex-col xs:flex-row items-center text-left "
                         onClick={() => handleBreweryClick(brewery)}
                       >
@@ -245,7 +245,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                     </div>
                     <li onClick={closeDrawer}>
                       <Link
-                        href={`/breweries/${selectedBrewery?._id}/categories`}
+                        href={`/dashboard/breweries/${selectedBrewery?._id}/categories`}
                         className="flex flex-row items-center "
                         data-tip={`Categories Management`}
                       >
@@ -255,7 +255,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                     </li>
                     <li onClick={closeDrawer}>
                       <Link
-                        href={`/breweries/${selectedBrewery?._id}/staff`}
+                        href={`/dashboard/breweries/${selectedBrewery?._id}/staff`}
                         className="flex flex-row items-center"
                         data-tip="Staff Management"
                       >
@@ -370,7 +370,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                       className="category-card rounded-xl p-2 w-fit min-w-[15rem] "
                     >
                       <Link
-                        href={`/breweries/${brewery._id}`}
+                        href={`/dashboard/breweries/${brewery._id}`}
                         key={brewery._id}
                         className="flex flex-row items-center text-left"
                         onClick={() => {
@@ -479,9 +479,9 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                 />
               </Link>
               <Link
-                href={`/breweries/${selectedBrewery?._id}`}
+                href={`/dashboard/breweries/${selectedBrewery?._id}`}
                 className={`flex flex-row justify-between p-3  tooltip tooltip-accent tooltip-right ${
-                  isActive(`/breweries/${selectedBrewery?._id}`)
+                  isActive(`/dashboard/breweries/${selectedBrewery?._id}`)
                     ? "text-accent bg-fourth-color shadow-inner rounded-lg "
                     : ""
                 }`}
@@ -515,9 +515,11 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                         )}
                   </div>
                   <Link
-                    href={`/breweries/${selectedBrewery?._id}/categories`}
+                    href={`/dashboard/breweries/${selectedBrewery?._id}/categories`}
                     className={`flex flex-row items-center p-3  tooltip tooltip-accent tooltip-right ${
-                      isActive(`/breweries/${selectedBrewery?._id}/categories`)
+                      isActive(
+                        `/dashboard/breweries/${selectedBrewery?._id}/categories`
+                      )
                         ? "text-accent bg-fourth-color shadow-inner rounded-lg "
                         : ""
                     }`}
@@ -527,9 +529,11 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                   </Link>
 
                   <Link
-                    href={`/breweries/${selectedBrewery?._id}/staff`}
+                    href={`/dashboard/breweries/${selectedBrewery?._id}/staff`}
                     className={`flex flex-row items-center p-3 tooltip tooltip-accent tooltip-right ${
-                      isActive(`/breweries/${selectedBrewery?._id}/staff`)
+                      isActive(
+                        `/dashboard/breweries/${selectedBrewery?._id}/staff`
+                      )
                         ? "text-accent bg-fourth-color shadow-inner rounded-lg "
                         : ""
                     }`}
@@ -632,11 +636,11 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
         {/* <div className=" md:hidden btm-nav z-40 bg-primary text-background">
         <button
           className={
-            isActive(`/breweries/${selectedBrewery?._id}`) ? "active" : ""
+            isActive(`/dashboard/breweries/${selectedBrewery?._id}`) ? "active" : ""
           }
         >
           <Link
-            href={`/breweries/${selectedBrewery?._id}`}
+            href={`/dashboard/breweries/${selectedBrewery?._id}`}
             data-tip="Home"
             className="flex flex-col items-center text-xs"
           >
@@ -644,7 +648,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
               size={24}
               strokeWidth={1}
               className={
-                isActive(`/breweries/${selectedBrewery?._id}`)
+                isActive(`/dashboard/breweries/${selectedBrewery?._id}`)
                   ? "fill-accent text-primary"
                   : ""
               }
@@ -672,13 +676,13 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
           <>
             <button
               className={
-                isActive(`/breweries/${selectedBrewery?._id}/categories`)
+                isActive(`/dashboard/breweries/${selectedBrewery?._id}/categories`)
                   ? "active"
                   : ""
               }
             >
               <Link
-                href={`/breweries/${selectedBrewery?._id}/categories`}
+                href={`/dashboard/breweries/${selectedBrewery?._id}/categories`}
                 className="flex flex-col items-center text-xs"
                 data-tip="Brewery Categories Management"
               >
@@ -686,7 +690,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                   size={24}
                   strokeWidth={1}
                   className={
-                    isActive(`/breweries/${selectedBrewery?._id}/categories`)
+                    isActive(`/dashboard/breweries/${selectedBrewery?._id}/categories`)
                       ? "fill-accent  text-accent"
                       : ""
                   }
@@ -696,13 +700,13 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
             </button>
             <button
               className={
-                isActive(`/breweries/${selectedBrewery?._id}/staff`)
+                isActive(`/dashboard/breweries/${selectedBrewery?._id}/staff`)
                   ? "active"
                   : ""
               }
             >
               <Link
-                href={`/breweries/${selectedBrewery?._id}/staff`}
+                href={`/dashboard/breweries/${selectedBrewery?._id}/staff`}
                 className="flex flex-col items-center text-xs"
                 data-tip="Brewery Staff Management"
               >
@@ -710,7 +714,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                   size={24}
                   strokeWidth={1}
                   className={
-                    isActive(`/breweries/${selectedBrewery?._id}/staff`)
+                    isActive(`/dashboard/breweries/${selectedBrewery?._id}/staff`)
                       ? "fill-accent  text-accent"
                       : ""
                   }

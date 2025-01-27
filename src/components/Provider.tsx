@@ -5,7 +5,7 @@ import { FC, ReactNode } from "react";
 import { SessionProvider } from "next-auth/react";
 import { BreweryProvider } from "@/context/brewery-beer";
 import { ToastProvider } from "@/context/toast";
-import { FlatfileProvider } from "@flatfile/react";
+// import { FlatfileProvider } from "@flatfile/react";
 
 interface ProviderProps {
   children: ReactNode;
@@ -18,13 +18,13 @@ const Provider: FC<ProviderProps> = ({ children }) => {
   return (
     <SessionProvider>
       <BreweryProvider>
-        <FlatfileProvider publishableKey={PUBLISHABLE_KEY}>
-          <ToastProvider>
-            <QueryClientProvider client={queryClient}>
-              <MessagesProvider>{children}</MessagesProvider>
-            </QueryClientProvider>
-          </ToastProvider>
-        </FlatfileProvider>
+        {/* <FlatfileProvider publishableKey={PUBLISHABLE_KEY}> */}
+        <ToastProvider>
+          <QueryClientProvider client={queryClient}>
+            <MessagesProvider>{children}</MessagesProvider>
+          </QueryClientProvider>
+        </ToastProvider>
+        {/* </FlatfileProvider> */}
       </BreweryProvider>
     </SessionProvider>
   );

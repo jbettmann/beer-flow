@@ -82,6 +82,7 @@ const CategoryRow = ({
     selectedBeers,
     selectedBrewery,
     setSelectedBeers,
+
     setSelectedBrewery,
   } = useBreweryContext();
 
@@ -343,13 +344,10 @@ const CategoryRow = ({
         });
 
         // Update the selectedBrewery state
-        setSelectedBrewery((prevBrewery) => {
-          if (!prevBrewery) return null;
-          return {
-            ...prevBrewery,
-            categories: [...(prevBrewery?.categories || []), ...newCategories],
-          };
-        });
+        setSelectedBrewery((prevBrewery: any) => ({
+          ...prevBrewery,
+          categories: [...(prevBrewery?.categories || []), ...newCategories],
+        }));
       }
 
       // Update cache

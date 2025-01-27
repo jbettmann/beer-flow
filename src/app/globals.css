@@ -16,7 +16,7 @@
 :root {
   --primary: #2B2B2B;
   --accent: #1fcdbc;
-  --background: #f6f1e9;
+  --background: #fafafa;
   --third-color: #202020;
   --fourth-color: #343434;
   --the-gray: #5e5e5e;
@@ -33,11 +33,11 @@ html {
 
   
 }
-body {
+/* body {
   @apply p-2 xxs:p-5 min-h-full  text-primary pt-10 ; 
   font-family: var(--font-sf-pro), sans-serif;
   -webkit-font-smoothing: antialiased;
-}
+} */
 
 h1 {
   @apply text-4xl  font-bold text-center
@@ -281,7 +281,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .logo__default {
-  @apply flex px-1 py-[.5px] bg-accent justify-center items-center text-third-color font-bold text-xl rounded-2xl
+  @apply flex px-2 py-2 bg-accent justify-center items-center text-third-color font-bold text-xl rounded-full
 }
 
 .logo__settings {
@@ -476,4 +476,27 @@ input[type="date"]::-webkit-calendar-picker-indicator {
  
 .flatfile_iframe-wrapper.flatfile_displayAsModal {
   @apply !w-full !h-screen !pt-16 md:!pl-24;
+}
+ 
+@layer base {
+  :root {
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+  .dark {
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
 }

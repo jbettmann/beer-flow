@@ -85,7 +85,7 @@ const AcceptInvite = (props: Props) => {
           await update({ newBreweryId: response.brewery._id });
           handleBreweryToStorage(response.brewery);
 
-          router.push(`/breweries/${response.brewery._id}`);
+          router.push(`/dashboard/breweries/${response.brewery._id}`);
         }
       } else {
         addToast("Unable to process invite. Please try again later", "error");

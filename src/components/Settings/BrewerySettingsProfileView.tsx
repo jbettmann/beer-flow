@@ -55,7 +55,7 @@ const BrewerySettingsProfileView = ({ breweryId }: Props) => {
   // redirect to brewery staff page
   const handleStaffMemberClick = () => {
     setSelectedBrewery(brewery);
-    router.push(`/breweries/${breweryId}/staff`);
+    router.push(`/dashboard/breweries/${breweryId}/staff`);
   };
 
   // Deletes Brewery or Removes User Access from Brewery

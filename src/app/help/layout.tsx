@@ -1,7 +1,7 @@
 import BackArrow from "@/components/Buttons/BackArrow";
-import { getServerSession } from "next-auth";
 import React from "react";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+import { auth } from "@/auth";
+
 import Link from "next/link";
 
 type Props = {
@@ -9,7 +9,7 @@ type Props = {
 };
 
 const layout = async ({ children }: Props) => {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   return (
     <div className="lg:w-10/12 mx-auto">
       {!session && (

@@ -17,11 +17,11 @@ const BrewerySettingsList = ({ brewery, session }: Props) => {
   const role = owner
     ? "Owner"
     : adminIds.has(session?.user.id)
-    ? "Admin"
-    : "Crew";
+      ? "Admin"
+      : "Crew";
   return (
     <Link
-      href={`/settings/breweries/${brewery._id}`}
+      href={`/settings/dashboard/breweries/${brewery._id}`}
       key={brewery._id}
       className="flex items-center justify-between p-2 w-full "
     >

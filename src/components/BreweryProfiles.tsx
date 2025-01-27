@@ -1,28 +1,22 @@
 "use client";
-import { Category } from "@/app/types/category";
-import { useBreweryContext } from "@/context/brewery-beer";
-import { Beer as BeerIcon, Plus, X } from "lucide-react";
-import Link from "next/link";
-import { Suspense, use, useEffect, useMemo, useState } from "react";
-import BeerCategory from "./BeerCategory";
-import BreweryProfileSkeleton from "./LoadingSkeleton/BreweryProfileLS";
 import { Beer } from "@/app/types/beer";
-import BottomDrawer from "./Drawers/BottomDrawer";
-import BeerCard from "./BeerCard";
-import CreateBeerForm from "./CreateBeerForm/CreateBeerForm";
-import EditModal from "./Alerts/EditModal";
-import { debounce } from "@/lib/utils";
-import CreateModal from "./Alerts/CreateModal";
+import { Category } from "@/app/types/category";
 import { Users } from "@/app/types/users";
-import BeerSnippet from "./BeerCardComponents/BeerSnippet";
+import { useBreweryContext } from "@/context/brewery-beer";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { hopSuggestions, maltSuggestions } from "@/lib/suggestionsDB";
-import FlatfilePortal from "./FlatfilePortal/FlatfilePortal";
+import { Beer as BeerIcon, Plus, X } from "lucide-react";
+import { Suspense, useEffect, useMemo, useState } from "react";
+import CreateModal from "./Alerts/CreateModal";
+import BeerCard from "./BeerCard";
+import BeerSnippet from "./BeerCardComponents/BeerSnippet";
+import BeerCategory from "./BeerCategory";
+import CreateBeerForm from "./CreateBeerForm/CreateBeerForm";
+import BottomDrawer from "./Drawers/BottomDrawer";
+import BreweryProfileSkeleton from "./LoadingSkeleton/BreweryProfileLS";
 
-type pageProps = {
-  breweryId: string;
-};
-
-export default function BreweryProfiles({ breweryId }: pageProps) {
+export default function BreweryProfiles() {
+  const isMobile = useIsMobile();
   const {
     setSelectedBrewery,
     setSelectedBeers,
@@ -38,12 +32,9 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
     null
   );
   const [categories, setCategories] = useState<Category[]>([]);
-  // Mobile Beer Card View
   const [bottomDrawerOpen, setBottomDrawerOpen] = useState<boolean>(false);
   const [beerForDrawer, setBeerForDrawer] = useState<Beer | null>(null);
-  // Mobile Create Beer View
   const [isCreateBeer, setIsCreateBeer] = useState<boolean>(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [beerSearch, setBeerSearch] = useState<Beer[] | undefined>(undefined);
   const [beerSearchTerm, setBeerSearchTerm] = useState<string>("");
 
@@ -109,37 +100,16 @@ export default function BreweryProfiles({ breweryId }: pageProps) {
     }
   };
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const handleResize = () => {
-        setIsMobile(window.innerWidth <= 768);
-      };
-
-      const debouncedResize = debounce(handleResize, 250); // 250ms delay
-
-      window.addEventListener("resize", debouncedResize);
-
-      return () => {
-        window.removeEventListener("resize", debouncedResize);
-      };
-    }
-  }, []);
-
   // watch for change in selected brewery and beer to update categories
   useEffect(() => {
     setCategories((selectedBrewery?.categories as Category[]) || []);
   }, [selectedBrewery, selectedBeers]);
 
-  // console.log({ brewery, beers, session });
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedOpenCategory = sessionStorage.getItem("openCategory");
       setOpenCategory(storedOpenCategory);
     }
-
-    // if (typeof window !== "undefined" && selectedBrewery) {
-    //   localStorage.setItem("selectedBreweryId", selectedBrewery._id);
-    // }
   }, [selectedBrewery?._id]);
 
   if (breweryLoading || beersLoading) return <BreweryProfileSkeleton />;

@@ -228,15 +228,13 @@ const CategoryList = ({
       });
 
       setSelectedBrewery((prev) => {
-        if (prev === null) {
-          return null;
-        }
+        if (!prev) return null;
 
         return {
           ...prev,
           categories: [
             { _id: newCategoryId, name: newCategoryName },
-            ...prev.categories,
+            ...(prev.categories || []),
           ],
         };
       });
@@ -314,19 +312,19 @@ const CategoryList = ({
             });
           }
         );
-
-        setSelectedBrewery((prev) => {
-          if (prev === null) {
-            return null;
-          }
+        setSelectedBrewery((prev: Brewery | null) => {
+          if (!prev) return null;
           return {
             ...prev,
-            categories: prev.categories.filter(
-              (category) =>
-                !checkedAndEmptyCategoryIds.includes(category._id as string)
-            ),
+            categories: [
+              ...prev.categories.filter(
+                (category) =>
+                  !checkedAndEmptyCategoryIds.includes(category._id as string)
+              ),
+            ],
           };
         });
+
         addToast("Category Deleted", "success");
       } catch (error: any) {
         console.error(error);

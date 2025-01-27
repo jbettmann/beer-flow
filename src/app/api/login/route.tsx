@@ -1,7 +1,6 @@
 import dbConnect from "@/lib/db";
 import { signJwtAccessToken } from "@/lib/jwt";
-
-import * as bcyrpt from "bcrypt";
+import * as bcyrpt from "bcryptjs";
 import User from "../../../../models/user";
 
 interface RequestBody {

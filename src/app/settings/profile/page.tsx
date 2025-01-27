@@ -1,7 +1,7 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { Brewery } from "@/app/types/brewery";
 import getBreweries from "@/lib/getBreweries";
-import { getServerSession } from "next-auth/next";
+import { auth } from "@/auth";
 import Image from "next/image";
 
 import BrewerySettingsList from "@/components/Settings/BrewerySettingsList";
@@ -10,7 +10,7 @@ import { getInitials } from "@/lib/utils";
 type Props = {};
 
 const ActualProfilePage = async (props: Props) => {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   const breweries = await getBreweries();
 
   const constructUserName = (name: string) => {

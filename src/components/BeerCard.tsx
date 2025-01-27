@@ -73,7 +73,7 @@ const BeerCard = ({ beerId, beerForDrawer, onClose }: Props) => {
               if (onClose) {
                 onClose();
               } else {
-                redirect(`/breweries/${selectedBrewery?._id}`);
+                redirect(`/dashboard/breweries/${selectedBrewery?._id}`);
               }
             }}
           >

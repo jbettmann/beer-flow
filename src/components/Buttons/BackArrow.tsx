@@ -18,7 +18,7 @@ const BackArrow = (props: Props) => {
 
   useEffect(() => {
     if (selectedBrewery) {
-      setHomepage(`/breweries/${selectedBrewery?._id}`);
+      setHomepage(`/dashboard/breweries/${selectedBrewery?._id}`);
     }
   }, [selectedBrewery?._id]);
 

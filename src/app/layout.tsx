@@ -1,12 +1,10 @@
-import NavBar from "@/components/NavBar";
 import Provider from "@/components/Provider";
-import getBreweries from "@/lib/getBreweries";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 import { Metadata } from "next";
-import { getServerSession } from "next-auth";
 import { Inter } from "next/font/google";
-import { authOptions } from "./api/auth/[...nextauth]/route";
 import localFont from "next/font/local";
-import { revalidatePath } from "next/cache";
+import "./globals.css";
 const myFont = localFont({
   src: [
     { path: "../assets/fonts/SF-Pro.ttf", weight: "normal", style: "normal" },
@@ -16,7 +14,6 @@ const myFont = localFont({
   display: "swap",
   variable: "--font-sf-pro",
 });
-import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,22 +28,23 @@ export default async function Layout(props: {
   children: React.ReactNode;
   modal: React.ReactNode;
 }) {
-  const breweries = await getBreweries();
-  const session = await getServerSession(authOptions);
-
-  revalidatePath("/breweries", "page");
 
   return (
-    <html lang="en ">
-      <Provider>
-        <body className={`${myFont.variable} ${inter.className}`}>
-          {session && <NavBar breweries={breweries} user={session.user} />}
-
-          {/* <Chat /> */}
-          {props.children}
-          {props.modal}
-        </body>
-      </Provider>
+    <html lang="en">
+      <body
+        className={cn(
+          "min-h-screen bg-background font-sans antialiased",
+          `${myFont.variable} ${inter.className}`
+        )}
+      >
+        <Provider>
+          <SidebarProvider>
+            {/* <Chat /> */}
+            {props.children}
+            {props.modal}
+          </SidebarProvider>
+        </Provider>
+      </body>
     </html>
   );
 }
