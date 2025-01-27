@@ -94,6 +94,8 @@ const manageLocalStorageSize = () => {
 
 // create default mark for brewery with no image/logo
 export function getInitials(name: string) {
+  if (!name) return;
+  console.log("name", name);
   // Exclude any signs like &,$,/,@,$
   name = name.replace(/[&$/@]/g, "");
 
