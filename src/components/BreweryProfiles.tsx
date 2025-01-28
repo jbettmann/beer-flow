@@ -161,7 +161,10 @@ export default function BreweryProfiles() {
             </div>
           )}
 
-          <div className="sm:w-3/4 md:w-1/2 xl:w-[40%] 2xl:w-1/3 mt-8 mx-auto py-3 md:mt-0 md:p-8">
+          <div
+            className="sm:w-3/4 md:w-1/2 xl:w-[40%] 2xl:w-1/3 mt-8 mx-auto py-3 md:mt-0 md:p-8"
+            key={selectedBrewery?._id}
+          >
             <h3 className="font-semibold">Beer List</h3>
             <div className="relative flex-auto">
               <label htmlFor="beerSearch"></label>

@@ -5,6 +5,7 @@ import { FC, ReactNode } from "react";
 import { SessionProvider } from "next-auth/react";
 import { BreweryProvider } from "@/context/brewery-beer";
 import { ToastProvider } from "@/context/toast";
+import ThemeProvider from "./layout/ThemeToggle/theme-provider";
 // import { FlatfileProvider } from "@flatfile/react";
 
 interface ProviderProps {
@@ -16,17 +17,19 @@ const Provider: FC<ProviderProps> = ({ children }) => {
   const PUBLISHABLE_KEY = "pk_c3e79bef76034e9c94f65581643f09cf";
 
   return (
-    <SessionProvider>
-      <BreweryProvider>
-        {/* <FlatfileProvider publishableKey={PUBLISHABLE_KEY}> */}
-        <ToastProvider>
-          <QueryClientProvider client={queryClient}>
-            <MessagesProvider>{children}</MessagesProvider>
-          </QueryClientProvider>
-        </ToastProvider>
-        {/* </FlatfileProvider> */}
-      </BreweryProvider>
-    </SessionProvider>
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <SessionProvider>
+        <BreweryProvider>
+          {/* <FlatfileProvider publishableKey={PUBLISHABLE_KEY}> */}
+          <ToastProvider>
+            <QueryClientProvider client={queryClient}>
+              <MessagesProvider>{children}</MessagesProvider>
+            </QueryClientProvider>
+          </ToastProvider>
+          {/* </FlatfileProvider> */}
+        </BreweryProvider>
+      </SessionProvider>
+    </ThemeProvider>
   );
 };
 
