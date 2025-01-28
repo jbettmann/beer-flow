@@ -29,11 +29,11 @@ export default function Header() {
         {/* <Breadcrumbs /> */}
       </div>
 
-      <div className="flex items-center gap-2 px-4">
+      <div className="flex items-center gap-4 px-4">
         <SearchIcon
           size={22}
           strokeWidth={1}
-          className="absolute top-4 right-4 hover:cursor-pointer"
+          className="hover:cursor-pointer"
           onClick={() => setIsSearchOpen(true)}
         />
 
