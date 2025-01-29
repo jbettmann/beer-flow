@@ -6,13 +6,20 @@ const nextConfig = {
     serverActions: true,
   },
   images: {
-    domains: ["lh3.googleusercontent.com"],
+    domains: ["lh3.googleusercontent.com", "api.slingacademy.com"],
     remotePatterns: [
       {
         protocol: "https",
         hostname: "omlnjbcckhowlpkhorry.supabase.co",
         port: "",
         pathname: "/storage/**",
+      },
+
+      {
+        protocol: "https",
+        hostname: "api.slingacademy.com",
+        port: "",
+        pathname: "/**",
       },
     ],
   },

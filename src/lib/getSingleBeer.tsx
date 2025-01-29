@@ -1,4 +1,3 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { auth } from "@/auth";
 
 export default async function getSingleBeer() {

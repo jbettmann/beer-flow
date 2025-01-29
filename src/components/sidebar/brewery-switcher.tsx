@@ -1,15 +1,13 @@
 "use client";
 
-import * as React from "react";
-import { ChevronsUpDown, Plus } from "lucide-react";
+import { ChevronsUpDown } from "lucide-react";
 
+import { Brewery } from "@/app/types/brewery";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -19,16 +17,13 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useBreweryContext } from "@/context/brewery-beer";
-import { useEffect, useState } from "react";
-import ImageDisplay from "../ImageDisplay/ImageDisplay";
 import { getInitials } from "@/lib/utils";
-import { Brewery } from "@/app/types/brewery";
-import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useEffect } from "react";
+import ImageDisplay from "../ImageDisplay/ImageDisplay";
 
 export function BrewerySwitcher({ breweries }: { breweries: Brewery[] }) {
   const { isMobile } = useSidebar();
-  const { data: session } = useSession();
   const { selectedBrewery, setSelectedBrewery, isAdmin } = useBreweryContext();
 
   const handleBreweryClick = (brewery: Brewery) => {
@@ -50,82 +45,77 @@ export function BrewerySwitcher({ breweries }: { breweries: Brewery[] }) {
     }
   }, [breweries, setSelectedBrewery]);
   return (
-    <SidebarMenu>
-      <SidebarMenuItem>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground "
-            >
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg  text-sidebar-primary-foreground">
-                {selectedBrewery?.image ? (
-                  <ImageDisplay item={selectedBrewery} className="h-6" />
-                ) : (
-                  selectedBrewery?.companyName && (
-                    <div className="logo__default  !text-base">
-                      {getInitials(selectedBrewery?.companyName as string)}
-                    </div>
-                  )
-                )}
-              </div>
-
-              <span className="truncate font-semibold">
-                {selectedBrewery?.companyName}
-              </span>
-              <ChevronsUpDown className="ml-auto" />
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-            align="start"
-            side={isMobile ? "bottom" : "right"}
-            sideOffset={4}
-          >
-            <DropdownMenuLabel className="text-xs text-muted-foreground">
-              Teams
-            </DropdownMenuLabel>
-            {breweries.map((brewery, index) => (
-              <DropdownMenuItem
-                key={brewery.companyName + index}
-                onClick={() => handleBreweryClick(brewery)}
-                className="gap-2 p-2"
+    <>
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <SidebarMenuButton
+                size="lg"
+                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground "
               >
-                <Link
-                  href={`/dashboard/breweries/${brewery._id}`}
-                  key={brewery._id}
-                  className="flex flex-row items-center text-left gap-2"
-                >
-                  <div className="flex size-6 items-center justify-center rounded-sm ">
-                    {brewery?.image ? (
-                      <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                        <ImageDisplay
-                          item={brewery}
-                          className="logo !w-6 !h-6"
-                        />
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg  text-sidebar-primary-foreground">
+                  {selectedBrewery?.image ? (
+                    <ImageDisplay item={selectedBrewery} className="h-6" />
+                  ) : (
+                    selectedBrewery?.companyName && (
+                      <div className="logo__default  !text-base">
+                        {getInitials(selectedBrewery?.companyName as string)}
                       </div>
-                    ) : (
-                      brewery?.companyName && (
-                        <div className="logo__default  !text-base">
-                          {getInitials(brewery?.companyName as string)}
+                    )
+                  )}
+                </div>
+
+                <span className="truncate font-semibold">
+                  {selectedBrewery?.companyName}
+                </span>
+                <ChevronsUpDown className="ml-auto" />
+              </SidebarMenuButton>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+              align="start"
+              side={isMobile ? "bottom" : "right"}
+              sideOffset={4}
+            >
+              <DropdownMenuLabel className="text-xs text-muted-foreground">
+                Breweries
+              </DropdownMenuLabel>
+              {breweries.map((brewery, index) => (
+                <DropdownMenuItem
+                  key={brewery.companyName + index}
+                  onClick={() => handleBreweryClick(brewery)}
+                  className="gap-2 p-2"
+                >
+                  <Link
+                    href={`/dashboard/breweries/${brewery._id}`}
+                    key={brewery._id}
+                    className="flex flex-row items-center text-left gap-4"
+                  >
+                    <div className="flex size-6 items-center justify-center rounded-sm ">
+                      {brewery?.image ? (
+                        <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                          <ImageDisplay
+                            item={brewery}
+                            className="logo !w-6 !h-6"
+                          />
                         </div>
-                      )
-                    )}
-                  </div>
-                  {brewery.companyName}
-                </Link>
-              </DropdownMenuItem>
-            ))}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 p-2">
-              <div className="flex size-6 items-center justify-center rounded-md border bg-background">
-                <Plus className="size-4" />
-              </div>
-              <div className="font-medium text-muted-foreground">Add team</div>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </SidebarMenuItem>
-    </SidebarMenu>
+                      ) : (
+                        brewery?.companyName && (
+                          <div className="logo__default  !text-base">
+                            {getInitials(brewery?.companyName as string)}
+                          </div>
+                        )
+                      )}
+                    </div>
+                    {brewery.companyName}
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    </>
   );
 }

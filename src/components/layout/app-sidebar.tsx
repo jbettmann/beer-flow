@@ -50,7 +50,7 @@ export function AppSidebar({
       authNav: [
         {
           title: "Beers",
-          url: `/dashboard/breweries/${selectedBrewery?._id}`,
+          url: `/dashboard/breweries/${selectedBrewery?._id}/beers`,
           icon: Beer,
           items: [
             {
@@ -130,6 +130,8 @@ export function AppSidebar({
     };
     return data;
   }, [selectedBrewery]);
+
+
 
   return (
     <>

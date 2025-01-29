@@ -1,21 +1,17 @@
-import axios from "axios";
-import React from "react";
+"use server";
+
 import { auth } from "@/auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { Users } from "@/app/types/users";
-import { Session } from "next-auth";
 
 type pageProps = [url: string, token: string];
 
-// url: https://beer-bible-api.vercel.app/breweries/${breweryId}`
-
 export default async function getSingleBrewery([url, token]: any) {
-  if (token) {
+  const user = await auth();
+  if (user?.user) {
     try {
       const response = await fetch(url, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${user.user.accessToken}`,
         },
         method: "GET",
       });
@@ -27,9 +23,9 @@ export default async function getSingleBrewery([url, token]: any) {
       return await response.json();
     } catch (err) {
       console.error(err);
-      return {}; // Return empty array on error
+      return {}; 
     }
   } else {
-    return {}; // Return empty array if user has no breweries
+    return {}; 
   }
 }

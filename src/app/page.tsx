@@ -51,7 +51,7 @@ export default async function Home() {
             </Link>
             <Link
               href="/auth/create/account"
-              className=" flex justify-center items-center w-full h-3/4 rounded-full bg-accent hover:shadow-xl transition-all ease-in-out text-sm  text-primary shadow-sm font-medium hover:bg-[#68cdc0] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              className=" flex justify-center items-center w-full h-3/4 rounded-full bg-accent hover:shadow-xl transition-all ease-in-out text-sm  text-primary shadow-sm font-medium hover:bg-[#68cdc0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             >
               Sign up
             </Link>
