@@ -1,11 +1,11 @@
 "use client";
-import { Product } from "@/constants/data";
-import { ColumnDef } from "@tanstack/react-table";
-import Image from "next/image";
-import { CellAction } from "./cell-action";
+import { Beer } from "@/app/types/beer";
+import { Category } from "@/app/types/category";
 import ImageDisplay from "@/components/ImageDisplay/ImageDisplay";
+import { ColumnDef } from "@tanstack/react-table";
+import { CellAction } from "./cell-action";
 
-export const columns: ColumnDef<Product>[] = [
+export const columns: ColumnDef<Beer>[] = [
   {
     accessorKey: "image",
     header: "IMAGE",
@@ -27,9 +27,9 @@ export const columns: ColumnDef<Product>[] = [
     cell: ({ row }) => {
       return (
         <div className="relative ">
-          {row.original.category.map((category) => (
+          {(row.original as Beer).category.map((category: Category, index) => (
             <span
-              key={category}
+              key={index}
               className="text-xs bg-gray-200 rounded-full px-2 py-1 mr-1"
             >
               {category.name}

@@ -1,20 +1,10 @@
 "use client";
-
-import { searchParams } from "@/lib/searchparams";
+import { searchParamsCache, searchParams } from "@/lib/searchparams";
 import { useQueryState } from "nuqs";
 import { useCallback, useMemo } from "react";
 
-export const CATEGORY_OPTIONS = [
-  { value: "Electronics", label: "Electronics" },
-  { value: "Furniture", label: "Furniture" },
-  { value: "Clothing", label: "Clothing" },
-  { value: "Toys", label: "Toys" },
-  { value: "Groceries", label: "Groceries" },
-  { value: "Books", label: "Books" },
-  { value: "Jewelry", label: "Jewelry" },
-  { value: "Beauty Products", label: "Beauty Products" },
-];
 export function useProductTableFilters() {
+  // Use the existing searchParams config consistently
   const [searchQuery, setSearchQuery] = useQueryState(
     "q",
     searchParams.q
@@ -27,6 +17,11 @@ export function useProductTableFilters() {
     searchParams.categories.withOptions({ shallow: false }).withDefault("")
   );
 
+  const [stylesFilter, setStylesFilter] = useQueryState(
+    "styles",
+    searchParams.styles.withOptions({ shallow: false }).withDefault("")
+  );
+
   const [page, setPage] = useQueryState(
     "page",
     searchParams.page.withDefault(1)
@@ -35,13 +30,13 @@ export function useProductTableFilters() {
   const resetFilters = useCallback(() => {
     setSearchQuery(null);
     setCategoriesFilter(null);
-
+    setStylesFilter(null);
     setPage(1);
-  }, [setSearchQuery, setCategoriesFilter, setPage]);
+  }, [setSearchQuery, setCategoriesFilter, setStylesFilter, setPage]);
 
   const isAnyFilterActive = useMemo(() => {
-    return !!searchQuery || !!categoriesFilter;
-  }, [searchQuery, categoriesFilter]);
+    return !!searchQuery || !!categoriesFilter || !!stylesFilter;
+  }, [searchQuery, categoriesFilter, stylesFilter]);
 
   return {
     searchQuery,
@@ -52,5 +47,7 @@ export function useProductTableFilters() {
     isAnyFilterActive,
     categoriesFilter,
     setCategoriesFilter,
+    stylesFilter,
+    setStylesFilter,
   };
 }

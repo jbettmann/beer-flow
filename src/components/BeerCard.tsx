@@ -84,13 +84,7 @@ const BeerCard = ({ beerId, beerForDrawer, onClose }: Props) => {
         {/* Beer Image and Name */}
         <div className="">
           {isEditing ? (
-            <UpdateBeerForm
-              beer={beer}
-              brewery={selectedBrewery}
-              setIsEditing={setIsEditing}
-              isEditing={isEditing}
-              setBeer={setBeer}
-            />
+            <UpdateBeerForm beer={beer} brewery={selectedBrewery} />
           ) : (
             <>
               <div className="flex items-center justify-around lg:p-6 lg:pb-3 relative gap-2 xs:gap-4 md:gap-6 ">

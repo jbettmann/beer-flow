@@ -1,17 +1,27 @@
+import { Beer } from "@/app/types/beer";
 import UpdateBeerForm from "@/components/UpdateBeerForm/UpdateBeerForm";
+import getSingleBeer from "@/lib/getSingleBeer";
+import getSingleBrewery from "@/lib/getSingleBrewery";
 import React from "react";
 
-type Props = {
-  beerId: string;
-  breweryId: string;
+type pageParams = {
+  params: {
+    beerId: string;
+    breweryId: string;
+  };
 };
 
-const EditBeerPage = ({ breweryId, beerId }: Props) => {
-  const getBeer = await getSingleBeer([
-    `https://beer-bible-api.vercel.app/breweries/${brewery?._id}/beers`,);
+const EditBeerPage = async ({ params }: pageParams) => {
+  const { beerId, breweryId } = await params;
+  const getBeer = await getSingleBeer(breweryId, beerId);
+  const getBrewery = await getSingleBrewery([
+    `https://beer-bible-api.vercel.app/breweries/${breweryId}`,
+  ]);
+
+  const [brewery, beer] = await Promise.all([getBrewery, getBeer]);
   return (
     <div>
-      <UpdateBeerForm brewery={breweryId} beer={beerId} />
+      <UpdateBeerForm brewery={brewery} beer={beer} />
     </div>
   );
 };

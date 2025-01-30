@@ -34,34 +34,19 @@ import { Pencil } from "lucide-react";
 type pageProps = {
   brewery: Brewery | null;
   beer: Beer;
-
-  setBeer: (beer: Beer) => void;
-  isEditing: boolean;
-  setIsEditing: (isEditing: boolean) => void;
 };
 
-const UpdateBeerForm = ({
-  brewery,
-  beer,
-  setBeer,
-  setIsEditing,
-  isEditing,
-}: pageProps) => {
+const UpdateBeerForm = ({ brewery, beer }: pageProps) => {
+ 
   const { data: session } = useSession();
   const router = useRouter();
   const { addToast } = useToast();
   const { mutate: beerMutate } = useSWR(
-    [
-      `https://beer-bible-api.vercel.app/breweries/${brewery?._id}/beers`,
-      session?.user.accessToken,
-    ],
+    [`https://beer-bible-api.vercel.app/breweries/${brewery?._id}/beers`],
     getBreweryBeers
   );
   const { mutate: breweryMutate } = useSWR(
-    [
-      `https://beer-bible-api.vercel.app/breweries/${brewery?._id}`,
-      session?.user.accessToken,
-    ],
+    [`https://beer-bible-api.vercel.app/breweries/${brewery?._id}`],
     getSingleBrewery
   );
 
@@ -120,12 +105,6 @@ const UpdateBeerForm = ({
     category: useRef<HTMLInputElement>(null),
     style: useRef<HTMLInputElement>(null),
     image: useRef<HTMLInputElement>(null),
-  };
-
-  // updated beer card state and isEditing to false
-  const updateBeerState = (beer: Beer) => {
-    setIsEditing(false);
-    setBeer(beer);
   };
 
   // Handle form submission
@@ -193,7 +172,6 @@ const UpdateBeerForm = ({
 
         addToast(`${updateBeerRes.name} has been updated.`, "success");
         // set beer to updated beer and edit to false
-        updateBeerState(updateBeerRes);
       }
     } catch (err: any) {
       console.error(err);

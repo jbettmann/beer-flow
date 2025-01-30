@@ -91,7 +91,6 @@ export function DataTable<TData, TValue>({
     manualPagination: true,
     manualFiltering: true,
   });
-  console.log(data);
 
   return (
     <div className="flex flex-1 flex-col space-y-4 ">

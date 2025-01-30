@@ -52,43 +52,11 @@ export function AppSidebar({
           title: "Beers",
           url: `/dashboard/breweries/${selectedBrewery?._id}/beers`,
           icon: Beer,
-          items: [
-            {
-              title: "Genesis",
-              url: "#",
-            },
-            {
-              title: "Explorer",
-              url: "#",
-            },
-            {
-              title: "Quantum",
-              url: "#",
-            },
-          ],
         },
         {
           title: "Staff",
           url: `/dashboard/breweries/${selectedBrewery?._id}/staff`,
           icon: Users,
-          items: [
-            {
-              title: "Introduction",
-              url: "#",
-            },
-            {
-              title: "Get Started",
-              url: "#",
-            },
-            {
-              title: "Tutorials",
-              url: "#",
-            },
-            {
-              title: "Changelog",
-              url: "#",
-            },
-          ],
         },
       ],
       navGenerals: [
@@ -130,8 +98,6 @@ export function AppSidebar({
     };
     return data;
   }, [selectedBrewery]);
-
-
 
   return (
     <>

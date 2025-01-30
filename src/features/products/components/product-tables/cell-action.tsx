@@ -1,4 +1,5 @@
 "use client";
+import { Beer } from "@/app/types/beer";
 import { AlertModal } from "@/components/modal/alert-modal";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,7 +16,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 interface CellActionProps {
-  data: Product;
+  data: Beer;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -25,7 +26,6 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const router = useRouter();
 
   const onConfirm = async () => {};
-
   return (
     <>
       <AlertModal
@@ -47,7 +47,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <DropdownMenuItem
             onClick={() =>
               router.push(
-                `/dashboard/breweries/${selectedBrewery}/beers/${data.id}/edit`
+                `/dashboard/breweries/${selectedBrewery?._id}/beers/${data._id}/edit`
               )
             }
           >
