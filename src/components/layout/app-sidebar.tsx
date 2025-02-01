@@ -43,7 +43,7 @@ export function AppSidebar({
         {
           title: "Dashboard",
           url: `/dashboard/overview`,
-          icon: LayoutDashboard,
+          icon: "dashboard",
           isActive: true,
         },
       ],
@@ -51,19 +51,19 @@ export function AppSidebar({
         {
           title: "Beers",
           url: `/dashboard/breweries/${selectedBrewery?._id}/beers`,
-          icon: Beer,
+          icon: "beer",
         },
         {
           title: "Staff",
           url: `/dashboard/breweries/${selectedBrewery?._id}/staff`,
-          icon: Users,
+          icon: "users",
         },
       ],
       navGenerals: [
         {
           title: "Help",
           url: "/help",
-          icon: HelpCircle,
+          icon: "help",
           items: [
             {
               title: "FAQ",
@@ -74,15 +74,15 @@ export function AppSidebar({
         {
           title: "Settings",
           url: "/settings",
-          icon: Settings,
+          icon: "settings",
           items: [
             {
               title: "General",
               url: "#",
             },
             {
-              title: "Team",
-              url: "#",
+              title: "Breweries",
+              url: "/settings/breweries",
             },
             {
               title: "Billing",
