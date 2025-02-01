@@ -21,7 +21,7 @@ const BrewerySettingsList = ({ brewery, session }: Props) => {
       : "Crew";
   return (
     <Link
-      href={`/settings/dashboard/breweries/${brewery._id}`}
+      href={`/settings/breweries/${brewery._id}`}
       key={brewery._id}
       className="flex items-center justify-between p-2 w-full "
     >

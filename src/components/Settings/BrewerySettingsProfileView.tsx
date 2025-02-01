@@ -30,10 +30,7 @@ const BrewerySettingsProfileView = ({ breweryId }: Props) => {
   const { addToast } = useToast();
   const { selectedBrewery, setSelectedBrewery } = useBreweryContext();
   const { data: brewery, error: breweryError } = useSWR(
-    [
-      `https://beer-bible-api.vercel.app/breweries/${breweryId}`,
-      session?.user.accessToken,
-    ],
+    [`https://beer-bible-api.vercel.app/breweries/${breweryId}`],
     getSingleBrewery
   );
 
@@ -107,20 +104,6 @@ const BrewerySettingsProfileView = ({ breweryId }: Props) => {
       setButtonLoading(null);
     }
   };
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 1024);
-    };
-
-    const debouncedResize = debounce(handleResize, 250); // 250ms delay
-
-    window.addEventListener("resize", debouncedResize);
-
-    return () => {
-      window.removeEventListener("resize", debouncedResize);
-    };
-  }, []);
 
   useEffect(() => {
     if (brewery) {
