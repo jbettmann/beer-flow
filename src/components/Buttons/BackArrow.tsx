@@ -27,7 +27,7 @@ const BackArrow = (props: Props) => {
       <h2
         onClick={handleBack}
         className={`${
-          homepage === pathname ? "hidden" : "block my-2 sm:my-4 lg:hidden"
+          homepage === pathname ? "hidden" : "block my-2 sm:my-4 md:hidden"
         }`}
       >
         <ChevronLeft size={30} />

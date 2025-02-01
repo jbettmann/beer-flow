@@ -1,4 +1,3 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { Brewery } from "@/app/types/brewery";
 import ImageDisplay from "@/components/ImageDisplay/ImageDisplay";
 import BrewerySettingsList from "@/components/Settings/BrewerySettingsList";

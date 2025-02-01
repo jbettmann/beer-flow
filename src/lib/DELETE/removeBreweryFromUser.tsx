@@ -1,6 +1,6 @@
 type pageProps = {
   breweryId: string | undefined;
-  userId: number | undefined;
+  userId: string | undefined;
   accessToken: string | undefined;
 };
 

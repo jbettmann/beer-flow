@@ -16,6 +16,8 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { Icons } from "../icons";
+import { usePathname } from "next/navigation";
 
 export function NavMain({
   items,
@@ -23,7 +25,7 @@ export function NavMain({
   items: {
     title: string;
     url: string;
-    icon?: LucideIcon;
+    icon?: keyof typeof Icons | LucideIcon | any;
     isActive?: boolean;
     items?: {
       title: string;
@@ -31,11 +33,15 @@ export function NavMain({
     }[];
   }[];
 }) {
+  const pathname = usePathname();
   return (
     <SidebarGroup>
       <SidebarMenu>
-        {items.map((item) =>
-          item.items ? (
+        {items.map((item) => {
+          const Icon = item.icon
+            ? Icons[item.icon as keyof typeof Icons]
+            : Icons.logo;
+          return item?.items && item?.items?.length > 0 ? (
             <Collapsible
               key={item.title}
               asChild
@@ -44,9 +50,12 @@ export function NavMain({
             >
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
-                  <SidebarMenuButton tooltip={item.title}>
-                    {item.icon && <item.icon />}
-                    <Link href={item.url}>{item.title}</Link>
+                  <SidebarMenuButton
+                    tooltip={item.title}
+                    isActive={pathname === item.url}
+                  >
+                    {item.icon && <Icon />}
+                    <span>{item.title}</span>
                     <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                   </SidebarMenuButton>
                 </CollapsibleTrigger>
@@ -67,13 +76,19 @@ export function NavMain({
             </Collapsible>
           ) : (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton tooltip={item.title}>
-                {item.icon && <item.icon />}
-                <Link href={item.url}>{item.title}</Link>
+              <SidebarMenuButton
+                asChild
+                tooltip={item.title}
+                isActive={pathname === item.url}
+              >
+                <Link href={item.url} className="flex items-center gap-2">
+                  <Icon />
+                  <span>{item.title}</span>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
-          )
-        )}
+          );
+        })}
       </SidebarMenu>
     </SidebarGroup>
   );
