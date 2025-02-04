@@ -13,7 +13,7 @@ const ImageDisplay = ({
   className: string;
 }) => {
   const [imageUrl, setImageUrl] = useState<string | null | StaticImageData>(
-    null
+    item.image ? item.image : null
   );
 
   useEffect(() => {
@@ -21,10 +21,7 @@ const ImageDisplay = ({
       if (item.image === null || undefined) {
         setImageUrl(DefaultBeerImage);
       } else {
-        const url = getImagePublicURL(item.image);
-        if (url) {
-          setImageUrl(url);
-        }
+        setImageUrl(item.image);
       }
     }
 

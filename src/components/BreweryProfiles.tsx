@@ -104,6 +104,7 @@ export default function BreweryProfiles({
                                   item={beer}
                                   className="object-cover w-full h-64 rounded-t-lg aspect-square"
                                 />
+
                                 <CardContent className="p-4">
                                   <CardTitle className="text-2xl font-bold">
                                     {beer.name}
@@ -111,10 +112,7 @@ export default function BreweryProfiles({
                                     <h6 className="text-gray-500 dark:text-gray-400 text-base text-left">
                                       {beer.style}
                                     </h6>
-                                  </CardTitle>
-                                  <CardDescription className="text-gray-500 dark:text-gray-400 mt-2">
-                                    {beer.description}
-                                    <Card className="p-2 flex justify-between items-center w-full mt-4">
+                                    <Card className="p-2 flex justify-between items-center w-full my-4">
                                       <div className="text-center text-base font-bold flex-1">
                                         {beer.abv}
                                         <h5 className="flex items-center justify-center gap-1 text-sm">
@@ -147,6 +145,9 @@ export default function BreweryProfiles({
                                         </h5>
                                       </div>
                                     </Card>
+                                  </CardTitle>
+                                  <CardDescription className="text-gray-500 dark:text-gray-400 mt-2">
+                                    {beer.description}
                                   </CardDescription>
                                 </CardContent>
                                 <CardFooter>

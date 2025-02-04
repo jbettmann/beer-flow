@@ -50,14 +50,15 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --sidebar-background: 20 66% 98%;
+    --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
     --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 20 25% 86%;
+    --sidebar-accent: 240 4.8% 95.9%;
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    --radix-popover-trigger-width: 100%;
   }
 
   .dark {
@@ -85,14 +86,14 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
-    --sidebar-background: 253 43% 4%;
+    --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 253 91% 58%;
+    --sidebar-primary: 224.3 76.3% 48%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 253 91% 58%%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
 
@@ -139,9 +140,7 @@ h6 {
   @apply text-sm lg:text-xs font-bold text-center
 }
 
-p {
-  @apply m-4 
-}
+
 
 .alert-modal {
   @apply bg-primary text-background bg-opacity-10 rounded-xl border-none
@@ -176,7 +175,7 @@ p {
 }
 
 .beer-card__item.links {
-  @apply ml-2 transition-all link-hover hover:text-accent
+  @apply ml-2 transition-all  hover:text-accent
 }
 
 .beer-card__label-text {
@@ -208,7 +207,7 @@ p {
 
 
 .category__input {
-  @apply input rounded-full border-none font-semibold bg-white text-primary
+  @apply rounded-full border-none font-semibold bg-white text-primary
 }
 
 .category-card__title {
@@ -240,7 +239,7 @@ p {
 }
 
 .create-btn {
-  @apply btn bg-primary lg:bg-transparent border lg:border-primary text-background lg:text-primary rounded-full transition-all duration-300 hover:bg-primary hover:text-background  
+  @apply bg-primary lg:bg-transparent border lg:border-primary text-background lg:text-primary rounded-full transition-all duration-300 hover:bg-primary hover:text-background  
   
 }
 
@@ -252,7 +251,7 @@ p {
 
 .create-btn.ghost 
 {
-  @apply btn-ghost text-background disabled:text-opacity-20
+  @apply  text-background disabled:text-opacity-20
   
 } 
 
@@ -294,7 +293,7 @@ p {
 
 
 .error {
-  @apply text-error  text-sm
+  @apply text-red-600  text-sm
 }
 
 
@@ -315,11 +314,11 @@ p {
 }
 
 .form__input {
-  @apply input bg-primary text-background border-stone-400  rounded-full focus:border-accent lg:h-9 lg:text-sm 
+  @apply bg-primary text-background border-stone-400  rounded-full focus:border-accent lg:h-9 lg:text-sm 
 }
 
 .form-input__create-account {
-  @apply input text-primary bg-white border border-primary rounded-full  text-sm 
+  @apply text-primary bg-white border border-primary rounded-full  text-sm 
 
 }
 
@@ -327,7 +326,7 @@ p {
   @apply !bg-accent !text-primary !rounded-full !p-1 !pl-2 !mx-2  
 }
 
-/*  tag class in input field */
+/*  tag class in field */
 .css-1p3m7a8-multiValue {
   @apply form__input-tag
 
@@ -335,21 +334,15 @@ p {
 
 
 .form__input-textarea {
-  @apply textarea textarea-md border-stone-400 focus:border-accent  bg-primary text-background lg:text-sm
+  @apply border-stone-400 focus:border-accent  bg-primary text-background lg:text-sm
 }
 
-.form__input-file {
-  @apply file-input file-input-bordered file-input-accent 
-}
+
 
 .form__input-file-sx {
-  @apply file-input file-input-bordered file-input-accent file-input-xs w-full max-w-xs
+  @apply w-full max-w-xs
 }
 
-input[type="date"]::-webkit-calendar-picker-indicator {
-
-  filter: invert(63%) sepia(74%) saturate(437%) hue-rotate(124deg) brightness(90%) contrast(95%);
-}
 
 
 
@@ -419,7 +412,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .search__input {
 
-    @apply input bg-white text-primary rounded-full border-none  lg:h-9 lg:text-sm 
+    @apply bg-white text-primary rounded-full border-none  lg:h-9 lg:text-sm 
  
 }
 
@@ -494,7 +487,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 
 .tag-new {
-  @apply indicator-item badge text-primary bg-indigo-300 text-sm 
+  @apply badge text-primary bg-indigo-300 text-sm 
 }
 
 .table-row__effect {
@@ -555,25 +548,4 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   @apply !w-full !h-screen !pt-16 md:!pl-24;
 }
  
-@layer base {
-  :root {
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-  .dark {
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-}
+

@@ -1,4 +1,4 @@
-const projectId = process.env.SUPABASE_PROJECT_ID;
+const projectId = process.env.SUPABASE_PROJECT_ID || "omlnjbcckhowlpkhorry";
 
 export default function supabaseLoader({
   src,
@@ -9,5 +9,5 @@ export default function supabaseLoader({
   width: number;
   quality: number;
 }) {
-  return `https://${projectId}.supabase.co/storage/v1/render/image/public/${src}?width=${width}&quality=${quality || 95}`;
+  return `https://${projectId}.supabase.co/storage/v1/object/public/Brett_bucket/${src}?width=${width}&quality=${quality || 90}`;
 }

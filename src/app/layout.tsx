@@ -5,6 +5,7 @@ import { Metadata } from "next";
 import { Inter } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
+import { Toaster } from "sonner";
 const myFont = localFont({
   src: [
     { path: "../assets/fonts/SF-Pro.ttf", weight: "normal", style: "normal" },
@@ -28,7 +29,6 @@ export default async function Layout(props: {
   children: React.ReactNode;
   modal: React.ReactNode;
 }) {
-
   return (
     <html lang="en">
       <body
@@ -42,6 +42,7 @@ export default async function Layout(props: {
             {/* <Chat /> */}
             {props.children}
             {props.modal}
+            <Toaster />
           </SidebarProvider>
         </Provider>
       </body>

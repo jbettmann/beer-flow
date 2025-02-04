@@ -4,6 +4,9 @@ import { Category } from "@/app/types/category";
 import ImageDisplay from "@/components/ImageDisplay/ImageDisplay";
 import { ColumnDef } from "@tanstack/react-table";
 import { CellAction } from "./cell-action";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import DefaultBeerImage from "../../../../assets/img/beer.png";
+import Image from "next/image";
 
 export const columns: ColumnDef<Beer>[] = [
   {
@@ -11,8 +14,10 @@ export const columns: ColumnDef<Beer>[] = [
     header: "IMAGE",
     cell: ({ row }) => {
       return (
-        <div className="relative ">
-          <ImageDisplay item={row.original} className={"rounded-full"} />
+        <div className="relative size-10">
+          <Avatar>
+            <ImageDisplay item={row.original} className={""} />
+          </Avatar>
         </div>
       );
     },

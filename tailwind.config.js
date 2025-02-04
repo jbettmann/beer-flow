@@ -2,12 +2,16 @@
 module.exports = {
   darkMode: ["class"],
   content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
   ],
   theme: {
     extend: {
+      width: {
+        "popover-full": "var(--radix-popover-trigger-width)",
+      },
       fontFamily: {
         sans: ["var(--font-sf-pro)", "sans-serif"],
       },
@@ -138,7 +142,7 @@ module.exports = {
   plugins: [
     require("prettier-plugin-tailwindcss"),
     require("@tailwindcss/typography"),
-    require("daisyui"),
+    // require("daisyui"),
     require("tailwindcss-animate"),
   ],
 };

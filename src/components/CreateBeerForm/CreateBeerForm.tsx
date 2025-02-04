@@ -23,11 +23,9 @@ import DefaultBeerImage from "../../assets/img/beer.png";
 import getSingleBrewery from "@/lib/getSingleBrewery";
 import { spawn } from "child_process";
 
-type pageProps = {
-  setIsCreateBeer: (value: boolean) => void;
-};
+type pageProps = {};
 
-const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
+const CreateBeerForm = ({}: pageProps) => {
   const { data: session, status, update } = useSession();
 
   const { selectedBeers, selectedBrewery, isAdmin } = useBreweryContext();
@@ -98,11 +96,6 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
     image: useRef<HTMLInputElement>(null),
   };
 
-  const onDismiss = useCallback(() => {
-    if (setIsCreateBeer) setIsCreateBeer(false);
-    router.back();
-  }, [router]);
-
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -155,7 +148,6 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
           mutateBrewery();
           handleClear(); // Clear the form
           addToast(`${newBeerRes.name} successfully created!`, "success");
-          setIsCreateBeer(false);
         }
       }
     } catch (err: string | any) {
@@ -250,14 +242,7 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
           Clear
         </button>
         <h4>Create</h4>
-        <button
-          className={`link link-hover text-background`}
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsCreateBeer && setIsCreateBeer(false);
-          }}
-          type="button"
-        >
+        <button className={`link link-hover text-background`} type="button">
           <X size={20} strokeWidth={1} />
         </button>
       </div>

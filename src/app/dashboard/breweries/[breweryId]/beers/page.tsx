@@ -10,7 +10,6 @@ import { Suspense } from "react";
 import ProductTableAction from "@/features/products/components/product-tables/product-table-action";
 import { searchParamsCache, serialize } from "@/lib/searchparams";
 import { Heading } from "@/components/ui/heading";
-import ProductListingPage from "@/features/products/components/product-listing";
 import TableViewToggleButton from "@/components/Buttons/table-view-toggle-btn";
 import { auth } from "@/auth";
 import getSingleBrewery from "@/lib/getSingleBrewery";

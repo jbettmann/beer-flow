@@ -8,7 +8,6 @@ import { useBreweryContext } from "@/context/brewery-beer";
 import { Suspense, useMemo, useState } from "react";
 import TableViewToggleButton from "@/components/Buttons/table-view-toggle-btn";
 import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
-import ProductListingPage from "../product-listing";
 import BreweryProfiles from "@/components/BreweryProfiles";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";

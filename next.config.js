@@ -22,6 +22,8 @@ const nextConfig = {
         pathname: "/**",
       },
     ],
+    loader: "custom",
+    loaderFile: "./src/components/supabase-image-loader.ts",
   },
 };
 
