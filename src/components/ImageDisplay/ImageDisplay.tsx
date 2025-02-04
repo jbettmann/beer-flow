@@ -1,6 +1,7 @@
 "use client";
+import { getImagePublicURL } from "@/lib/supabase/getImage";
 import DefaultBeerImage from "../../assets/img/beer.png";
-import { getImagePublicURL } from "@/lib/utils";
+
 import Image, { StaticImageData } from "next/image";
 import { useEffect, useState } from "react";
 
