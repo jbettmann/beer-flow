@@ -17,7 +17,6 @@ const ImageDisplay = ({
 
   useEffect(() => {
     async function fetchUrl() {
-      console.log(item.image);
       if (item.image === null || undefined) {
         setImageUrl(DefaultBeerImage);
       } else {
