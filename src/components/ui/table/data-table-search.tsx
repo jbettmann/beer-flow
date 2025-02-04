@@ -1,9 +1,10 @@
-'use client';
+"use client";
 
-import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
-import { Options } from 'nuqs';
-import { useTransition } from 'react';
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { X, XCircle } from "lucide-react";
+import { Options } from "nuqs";
+import { useTransition } from "react";
 
 interface DataTableSearchProps {
   searchKey: string;
@@ -44,7 +45,7 @@ export function DataTableSearch({
   searchKey,
   searchQuery,
   setSearchQuery,
-  setPage
+  setPage,
 }: DataTableSearchProps) {
   const [isLoading, startTransition] = useTransition();
 
@@ -54,11 +55,24 @@ export function DataTableSearch({
   };
 
   return (
-    <Input
-      placeholder={`Search ${searchKey}...`}
-      value={searchQuery ?? ''}
-      onChange={(e) => handleSearch(e.target.value)}
-      className={cn('w-full md:max-w-sm', isLoading && 'animate-pulse')}
-    />
+    <div className="flex relative w-full max-w-sm">
+      <Input
+        placeholder={`Search ${searchKey}...`}
+        value={searchQuery ?? ""}
+        onChange={(e) => handleSearch(e.target.value)}
+        className={cn("w-full md:max-w-sm", isLoading && "animate-pulse")}
+      />
+      {searchQuery && (
+        <button
+          aria-label="Clear input"
+          className="absolute inset-y-0 right-3  flex items-center opacity-50 cursor-pointer focus:outline-none"
+          onClick={() => {
+            setSearchQuery("");
+          }}
+        >
+          <XCircle size={18} color="#2b2b2b" />
+        </button>
+      )}
+    </div>
   );
 }

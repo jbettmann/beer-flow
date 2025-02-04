@@ -41,10 +41,7 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
   );
 
   const { mutate: mutateBrewery } = useSWR(
-    [
-      `https://beer-bible-api.vercel.app/breweries/${selectedBrewery?._id}`,
-      session?.user.accessToken,
-    ],
+    [`https://beer-bible-api.vercel.app/breweries/${selectedBrewery?._id}`],
     getSingleBrewery
   );
 

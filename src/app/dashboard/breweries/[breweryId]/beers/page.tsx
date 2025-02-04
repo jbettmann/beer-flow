@@ -11,6 +11,10 @@ import ProductTableAction from "@/features/products/components/product-tables/pr
 import { searchParamsCache, serialize } from "@/lib/searchparams";
 import { Heading } from "@/components/ui/heading";
 import ProductListingPage from "@/features/products/components/product-listing";
+import TableViewToggleButton from "@/components/Buttons/table-view-toggle-btn";
+import { auth } from "@/auth";
+import getSingleBrewery from "@/lib/getSingleBrewery";
+import getIsAdminServer from "@/hooks/is-admin-server-hook";
 
 export const metadata = {
   title: "Dashboard: Brewery Beers",
@@ -18,9 +22,15 @@ export const metadata = {
 
 type pageProps = {
   searchParams: Promise<SearchParams>;
+  params: { breweryId: string };
 };
 
 async function Page(props: pageProps) {
+  const { breweryId } = props.params;
+  const selectedBrewery = await getSingleBrewery([
+    `https://beer-bible-api.vercel.app/breweries/${breweryId}`,
+  ]);
+  const isAdmin = await getIsAdminServer(breweryId);
   const searchParams = await props.searchParams;
   // Allow nested RSCs to access the search params (in a type-safe way)
   searchParamsCache.parse(searchParams);
@@ -33,24 +43,20 @@ async function Page(props: pageProps) {
       <div className="flex flex-1 flex-col space-y-4">
         <div className="flex items-start justify-between">
           <Heading
-            title={`Beers`}
+            title={`Beer List`}
             description="Manage products (Server side table functionalities.)"
           />
-          <Link
-            href="/dashboard/product/new"
-            className={cn(buttonVariants(), "text-xs md:text-sm")}
-          >
-            <Plus className="mr-2 h-4 w-4" /> Add New
-          </Link>
+          {isAdmin && (
+            <Link
+              href={`/dashboard/breweries/${breweryId}/beers/create`}
+              className={cn(buttonVariants(), "text-xs md:text-sm")}
+            >
+              <Plus className="mr-2 h-4 w-4" /> Add New
+            </Link>
+          )}
         </div>
         <Separator />
-        <ProductTableAction />
-        <Suspense
-          key={key}
-          fallback={<DataTableSkeleton columnCount={5} rowCount={10} />}
-        >
-          <ProductListingPage />
-        </Suspense>
+        <ProductTableAction categories={selectedBrewery.categories} />
       </div>
     </PageContainer>
   );

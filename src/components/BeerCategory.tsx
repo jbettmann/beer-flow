@@ -225,26 +225,6 @@ export default function BeerCategory({
     setIsOptionsOpen(!isOptionsOpen);
   };
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 1024);
-    };
-
-    const debouncedResize = debounce(handleResize, 250); // 250ms delay
-    // or
-    // const throttledResize = throttle(handleResize, 250); // Execute at most once every 250ms
-
-    window.addEventListener("resize", debouncedResize);
-    // or
-    // window.addEventListener('resize', throttledResize);
-
-    return () => {
-      window.removeEventListener("resize", debouncedResize);
-      // or
-      // window.removeEventListener('resize', throttledResize);
-    };
-  }, []);
-
   return (
     <div className="relative">
       <div

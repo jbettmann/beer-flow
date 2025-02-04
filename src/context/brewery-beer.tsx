@@ -70,10 +70,7 @@ export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
 
     isLoading: isBreweryLoading,
   } = useSWR(
-    [
-      `https://beer-bible-api.vercel.app/breweries/${breweryId}`,
-      session?.user.accessToken,
-    ],
+    [`https://beer-bible-api.vercel.app/breweries/${breweryId}`],
     getSingleBrewery
   );
 
@@ -145,7 +142,7 @@ export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
         localStorage.setItem("selectedBreweryId", breweryId);
       }
     }
-  }, [breweryId, session]);
+  }, [breweryId, session?.user]);
 
   useEffect(() => {
     setSelectedBeers(beers);

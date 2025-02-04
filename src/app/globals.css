@@ -20,7 +20,7 @@
     --fourth-color: #343434;
     --the-gray: #5e5e5e;
     --our-black: #0e0e0e;
-    --indigo: rgb(165, 180, 252);
+    --indigo: #6366f1;
     --selected: linear-gradient(to bottom left, var(--accent) 40%, #05afa0 100%);
     --indigo-selected: linear-gradient(to bottom left, var(--indigo) 40%, #7988cf 100%);
     --font-sf-pro: "SF Pro", sans-serif;
