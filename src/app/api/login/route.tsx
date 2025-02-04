@@ -47,3 +47,6 @@ export async function POST(req: Request, res: Response) {
     return new Error(JSON.stringify(error));
   }
 }
+export const config = {
+  runtime: "nodejs", // ✅ Forces Node.js runtime
+};
