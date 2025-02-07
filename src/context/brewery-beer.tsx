@@ -3,6 +3,9 @@ import { Beer } from "@/app/types/beer";
 import { Brewery } from "@/app/types/brewery";
 import getBreweryBeers from "@/lib/getBreweryBeers";
 import getSingleBrewery from "@/lib/getSingleBrewery";
+import { useGetBeerByBreweryId } from "@/services/queries/beers";
+import { useGetBreweryById } from "@/services/queries/brewery";
+import { be } from "@upstash/redis/zmscore-Dc6Llqgr";
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -19,11 +22,10 @@ type BreweryContextProps = {
   selectedBrewery: Brewery | null;
   setSelectedBrewery: React.Dispatch<React.SetStateAction<Brewery | null>>;
   selectedBeers: Beer[] | null;
+  setBreweryId: (breweryId: string | null) => void;
   setSelectedBeers: React.Dispatch<React.SetStateAction<Beer[] | null>>;
   beersLoading: boolean | null;
-  setBeersLoading: (loading: boolean) => void;
   breweryLoading: boolean | null;
-  setBreweryLoading: (loading: boolean) => void;
   isAdmin: boolean;
 };
 
@@ -37,42 +39,28 @@ type ProviderProps = {
 export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
   const [selectedBrewery, setSelectedBrewery] = useState<Brewery | null>(null);
   const [selectedBeers, setSelectedBeers] = useState<Beer[] | null>(null);
-  const [beersLoading, setBeersLoading] = useState<boolean | null>(null);
-  const [breweryLoading, setBreweryLoading] = useState<boolean | null>(null);
+
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   const router = useRouter();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const storedBreweryId =
     typeof window !== "undefined"
       ? localStorage?.getItem("selectedBreweryId")
-      : null;
-  const [breweryId, setBreweryId] = useState<string | null>(
-    storedBreweryId || null
-  );
+      : session?.user.selectedBreweryId;
+  const [breweryId, setBreweryId] = useState<string>(storedBreweryId as string);
 
   const {
     data: beers,
-    error: beersError,
-
-    isLoading: isBeersLoading,
-  } = useSWR(
-    [
-      `https://beer-bible-api.vercel.app/breweries/${breweryId}/beers`,
-      session?.user.accessToken,
-    ],
-    getBreweryBeers
-  );
+    isLoading: beersLoading,
+    mutate: mutateBeers,
+  } = useGetBeerByBreweryId(breweryId);
 
   const {
     data: brewery,
-    error: breweryError,
-
-    isLoading: isBreweryLoading,
-  } = useSWR(
-    [`https://beer-bible-api.vercel.app/breweries/${breweryId}`],
-    getSingleBrewery
-  );
+    isLoading: breweryLoading,
+    mutate: mutateBrewery,
+  } = useGetBreweryById(breweryId);
 
   const isUserAdmin = (brewery: Brewery, userId: string | number) => {
     if (brewery.admin) {
@@ -95,60 +83,37 @@ export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
   };
 
   useEffect(() => {
-    // Handler for the custom event
-    const handleSelectedBreweryChanged = () => {
-      const breweryId = localStorage.getItem("selectedBreweryId");
-      setBreweryId(breweryId);
-    };
-    // Check if window object exists before adding an event listener
-    if (typeof window !== "undefined") {
-      // Add the event listener
-      window.addEventListener(
-        "selectedBreweryChanged",
-        handleSelectedBreweryChanged
-      );
-
-      // Cleanup function to remove the event listener
-      return () => {
-        window.removeEventListener(
-          "selectedBreweryChanged",
-          handleSelectedBreweryChanged
-        );
-      };
+    if (brewery) {
+      setSelectedBrewery(brewery);
     }
-  }, []); // Empty dependency array, so this runs only on mount and unmount
+  }, [brewery]);
 
-  // Watch for changes in breweryId and synchronize with local storage
   useEffect(() => {
-    if (session) {
-      // if no breweryId so set brewery to users first brewery
-      if (
-        (breweryId === null || breweryId === "undefined") &&
-        session?.user?.breweries?.length! > 0
-      ) {
-        localStorage.setItem(
-          "selectedBreweryId",
-          session?.user?.breweries[0] as string
-        );
-        setBreweryId(session?.user?.breweries[0] as string);
-        router.push(`/breweries/${session?.user?.breweries[0]}`);
-      } else if (breweryId === null || breweryId === "undefined") {
-        // no breweryId and no breweries to go to brewery page
+    if (beers !== undefined) {
+      setSelectedBeers(beers);
+    }
+  }, [beers]);
 
-        router.push("/breweries");
-      } else {
-        //  breweryId so set brewery to breweryId
+  useEffect(() => {
+    if (session?.user.selectedBreweryId) {
+      setBreweryId(session.user.selectedBreweryId);
+    }
+  }, [session?.user.selectedBreweryId]);
 
-        localStorage.setItem("selectedBreweryId", breweryId);
+  useEffect(() => {
+    if (session && status === "authenticated") {
+      if (!breweryId && session.user.breweries?.length > 0) {
+        const firstBreweryId = session.user.breweries[0] as string;
+        setBreweryId(firstBreweryId);
+        localStorage.setItem("selectedBreweryId", firstBreweryId);
+        router.push(`/dashboard/breweries/${firstBreweryId}/beers`);
+      } else if (!breweryId) {
+        router.push("/dashboard/overview");
       }
     }
-  }, [breweryId, session?.user]);
+  }, [session, status]);
 
   useEffect(() => {
-    setSelectedBeers(beers);
-    setSelectedBrewery(brewery);
-    setBeersLoading(isBeersLoading);
-    setBreweryLoading(isBreweryLoading);
     // set isAdmin
     if (brewery) {
       const isAdmin = isUserAdmin(brewery, session?.user?.id || "");
@@ -156,19 +121,22 @@ export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
 
       setIsAdmin(isAdmin || isOwner);
     }
-  }, [beers, brewery, isBeersLoading, isBreweryLoading, session?.user?.id]);
+  }, [beers, brewery, session?.user?.id]);
 
   return (
     <BreweryContext.Provider
       value={{
         selectedBrewery,
         setSelectedBrewery,
+        setBreweryId: (breweryId: string | null) => {
+          setBreweryId(breweryId as string);
+          mutateBeers();
+          mutateBrewery();
+        },
         selectedBeers,
         setSelectedBeers,
         beersLoading,
-        setBeersLoading,
         breweryLoading,
-        setBreweryLoading,
         isAdmin,
       }}
     >

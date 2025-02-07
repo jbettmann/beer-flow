@@ -38,7 +38,6 @@ export default function ProductTableAction({
   const isMobile = useIsMobile();
   const searchParams = useSearchParams();
   const { selectedBeers, selectedBrewery, isAdmin } = useBreweryContext();
-
   // Get params directly from URL using Next.js navigation hook
   const page = searchParams.get("page");
   const search = searchParams.get("q");
@@ -69,7 +68,7 @@ export default function ProductTableAction({
       }
     });
     return Array.from(styleMap.values());
-  }, [selectedBeers]);
+  }, [selectedBeers, selectedBrewery]);
 
   const searchIndex = useMemo(
     () =>
@@ -86,7 +85,7 @@ export default function ProductTableAction({
           .join(" ")
           .toLowerCase(),
       })) || [],
-    [selectedBeers]
+    [selectedBeers, selectedBrewery]
   );
 
   // Combined filter function with optimized search
@@ -116,6 +115,7 @@ export default function ProductTableAction({
     });
   }, [
     selectedBeers,
+    selectedBrewery,
     selectedCategories,
     selectedStyles,
     searchQuery,

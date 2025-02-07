@@ -24,15 +24,12 @@ import ImageDisplay from "../ImageDisplay/ImageDisplay";
 
 export function BrewerySwitcher({ breweries }: { breweries: Brewery[] }) {
   const { isMobile } = useSidebar();
-  const { selectedBrewery, setSelectedBrewery, isAdmin } = useBreweryContext();
+  const { selectedBrewery, setSelectedBrewery, setBreweryId } =
+    useBreweryContext();
 
   const handleBreweryClick = (brewery: Brewery) => {
-    setSelectedBrewery(brewery);
+    setBreweryId(brewery._id);
     localStorage.setItem("selectedBreweryId", brewery._id);
-    // Dispatch a custom event to notify other parts of the app
-    const event = new Event("selectedBreweryChanged");
-    window?.dispatchEvent(event);
-    sessionStorage.removeItem("openCategory");
   };
 
   useEffect(() => {

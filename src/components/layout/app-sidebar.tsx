@@ -1,12 +1,5 @@
 "use client";
 
-import {
-  Beer,
-  HelpCircle,
-  LayoutDashboard,
-  Settings,
-  Users,
-} from "lucide-react";
 import * as React from "react";
 
 import { BrewerySwitcher } from "@/components/sidebar/brewery-switcher";

@@ -25,12 +25,13 @@ type pageProps = {
 };
 
 async function Page(props: pageProps) {
-  const { breweryId } = props.params;
+  const searchParams = await props.searchParams;
+  const breweryId = props.params.breweryId;
   const selectedBrewery = await getSingleBrewery([
     `https://beer-bible-api.vercel.app/breweries/${breweryId}`,
   ]);
   const isAdmin = await getIsAdminServer(breweryId);
-  const searchParams = await props.searchParams;
+
   // Allow nested RSCs to access the search params (in a type-safe way)
   searchParamsCache.parse(searchParams);
 

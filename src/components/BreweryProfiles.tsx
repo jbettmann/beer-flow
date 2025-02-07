@@ -46,12 +46,11 @@ export default function BreweryProfiles({
     setSelectedBrewery,
     setSelectedBeers,
     selectedBrewery,
-
+    selectedBeers,
     beersLoading,
     breweryLoading,
-    isAdmin,
   } = useBreweryContext();
-
+  console.log({ selectedBrewery, selectedBeers });
   // const [categories, setCategories] = useState<Category[]>(
   //   (selectedBrewery?.categories as Category[]) || []
   // );
@@ -97,7 +96,7 @@ export default function BreweryProfiles({
                           {category.beers.map((beer, beerIndex) => (
                             <CarouselItem
                               key={beerIndex}
-                              className="pl-4 md:basis-1/2 lg:basis-1/3"
+                              className="pl-4 md:basis-1/2 lg:basis-1/3 min-w-max"
                             >
                               <Card>
                                 <ImageDisplay
@@ -157,7 +156,10 @@ export default function BreweryProfiles({
                                       <h6 className="text-left">Hops</h6>
                                       <div className="flex flex-wrap gap-2">
                                         {beer.hops.map((hop) => (
-                                          <Badge className="bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-200">
+                                          <Badge
+                                            key={hop}
+                                            className="bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-200"
+                                          >
                                             {hop}
                                           </Badge>
                                         ))}

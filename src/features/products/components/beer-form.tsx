@@ -23,9 +23,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Product } from "@/constants/mock-api";
 import { useBreweryContext } from "@/context/brewery-beer";
+import { onFormError } from "@/lib/handle-error";
 import { hopSuggestions, maltSuggestions } from "@/lib/suggestionsDB";
 import BeerFormSchema from "@/zod/beer-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -37,7 +39,10 @@ import {
   Tag,
   Wheat,
 } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import useSWR from "swr";
 import * as z from "zod";
 
 const MAX_FILE_SIZE = 5000000;
@@ -57,7 +62,15 @@ export default function BeerForm({
   initialData: Beer | null;
   pageTitle: string;
 }) {
-  const { selectedBrewery } = useBreweryContext();
+  const { data: session, status, update } = useSession();
+
+  const { selectedBeers, selectedBrewery, isAdmin } = useBreweryContext();
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [previewImage, setPreviewImage] = useState<null>(null);
+
+  const [isClearing, setIsClearing] = useState<boolean>(false);
   const defaultValues = initialData || {
     name: "",
     abv: undefined,
@@ -81,6 +94,33 @@ export default function BeerForm({
 
   function onSubmit(values: BeerSchemaValues) {
     console.log(values);
+    // try {
+    //   if (selectedBrewery && session?.user) {
+    //     const newBeerRes = await handleCreateBeer(
+    //       values,
+    //       selectedBrewery,
+    //       session?.user?.accessToken
+    //     );
+
+    //     if (newBeerRes) {
+    //       // forced revalidation of the beers
+    //       mutate([...(selectedBeers as Beer[]), newBeerRes]);
+    //       mutateBrewery();
+    //       handleClear(); // Clear the form
+    //       addToast(`${newBeerRes.name} successfully created!`, "success");
+    //     }
+    //   }
+    // } catch (err: string | any) {
+    //   console.error(err);
+    //   setSubmitError(err.message);
+    // } finally {
+    //   if (previewImage) {
+    //     URL.revokeObjectURL(previewImage);
+    //     setPreviewImage(null);
+    //   }
+    //   isSubmitting.current = false;
+    //   setIsLoading(false); // Set loading state to false
+    // }
   }
   return (
     <Card className="mx-auto w-full">
@@ -91,7 +131,10 @@ export default function BeerForm({
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form
+            onSubmit={form.handleSubmit(onSubmit, onFormError)}
+            className="space-y-8"
+          >
             <FormField
               control={form.control}
               name="image"
@@ -243,8 +286,9 @@ export default function BeerForm({
                     <FormLabel>IBU</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <Hop className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
-
+                        <div className="absolute left-3 top-1/2 w-5 -translate-y-1/2 text-muted-foreground text-xs font-bold">
+                          IBU
+                        </div>
                         <Input
                           type="number"
                           className="pl-10"
@@ -283,6 +327,24 @@ export default function BeerForm({
               />
             </div>
 
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Enter product description"
+                      className="resize-none"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <FormField
                 control={form.control}
@@ -293,6 +355,7 @@ export default function BeerForm({
                     <FormControl>
                       <div className="relative">
                         <Hop className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+
                         <MultiSelect
                           options={
                             hopSuggestions?.map((hop) => ({
@@ -346,13 +409,16 @@ export default function BeerForm({
             </div>
             <FormField
               control={form.control}
-              name="description"
+              name="nameSake"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>Name Details</FormLabel>
+                  <FormDescription>
+                    Details on the naming choice, why, story, etc.
+                  </FormDescription>
                   <FormControl>
                     <Textarea
-                      placeholder="Enter product description"
+                      placeholder="Details on the naming choice"
                       className="resize-none"
                       {...field}
                     />
@@ -368,13 +434,34 @@ export default function BeerForm({
                 <FormItem>
                   <FormLabel>Additional Notes</FormLabel>
                   <FormDescription>
-                    Any additional notes you'd like to add about the beer
+                    Any additional notes about the beer
                   </FormDescription>
                   <FormControl>
                     <Textarea
                       placeholder="Add additional notes"
                       className="resize-none"
                       {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Archive */}
+            <FormField
+              control={form.control}
+              name="archived"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                  <div className="space-y-0.5">
+                    <FormLabel>Archive</FormLabel>
+                    <FormDescription>Add beer to archive</FormDescription>
+                  </div>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
                     />
                   </FormControl>
                   <FormMessage />
