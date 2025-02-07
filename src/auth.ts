@@ -22,6 +22,7 @@ interface MyToken extends JWT {
   notifications?: Notifications;
   accessToken?: string;
   refreshToken?: string;
+  selectedBreweryId?: string;
 }
 
 interface Profiles extends Profile {
@@ -153,6 +154,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           if (user.id) {
             user.id = user.id.toString(); // or whatever the field for the user id is
           }
+          user.selectedBreweryId = user.breweries[0] || null;
           user.breweries = user.breweries; // add breweries to user
           user.notifications = user.notifications; // add notifications to user
 
@@ -193,6 +195,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         user.id = existingUser.id.toString(); // or whatever the field for the user id is
         user.breweries = existingUser.breweries; // add breweries to user
         user.notifications = existingUser.notifications; // add notifications to user
+        user.selectedBreweryId = existingUser.selectedBreweryId || null;
 
         return true;
       } else if (name && email) {
@@ -222,6 +225,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             user.id = savedUser.id.toString(); // Add the new user's id to the user object so it will be included in the JWT
             user.breweries = savedUser.breweries; // breweries for new user
             user.notifications = savedUser.notifications; // notifications for new user
+            user.selectedBreweryId = savedUser.breweries[0] || null;
             return true;
           }
         } catch (err) {
@@ -237,14 +241,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({
       token,
       user,
+      account,
+      profile,
       trigger,
+      isNewUser,
       session,
     }: {
       token: MyToken;
       user: AdapterUser | NextAuthUser;
-
+      account: Account | null;
+      profile?: Profile;
       trigger?: "signIn" | "signUp" | "update";
-
+      isNewUser?: boolean;
       session?: any;
     }) {
       // Persist the OAuth access_token and or the user id to the token right after signin
@@ -261,6 +269,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
         if (session.updatedNotifications) {
           token.notifications = session.updatedNotifications as Notifications;
+        }
+
+        if (session.selectedBreweryId) {
+          token.selectedBreweryId = session.selectedBreweryId as string;
         }
         return token;
       }
@@ -282,6 +294,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           notifications: user.notifications,
           accessToken: accessToken,
           refreshToken: refreshToken,
+          selectedBreweryId: user.breweries[0] || null,
         };
       } // If the access token has expired, try to refresh it
       else if (token.accessToken && token.refreshToken) {
@@ -320,8 +333,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (token.accessToken) {
         session.user = token as any;
         session.user.accessToken = token.accessToken as string; // sets users accessToken for API authorization
-
         session.user.breweries = token.breweries as string[]; // sets user's breweries
+        session.user.selectedBreweryId =
+          (session.user.breweries[0] as string) || null;
         session.user.notifications = token.notifications as Notifications; // sets user's notifications
       }
 

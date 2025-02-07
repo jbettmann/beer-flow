@@ -16,6 +16,7 @@ declare module "next-auth" {
     accessToken: string;
     refreshToken: string;
     notifications: Notifications;
+    selectedBreweryId: string | null;
   }
   interface Session {
     user: User;
