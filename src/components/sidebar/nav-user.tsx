@@ -36,9 +36,7 @@ export function NavUser({ user }: { user: User }) {
   const handleSignOut = () => {
     // After sign out, redirects next user to homepage
     signOut({ callbackUrl: `${window?.location.origin}/` });
-    // Clear local & session storage
-    localStorage.removeItem("selectedBreweryId");
-    sessionStorage.removeItem("openCategory");
+
     sessionStorage.removeItem("beerForm");
   };
   return (
@@ -56,12 +54,12 @@ export function NavUser({ user }: { user: User }) {
                   alt={user?.name || "user image"}
                 />
                 <AvatarFallback className=" logo__default !text-base">
-                  {getInitials(user.name || user.fullName)}
+                  {getInitials(user?.name || user.fullName)}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate font-semibold">{user?.name}</span>
+                <span className="truncate text-xs">{user?.email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -80,11 +78,11 @@ export function NavUser({ user }: { user: User }) {
                     alt={user?.name || "user image"}
                   />
                   <AvatarFallback className=" logo__default !text-base">
-                    {getInitials(user.name || user.fullName)}
+                    {getInitials(user?.name || user.fullName)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user.name}</span>
+                  <span className="truncate font-semibold">{user?.name}</span>
                   <span className="truncate text-xs">{user.email}</span>
                 </div>
               </div>

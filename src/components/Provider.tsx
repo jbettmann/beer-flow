@@ -24,9 +24,7 @@ const Provider: FC<ProviderProps> = ({ children }) => {
       <SWRConfig
         value={{
           fetcher,
-          onSuccess: (data, key, config) => {
-            console.log("Data fetched successfully:", data);
-          },
+          onSuccess: (data, key, config) => {},
           onError: async (error) => {
             if (error.message.includes("401")) {
               console.warn("Session expired, logging out...");

@@ -10,10 +10,8 @@ export const fetcher = async (endpoint: string, options: RequestInit = {}) => {
   };
 
   try {
-    const res = await fetch(
-      `https://beer-bible-api.vercel.app${endpoint}`,
-      config
-    );
+    console.log(process.env.NEXT_PUBLIC_API_URL);
+    const res = await fetch(process.env.NEXT_PUBLIC_API_URL + endpoint, config);
 
     if (!res.ok) {
       // Handle specific error responses
@@ -28,10 +26,11 @@ export const fetcher = async (endpoint: string, options: RequestInit = {}) => {
         throw new Error("Internal Server Error");
       }
       // Generic error handling
+      console.log({ res });
+
       const errorData = await res.json();
       throw new Error(errorData.message || `HTTP error! Status: ${res.status}`);
     }
-
     return await res.json();
   } catch (error) {
     console.error("Fetch error:", error);

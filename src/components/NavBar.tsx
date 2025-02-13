@@ -61,8 +61,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
     // Dispatch a custom event to notify other parts of the app
     const event = new Event("selectedBreweryChanged");
     window?.dispatchEvent(event);
-    sessionStorage.removeItem("openCategory");
-    // Close the drawer
+
     closeDrawer();
   };
 
@@ -70,10 +69,6 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
   const handleSignOut = () => {
     // After sign out, redirects next user to homepage
     signOut({ callbackUrl: `${window?.location.origin}/` });
-    // Clear local & session storage
-    localStorage.removeItem("selectedBreweryId");
-    sessionStorage.removeItem("openCategory");
-    sessionStorage.removeItem("beerForm");
   };
 
   useEffect(() => {

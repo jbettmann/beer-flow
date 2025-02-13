@@ -1,15 +1,9 @@
-import BeerCardLS from "@/components/LoadingSkeleton/BeerCardLS";
-import Modal from "@/components/Modal";
-import React from "react";
+import FormCardSkeleton from "@/components/skeletons/form-card-skeleton";
 
 type Props = {};
 
 const loading = (props: Props) => {
-  return (
-    <Modal closeButtonOnly={true}>
-      <BeerCardLS />
-    </Modal>
-  );
+  return <FormCardSkeleton />;
 };
 
 export default loading;

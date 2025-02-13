@@ -43,14 +43,12 @@ export default auth(async function middleware(req: NextRequest) {
   const isAuthPage = pathname.startsWith("/auth/login");
   const acceptInvite = pathname.startsWith("/accept-invite");
 
-  // Handle auth pages
-  if (isAuthPage) {
-    return isAuth
-      ? NextResponse.redirect(new URL("/dashboard/breweries", req.url))
-      : undefined;
+  // Redirect authenticated users away from login page to /dashboard/overview
+  if (isAuthPage && isAuth) {
+    return NextResponse.redirect(new URL("/dashboard/overview", req.url));
   }
 
-  // Protect sensitive routes
+  // Redirect unauthenticated users trying to access protected pages
   if (!isAuth && config.matcher.some((route) => pathname.startsWith(route))) {
     if (acceptInvite) {
       const loginUrl = new URL("/auth/login", req.url);

@@ -1,31 +1,22 @@
-import BeerCard from "@/components/BeerCard";
-import { notFound } from "next/navigation";
-type pageProps = {
-  params: {
-    breweryId: string;
-    beerId: string;
-  };
+import PageContainer from "@/components/layout/page-container";
+import { Suspense } from "react";
+import BeerViewPage from "@/features/products/components/beer-view-page";
+import FormCardSkeleton from "@/components/skeletons/form-card-skeleton";
+
+export const metadata = {
+  title: "Dashboard : Beer View",
 };
 
-// revalidate: 0 means that the page will be regenerated on every request
+type PageProps = { params: Promise<{ beerId: string }> };
 
-//  breweries/breweryId *********************************
-export default async function SingleBeerPage({
-  params: { breweryId, beerId },
-}: pageProps) {
-  // const singleBrewery: Promise<Brewery> = getSingleBrewery(breweryId);
-
-  // const promise = await Promise.all([singleBrewery]);
-
-  // const [brewery] = promise;
-
-  if (!beerId) return notFound();
+export default async function Page(props: PageProps) {
+  const params = await props.params;
   return (
-    <section className="w-full sm:w-2/3 lg:w-1/2 mx-auto h-full ">
-      {/* SingleBeerPageContainer Only on [beerId] page to set selectedBeers State */}
-
-      {/* @ts-expect-error Server component */}
-      <BeerCard beerId={beerId} />
-    </section>
+    <PageContainer scrollable>
+      <div className="flex-1 space-y-4">
+        {/* @ts-expect-error Server Component */}
+        <BeerViewPage beerId={params.beerId} />
+      </div>
+    </PageContainer>
   );
 }

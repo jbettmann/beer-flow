@@ -21,26 +21,17 @@ import { getInitials } from "@/lib/utils";
 import Link from "next/link";
 import { useEffect } from "react";
 import ImageDisplay from "../ImageDisplay/ImageDisplay";
+import { useSession } from "next-auth/react";
 
 export function BrewerySwitcher({ breweries }: { breweries: Brewery[] }) {
   const { isMobile } = useSidebar();
-  const { selectedBrewery, setSelectedBrewery, setBreweryId } =
-    useBreweryContext();
+  const { update } = useSession();
+  const { selectedBrewery } = useBreweryContext();
 
-  const handleBreweryClick = (brewery: Brewery) => {
-    setBreweryId(brewery._id);
-    localStorage.setItem("selectedBreweryId", brewery._id);
+  const handleBreweryClick = async (brewery: Brewery) => {
+    await update({ selectedBreweryId: brewery._id });
   };
 
-  useEffect(() => {
-    const savedBreweryId = localStorage.getItem("selectedBreweryId");
-    if (savedBreweryId) {
-      const savedBrewery = breweries?.find((b) => b._id === savedBreweryId);
-      if (savedBrewery) {
-        setSelectedBrewery(savedBrewery);
-      }
-    }
-  }, [breweries, setSelectedBrewery]);
   return (
     <>
       <SidebarMenu>
@@ -85,7 +76,7 @@ export function BrewerySwitcher({ breweries }: { breweries: Brewery[] }) {
                   className="gap-2 p-2"
                 >
                   <Link
-                    href={`/dashboard/breweries/${brewery._id}`}
+                    href={`/dashboard/breweries/${brewery._id}/beers`}
                     key={brewery._id}
                     className="flex flex-row items-center text-left gap-4"
                   >

@@ -32,7 +32,7 @@ const LoginPage = () => {
       if (provider === "google") {
         setIsGoogleLoading(true);
         const login = await signIn("google", {
-          callbackUrl: acceptInviteUrl || "/dashboard/breweries",
+          callbackUrl: acceptInviteUrl || "/dashboard/overview",
         });
         if (!login?.ok) {
           setLoginError(login?.error?.split(":")[1]);

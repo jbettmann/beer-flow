@@ -1,12 +1,9 @@
 "use client";
 import { Beer } from "@/app/types/beer";
 import { Brewery } from "@/app/types/brewery";
-import getBreweryBeers from "@/lib/getBreweryBeers";
-import getSingleBrewery from "@/lib/getSingleBrewery";
 import { useGetBeerByBreweryId } from "@/services/queries/beers";
 import { useGetBreweryById } from "@/services/queries/brewery";
-import { be } from "@upstash/redis/zmscore-Dc6Llqgr";
-
+import Cookies from "js-cookie";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, {
@@ -16,7 +13,6 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import useSWR from "swr";
 
 type BreweryContextProps = {
   selectedBrewery: Brewery | null;
@@ -37,18 +33,13 @@ type ProviderProps = {
 };
 
 export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
+  const { data: session, status, update } = useSession();
   const [selectedBrewery, setSelectedBrewery] = useState<Brewery | null>(null);
   const [selectedBeers, setSelectedBeers] = useState<Beer[] | null>(null);
-
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
-
-  const router = useRouter();
-  const { data: session, status } = useSession();
-  const storedBreweryId =
-    typeof window !== "undefined"
-      ? localStorage?.getItem("selectedBreweryId")
-      : session?.user.selectedBreweryId;
-  const [breweryId, setBreweryId] = useState<string>(storedBreweryId as string);
+  const [breweryId, setBreweryId] = useState<string | null>(
+    session?.user.selectedBreweryId || null
+  );
 
   const {
     data: beers,
@@ -97,21 +88,9 @@ export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
   useEffect(() => {
     if (session?.user.selectedBreweryId) {
       setBreweryId(session.user.selectedBreweryId);
+      Cookies.set("selectedBreweryId", session.user.selectedBreweryId);
     }
   }, [session?.user.selectedBreweryId]);
-
-  useEffect(() => {
-    if (session && status === "authenticated") {
-      if (!breweryId && session.user.breweries?.length > 0) {
-        const firstBreweryId = session.user.breweries[0] as string;
-        setBreweryId(firstBreweryId);
-        localStorage.setItem("selectedBreweryId", firstBreweryId);
-        router.push(`/dashboard/breweries/${firstBreweryId}/beers`);
-      } else if (!breweryId) {
-        router.push("/dashboard/overview");
-      }
-    }
-  }, [session, status]);
 
   useEffect(() => {
     // set isAdmin

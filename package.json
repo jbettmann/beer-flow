@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -50,6 +51,7 @@
     "eslint-config-next": "13.4.3",
     "eventsource-parser": "^1.0.0",
     "jose": "^5.9.6",
+    "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.0",
     "lucide-react": "^0.287.0",
     "match-sorter": "^8.0.0",
@@ -88,6 +90,7 @@
     "@types/bcrypt": "^5.0.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/body-parser": "^1.19.2",
+    "@types/js-cookie": "^3.0.6",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/react-tag-input": "^6.6.1",
     "@types/uuid": "^9.0.2",

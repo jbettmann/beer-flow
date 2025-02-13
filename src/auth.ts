@@ -10,7 +10,7 @@ import { Notifications } from "@/app/types/notifications";
 import updateUserInfoDBDirect from "@/lib/PUT/updateUserInfoDBDirect";
 import NextAuth, { User as NextAuthUser } from "next-auth";
 import { JWT } from "next-auth/jwt";
-
+import { cookies } from "next/headers";
 import dbConnect from "@/lib/db";
 import * as bcyrpt from "bcryptjs";
 import { AdapterUser } from "next-auth/adapters";
@@ -27,7 +27,6 @@ interface MyToken extends JWT {
 
 interface Profiles extends Profile {
   picture?: string;
-  // ... other properties ...
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -40,12 +39,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
     }),
     CredentialsProvider({
-      // The name to display on the sign in form (e.g. "Sign in with...")
       name: "credentials",
-      // `credentials` is used to generate a form on the sign in page.
-      // You can specify which fields should be submitted, by adding keys to the `credentials` object.
-      // e.g. domain, email, password, 2FA token, etc.
-      // You can pass any HTML attribute to the <input> tag through the object.
+
       credentials: {
         email: { label: "Email address", type: "text", placeholder: "email" },
         password: { label: "Password", type: "password" },
@@ -77,7 +72,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             console.error("User registered using OAuth");
             throw new Error(
               "This account was created using Google. Please try log in using Googles OAuth method above."
-            ); // Send specific error message
+            );
           }
 
           const passwordFromDB = user.get("password");
@@ -97,7 +92,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return userWithoutPassword; // return the user without the password
         } catch (error: any) {
           console.error("Error in authorization:", error);
-          throw new Error(error); // Return null on error
+          throw new Error(error);
         }
       },
     }),
@@ -109,11 +104,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   secret: process.env.AUTH_SECRET,
   debug: process.env.NODE_ENV === "development",
 
-  // An optional, but recommended, database for persisting user and session data
-  // database: process.env.DATABASE_URL,
-  // session: {
-  //   jwt: true,
-  // },
   callbacks: {
     async signIn({
       user,
@@ -124,14 +114,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       profile?: Profiles | undefined;
       account?: Account | null;
     }): Promise<boolean> {
-      // Get the user's name and email either from the 'user' object or the 'profile' object
       const name = user?.name ?? profile?.name;
       const email = user?.email ?? profile?.email;
       let picture = profile?.picture ?? user?.image;
-
-      // Connect to MongoDB
-      // const client = await db.user.findFirst();
-      // const collection = client.db().collection("users");
+      const cookieStore = await cookies();
+      let selectedBreweryId =
+        cookieStore.get("selectedBreweryId")?.value || null;
 
       if (!email) {
         // OAuth provider didn't return an email
@@ -152,11 +140,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           }
           // User exists in your DB
           if (user.id) {
-            user.id = user.id.toString(); // or whatever the field for the user id is
+            user.id = user.id.toString();
           }
-          user.selectedBreweryId = user.breweries[0] || null;
-          user.breweries = user.breweries; // add breweries to user
-          user.notifications = user.notifications; // add notifications to user
+          user.selectedBreweryId = selectedBreweryId;
+          user.breweries = user.breweries;
+          user.notifications = user.notifications;
 
           return true;
         }
@@ -191,11 +179,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           }
         }
 
-        // User exists in your DB
-        user.id = existingUser.id.toString(); // or whatever the field for the user id is
-        user.breweries = existingUser.breweries; // add breweries to user
-        user.notifications = existingUser.notifications; // add notifications to user
-        user.selectedBreweryId = existingUser.selectedBreweryId || null;
+        if (
+          selectedBreweryId &&
+          !existingUser.breweries?.includes(selectedBreweryId)
+        ) {
+          selectedBreweryId = existingUser.breweries[0]; // fallback if logging in to different account
+        }
+
+        user.id = existingUser.id.toString();
+        user.breweries = existingUser.breweries;
+        user.notifications = existingUser.notifications;
+        user.selectedBreweryId = selectedBreweryId || null;
 
         return true;
       } else if (name && email) {
@@ -222,10 +216,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           const savedUser = await newUser.save();
           if (savedUser) {
-            user.id = savedUser.id.toString(); // Add the new user's id to the user object so it will be included in the JWT
-            user.breweries = savedUser.breweries; // breweries for new user
-            user.notifications = savedUser.notifications; // notifications for new user
-            user.selectedBreweryId = savedUser.breweries[0] || null;
+            user.id = savedUser.id.toString();
+            user.breweries = savedUser.breweries;
+            user.notifications = savedUser.notifications;
+            user.selectedBreweryId = null;
             return true;
           }
         } catch (err) {
@@ -255,8 +249,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       isNewUser?: boolean;
       session?: any;
     }) {
-      // Persist the OAuth access_token and or the user id to the token right after signin
-
       if (trigger && trigger === "update") {
         if (session.newBreweryId) {
           (token.breweries as string[]).push(session.newBreweryId);
@@ -281,11 +273,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const accessToken = await signJwtAccessToken(
           user,
           process.env.AUTH_SECRET!
-        ); // Pass the secret explicitly
+        );
+
         const refreshToken = await signJwtRefreshToken(
           user,
           process.env.REFRESH_TOKEN_SECRET!
-        ); // sends for new accessToken after expires
+        );
         token.id = user.id as string;
         return {
           ...token,
@@ -294,14 +287,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           notifications: user.notifications,
           accessToken: accessToken,
           refreshToken: refreshToken,
-          selectedBreweryId: user.breweries[0] || null,
+          selectedBreweryId: user.selectedBreweryId,
         };
       } // If the access token has expired, try to refresh it
       else if (token.accessToken && token.refreshToken) {
         const encoder = new TextEncoder();
 
         try {
-          // Verify the access token
           await jwtVerify(
             token.accessToken as string,
             encoder.encode(process.env.AUTH_SECRET as string)
@@ -332,11 +324,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({ session, token, user }) {
       if (token.accessToken) {
         session.user = token as any;
-        session.user.accessToken = token.accessToken as string; // sets users accessToken for API authorization
-        session.user.breweries = token.breweries as string[]; // sets user's breweries
+        session.user.accessToken = token.accessToken as string;
+        session.user.breweries = token.breweries as string[];
         session.user.selectedBreweryId =
-          (session.user.breweries[0] as string) || null;
-        session.user.notifications = token.notifications as Notifications; // sets user's notifications
+          typeof token.selectedBreweryId === "string"
+            ? token.selectedBreweryId
+            : null;
+        session.user.notifications = token.notifications as Notifications;
       }
 
       return session;

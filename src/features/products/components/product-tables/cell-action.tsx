@@ -47,7 +47,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <DropdownMenuItem
             onClick={() =>
               router.push(
-                `/dashboard/breweries/${selectedBrewery?._id}/beers/${data._id}/edit`
+                `/dashboard/breweries/${selectedBrewery?._id}/beers/${data._id}`
               )
             }
           >

@@ -5,24 +5,12 @@ import Link from "next/link";
 import homepageImage from "../assets/img/homepage.png";
 import mobilePhoneImage from "../assets/img/mobile.png";
 import logo from "../../public/Brett_Logo.svg";
+import { auth, signOut } from "@/auth";
+import { Button } from "@/components/ui/button";
+import ServerSignOutButton from "@/components/Buttons/server-sign-out-buttton";
 
 export default async function Home() {
-  // let savedBreweryId;
-  // if (typeof window !== "undefined") {
-  //   savedBreweryId = localStorage.getItem("selectedBreweryId");
-  // }
-  // if (session?.user && savedBreweryId) {
-  //   redirect(`/dashboard/breweries/${savedBreweryId}`);
-  // }
-
-  // if (session?.user && !savedBreweryId && session.user.breweries.length > 0) {
-  //   redirect(`/breweries`);
-  // }
-
-  // if (session?.user && !savedBreweryId) {
-  //   let savedBreweryId = session?.user.breweries[0];
-  //   redirect(`/dashboard/breweries/${savedBreweryId}`);
-  // }
+  const session = await auth();
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between w-full">
@@ -43,18 +31,32 @@ export default async function Home() {
             <h1 className="text-primary font-medium ">Brett</h1>
           </Link>
           <div className="flex items-center  gap-1 xxs:gap-3 xxs:px-4 ">
-            <Link
-              href="/auth/login"
-              className=" flex w-28 text-primary text-md justify-center items-center"
-            >
-              Log In
-            </Link>
-            <Link
-              href="/auth/create/account"
-              className=" flex justify-center items-center w-full h-3/4 rounded-full bg-accent hover:shadow-xl transition-all ease-in-out text-sm  text-primary shadow-sm font-medium hover:bg-[#68cdc0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-            >
-              Sign up
-            </Link>
+            {session?.user ? (
+              <>
+                <Link
+                  href="/dashboard/overview"
+                  className=" flex w-28 text-primary text-md justify-center items-center"
+                >
+                  Dashboard
+                </Link>
+                <ServerSignOutButton variant="outline" />
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/auth/login"
+                  className=" flex w-28 text-primary text-md justify-center items-center"
+                >
+                  Log In
+                </Link>
+                <Link
+                  href="/auth/create/account"
+                  className=" flex justify-center items-center w-full h-3/4 rounded-full bg-accent hover:shadow-xl transition-all ease-in-out text-sm  text-primary shadow-sm font-medium hover:bg-[#68cdc0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                >
+                  Sign up
+                </Link>
+              </>
+            )}
           </div>
         </div>
 

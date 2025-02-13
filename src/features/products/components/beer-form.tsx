@@ -30,6 +30,7 @@ import { useBreweryContext } from "@/context/brewery-beer";
 import { onFormError } from "@/lib/handle-error";
 import { hopSuggestions, maltSuggestions } from "@/lib/suggestionsDB";
 import BeerFormSchema from "@/zod/beer-schema";
+import { de } from "@faker-js/faker/.";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Beer as BeerIcon,
@@ -141,7 +142,7 @@ export default function BeerForm({
               render={({ field }) => (
                 <div className="space-y-6">
                   <FormItem className="w-full">
-                    <FormLabel>Images</FormLabel>
+                    <FormLabel>Image</FormLabel>
                     <FormControl>
                       <FileUploader
                         value={field.value as File[] | undefined}
@@ -364,7 +365,7 @@ export default function BeerForm({
                             })) || []
                           }
                           onValueChange={(values) => field.onChange(values)}
-                          defaultValue={field.value.map((hop: any) => hop.name)}
+                          defaultValue={field.value.map((hop: any) => hop)}
                           placeholder="Select hops "
                           className="pl-10 w-popover-full"
                           variant="default"
@@ -393,9 +394,7 @@ export default function BeerForm({
                             })) || []
                           }
                           onValueChange={(values) => field.onChange(values)}
-                          defaultValue={field.value.map(
-                            (malt: any) => malt.name
-                          )}
+                          defaultValue={field.value.map((malt: any) => malt)}
                           placeholder="Select malts "
                           className="pl-10 w-popover-full"
                           variant="default"
