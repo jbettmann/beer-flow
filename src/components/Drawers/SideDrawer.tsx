@@ -1,6 +1,5 @@
 type Props = {
-  isOpen: boolean;
-
+  isOpen: boolean | any;
   children: React.ReactNode;
 };
 function SideDrawer({ isOpen, children }: Props) {

@@ -1,11 +1,11 @@
 "use client";
-import { Category, NewCategory } from "@/app/types/category";
+import { Category, NewCategory } from "@/types/category";
 import { useBreweryContext } from "@/context/brewery-beer";
 import { ChevronDown, LayoutGrid, PencilLine, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
-import { Beer } from "@/app/types/beer";
+import { Beer } from "@/types/beer";
 import { useToast } from "@/context/toast";
 import handleUpdateCategory from "@/lib/handleSubmit/handleUpdateCategory";
 import BeerMugBadge from "../Badges/BeerMugBadge";

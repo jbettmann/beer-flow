@@ -1,17 +1,17 @@
-"use client";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { getServerSession } from "next-auth";
-import { useSession } from "next-auth/react";
+"use server";
+import { auth } from "@/auth";
 
 type pageProps = [url: string, token: string];
 
 export default async function getBreweryBeers([url, token]: any) {
-  if (token) {
+  const user = await auth();
+
+  if (user?.user) {
     try {
       const response = await fetch(url, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${user?.user.accessToken}`,
         },
         method: "GET",
       });
@@ -23,9 +23,9 @@ export default async function getBreweryBeers([url, token]: any) {
       return await response.json();
     } catch (err) {
       console.error(err);
-      return []; // Return empty array on error
+      return [];
     }
   } else {
-    return []; // Return empty array if user has no breweries
+    return [];
   }
 }

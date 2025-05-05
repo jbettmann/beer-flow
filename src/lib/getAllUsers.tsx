@@ -1,12 +1,12 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { Users } from "@/app/types/users";
+import { Users } from "@/types/users";
 
 import { Session, getServerSession } from "next-auth";
 import { Dispatch, SetStateAction } from "react";
 
 //  Fetch all users
 export default async function fetchAllUsers() {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
 
   // session: Session,
   // setUsers: Dispatch<SetStateAction<User[]>>

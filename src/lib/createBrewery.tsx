@@ -1,6 +1,6 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { Brewery, NewBrewery } from "@/app/types/brewery";
-import { getServerSession } from "next-auth/next";
+import { Brewery, NewBrewery } from "@/types/brewery";
+import { auth } from "@/auth";
 
 type pageProps = {
   brewery: NewBrewery;

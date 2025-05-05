@@ -1,4 +1,4 @@
-import { Beer } from "@/app/types/beer";
+import { Beer } from "@/types/beer";
 
 type pageProps = {
   updatedCategory: string[] | string;

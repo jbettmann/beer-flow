@@ -17,10 +17,6 @@ const SettingTabs = ({ children }: Props) => {
   const handleSignOut = () => {
     // After sign out, redirects next user to homepage
     signOut({ callbackUrl: `${window.location.origin}/` });
-    // Clear local & session storage
-    localStorage.removeItem("selectedBreweryId");
-    sessionStorage.removeItem("openCategory");
-    sessionStorage.removeItem("beerForm");
   };
 
   const isActive = (path: string) => {

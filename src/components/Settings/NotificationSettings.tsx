@@ -1,5 +1,5 @@
 "use client";
-import { Notifications } from "@/app/types/notifications";
+import { Notifications } from "@/types/notifications";
 import updateUserNotifications from "@/lib/PUT/updateUserNotfications";
 import { set } from "mongoose";
 import { useSession } from "next-auth/react";

@@ -4,7 +4,7 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import CategoryDashboard from "./CategoryDashboard";
 import CategoryList from "./CategoryList";
-import { Users } from "@/app/types/users";
+import { Users } from "@/types/users";
 
 type Props = {};
 

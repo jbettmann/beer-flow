@@ -1,5 +1,5 @@
 "use client";
-import { Brewery } from "@/app/types/brewery";
+import { Brewery } from "@/types/brewery";
 import Link from "next/link";
 import React from "react";
 import ImageDisplay from "../ImageDisplay/ImageDisplay";

@@ -1,4 +1,4 @@
-import { Brewery } from "@/app/types/brewery";
+import { Brewery } from "@/types/brewery";
 import React from "react";
 import createCategory from "../createCategory";
 
@@ -34,7 +34,6 @@ const handleCreateNewCategory = async ({
         const createdCategory = await createCategory({
           newCategory,
           breweryId: brewery._id,
-          accessToken,
         });
         if (!createdCategory._id) {
           throw new Error(`Category creation failed for: ${categoryName}`);

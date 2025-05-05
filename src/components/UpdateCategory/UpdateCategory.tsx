@@ -4,8 +4,8 @@ import React, { useEffect, useRef, useState } from "react";
 
 import ErrorField from "../ErrorField/ErrorField";
 
-import { Brewery } from "@/app/types/brewery";
-import { Category } from "@/app/types/category";
+import { Brewery } from "@/types/brewery";
+import { Category } from "@/types/category";
 import { useBreweryContext } from "@/context/brewery-beer";
 import { handleDeleteCategory } from "@/lib/handleSubmit/handleDeleteCategory";
 import handleUpdateCategory from "@/lib/handleSubmit/handleUpdateCategory";

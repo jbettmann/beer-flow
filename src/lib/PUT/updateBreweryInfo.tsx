@@ -1,4 +1,4 @@
-import { Brewery } from "@/app/types/brewery";
+import { Brewery } from "@/types/brewery";
 
 type pageProps = {
   updatedBrewery: Brewery;

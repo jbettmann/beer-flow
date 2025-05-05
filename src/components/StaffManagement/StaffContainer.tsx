@@ -8,7 +8,7 @@ import Link from "next/link";
 import { Plus, UserPlus } from "lucide-react";
 import BottomDrawer from "../Drawers/BottomDrawer";
 import MultipleInvites from "../Invite/MultipuleInvites";
-import { Users } from "@/app/types/users";
+import { Users } from "@/types/users";
 import EditModal from "../Alerts/EditModal";
 import { debounce } from "@/lib/utils";
 

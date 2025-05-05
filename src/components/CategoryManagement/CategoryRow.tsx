@@ -1,5 +1,5 @@
 "use client";
-import { Category } from "@/app/types/category";
+import { Category } from "@/types/category";
 import { useBreweryContext } from "@/context/brewery-beer";
 import updateBeerCategory from "@/lib/PUT/updateBeerCategory";
 import {
@@ -14,7 +14,7 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import CategoryItem from "./CategoryItem";
 
-import { Beer } from "@/app/types/beer";
+import { Beer } from "@/types/beer";
 import { useToast } from "@/context/toast";
 import handleMoveBeerToCategory from "@/lib/handleSubmit/handleMoveBeerToCategory";
 import handleUpdateCategory from "@/lib/handleSubmit/handleUpdateCategory";
@@ -82,6 +82,7 @@ const CategoryRow = ({
     selectedBeers,
     selectedBrewery,
     setSelectedBeers,
+
     setSelectedBrewery,
   } = useBreweryContext();
 
@@ -343,13 +344,10 @@ const CategoryRow = ({
         });
 
         // Update the selectedBrewery state
-        setSelectedBrewery((prevBrewery) => {
-          if (!prevBrewery) return null;
-          return {
-            ...prevBrewery,
-            categories: [...(prevBrewery?.categories || []), ...newCategories],
-          };
-        });
+        setSelectedBrewery((prevBrewery: any) => ({
+          ...prevBrewery,
+          categories: [...(prevBrewery?.categories || []), ...newCategories],
+        }));
       }
 
       // Update cache

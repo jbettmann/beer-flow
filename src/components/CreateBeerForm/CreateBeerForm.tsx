@@ -1,5 +1,5 @@
 "use client";
-import { Brewery } from "@/app/types/brewery";
+import { Brewery } from "@/types/brewery";
 import handleCreateBeer from "@/lib/handleSubmit/handleCreateBeer";
 import { hopSuggestions, maltSuggestions } from "@/lib/suggestionsDB";
 import validateFields from "@/lib/validators/forms";
@@ -13,7 +13,7 @@ import { useSession } from "next-auth/react";
 import useSWR from "swr";
 import getBreweryBeers from "@/lib/getBreweryBeers";
 import { useBreweryContext } from "@/context/brewery-beer";
-import { Beer } from "@/app/types/beer";
+import { Beer } from "@/types/beer";
 import Image from "next/image";
 import { ImagePlus, X } from "lucide-react";
 import { useToast } from "@/context/toast";
@@ -23,11 +23,9 @@ import DefaultBeerImage from "../../assets/img/beer.png";
 import getSingleBrewery from "@/lib/getSingleBrewery";
 import { spawn } from "child_process";
 
-type pageProps = {
-  setIsCreateBeer: (value: boolean) => void;
-};
+type pageProps = {};
 
-const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
+const CreateBeerForm = ({}: pageProps) => {
   const { data: session, status, update } = useSession();
 
   const { selectedBeers, selectedBrewery, isAdmin } = useBreweryContext();
@@ -41,10 +39,7 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
   );
 
   const { mutate: mutateBrewery } = useSWR(
-    [
-      `https://beer-bible-api.vercel.app/breweries/${selectedBrewery?._id}`,
-      session?.user.accessToken,
-    ],
+    [`https://beer-bible-api.vercel.app/breweries/${selectedBrewery?._id}`],
     getSingleBrewery
   );
 
@@ -101,11 +96,6 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
     image: useRef<HTMLInputElement>(null),
   };
 
-  const onDismiss = useCallback(() => {
-    if (setIsCreateBeer) setIsCreateBeer(false);
-    router.back();
-  }, [router]);
-
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -158,7 +148,6 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
           mutateBrewery();
           handleClear(); // Clear the form
           addToast(`${newBeerRes.name} successfully created!`, "success");
-          setIsCreateBeer(false);
         }
       }
     } catch (err: string | any) {
@@ -253,14 +242,7 @@ const CreateBeerForm = ({ setIsCreateBeer }: pageProps) => {
           Clear
         </button>
         <h4>Create</h4>
-        <button
-          className={`link link-hover text-background`}
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsCreateBeer && setIsCreateBeer(false);
-          }}
-          type="button"
-        >
+        <button className={`link link-hover text-background`} type="button">
           <X size={20} strokeWidth={1} />
         </button>
       </div>

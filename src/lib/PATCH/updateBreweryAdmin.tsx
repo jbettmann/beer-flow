@@ -1,5 +1,5 @@
-import { Beer } from "@/app/types/beer";
-import { Brewery } from "@/app/types/brewery";
+import { Beer } from "@/types/beer";
+import { Brewery } from "@/types/brewery";
 
 type pageProps = {
   userId: string | undefined;

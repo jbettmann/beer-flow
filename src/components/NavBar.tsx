@@ -1,5 +1,5 @@
 "use client";
-import { Brewery } from "@/app/types/brewery";
+import { Brewery } from "@/types/brewery";
 import { useBreweryContext } from "@/context/brewery-beer";
 import { debounce, getInitials } from "@/lib/utils";
 import {
@@ -40,7 +40,6 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
   const breweryMenuRef = useRef<any>(null);
   const checkBoxRef = useRef<HTMLInputElement>(null);
 
- 
   const pathname = usePathname();
 
   const isActive = (path: string) => {
@@ -61,37 +60,16 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
     localStorage.setItem("selectedBreweryId", brewery._id);
     // Dispatch a custom event to notify other parts of the app
     const event = new Event("selectedBreweryChanged");
-    window.dispatchEvent(event);
-    sessionStorage.removeItem("openCategory");
-    // Close the drawer
+    window?.dispatchEvent(event);
+
     closeDrawer();
   };
 
   // clear local storage when sign out
   const handleSignOut = () => {
     // After sign out, redirects next user to homepage
-    signOut({ callbackUrl: `${window.location.origin}/` });
-    // Clear local & session storage
-    localStorage.removeItem("selectedBreweryId");
-    sessionStorage.removeItem("openCategory");
-    sessionStorage.removeItem("beerForm");
+    signOut({ callbackUrl: `${window?.location.origin}/` });
   };
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const handleResize = () => {
-        setIsMobile(window.innerWidth <= 768);
-      };
-
-      const debouncedResize = debounce(handleResize, 250); // 250ms delay
-
-      window.addEventListener("resize", debouncedResize);
-
-      return () => {
-        window.removeEventListener("resize", debouncedResize);
-      };
-    }
-  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -152,7 +130,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
             </label>
 
             <Link
-              href={`/breweries/${selectedBrewery?._id}`}
+              href={`/dashboard/breweries/${selectedBrewery?._id}`}
               className="flex flex-row items-center justify-center gap-1"
             >
               {selectedBrewery?.image ? (
@@ -190,14 +168,14 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                 </Link>
 
                 <ul className="w-full menu !flex-nowrap  h-full gap-3 overflow-y-scroll">
-                  {breweries.map((brewery: Brewery) => (
+                  {breweries?.map((brewery: Brewery) => (
                     <li
                       key={brewery._id}
                       className="category-card rounded-xl p-1"
                     >
                       <Link
                         key={brewery._id}
-                        href={`/breweries/${brewery._id}`}
+                        href={`/dashboard/breweries/${brewery._id}`}
                         className="flex flex-col xs:flex-row items-center text-left "
                         onClick={() => handleBreweryClick(brewery)}
                       >
@@ -208,7 +186,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                           />
                         ) : (
                           <div className="logo__default !p-2 !text-base">
-                            {getInitials(brewery.companyName)}
+                            {getInitials(brewery?.companyName)}
                           </div>
                         )}
                         <h6 className="pl-1 text-left text-xs">
@@ -246,7 +224,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                     </div>
                     <li onClick={closeDrawer}>
                       <Link
-                        href={`/breweries/${selectedBrewery?._id}/categories`}
+                        href={`/dashboard/breweries/${selectedBrewery?._id}/categories`}
                         className="flex flex-row items-center "
                         data-tip={`Categories Management`}
                       >
@@ -256,7 +234,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                     </li>
                     <li onClick={closeDrawer}>
                       <Link
-                        href={`/breweries/${selectedBrewery?._id}/staff`}
+                        href={`/dashboard/breweries/${selectedBrewery?._id}/staff`}
                         className="flex flex-row items-center"
                         data-tip="Staff Management"
                       >
@@ -365,13 +343,13 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                   {selectedBrewery?.companyName}
                 </summary>
                 <ul className="menu  gap-4">
-                  {breweries.map((brewery: Brewery) => (
+                  {breweries?.map((brewery: Brewery) => (
                     <li
                       key={brewery._id}
                       className="category-card rounded-xl p-2 w-fit min-w-[15rem] "
                     >
                       <Link
-                        href={`/breweries/${brewery._id}`}
+                        href={`/dashboard/breweries/${brewery._id}`}
                         key={brewery._id}
                         className="flex flex-row items-center text-left"
                         onClick={() => {
@@ -388,7 +366,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                             )
                           : brewery.companyName && (
                               <div className="logo__default !p-2 !text-base ">
-                                {getInitials(brewery.companyName)}
+                                {getInitials(brewery?.companyName)}
                               </div>
                             )}
                         <h6 className="pl-3 text-left text-xs">
@@ -480,9 +458,9 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                 />
               </Link>
               <Link
-                href={`/breweries/${selectedBrewery?._id}`}
+                href={`/dashboard/breweries/${selectedBrewery?._id}`}
                 className={`flex flex-row justify-between p-3  tooltip tooltip-accent tooltip-right ${
-                  isActive(`/breweries/${selectedBrewery?._id}`)
+                  isActive(`/dashboard/breweries/${selectedBrewery?._id}`)
                     ? "text-accent bg-fourth-color shadow-inner rounded-lg "
                     : ""
                 }`}
@@ -516,9 +494,11 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                         )}
                   </div>
                   <Link
-                    href={`/breweries/${selectedBrewery?._id}/categories`}
+                    href={`/dashboard/breweries/${selectedBrewery?._id}/categories`}
                     className={`flex flex-row items-center p-3  tooltip tooltip-accent tooltip-right ${
-                      isActive(`/breweries/${selectedBrewery?._id}/categories`)
+                      isActive(
+                        `/dashboard/breweries/${selectedBrewery?._id}/categories`
+                      )
                         ? "text-accent bg-fourth-color shadow-inner rounded-lg "
                         : ""
                     }`}
@@ -528,9 +508,11 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                   </Link>
 
                   <Link
-                    href={`/breweries/${selectedBrewery?._id}/staff`}
+                    href={`/dashboard/breweries/${selectedBrewery?._id}/staff`}
                     className={`flex flex-row items-center p-3 tooltip tooltip-accent tooltip-right ${
-                      isActive(`/breweries/${selectedBrewery?._id}/staff`)
+                      isActive(
+                        `/dashboard/breweries/${selectedBrewery?._id}/staff`
+                      )
                         ? "text-accent bg-fourth-color shadow-inner rounded-lg "
                         : ""
                     }`}
@@ -633,11 +615,11 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
         {/* <div className=" md:hidden btm-nav z-40 bg-primary text-background">
         <button
           className={
-            isActive(`/breweries/${selectedBrewery?._id}`) ? "active" : ""
+            isActive(`/dashboard/breweries/${selectedBrewery?._id}`) ? "active" : ""
           }
         >
           <Link
-            href={`/breweries/${selectedBrewery?._id}`}
+            href={`/dashboard/breweries/${selectedBrewery?._id}`}
             data-tip="Home"
             className="flex flex-col items-center text-xs"
           >
@@ -645,7 +627,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
               size={24}
               strokeWidth={1}
               className={
-                isActive(`/breweries/${selectedBrewery?._id}`)
+                isActive(`/dashboard/breweries/${selectedBrewery?._id}`)
                   ? "fill-accent text-primary"
                   : ""
               }
@@ -673,13 +655,13 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
           <>
             <button
               className={
-                isActive(`/breweries/${selectedBrewery?._id}/categories`)
+                isActive(`/dashboard/breweries/${selectedBrewery?._id}/categories`)
                   ? "active"
                   : ""
               }
             >
               <Link
-                href={`/breweries/${selectedBrewery?._id}/categories`}
+                href={`/dashboard/breweries/${selectedBrewery?._id}/categories`}
                 className="flex flex-col items-center text-xs"
                 data-tip="Brewery Categories Management"
               >
@@ -687,7 +669,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                   size={24}
                   strokeWidth={1}
                   className={
-                    isActive(`/breweries/${selectedBrewery?._id}/categories`)
+                    isActive(`/dashboard/breweries/${selectedBrewery?._id}/categories`)
                       ? "fill-accent  text-accent"
                       : ""
                   }
@@ -697,13 +679,13 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
             </button>
             <button
               className={
-                isActive(`/breweries/${selectedBrewery?._id}/staff`)
+                isActive(`/dashboard/breweries/${selectedBrewery?._id}/staff`)
                   ? "active"
                   : ""
               }
             >
               <Link
-                href={`/breweries/${selectedBrewery?._id}/staff`}
+                href={`/dashboard/breweries/${selectedBrewery?._id}/staff`}
                 className="flex flex-col items-center text-xs"
                 data-tip="Brewery Staff Management"
               >
@@ -711,7 +693,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                   size={24}
                   strokeWidth={1}
                   className={
-                    isActive(`/breweries/${selectedBrewery?._id}/staff`)
+                    isActive(`/dashboard/breweries/${selectedBrewery?._id}/staff`)
                       ? "fill-accent  text-accent"
                       : ""
                   }

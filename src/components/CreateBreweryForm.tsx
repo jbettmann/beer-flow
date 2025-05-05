@@ -17,6 +17,7 @@ import SaveButton from "./Buttons/SaveButton";
 import { ImagePlus, X } from "lucide-react";
 import { useToast } from "@/context/toast";
 import { useBreweryContext } from "@/context/brewery-beer";
+import { User } from "next-auth";
 
 interface FormValues {
   companyName: string;
@@ -102,7 +103,7 @@ const CreateBreweryForm = ({ onClose }: Props) => {
 
         const newBrewery = {
           companyName: values.companyName,
-          image: companyImage,
+          image: companyImage ?? undefined,
         };
 
         const responseBrewery = (await createBrewery({
@@ -123,7 +124,9 @@ const CreateBreweryForm = ({ onClose }: Props) => {
             responseBrewery.savedBrewery._id
           );
           setSelectedBrewery(responseBrewery.savedBrewery);
-          router.push(`/breweries/${responseBrewery.savedBrewery._id}`);
+          router.push(
+            `/dashboard/breweries/${responseBrewery.savedBrewery._id}`
+          );
         } else {
           addToast(`Error creating brewery`, "error");
         }

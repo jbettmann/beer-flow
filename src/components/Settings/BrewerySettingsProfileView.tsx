@@ -1,5 +1,5 @@
 "use client";
-import { Users } from "@/app/types/users";
+import { Users } from "@/types/users";
 import { useBreweryContext } from "@/context/brewery-beer";
 import { useToast } from "@/context/toast";
 import deleteBrewery from "@/lib/DELETE/deleteBrewery";
@@ -30,10 +30,7 @@ const BrewerySettingsProfileView = ({ breweryId }: Props) => {
   const { addToast } = useToast();
   const { selectedBrewery, setSelectedBrewery } = useBreweryContext();
   const { data: brewery, error: breweryError } = useSWR(
-    [
-      `https://beer-bible-api.vercel.app/breweries/${breweryId}`,
-      session?.user.accessToken,
-    ],
+    [`https://beer-bible-api.vercel.app/breweries/${breweryId}`],
     getSingleBrewery
   );
 
@@ -55,7 +52,7 @@ const BrewerySettingsProfileView = ({ breweryId }: Props) => {
   // redirect to brewery staff page
   const handleStaffMemberClick = () => {
     setSelectedBrewery(brewery);
-    router.push(`/breweries/${breweryId}/staff`);
+    router.push(`/dashboard/breweries/${breweryId}/staff`);
   };
 
   // Deletes Brewery or Removes User Access from Brewery
@@ -107,20 +104,6 @@ const BrewerySettingsProfileView = ({ breweryId }: Props) => {
       setButtonLoading(null);
     }
   };
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 1024);
-    };
-
-    const debouncedResize = debounce(handleResize, 250); // 250ms delay
-
-    window.addEventListener("resize", debouncedResize);
-
-    return () => {
-      window.removeEventListener("resize", debouncedResize);
-    };
-  }, []);
 
   useEffect(() => {
     if (brewery) {

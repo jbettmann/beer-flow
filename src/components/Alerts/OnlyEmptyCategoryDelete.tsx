@@ -1,5 +1,5 @@
 "use client";
-import { Category } from "@/app/types/category";
+import { Category } from "@/types/category";
 import React, { useEffect, useRef, useState } from "react";
 import Modal from "../Modal";
 

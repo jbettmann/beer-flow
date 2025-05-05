@@ -10,7 +10,7 @@ import {
   X,
 } from "lucide-react";
 import { useBreweryContext } from "@/context/brewery-beer";
-import { Beer } from "@/app/types/beer";
+import { Beer } from "@/types/beer";
 import Link from "next/link";
 import { hopSuggestions, maltSuggestions } from "@/lib/suggestionsDB";
 
@@ -218,7 +218,7 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
                   saveSearchTerm(beer.name);
                   onClose();
                 }}
-                href={`/breweries/${selectedBrewery?._id}/beers/${beer._id}`}
+                href={`/dashboard/breweries/${selectedBrewery?._id}/beers/${beer._id}`}
                 className=" p-4 search-result__item "
               >
                 <div className="search-result__icon-name">

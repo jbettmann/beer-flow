@@ -1,6 +1,6 @@
 "use client";
-import { Beer } from "@/app/types/beer";
-import { Category } from "@/app/types/category";
+import { Beer } from "@/types/beer";
+import { Category } from "@/types/category";
 import updateCategory from "../PUT/updateCategory";
 
 type Props = {

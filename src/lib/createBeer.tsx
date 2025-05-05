@@ -1,46 +1,27 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { Beer, NewBeer } from "@/app/types/beer";
-import { Brewery, NewBrewery } from "@/app/types/brewery";
-import { getServerSession } from "next-auth/next";
+"use server";
 
-type pageProps = {
-  newBeer: NewBeer | any;
-  breweryId: string;
-  accessToken: string;
-};
+import { auth } from "@/auth";
+import { httpClient } from "@/services/utils/httpClient";
+import { Beer, NewBeer } from "@/types/beer";
 
-export default async function createBeer({
-  breweryId,
-  newBeer,
-  accessToken,
-}: pageProps) {
-  if (accessToken) {
-    try {
-      const response = await fetch(
-        `https://beer-bible-api.vercel.app/breweries/${breweryId}/beers`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify(newBeer),
-        }
-      );
-
-      if (!response.ok) {
-        // Read the response body which contains the error message
-        const errorBody = await response.text();
-        throw new Error(errorBody);
+export default async function createBeer(newBeer: NewBeer) {
+  const session = await auth();
+  const { accessToken, selectedBreweryId } = session?.user || {};
+  try {
+    const response = await httpClient.post(
+      `/breweries/${selectedBreweryId}/beers`,
+      newBeer,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       }
+    );
 
-      const responseData: Beer = await response.json();
-      return responseData;
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
-  } else {
-    throw new Error("User session not found.");
+    const responseData: Beer = await response;
+    return responseData;
+  } catch (err) {
+    console.error(err);
+    throw err;
   }
 }

@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
-import { Tag, WithContext as Tags } from "react-tag-input";
+import { WithContext as Tags } from "react-tag-input";
 import { FormValues } from "../CreateBeerForm/types";
+import { Tag } from "react-tag-input/types/components/SingleTag";
 
 interface Suggestions {
   name: string;
@@ -14,10 +15,6 @@ type Props = {
   tags: Tag[];
   suggestions: Suggestions[] | null;
 };
-
-interface ExtendedTagProps extends Tags {
-  onTagUpdate?: (i: number, newTag: Tag) => void;
-}
 
 const TagInput = ({
   valueInput,

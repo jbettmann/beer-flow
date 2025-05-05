@@ -1,43 +1,41 @@
-import { Brewery, NewBrewery } from "@/app/types/brewery";
-import { Category, NewCategory } from "@/app/types/category";
+"use server";
+import { auth } from "@/auth";
+import { Brewery, NewBrewery } from "@/types/brewery";
+import { Category, NewCategory } from "@/types/category";
 
 type pageProps = {
   newCategory: NewCategory;
   breweryId: string | undefined;
-  accessToken: string | undefined;
 };
 
 export default async function createCategory({
   newCategory,
   breweryId,
-  accessToken,
 }: pageProps) {
-  if (accessToken) {
-    try {
-      const response = await fetch(
-        `https://beer-bible-api.vercel.app/breweries/${breweryId}/categories`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify(newCategory),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(response.statusText);
+  const session = await auth();
+  const { accessToken } = session?.user || {};
+  try {
+    const response = await fetch(
+      `https://beer-bible-api.vercel.app/breweries/${breweryId}/categories`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(newCategory),
       }
+    );
 
-      const responseData: Category = await response.json();
-
-      return responseData;
-    } catch (err) {
-      console.error(err);
-      throw err;
+    if (!response.ok) {
+      throw new Error(response.statusText);
     }
-  } else {
-    throw new Error("User session not found.");
+
+    const responseData: Category = await response.json();
+
+    return responseData;
+  } catch (err) {
+    console.error(err);
+    throw err;
   }
 }

@@ -1,17 +1,12 @@
-import axios from "axios";
-import React from "react";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { Users } from "@/app/types/users";
-import { Session } from "next-auth";
+import { auth } from "@/auth";
 
 export default async function getBreweries() {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
 
   if (session?.user) {
     try {
       const response = await fetch(
-        `https://beer-bible-api.vercel.app/users/breweries`,
+        process.env.NEXT_PUBLIC_API_URL + `/users/breweries`,
         {
           method: "POST",
           headers: {

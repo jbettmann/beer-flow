@@ -32,7 +32,7 @@ const LoginPage = () => {
       if (provider === "google") {
         setIsGoogleLoading(true);
         const login = await signIn("google", {
-          callbackUrl: acceptInviteUrl || "/breweries",
+          callbackUrl: acceptInviteUrl || "/dashboard/overview",
         });
         if (!login?.ok) {
           setLoginError(login?.error?.split(":")[1]);
@@ -56,7 +56,7 @@ const LoginPage = () => {
             email: email,
             password: password,
             redirect: false,
-            callbackUrl: "/breweries",
+            callbackUrl: "/dashboard/overview",
           });
           // Manually revalidate session to get Nav Bar to show
           sessionStorage.setItem("credentialsLogin", "true");
@@ -82,7 +82,7 @@ const LoginPage = () => {
   }, []);
 
   if (session) {
-    redirect("/breweries");
+    redirect("/dashboard/overview");
   }
 
   return (

@@ -1,5 +1,5 @@
-import { Brewery } from "@/app/types/brewery";
-import { Users } from "@/app/types/users";
+import { Brewery } from "@/types/brewery";
+import { Users } from "@/types/users";
 import ImageDisplay from "@/components/ImageDisplay/ImageDisplay";
 import { getInitials } from "@/lib/utils";
 import { ChevronRight } from "lucide-react";
@@ -17,8 +17,8 @@ const BrewerySettingsList = ({ brewery, session }: Props) => {
   const role = owner
     ? "Owner"
     : adminIds.has(session?.user.id)
-    ? "Admin"
-    : "Crew";
+      ? "Admin"
+      : "Crew";
   return (
     <Link
       href={`/settings/breweries/${brewery._id}`}

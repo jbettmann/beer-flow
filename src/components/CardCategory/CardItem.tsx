@@ -1,6 +1,6 @@
 "use client";
-import { Beer } from "@/app/types/beer";
-import { Category } from "@/app/types/category";
+import { Beer } from "@/types/beer";
+import { Category } from "@/types/category";
 import { Beer as BeerMug, Check, Flame, LogIn, Scissors } from "lucide-react";
 import { useEffect, useState } from "react";
 import AlertDialog from "../Alerts/AlertDialog";
@@ -14,7 +14,7 @@ import updateBeerCategory from "@/lib/PUT/updateBeerCategory";
 import useSWR from "swr";
 import getBreweryBeers from "@/lib/getBreweryBeers";
 import getSingleBrewery from "@/lib/getSingleBrewery";
-import { Brewery } from "@/app/types/brewery";
+import { Brewery } from "@/types/brewery";
 
 type Props = {
   category: Category;
@@ -52,10 +52,7 @@ const CardItem = ({ category, beer, handleCheckbox, isChecked }: Props) => {
   );
 
   const { mutate: mutateBrewery } = useSWR(
-    [
-      `https://beer-bible-api.vercel.app/breweries/${selectedBrewery?._id}`,
-      session?.user.accessToken,
-    ],
+    [`https://beer-bible-api.vercel.app/breweries/${selectedBrewery?._id}`],
     getSingleBrewery
   );
 
@@ -79,10 +76,8 @@ const CardItem = ({ category, beer, handleCheckbox, isChecked }: Props) => {
         });
 
         if (updateBeer) {
-          // // Update the client state
           setSelectedBeers((prevSelectedBeers) => {
             if (!prevSelectedBeers) return null;
-            // Iterate over the previous selected beers and create a new array
 
             return prevSelectedBeers.map((b: Beer) => {
               if (b._id === updateBeer._id) {
@@ -147,18 +142,16 @@ const CardItem = ({ category, beer, handleCheckbox, isChecked }: Props) => {
         });
 
         // NEED updatedBeers to return the updated beers with the new category
-        // If there are new categories, update the selectedBrewery
         if (newCategories.length > 0) {
           setSelectedBrewery((prevBrewery) => {
             if (!prevBrewery) return null;
+
             return {
               ...prevBrewery,
-              categories: [
-                ...(prevBrewery?.categories || []),
-                ...newCategories,
-              ],
+              categories: [...(prevBrewery.categories || []), ...newCategories],
             };
           });
+
           // Update cache
           mutateBrewery((prevBrewery: Brewery) => {
             if (!prevBrewery) return null;
@@ -173,7 +166,7 @@ const CardItem = ({ category, beer, handleCheckbox, isChecked }: Props) => {
         }
         if (movedBeer) {
           // Update the client state with the newly updated beers
-          setSelectedBeers((prevSelectedBeers: any) => {
+          setSelectedBeers((prevSelectedBeers) => {
             if (!prevSelectedBeers) return null;
 
             return prevSelectedBeers.map((b: Beer) => {

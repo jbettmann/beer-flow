@@ -1,5 +1,5 @@
 "use client";
-import { Brewery } from "@/app/types/brewery";
+import { Brewery } from "@/types/brewery";
 import { debounce } from "@/lib/utils";
 import { Plus, Router } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -9,13 +9,16 @@ import EditModal from "../Alerts/EditModal";
 import SetBreweryIdStorage from "../Buttons/SetBreweryIdStorage";
 import CreateBreweryForm from "../CreateBreweryForm";
 import BottomDrawer from "../Drawers/BottomDrawer";
+import { useBreweryContext } from "@/context/brewery-beer";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { toast } from "sonner";
 
 type Props = {
   breweries: Brewery[];
 };
 
 const Breweries = ({ breweries }: Props) => {
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const isMobile = useIsMobile();
   const [isCreateBrewery, setIsCreateBrewery] = useState<boolean>(false);
 
   const router = useRouter();
@@ -26,20 +29,6 @@ const Breweries = ({ breweries }: Props) => {
       sessionStorage.removeItem("credentialsLogin");
       router.refresh();
     }
-  }, []);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 1024);
-    };
-
-    const debouncedResize = debounce(handleResize, 250); // 250ms delay
-
-    window.addEventListener("resize", debouncedResize);
-
-    return () => {
-      window.removeEventListener("resize", debouncedResize);
-    };
   }, []);
 
   return (
@@ -68,7 +57,7 @@ const Breweries = ({ breweries }: Props) => {
                 >
                   <SetBreweryIdStorage
                     brewery={brewery}
-                    href={`/breweries/${brewery._id}`}
+                    href={`/dashboard/breweries/${brewery._id}`}
                   />
                 </div>
               </>

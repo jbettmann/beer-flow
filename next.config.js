@@ -3,25 +3,33 @@ const nextConfig = {
   experiments: {
     topLevelAwait: true,
     appDir: true,
+    serverActions: true,
   },
   images: {
-    domains: ["lh3.googleusercontent.com"],
+    domains: ["lh3.googleusercontent.com", "api.slingacademy.com"],
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "npaxzbaiagyllapbxeps.supabase.co",
+        hostname: "omlnjbcckhowlpkhorry.supabase.co",
         port: "",
         pathname: "/storage/**",
       },
+
+      {
+        protocol: "https",
+        hostname: "api.slingacademy.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
+    loader: "custom",
+    loaderFile: "./src/components/supabase-image-loader.ts",
   },
 };
 
 module.exports = {
   ...nextConfig,
-  experimental: {
-    serverActions: true,
-  },
+
   env: {
     GITHUB_ID: process.env.GITHUB_ID,
     GITHUB_SECRET: process.env.GITHUB_SECRET,

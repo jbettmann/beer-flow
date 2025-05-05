@@ -1,16 +1,17 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { Brewery } from "@/app/types/brewery";
+import { Brewery } from "@/types/brewery";
 import getBreweries from "@/lib/getBreweries";
-import { getServerSession } from "next-auth/next";
+import { auth } from "@/auth";
 import Image from "next/image";
 
 import BrewerySettingsList from "@/components/Settings/BrewerySettingsList";
 import { getInitials } from "@/lib/utils";
+import { S } from "@upstash/redis/zmscore-Dc6Llqgr";
+import { Session } from "next-auth";
 
 type Props = {};
 
 const ActualProfilePage = async (props: Props) => {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   const breweries = await getBreweries();
 
   const constructUserName = (name: string) => {
@@ -55,7 +56,7 @@ const ActualProfilePage = async (props: Props) => {
           <BrewerySettingsList
             key={brewery._id}
             brewery={brewery}
-            session={session}
+            session={session as Session}
           />
         ))}
       </div>

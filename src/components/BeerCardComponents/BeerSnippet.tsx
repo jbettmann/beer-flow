@@ -1,9 +1,8 @@
-import Link from "next/link";
-import React from "react";
-import ImageDisplay from "../ImageDisplay/ImageDisplay";
-import { ChevronRight, Sparkles } from "lucide-react";
 import { handleBeerView, isNew } from "@/lib/utils";
-import { Beer } from "@/app/types/beer";
+import { Beer } from "@/types/beer";
+import { ChevronRight, Sparkles } from "lucide-react";
+import Link from "next/link";
+import ImageDisplay from "../ImageDisplay/ImageDisplay";
 
 type Props = {
   beer: Beer;
@@ -46,7 +45,7 @@ const BeerSnippet = ({
       {/* Desktop modal page  */}
       <Link
         className="hidden md:flex items-center justify-between"
-        href={`/breweries/${breweryId}/beers/${beer._id}`}
+        href={`/dashboard/breweries/${breweryId}/beers/${beer._id}`}
         key={beer._id}
         onClick={(e) => {
           e.stopPropagation();

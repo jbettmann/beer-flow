@@ -1,6 +1,7 @@
 "use client";
+import { getImagePublicURL } from "@/lib/supabase/getImage";
 import DefaultBeerImage from "../../assets/img/beer.png";
-import { getImagePublicURL } from "@/lib/utils";
+
 import Image, { StaticImageData } from "next/image";
 import { useEffect, useState } from "react";
 
@@ -12,7 +13,7 @@ const ImageDisplay = ({
   className: string;
 }) => {
   const [imageUrl, setImageUrl] = useState<string | null | StaticImageData>(
-    null
+    item.image ? item.image : null
   );
 
   useEffect(() => {
@@ -20,10 +21,7 @@ const ImageDisplay = ({
       if (item.image === null || undefined) {
         setImageUrl(DefaultBeerImage);
       } else {
-        const url = getImagePublicURL(item.image);
-        if (url) {
-          setImageUrl(url);
-        }
+        setImageUrl(item.image);
       }
     }
 

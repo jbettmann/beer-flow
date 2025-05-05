@@ -1,7 +1,6 @@
 import dbConnect from "@/lib/db";
 import { signJwtAccessToken } from "@/lib/jwt";
-
-import * as bcyrpt from "bcrypt";
+import * as bcyrpt from "bcryptjs";
 import User from "../../../../models/user";
 
 interface RequestBody {
@@ -48,3 +47,6 @@ export async function POST(req: Request, res: Response) {
     return new Error(JSON.stringify(error));
   }
 }
+export const config = {
+  runtime: "nodejs", // ✅ Forces Node.js runtime
+};

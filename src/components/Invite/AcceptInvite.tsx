@@ -1,5 +1,5 @@
 "use client";
-import { Brewery } from "@/app/types/brewery";
+import { Brewery } from "@/types/brewery";
 import { useBreweryContext } from "@/context/brewery-beer";
 import { useToast } from "@/context/toast";
 import { acceptInvite } from "@/lib/POST/acceptInvite";
@@ -85,7 +85,7 @@ const AcceptInvite = (props: Props) => {
           await update({ newBreweryId: response.brewery._id });
           handleBreweryToStorage(response.brewery);
 
-          router.push(`/breweries/${response.brewery._id}`);
+          router.push(`/dashboard/breweries/${response.brewery._id}`);
         }
       } else {
         addToast("Unable to process invite. Please try again later", "error");

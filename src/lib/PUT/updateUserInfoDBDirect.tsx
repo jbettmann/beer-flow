@@ -1,6 +1,6 @@
 import dbConnect from "@/lib/db";
 import User from "../../../models/user";
-import { Users } from "@/app/types/users";
+import { Users } from "@/types/users";
 
 type Props = {
   userId: string | number;

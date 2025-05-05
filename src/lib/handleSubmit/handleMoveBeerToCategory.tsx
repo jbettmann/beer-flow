@@ -1,4 +1,4 @@
-import { Brewery } from "@/app/types/brewery";
+import { Brewery } from "@/types/brewery";
 import { FormValues } from "@/components/CreateBeerForm/types";
 import updateBeer from "../PUT/updateBeer";
 import createCategory from "../createCategory";
@@ -45,7 +45,6 @@ const handleMoveBeerToCategory = async ({
         const createdCategory = await createCategory({
           newCategory,
           breweryId: brewery?._id,
-          accessToken,
         });
         if (!createdCategory._id) {
           throw new Error(`Category creation failed for: ${categoryName}`);

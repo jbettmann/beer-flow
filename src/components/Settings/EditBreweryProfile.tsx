@@ -1,18 +1,21 @@
-import { Brewery } from "@/app/types/brewery";
-import { Save, X } from "lucide-react";
-import React, { use, useEffect, useState } from "react";
-import ImageDisplay from "../ImageDisplay/ImageDisplay";
-import { getInitials } from "@/lib/utils";
-import { updateImage } from "@/lib/supabase/updateImage";
-import Image from "next/image";
-import updateBreweryInfo from "@/lib/PUT/updateBreweryInfo";
-import { useSession } from "next-auth/react";
-import { useToast } from "@/context/toast";
+"use client";
+import { Brewery } from "@/types/brewery";
 import { useBreweryContext } from "@/context/brewery-beer";
-import { set } from "mongoose";
-import SaveButton from "../Buttons/SaveButton";
-import useSWR from "swr";
+import { useToast } from "@/context/toast";
 import getSingleBrewery from "@/lib/getSingleBrewery";
+import updateBreweryInfo from "@/lib/PUT/updateBreweryInfo";
+import { updateImage } from "@/lib/supabase/updateImage";
+import { getInitials } from "@/lib/utils";
+import { X } from "lucide-react";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import useSWR from "swr";
+import SaveButton from "../Buttons/SaveButton";
+import ImageDisplay from "../ImageDisplay/ImageDisplay";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 
 type Props = {
   brewery: Brewery;
@@ -24,6 +27,7 @@ const EditBreweryProfile = ({ brewery, onClose }: Props) => {
   const { addToast } = useToast();
   const { setSelectedBrewery } = useBreweryContext();
   const [isLoading, setIsLoading] = useState(false);
+  const [imageUploaded, setImageUploaded] = useState<File | null>(null);
   const [editBrewery, setEditBrewery] = useState(brewery || {});
   const [companyName, setCompanyName] = useState(brewery.companyName || "");
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -31,10 +35,7 @@ const EditBreweryProfile = ({ brewery, onClose }: Props) => {
   const [nameError, setNameError] = useState<string | null>(null);
 
   const { mutate } = useSWR(
-    [
-      `https://beer-bible-api.vercel.app/breweries/${brewery._id}`,
-      session?.user.accessToken,
-    ],
+    [`https://beer-bible-api.vercel.app/breweries/${brewery._id}`],
     getSingleBrewery
   );
 
@@ -49,8 +50,24 @@ const EditBreweryProfile = ({ brewery, onClose }: Props) => {
   const onDismiss = () => {
     setNameError(null);
     setHasEdited(false);
-
+    setImageUploaded(null);
     onClose();
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      console.log("file exisit");
+      setHasEdited(true);
+      console.log("has changed set");
+      // Create temporary preview URL
+      const previewUrl = URL.createObjectURL(file);
+      setPreviewImage(previewUrl);
+
+      // Update state with FILE object
+      setImageUploaded(file);
+      console.log("setImageUploaded", file);
+    }
   };
 
   const handleSave = async () => {
@@ -58,12 +75,9 @@ const EditBreweryProfile = ({ brewery, onClose }: Props) => {
 
     let hasUpdates = false; // Flag to check if there are any updates
     let updatedBrewery: Brewery | null = { ...editBrewery };
-
-    if (brewery?.image !== editBrewery.image) {
-      const newLogo = await updateImage(
-        brewery.image,
-        editBrewery.image as any
-      );
+    console.log("editBrewery", editBrewery, "imageUploaded", imageUploaded);
+    if (imageUploaded) {
+      const newLogo = await updateImage(brewery.image, imageUploaded as any);
       updatedBrewery.image = newLogo as any;
       hasUpdates = true;
     }
@@ -83,7 +97,7 @@ const EditBreweryProfile = ({ brewery, onClose }: Props) => {
     try {
       const savedBreweryInfo = await updateBreweryInfo({
         breweryId: brewery._id,
-        updatedBrewery: updatedBrewery,
+        updatedBrewery,
         accessToken: session?.user.accessToken,
       });
       if (savedBreweryInfo) {
@@ -111,20 +125,19 @@ const EditBreweryProfile = ({ brewery, onClose }: Props) => {
   return (
     <div className="flex flex-col justify-center items-center z-50 text-background my-auto ">
       <div className="flex w-full h-full justify-between items-center p-3 pb-0 sticky top-[-2px] bg-primary lg:hidden">
-        <button
+        <Button
+          variant="ghost"
           onClick={() => {
             onDismiss();
             setCompanyName(brewery.companyName || "");
           }}
-          className="btn btn-ghost bg-transparent text-background"
           type="button"
         >
           <X size={24} />
-        </button>
+        </Button>
         <h4>Edit Brewery Profile</h4>
         <SaveButton
           onClick={handleSave}
-          className="ghost "
           isLoading={isLoading}
           disabled={!hasEdited}
         />
@@ -157,47 +170,28 @@ const EditBreweryProfile = ({ brewery, onClose }: Props) => {
               />
             )}
           </div>
+          <Label htmlFor="fileUpload">
+            <Button
+              variant="outline"
+              className="text-sm hover:underline hover:cursor-pointer pt-3"
+              asChild
+            >
+              <span>Change Logo</span>
+            </Button>
+          </Label>
 
-          <label
-            htmlFor="fileUpload"
-            className="text-sm hover:underline hover:cursor-pointer pt-3"
-          >
-            Change Logo
-          </label>
-          <input
+          <Input
             type="file"
             id="fileUpload"
+            accept="image/*"
             className="hidden"
-            onChange={(e) => {
-              const file = e.target.files ? e.target.files[0] : null;
-              if (file && file.size > 5 * 1024 * 1024) {
-                // Check if file size is greater than 2MB
-                addToast(
-                  "File is too large. Please select a file less than 5MB.",
-                  "error"
-                );
-
-                e.target.value = ""; // Clear the selected file
-              } else {
-                setEditBrewery({
-                  ...editBrewery,
-                  image: file as any,
-                });
-                if (previewImage) {
-                  URL.revokeObjectURL(previewImage);
-                }
-                // Generate a URL for the new image and set it as the preview
-                const url = URL.createObjectURL(file as File);
-                setPreviewImage(url);
-              }
-            }}
+            onChange={(e) => handleImageChange(e)}
           />
         </div>
         <div className="text-center mt-10 w-full sm:w-1/2 lg:w-full">
-          <input
-            type="text"
-            id="fileUpload"
-            className="form__input w-full !font-bold !text-2xl text-primary text-center focus:outline-none  "
+          <Input
+            id="companyName"
+            className="w-full font-bold text-2xl text-primary text-center focus-visible:ring-transparent border-none"
             value={companyName}
             onChange={(e) => {
               setHasEdited(true);
@@ -213,8 +207,8 @@ const EditBreweryProfile = ({ brewery, onClose }: Props) => {
       </div>
       <div className="flex justify-between w-2/3 p-3 lg:mt-2 ">
         <div className=" hidden lg:flex justify-between items-center w-full">
-          <button
-            className="btn border-none bg-transparent hover:bg-background hover:text-primary text-background"
+          <Button
+            variant="ghost"
             onClick={() => {
               onDismiss();
               setCompanyName(brewery.companyName || "");
@@ -222,13 +216,13 @@ const EditBreweryProfile = ({ brewery, onClose }: Props) => {
             type="button"
           >
             Cancel
-          </button>
+          </Button>
 
           <SaveButton
             isLoading={isLoading}
             type="submit"
             onClick={handleSave}
-            className=" ml-2 inverse"
+            className=" ml-2 "
             disabled={!hasEdited}
           />
         </div>

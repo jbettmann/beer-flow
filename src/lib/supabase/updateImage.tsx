@@ -18,7 +18,7 @@ export const updateImage = async (prevImage: string, newImage: File) => {
   }
 
   const { data, error } = await supabase.storage
-    .from("Images")
+    .from("Brett_bucket")
     .remove([prevImage]);
 
   if (error) {
