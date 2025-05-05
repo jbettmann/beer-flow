@@ -28,7 +28,7 @@ const Invite = ({ invitee, handleChange, className, error }: Props) => {
           }}
         />
         {error && (
-          <p className="error m-0 absolute ml-4 mt-1 !text-xs">{error}</p>
+          <p className="error m-0 absolute ml-4 mt-1 text-xs!">{error}</p>
         )}
       </div>
       <div className="flex-none px-1 xxs:px-3 text-center ">

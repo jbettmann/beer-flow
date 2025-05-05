@@ -215,7 +215,7 @@ const StaffMemberRow = ({
           </div>
         </td>
 
-        <td className="z-[1]">
+        <td className="z-1">
           {isEdit ? (
             <div className="form-control flex flex-col justify-center">
               <div className="label-text ml-1">Admin</div>
@@ -238,8 +238,8 @@ const StaffMemberRow = ({
           )}
         </td>
         {/* If owner, skull */}
-        <td className=" z-[2]">
-          <div className="flex items-center justify-end  z-[2]">
+        <td className=" z-2">
+          <div className="flex items-center justify-end  z-2">
             {role === "Owner" ? (
               <div
                 className="btn btn-circle btn-ghost "
@@ -253,7 +253,7 @@ const StaffMemberRow = ({
               // If not owner, edit and delete
               <>
                 {isEdit ? (
-                  <div className="flex gap-3 px-4  z-[2]">
+                  <div className="flex gap-3 px-4  z-2">
                     <button
                       className="btn btn-ghost text-primary " // Made the button more visible
                       onClick={handleCancelEdit}

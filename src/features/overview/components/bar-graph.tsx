@@ -119,15 +119,15 @@ const chartConfig = {
   },
   desktop: {
     label: "Desktop",
-    color: "hsl(var(--chart-1))",
+    color: "var(--primary)",
   },
   mobile: {
     label: "Mobile",
-    color: "hsl(var(--chart-2))",
+    color: "var(--primary)",
   },
   error: {
     label: "Error",
-    color: "hsl(var(--chart-2))",
+    color: "var(--primary)",
   },
 } satisfies ChartConfig;
 
@@ -140,7 +140,7 @@ export function BarGraph() {
       desktop: chartData.reduce((acc, curr) => acc + curr.desktop, 0),
       mobile: chartData.reduce((acc, curr) => acc + curr.mobile, 0),
     }),
-    [activeChart]
+    []
   );
 
   const [isClient, setIsClient] = React.useState(false);
@@ -160,12 +160,15 @@ export function BarGraph() {
   }
 
   return (
-    <Card>
-      <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
-        <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
+    <Card className="@container/card !pt-3">
+      <CardHeader className="flex flex-col items-stretch space-y-0 border-b !p-0 sm:flex-row">
+        <div className="flex flex-1 flex-col justify-center gap-1 px-6 !py-0">
           <CardTitle>Bar Chart - Interactive</CardTitle>
           <CardDescription>
-            Showing total visitors for the last 3 months
+            <span className="hidden @[540px]/card:block">
+              Total for the last 3 months
+            </span>
+            <span className="@[540px]/card:hidden">Last 3 months</span>
           </CardDescription>
         </div>
         <div className="flex">
@@ -176,13 +179,13 @@ export function BarGraph() {
               <button
                 key={chart}
                 data-active={activeChart === chart}
-                className="relative flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
+                className="data-[active=true]:bg-primary/5 hover:bg-primary/5 relative flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left transition-colors duration-200 even:border-l sm:border-t-0 sm:border-l sm:px-8 sm:py-6"
                 onClick={() => setActiveChart(chart)}
               >
-                <span className="text-xs text-muted-foreground">
+                <span className="text-muted-foreground text-xs">
                   {chartConfig[chart].label}
                 </span>
-                <span className="text-lg font-bold leading-none sm:text-3xl">
+                <span className="text-lg leading-none font-bold sm:text-3xl">
                   {total[key as keyof typeof total]?.toLocaleString()}
                 </span>
               </button>
@@ -190,16 +193,32 @@ export function BarGraph() {
           })}
         </div>
       </CardHeader>
-      <CardContent className="px-2 sm:p-6">
-        <ChartContainer config={chartConfig} className=" h-[280px] w-full">
+      <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+        <ChartContainer
+          config={chartConfig}
+          className="aspect-auto h-[250px] w-full"
+        >
           <BarChart
-            accessibilityLayer
             data={chartData}
             margin={{
               left: 12,
               right: 12,
             }}
           >
+            <defs>
+              <linearGradient id="fillBar" x1="0" y1="0" x2="0" y2="1">
+                <stop
+                  offset="0%"
+                  stopColor="var(--primary)"
+                  stopOpacity={0.8}
+                />
+                <stop
+                  offset="100%"
+                  stopColor="var(--primary)"
+                  stopOpacity={0.2}
+                />
+              </linearGradient>
+            </defs>
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey="date"
@@ -216,6 +235,7 @@ export function BarGraph() {
               }}
             />
             <ChartTooltip
+              cursor={{ fill: "var(--primary)", opacity: 0.1 }}
               content={
                 <ChartTooltipContent
                   className="w-[150px]"
@@ -230,7 +250,11 @@ export function BarGraph() {
                 />
               }
             />
-            <Bar dataKey={activeChart} fill={`var(--color-${activeChart})`} />
+            <Bar
+              dataKey={activeChart}
+              fill="url(#fillBar)"
+              radius={[4, 4, 0, 0]}
+            />
           </BarChart>
         </ChartContainer>
       </CardContent>

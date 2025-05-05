@@ -27,7 +27,7 @@ const OptionsButton = ({ handleOptions, className, options }: Props) => {
 
       <ul
         tabIndex={0}
-        className="menu menu-sm dropdown-content z-[1] p-2 shadow rounded-box w-[5.25rem] text-center  flex items-center justify-center bg-white text-primary"
+        className="menu menu-sm dropdown-content z-1 p-2 shadow rounded-box w-[5.25rem] text-center  flex items-center justify-center bg-white text-primary"
       >
         {options.map((option, index) =>
           option.name === "Edit Name" ? (

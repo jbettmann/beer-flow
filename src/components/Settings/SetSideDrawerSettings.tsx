@@ -47,7 +47,7 @@ const SetSideDrawerSettings = ({ children }: Props) => {
           <HelpCircle size={24} />
         </Link>
       </div>
-      <div className="divider !m-0"></div>
+      <div className="divider m-0!"></div>
       <div className="bg-background h-full overflow-y-auto pt-10 px-4 ">
         {children}
       </div>

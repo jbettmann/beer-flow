@@ -24,7 +24,7 @@ const CreateNewCategoryRow = ({
   return (
     <tr className={"new-category relative "}>
       <th className="rounded-l-lg"></th>
-      <td className="!py-6 ">
+      <td className="py-6! ">
         <div className="flex items-center space-x-3  ">
           <label className=" ">
             <LayoutGrid size={28} strokeWidth={1} />
@@ -46,7 +46,7 @@ const CreateNewCategoryRow = ({
       <td></td>
 
       <td></td>
-      <th className="flex gap-3 !py-6 absolute top-0 right-0 rounded-r-lg">
+      <th className="flex gap-3 py-6! absolute top-0 right-0 rounded-r-lg">
         <button
           className="btn btn-ghost text-primary " // Made the button more visible
           onClick={() => setCreateNewCategory(false)}

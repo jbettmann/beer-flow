@@ -30,7 +30,7 @@ const SetBreweryIdStorage = ({ href, brewery }: Props) => {
         <ImageDisplay item={brewery} className="logo w-12 h-12" />
       ) : (
         brewery?.companyName && (
-          <div className=" logo__default !p-3 ">
+          <div className=" logo__default p-3! ">
             {getInitials(brewery.companyName || "")}
           </div>
         )

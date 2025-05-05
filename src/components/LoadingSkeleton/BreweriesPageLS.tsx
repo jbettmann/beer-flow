@@ -28,7 +28,7 @@ const BreweriesPageLS = (props: Props) => {
             </div>
           ))}
         </div>
-        <div className="fixed right-5 bottom-10 p-1 z-[2] lg:hidden ">
+        <div className="fixed right-5 bottom-10 p-1 z-2 lg:hidden ">
           {/* Floating Button Skeleton */}
           <div className="h-12 w-12 bg-gray-300 animate-pulse rounded-full"></div>
         </div>

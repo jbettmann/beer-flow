@@ -4,9 +4,10 @@ import { cn } from "@/lib/utils";
 import { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import localFont from "next/font/local";
-import { Toaster } from "sonner";
 import "./globals.css";
 import "./theme.css";
+import { Toaster } from "sonner";
+import { cookies } from "next/headers";
 const myFont = localFont({
   src: [
     { path: "../assets/fonts/SF-Pro.ttf", weight: "normal", style: "normal" },
@@ -42,7 +43,7 @@ export default async function Layout(props: {
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          "bg-red-500 overflow-hidden",
+          "bg-background overflow-hidden",
           `${myFont.variable} ${inter.className}`
         )}
       >

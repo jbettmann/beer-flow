@@ -185,7 +185,7 @@ export default function ProductTableAction({
       {/* Small Screen New Beer Button */}
       {isAdmin && isMobile && (
         //  Small Screen New Beer Button
-        <div className="fixed right-5 bottom-10 p-1 z-[2] lg:hidden ">
+        <div className="fixed right-5 bottom-10 p-1 z-2 lg:hidden ">
           <Link
             href={`/dashboard/breweries/${selectedBrewery?._id}/beers/create`}
             className={cn(

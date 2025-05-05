@@ -142,7 +142,7 @@ const LoginPage = () => {
           <form>
             <div className="flex flex-col">
               <label
-                className="beer-card__label-text !text-primary"
+                className="beer-card__label-text text-primary!"
                 htmlFor="email"
               >
                 Email
@@ -159,7 +159,7 @@ const LoginPage = () => {
             </div>
             <div className="flex flex-col">
               <label
-                className="beer-card__label-text !text-primary"
+                className="beer-card__label-text text-primary!"
                 htmlFor="password"
               >
                 Password
@@ -181,7 +181,7 @@ const LoginPage = () => {
           <SaveButton
             isLoading={isCreateLoading}
             title="Log in"
-            className="create-btn !bg-accent !text-primary my-6 w-full "
+            className="create-btn bg-accent! text-primary! my-6 w-full "
             onClick={(e) => onSignIn(e, "credentials")}
           />
           <div className="text-sm inline-flex gap-2 justify-center w-full">

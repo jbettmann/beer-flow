@@ -19,8 +19,6 @@ interface BeerViewDialogProps {
 }
 
 export function BeerDialogWrapper({ beer, children }: BeerViewDialogProps) {
-  const [viewMore, setViewMore] = useState("");
-
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -28,7 +26,10 @@ export function BeerDialogWrapper({ beer, children }: BeerViewDialogProps) {
         <DialogHeader>
           <DialogTitle>{beer.name}</DialogTitle>
         </DialogHeader>
-        <BeerCard beer={beer} cardClassName={"border-none h-full w-full"} />
+        <BeerCard
+          beer={beer}
+          cardClassName={"border-none h-full w-full bg-background"}
+        />
         <DialogFooter className="sm:justify-start">
           <DialogClose asChild>
             <Button type="button" variant="secondary">

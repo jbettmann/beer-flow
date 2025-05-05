@@ -214,7 +214,7 @@ const StaffMemberCard = ({
             <span
               className={`${
                 isEdit
-                  ? "flex justify-center items-center gap-2 z-[1]"
+                  ? "flex justify-center items-center gap-2 z-1"
                   : "badge font-normal"
               }`}
             >
@@ -272,7 +272,7 @@ const StaffMemberCard = ({
       </div>
 
       {/* If owner, skull */}
-      <div className="absolute top-0 right-0 z-[1] flex flex-col justify-between">
+      <div className="absolute top-0 right-0 z-1 flex flex-col justify-between">
         {isChecked && role === "Owner" ? (
           <div
             className="btn btn-circle btn-ghost"

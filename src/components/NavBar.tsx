@@ -137,7 +137,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                 <ImageDisplay item={selectedBrewery} className="logo w-8 h-8" />
               ) : (
                 selectedBrewery?.companyName && (
-                  <div className=" logo__default !text-base ">
+                  <div className=" logo__default text-base! ">
                     {getInitials(selectedBrewery.companyName || "")}
                   </div>
                 )
@@ -167,7 +167,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                   <h4 className=" ">Breweries</h4>
                 </Link>
 
-                <ul className="w-full menu !flex-nowrap  h-full gap-3 overflow-y-scroll">
+                <ul className="w-full menu flex-nowrap!  h-full gap-3 overflow-y-scroll">
                   {breweries?.map((brewery: Brewery) => (
                     <li
                       key={brewery._id}
@@ -185,7 +185,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                             className="logo w-10 h-10"
                           />
                         ) : (
-                          <div className="logo__default !p-2 !text-base">
+                          <div className="logo__default p-2! text-base!">
                             {getInitials(brewery?.companyName)}
                           </div>
                         )}
@@ -200,7 +200,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
               {isAdmin && (
                 <>
                   <div className="flex flex-col justify-center  menu">
-                    <div className="divider-horizontal border !border-background/20 w-full !ml-0"></div>
+                    <div className="divider-horizontal border border-background/20! w-full ml-0!"></div>
                     <div
                       className="opacity-80 flex flex-row items-center  p-3 pb-0"
                       data-tip={`${selectedBrewery?.companyName} Management`}
@@ -210,11 +210,11 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                         ? selectedBrewery.image && (
                             <ImageDisplay
                               item={selectedBrewery}
-                              className="logo !w-6 !h-6"
+                              className="logo w-6! h-6!"
                             />
                           )
                         : selectedBrewery?.companyName && (
-                            <div className="logo__default !text-base">
+                            <div className="logo__default text-base!">
                               {getInitials(
                                 selectedBrewery?.companyName as string
                               )}
@@ -247,7 +247,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
               )}
 
               <div className="flex flex-col justify-center ">
-                <div className="divider-horizontal border !border-background/20 w-full !ml-0"></div>
+                <div className="divider-horizontal border border-background/20! w-full ml-0!"></div>
                 <div className="flex flex-col justify-center  p-3 menu">
                   <li onClick={closeDrawer}>
                     <Link
@@ -263,7 +263,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                           height={50}
                         />
                       ) : (
-                        <div className=" logo__default !text-base ">
+                        <div className=" logo__default text-base! ">
                           {getInitials(user.name || user.fullName)}
                         </div>
                       )}
@@ -320,7 +320,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
         </div>
 
         {/* Dashboard horizontal DESKTOP */}
-        <div className="hidden md:flex md:fixed top-0 right-0 left-0 px-4 pl-12 py-2  w-full justify-between items-center bg-primary text-background z-[1] ">
+        <div className="hidden md:flex md:fixed top-0 right-0 left-0 px-4 pl-12 py-2  w-full justify-between items-center bg-primary text-background z-1 ">
           <ul className="menu menu-horizontal text-xs pounded-box pl-8 py-0">
             <li className="w-full">
               <details>
@@ -332,11 +332,11 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                     ? selectedBrewery.image && (
                         <ImageDisplay
                           item={selectedBrewery}
-                          className="logo !w-6 !h-6"
+                          className="logo w-6! h-6!"
                         />
                       )
                     : selectedBrewery?.companyName && (
-                        <div className="logo__default  !text-base">
+                        <div className="logo__default  text-base!">
                           {getInitials(selectedBrewery?.companyName as string)}
                         </div>
                       )}
@@ -365,7 +365,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                               />
                             )
                           : brewery.companyName && (
-                              <div className="logo__default !p-2 !text-base ">
+                              <div className="logo__default p-2! text-base! ">
                                 {getInitials(brewery?.companyName)}
                               </div>
                             )}
@@ -394,14 +394,14 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                   height={50}
                 />
               ) : (
-                <div className=" logo__default !text-base ">
+                <div className=" logo__default text-base! ">
                   {getInitials(user.name || user.fullName)}
                 </div>
               )}
             </label>
             <ul
               tabIndex={0}
-              className="mt-3 z-[1] shadow menu menu-md dropdown-content bg-base-100 text-primary rounded-box p-3 "
+              className="mt-3 z-1 shadow menu menu-md dropdown-content bg-base-100 text-primary rounded-box p-3 "
             >
               <li>
                 <Link
@@ -438,7 +438,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
           </div>
         </div>
         {/* Dashboard vertical large screen */}
-        <div className="hidden md:flex md:fixed left-0 top-0 p-1 h-full flex-col justify-between items-center bg-primary text-background z-[1]">
+        <div className="hidden md:flex md:fixed left-0 top-0 p-1 h-full flex-col justify-between items-center bg-primary text-background z-1">
           <div>
             <div className="flex flex-col justify-center items-center space-y-3">
               <Link
@@ -468,7 +468,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
               >
                 <HomeIcon size={22} strokeWidth={1} />
               </Link>
-              <div className="divider-horizontal border !border-background/20 w-full"></div>
+              <div className="divider-horizontal border border-background/20! w-full"></div>
             </div>
             <div className="flex flex-col justify-center items-center space-y-3 mt-6">
               {isAdmin && (
@@ -486,7 +486,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                           />
                         )
                       : selectedBrewery?.companyName && (
-                          <div className="logo__default !text-base">
+                          <div className="logo__default text-base!">
                             {getInitials(
                               selectedBrewery?.companyName as string
                             )}
@@ -521,14 +521,14 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                     <Staff size={22} strokeWidth={1} />
                   </Link>
 
-                  <div className="divider-horizontal border !border-background/20 w-full"></div>
+                  <div className="divider-horizontal border border-background/20! w-full"></div>
                 </>
               )}
             </div>
           </div>
           <div>
             <div className="flex flex-col justify-center items-center space-y-3">
-              <div className="divider-horizontal border !border-background/20 w-full"></div>
+              <div className="divider-horizontal border border-background/20! w-full"></div>
 
               <Link
                 href={"/settings"}
@@ -553,7 +553,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
               >
                 <HelpCircle size={22} strokeWidth={1} />
               </Link>
-              <div className="divider-horizontal border !border-background/20 w-full"></div>
+              <div className="divider-horizontal border border-background/20! w-full"></div>
             </div>
             <div className="flex flex-col justify-center items-center space-y-3 mt-6">
               <div

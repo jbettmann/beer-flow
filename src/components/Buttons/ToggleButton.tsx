@@ -25,7 +25,7 @@ const ToggleButton = ({ toggleStates, setToggleStates }: Props) => {
 
       <button
         onClick={() => handleToggle(toggleStates[0])}
-        className={`flex-1 text-center z-[1] transition-colors duration-300 lg:text-sm ${
+        className={`flex-1 text-center z-1 transition-colors duration-300 lg:text-sm ${
           toggleState === toggleStates[0] ? "text-primary font-bold" : ""
         }`}
       >
@@ -34,7 +34,7 @@ const ToggleButton = ({ toggleStates, setToggleStates }: Props) => {
 
       <button
         onClick={() => handleToggle(toggleStates[1])}
-        className={`flex-1 text-center z-[1] transition-colors duration-300 lg:text-sm ${
+        className={`flex-1 text-center z-1 transition-colors duration-300 lg:text-sm ${
           toggleState === toggleStates[1] ? "text-primary font-bold" : ""
         }`}
       >

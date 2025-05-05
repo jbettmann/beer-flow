@@ -139,7 +139,7 @@ const StaffTable = ({ viewFilter, brewery, setIsOpen }: Props) => {
 
           <div
             ref={ref}
-            className={` flex-initial z-[1] dropdown-end bg-transparent lg:z-0 ${cn(
+            className={` flex-initial z-1 dropdown-end bg-transparent lg:z-0 ${cn(
               {
                 dropdown: true,
                 "dropdown-open ": isFilterOpen,
@@ -147,7 +147,7 @@ const StaffTable = ({ viewFilter, brewery, setIsOpen }: Props) => {
             )}`}
           >
             <label
-              className="btn btn-ghost !pr-1 w-full"
+              className="btn btn-ghost pr-1! w-full"
               tabIndex={0}
               onClick={() => setIsFilterOpen((prev) => !prev)}
             >

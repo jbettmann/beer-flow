@@ -149,7 +149,7 @@ const EditBreweryProfile = ({ brewery, onClose }: Props) => {
             {editBrewery?.image && !previewImage ? (
               <ImageDisplay
                 item={editBrewery}
-                className="logo__edit m-3 bg-background !rounded-full"
+                className="logo__edit m-3 bg-background rounded-full!"
               />
             ) : (
               editBrewery?.companyName &&
@@ -198,7 +198,7 @@ const EditBreweryProfile = ({ brewery, onClose }: Props) => {
               setCompanyName(e.target.value);
             }}
           />
-          {nameError && <div className="error !text-xs">{nameError}</div>}
+          {nameError && <div className="error text-xs!">{nameError}</div>}
           <p className="mt-2 text-xs">
             This can be the company name or nickname.
             <br /> This is how brewery will appear to staff

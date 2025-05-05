@@ -390,7 +390,7 @@ const ProfileCreateForm: React.FC<ProfileFormType> = ({
                     <AccordionItem value='item-1'>
                       <AccordionTrigger
                         className={cn(
-                          'relative !no-underline [&[data-state=closed]>button]:hidden [&[data-state=open]>.alert]:hidden',
+                          'relative no-underline! [&[data-state=closed]>button]:hidden [&[data-state=open]>.alert]:hidden',
                           errors?.jobs?.[index] && 'text-red-700'
                         )}
                       >

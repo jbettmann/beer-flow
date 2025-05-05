@@ -78,7 +78,7 @@ const Breweries = ({ breweries }: Props) => {
           </div>
         )}
       </div>
-      <div className="fixed right-5 bottom-10 p-1 z-[2] lg:hidden ">
+      <div className="fixed right-5 bottom-10 p-1 z-2 lg:hidden ">
         <button
           onClick={() => setIsCreateBrewery(true)}
           className="btn btn-circle btn-white create-btn !btn-lg"
