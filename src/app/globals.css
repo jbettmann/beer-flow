@@ -1,20 +1,19 @@
-@import 'tailwindcss';
+@import "tailwindcss";
+@config "../tailwind.config.js";
+@custom-variant dark (&:is(.dark *));
 
 @import 'tw-animate-css';
-
-@custom-variant dark (&:is(.dark *));
+@import './theme.css';
 
 @font-face {
   font-family: "SF Pro";
   src: url(../assets/fonts/SF-Pro.ttf) format("truetype");
 }
 
-
 /* ... continue for other styles/weights if you have them ... */
 :root {
-   
-    --accent: #1fcdbc;
-    --background: #fafafa;
+
+    --accent: oklch(0.97 0 0);
     --third-color: #202020;
     --fourth-color: #343434;
     --the-gray: #5e5e5e;
@@ -25,8 +24,6 @@
     --font-sf-pro: "SF Pro", sans-serif;
     /* new */
     --radius: 0.625rem;
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.145 0 0);
     --card: oklch(1 0 0);
     --card-foreground: oklch(0.145 0 0);
     --popover: oklch(1 0 0);
@@ -56,6 +53,8 @@
     --sidebar-accent-foreground: oklch(0.205 0 0);
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.708 0 0);
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.145 0 0);
   }
 
   .dark {
@@ -63,7 +62,7 @@
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.269 0 0);
+  --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
   --primary: oklch(0.922 0 0);
   --primary-foreground: oklch(0.205 0 0);
@@ -71,7 +70,7 @@
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
   --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.371 0 0);
+  --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
@@ -89,7 +88,7 @@
   --sidebar-accent: oklch(0.269 0 0);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.439 0 0);
+  --sidebar-ring: oklch(0.556 0 0);
   }
 
   @theme inline {
@@ -142,7 +141,6 @@
 html {
   @apply h-screen !bg-background; 
 
-  
 }
 /* body {
   @apply p-2 xxs:p-5 min-h-full  text-primary pt-10 ; 
@@ -173,12 +171,9 @@ h6 {
   @apply text-sm lg:text-xs font-bold text-center
 }
 
-
-
 .alert-modal {
   @apply bg-primary/10 text-background rounded-xl border-none
 }
-
 
 .beer-category__image {
   @apply flex justify-center items-center object-cover w-14 h-14 lg:w-10 lg:h-10 rounded-full my-2 mx-4
@@ -200,8 +195,6 @@ h6 {
 .beer-card__image {
   @apply bg-transparent rounded-xl w-full h-full object-cover
 }
-
-
 
 .beer-card__item {
   @apply ml-1 mb-1 text-left lg:text-base 
@@ -235,9 +228,6 @@ h6 {
   bottom: 0; /* move it into view */
   visibility: visible; /* make it visible */
 }
-
-
-
 
 .category__input {
   @apply rounded-full border-none font-semibold bg-white text-primary
@@ -273,26 +263,25 @@ h6 {
 
 .create-btn {
   @apply bg-primary lg:bg-transparent border lg:border-primary text-background lg:text-primary rounded-full transition-all duration-300 hover:bg-primary hover:text-background  
-  
+
 }
 
 .create-btn.inverse 
 {
   @apply  border-background text-background  hover:bg-background hover:text-primary disabled:bg-opacity-20  disabled:text-opacity-20 disabled:border-opacity-20;
-  
+
 } 
 
 .create-btn.ghost 
 {
   @apply  text-background disabled:text-opacity-20
-  
+
 } 
 
 .close-btn {
   @apply float-right;
-  
-}
 
+}
 
 .container-create__form {
   @apply flex flex-col my-2 px-3 w-full
@@ -302,8 +291,6 @@ h6 {
   @apply flex flex-row justify-between items-center
 }
 
-
-
 .dashboard-container {
   @apply  flex flex-row w-fit mx-auto lg:w-[90%] py-5 md:py-1 px-1 lg:pr-8 justify-center items-center rounded-full 
 }
@@ -312,35 +299,26 @@ h6 {
   @apply text-xs border border-stone-400 py-2 px-3 md:py-3 md:px-4 font-semibold  first:rounded-l-full last:rounded-r-full hover:border-black  justify-center shadow-lg lg:shadow-xl 
 }
 
-
 .dashboard-button__selected {
   @apply text-background border-[#181818] bg-primary  shadow-lg;
   box-shadow: inset -2px -2px 8px #181818, inset 2px 2px 8px #181818;
 }
 
-
 .delete-remove-btn__text {
   @apply my-2 text-xs opacity-50
 }
-
-
 
 .error {
   @apply text-red-600  text-sm
 }
 
-
-
 .date-create {
   @apply text-sm italic
 }
 
-
-
 .gray-text {
   @apply opacity-50
 }
-
 
 .form {
   @apply beer-card h-fit
@@ -365,19 +343,13 @@ h6 {
 
 }
 
-
 .form__input-textarea {
   @apply border-stone-400 focus:border-accent  bg-primary text-background lg:text-sm
 }
 
-
-
 .form__input-file-sx {
   @apply w-full max-w-xs
 }
-
-
-
 
 .logo {
   @apply rounded-2xl bg-slate-50 object-contain
@@ -398,8 +370,6 @@ h6 {
 .menu-drawer {
   @apply bg-fourth-color
 }
-
-
 
 .new-category {
   @apply bg-primary/10 shadow-xl
@@ -429,7 +399,6 @@ h6 {
   @apply bg-background text-primary rounded-xl shadow-md shadow-[#807768] absolute z-10 w-full max-h-64 overflow-y-auto 
 }
 
-
 .ReactTags__suggestions li {
   @apply list-none text-primary p-2 py-3
 
@@ -446,7 +415,7 @@ h6 {
 .search__input {
 
     @apply bg-white text-primary rounded-full border-none  lg:h-9 lg:text-sm 
- 
+
 }
 
 .settings-account__info {
@@ -456,8 +425,6 @@ h6 {
 .settings-profile__info {
   @apply flex flex-col xs:flex-row justify-between items-center
 }
-
-
 
 .scrollbar-w-2::-webkit-scrollbar {
   width: .25rem;
@@ -486,7 +453,7 @@ h6 {
   right: -100%;
   width: 100%;
   height: 100%;
- 
+
   transition: right 0.3s ease-in-out;
 }
 
@@ -501,7 +468,7 @@ h6 {
   right: -100%;
   width: 100%;
   height: 100%;
- 
+
   transition: right 0.3s ease-in-out;
 }
 
@@ -516,8 +483,6 @@ h6 {
   padding: 20px;
   gap: 1rem;
 }
-
-
 
 .tag-new {
   @apply badge text-primary bg-indigo-300 text-sm 
@@ -555,7 +520,6 @@ h6 {
     @apply bg-gray-400 bg-opacity-20
   }
 
-
   .label-text {
     @apply text-primary
   }
@@ -573,14 +537,11 @@ h6 {
 }
  }
 
-
-
  /* flatflie override */
- 
+
 .flatfile_iframe-wrapper.flatfile_displayAsModal {
   @apply !w-full !h-screen !pt-16 md:!pl-24;
 }
- 
 
 /* View Transition Wave Effect */
 ::view-transition-old(root),
