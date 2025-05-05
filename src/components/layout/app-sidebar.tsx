@@ -6,7 +6,7 @@ import { BrewerySwitcher } from "@/components/sidebar/brewery-switcher";
 import { NavMain } from "@/components/sidebar/nav-main";
 import { NavUser } from "@/components/sidebar/nav-user";
 
-import { Brewery } from "@/app/types/brewery";
+import { Brewery } from "@/types/brewery";
 import {
   Sidebar,
   SidebarContent,

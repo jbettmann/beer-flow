@@ -1,5 +1,5 @@
 "use client";
-import { Brewery } from "@/app/types/brewery";
+import { Brewery } from "@/types/brewery";
 import { useBreweryContext } from "@/context/brewery-beer";
 import { debounce, getInitials } from "@/lib/utils";
 import {
@@ -70,22 +70,6 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
     // After sign out, redirects next user to homepage
     signOut({ callbackUrl: `${window?.location.origin}/` });
   };
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const handleResize = () => {
-        setIsMobile(window?.innerWidth <= 768);
-      };
-
-      const debouncedResize = debounce(handleResize, 250); // 250ms delay
-
-      window.addEventListener("resize", debouncedResize);
-
-      return () => {
-        window.removeEventListener("resize", debouncedResize);
-      };
-    }
-  }, []);
 
   useEffect(() => {
     const handleScroll = () => {

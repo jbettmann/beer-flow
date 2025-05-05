@@ -1,6 +1,6 @@
 import PageContainer from "@/components/layout/page-container";
 import { Suspense } from "react";
-import BeerViewPage from "@/features/products/components/beer-view-page";
+import BeerViewPage from "@/components/beers/beer-view-page";
 import FormCardSkeleton from "@/components/skeletons/form-card-skeleton";
 
 export const metadata = {

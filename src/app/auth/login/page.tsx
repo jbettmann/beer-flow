@@ -56,7 +56,7 @@ const LoginPage = () => {
             email: email,
             password: password,
             redirect: false,
-            callbackUrl: "/dashboard/breweries",
+            callbackUrl: "/dashboard/overview",
           });
           // Manually revalidate session to get Nav Bar to show
           sessionStorage.setItem("credentialsLogin", "true");
@@ -82,7 +82,7 @@ const LoginPage = () => {
   }, []);
 
   if (session) {
-    redirect("/dashboard/breweries");
+    redirect("/dashboard/overview");
   }
 
   return (

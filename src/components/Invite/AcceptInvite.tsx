@@ -1,5 +1,5 @@
 "use client";
-import { Brewery } from "@/app/types/brewery";
+import { Brewery } from "@/types/brewery";
 import { useBreweryContext } from "@/context/brewery-beer";
 import { useToast } from "@/context/toast";
 import { acceptInvite } from "@/lib/POST/acceptInvite";

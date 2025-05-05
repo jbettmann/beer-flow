@@ -1,12 +1,13 @@
 "use client";
-import { Beer } from "@/app/types/beer";
-import { Category } from "@/app/types/category";
+import { Beer } from "@/types/beer";
+import { Category } from "@/types/category";
 import ImageDisplay from "@/components/ImageDisplay/ImageDisplay";
 import { ColumnDef } from "@tanstack/react-table";
 import { CellAction } from "./cell-action";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import DefaultBeerImage from "../../../../assets/img/beer.png";
 import Image from "next/image";
+import { Badge } from "@/components/ui/badge";
 
 export const columns: ColumnDef<Beer>[] = [
   {
@@ -26,31 +27,36 @@ export const columns: ColumnDef<Beer>[] = [
     accessorKey: "name",
     header: "NAME",
   },
+
+  {
+    accessorKey: "style",
+    header: "STYLE",
+  },
   {
     accessorKey: "category",
     header: "CATEGORY",
     cell: ({ row }) => {
       return (
-        <div className="relative ">
+        <div className="relative flex flex-wrap gap-1 ">
           {(row.original as Beer).category.map((category: Category, index) => (
-            <span
-              key={index}
-              className="text-xs bg-gray-200 rounded-full px-2 py-1 mr-1"
-            >
+            <Badge key={index} className=" mr-1" variant={"secondary"}>
               {category.name}
-            </span>
+            </Badge>
           ))}
         </div>
       );
     },
   },
   {
-    accessorKey: "style",
-    header: "STYLE",
-  },
-  {
     accessorKey: "description",
     header: "DESCRIPTION",
+    cell: ({ row }) => {
+      return (
+        <div className="text-wrap line-clamp-2 min-w-80 max-w-[30rem]">
+          {row.original.description}
+        </div>
+      );
+    },
   },
 
   {

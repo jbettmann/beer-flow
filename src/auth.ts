@@ -6,7 +6,7 @@ import { signJwtAccessToken, signJwtRefreshToken } from "@/lib/jwt";
 import { jwtVerify } from "jose";
 import type { Account, Profile } from "next-auth";
 
-import { Notifications } from "@/app/types/notifications";
+import { Notifications } from "@/types/notifications";
 import updateUserInfoDBDirect from "@/lib/PUT/updateUserInfoDBDirect";
 import NextAuth, { User as NextAuthUser } from "next-auth";
 import { JWT } from "next-auth/jwt";
@@ -23,6 +23,7 @@ interface MyToken extends JWT {
   accessToken?: string;
   refreshToken?: string;
   selectedBreweryId?: string;
+  account?: Account | null; // Account is optional
 }
 
 interface Profiles extends Profile {
@@ -243,7 +244,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }: {
       token: MyToken;
       user: AdapterUser | NextAuthUser;
-      account: Account | null;
+      account?: Account | null;
       profile?: Profile;
       trigger?: "signIn" | "signUp" | "update";
       isNewUser?: boolean;

@@ -2,11 +2,13 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Modal } from "../ui/modal";
+import { Loader2 } from "lucide-react";
 
 interface AlertModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
+  onConfirmText?: string;
   loading: boolean;
 }
 
@@ -14,6 +16,7 @@ export const AlertModal: React.FC<AlertModalProps> = ({
   isOpen,
   onClose,
   onConfirm,
+  onConfirmText = "Continue",
   loading,
 }) => {
   const [isMounted, setIsMounted] = useState(false);
@@ -34,11 +37,25 @@ export const AlertModal: React.FC<AlertModalProps> = ({
       onClose={onClose}
     >
       <div className="flex w-full items-center justify-end space-x-2 pt-6">
-        <Button disabled={loading} variant="outline" onClick={onClose}>
+        <Button
+          disabled={loading}
+          variant="outline"
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+          }}
+        >
           Cancel
         </Button>
-        <Button disabled={loading} variant="destructive" onClick={onConfirm}>
-          Continue
+        <Button
+          disabled={loading}
+          variant="destructive"
+          onClick={(e) => {
+            e.stopPropagation();
+            onConfirm();
+          }}
+        >
+          {loading ? <Loader2 /> : onConfirmText}
         </Button>
       </div>
     </Modal>

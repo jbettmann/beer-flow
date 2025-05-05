@@ -1,19 +1,19 @@
-import { Category, NewCategory } from "@/app/types/category";
+import { Category, NewCategory } from "@/types/category";
 
 interface FormValues {
   _id?: string;
   name: string;
-  abv: string | number;
-  ibu: number | string;
+  abv?: number | null | undefined;
+  ibu?: number | null | undefined;
   style: string;
-  malt: Tag[];
-  hops: Tag[];
-  description: string;
-  category: Category[] | { value: string; label: string }[];
-  nameSake: string;
-  notes: string;
-  image: File | null | string;
-  releasedOn: Date | string | null;
+  malt?: Tag[];
+  hops?: Tag[];
+  description?: string | undefined;
+  category: (string | { name: string })[];
+  nameSake?: string | undefined;
+  notes?: string | undefined;
+  image?: string | File | null | undefined;
+  releasedOn?: Date | string | null;
   archived: boolean;
 }
 

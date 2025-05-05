@@ -1,7 +1,5 @@
 "use client";
 
-import { Beer } from "@/app/types/beer";
-import { Category } from "@/app/types/category";
 import { FileUploader } from "@/components/file-uploader";
 import { MultiSelect } from "@/components/selects/multi-select";
 import { Button } from "@/components/ui/button";
@@ -16,21 +14,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { Product } from "@/constants/mock-api";
 import { useBreweryContext } from "@/context/brewery-beer";
+import createBeer from "@/lib/createBeer";
 import { onFormError } from "@/lib/handle-error";
+import updateBeer from "@/lib/PUT/updateBeer";
 import { hopSuggestions, maltSuggestions } from "@/lib/suggestionsDB";
+import saveImage from "@/lib/supabase/saveImage";
+import { updateImage } from "@/lib/supabase/updateImage";
+import { Beer, NewBeer } from "@/types/beer";
 import BeerFormSchema from "@/zod/beer-schema";
-import { de } from "@faker-js/faker/.";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Beer as BeerIcon,
@@ -41,18 +35,11 @@ import {
   Wheat,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import useSWR from "swr";
+import { toast } from "sonner";
 import * as z from "zod";
-
-const MAX_FILE_SIZE = 5000000;
-const ACCEPTED_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-];
 
 type BeerSchemaValues = z.infer<typeof BeerFormSchema>;
 
@@ -63,65 +50,73 @@ export default function BeerForm({
   initialData: Beer | null;
   pageTitle: string;
 }) {
+  const router = useRouter();
   const { data: session, status, update } = useSession();
+  const { selectedBrewery, mutateBeers, mutateBrewery } = useBreweryContext();
+  const [beerImage, setBeerImage] = useState<File | string | null>(
+    initialData?.image || null
+  );
 
-  const { selectedBeers, selectedBrewery, isAdmin } = useBreweryContext();
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const [previewImage, setPreviewImage] = useState<null>(null);
-
-  const [isClearing, setIsClearing] = useState<boolean>(false);
-  const defaultValues = initialData || {
-    name: "",
-    abv: undefined,
-    ibu: undefined,
-    style: "",
-    malt: [],
-    hops: [],
-    description: "",
-    category: [],
-    nameSake: "",
-    notes: "",
-    image: undefined,
-    releasedOn: "",
-    archived: false,
+  const defaultValues: BeerSchemaValues = {
+    _id: initialData?._id || undefined,
+    name: initialData?.name || "",
+    abv: initialData?.abv ?? undefined,
+    ibu: initialData?.ibu ?? undefined,
+    style: initialData?.style || "",
+    malt: initialData?.malt || [],
+    hops: initialData?.hops || [],
+    description: initialData?.description || "",
+    category: initialData?.category || [],
+    nameSake: initialData?.nameSake || "",
+    notes: initialData?.notes || "",
+    image: initialData?.image || undefined,
+    releasedOn: initialData?.releasedOn
+      ? new Date(initialData.releasedOn)
+      : null,
+    archived: initialData?.archived ?? false,
   };
-
   const form = useForm<BeerSchemaValues>({
     resolver: zodResolver(BeerFormSchema),
     defaultValues: defaultValues,
   });
 
-  function onSubmit(values: BeerSchemaValues) {
-    console.log(values);
-    // try {
-    //   if (selectedBrewery && session?.user) {
-    //     const newBeerRes = await handleCreateBeer(
-    //       values,
-    //       selectedBrewery,
-    //       session?.user?.accessToken
-    //     );
+  async function onSubmit(values: BeerSchemaValues) {
+    try {
+      let beer = values as Beer | NewBeer;
+      if (selectedBrewery && session?.user) {
+        if (beerImage && beerImage instanceof File) {
+          // Save the image to the database and create link
+          const beerImg = initialData?.image
+            ? await updateImage(initialData.image, beerImage)
+            : await saveImage({ file: beerImage });
 
-    //     if (newBeerRes) {
-    //       // forced revalidation of the beers
-    //       mutate([...(selectedBeers as Beer[]), newBeerRes]);
-    //       mutateBrewery();
-    //       handleClear(); // Clear the form
-    //       addToast(`${newBeerRes.name} successfully created!`, "success");
-    //     }
-    //   }
-    // } catch (err: string | any) {
-    //   console.error(err);
-    //   setSubmitError(err.message);
-    // } finally {
-    //   if (previewImage) {
-    //     URL.revokeObjectURL(previewImage);
-    //     setPreviewImage(null);
-    //   }
-    //   isSubmitting.current = false;
-    //   setIsLoading(false); // Set loading state to false
-    // }
+          if (!beerImg) {
+            return toast.error("Failed to upload image, try again.");
+          }
+          beer.image = beerImg;
+        }
+        console.log({ initialData, beer });
+        const beerRes = await (initialData?._id
+          ? updateBeer(beer as Beer)
+          : createBeer(beer as NewBeer));
+
+        if (!beerRes) {
+          return toast.error(
+            `Failed to ${pageTitle.toLowerCase()}, try again. ${beerRes}`
+          );
+        }
+
+        mutateBeers();
+        mutateBrewery();
+        toast.success(
+          `${beerRes.name} successfully ${initialData?._id ? "edited" : "created"}!`
+        );
+        router.push(`/dashboard/breweries/${selectedBrewery._id}/beers`);
+      }
+    } catch (err: string | any) {
+      console.error(err);
+      toast.error(`Something went wrong, please try again. ${err}`);
+    }
   }
   return (
     <Card className="mx-auto w-full">
@@ -145,8 +140,9 @@ export default function BeerForm({
                     <FormLabel>Image</FormLabel>
                     <FormControl>
                       <FileUploader
-                        value={field.value as File[] | undefined}
+                        value={field.value as File | string | undefined}
                         onValueChange={field.onChange}
+                        setUploadedFile={setBeerImage}
                         maxFiles={4}
                         maxSize={4 * 1024 * 1024}
                         // disabled={loading}
@@ -255,19 +251,17 @@ export default function BeerForm({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Category</FormLabel>
-                    <div className="relative">
+                    <div className="relative ">
                       <LayoutGrid className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                       <MultiSelect
                         options={
                           selectedBrewery?.categories?.map((cat) => ({
                             label: cat.name,
-                            value: cat.name,
+                            value: cat._id as string,
                           })) || []
                         }
                         onValueChange={(values) => field.onChange(values)}
-                        defaultValue={field.value.map(
-                          (cat: { name: string }) => cat.name
-                        )}
+                        defaultValue={field.value.map((cat: any) => cat._id)}
                         placeholder="Select Category"
                         className="pl-10 w-popover-full"
                         variant="default"
@@ -316,10 +310,18 @@ export default function BeerForm({
                     <FormControl>
                       <Input
                         type="date"
-                        placeholder="Enter ibu"
+                        placeholder="Enter release date"
                         {...field}
-                        value={field.value ? field.value.toString() : ""}
-                        onChange={(e) => field.onChange(e.target.value)}
+                        value={
+                          field.value instanceof Date
+                            ? field.value.toISOString().split("T")[0]
+                            : ""
+                        }
+                        onChange={(e) =>
+                          field.onChange(
+                            e.target.value ? new Date(e.target.value) : null
+                          )
+                        }
                       />
                     </FormControl>
                     <FormMessage />
@@ -467,7 +469,19 @@ export default function BeerForm({
                 </FormItem>
               )}
             />
-            <Button type="submit">Add Product</Button>
+            <div className="w-full flex flex-col sm:flex-row items-center justify-end gap-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => router.back()}
+                disabled={form.formState.isSubmitting}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={form.formState.isSubmitting}>
+                {pageTitle.includes("Edit") ? "Save" : "Add Product"}
+              </Button>
+            </div>
           </form>
         </Form>
       </CardContent>

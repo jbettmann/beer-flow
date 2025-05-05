@@ -7,7 +7,7 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 import { SearchParams } from "nuqs/server";
 import { Suspense } from "react";
-import ProductTableAction from "@/features/products/components/product-tables/product-table-action";
+import ProductTableAction from "@/components/beers/beer-table-actions/beer-table-action";
 import { searchParamsCache, serialize } from "@/lib/searchparams";
 import { Heading } from "@/components/ui/heading";
 import TableViewToggleButton from "@/components/Buttons/table-view-toggle-btn";
@@ -19,28 +19,30 @@ export const metadata = {
   title: "Dashboard: Brewery Beers",
 };
 
-type pageProps = {
+async function Page({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ breweryId: string }>;
   searchParams: Promise<SearchParams>;
-  params: { breweryId: string };
-};
+}) {
+  const resSearchParams = await searchParams;
+  const { breweryId } = await params;
 
-async function Page(props: pageProps) {
-  const searchParams = await props.searchParams;
-  const breweryId = props.params.breweryId;
   const selectedBrewery = await getSingleBrewery([
     `https://beer-bible-api.vercel.app/breweries/${breweryId}`,
   ]);
   const isAdmin = await getIsAdminServer(breweryId);
 
   // Allow nested RSCs to access the search params (in a type-safe way)
-  searchParamsCache.parse(searchParams);
+  searchParamsCache.parse(resSearchParams);
 
   // This key is used for invoke suspense if any of the search params changed (used for filters).
-  const key = serialize({ ...searchParams });
+  const key = serialize({ ...resSearchParams });
 
   return (
     <PageContainer scrollable={false}>
-      <div className="flex flex-1 flex-col space-y-4">
+      <div className="flex flex-1 flex-col space-y-4 ">
         <div className="flex items-start justify-between">
           <Heading
             title={`Beer List`}

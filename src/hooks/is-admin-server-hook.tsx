@@ -1,4 +1,4 @@
-import { Users } from "@/app/types/users";
+import { Users } from "@/types/users";
 import { auth } from "@/auth";
 import getSingleBrewery from "@/lib/getSingleBrewery";
 import React from "react";

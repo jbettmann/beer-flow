@@ -1,7 +1,7 @@
 "use client";
-import { Beer } from "@/app/types/beer";
-import { Brewery } from "@/app/types/brewery";
-import { Category } from "@/app/types/category";
+import { Beer } from "@/types/beer";
+import { Brewery } from "@/types/brewery";
+import { Category } from "@/types/category";
 import React from "react";
 import deleteCategory from "../DELETE/deleteCategory";
 import { revalidatePath } from "next/cache";

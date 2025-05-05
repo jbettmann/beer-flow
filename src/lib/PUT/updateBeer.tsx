@@ -1,47 +1,30 @@
 "use server";
-import { Beer } from "@/app/types/beer";
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/dist/server/api-utils";
+import { auth } from "@/auth";
+import { httpClient } from "@/services/utils/httpClient";
+import { Beer } from "@/types/beer";
 
-type pageProps = {
-  updatedBeer: Beer | any;
-  breweryId: string | undefined;
-  accessToken: string | undefined;
-};
+export default async function updateBeer(updatedBeer: Beer) {
+  const session = await auth();
+  const { accessToken, selectedBreweryId } = session?.user || {};
 
-export default async function updateBeer({
-  updatedBeer,
-  breweryId,
-  accessToken,
-}: pageProps) {
-  if (accessToken) {
-    try {
-      const response = await fetch(
-        `https://beer-bible-api.vercel.app/breweries/${breweryId}/beers/${updatedBeer._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify(updatedBeer),
-          next: { revalidate: 0 },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(response.statusText);
+  try {
+    const response = await httpClient.put(
+      `/breweries/${selectedBreweryId}/beers`,
+      updatedBeer._id,
+      updatedBeer,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        next: { revalidate: 0 },
       }
+    );
 
-      const responseData: Beer = await response.json();
-      // revalidatePath(`/dashboard/breweries/[breweryId]`);
-      // console.log({ responseData });
-      return responseData;
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
-  } else {
-    throw new Error("User session not found.");
+    const responseData: Beer = await response;
+    // revalidatePath(`/dashboard/breweries/[breweryId]`);
+    return responseData;
+  } catch (err) {
+    console.error(err);
+    throw err;
   }
 }

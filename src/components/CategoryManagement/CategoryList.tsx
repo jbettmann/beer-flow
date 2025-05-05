@@ -1,6 +1,6 @@
 "use client";
-import { Beer } from "@/app/types/beer";
-import { Category, NewCategory } from "@/app/types/category";
+import { Beer } from "@/types/beer";
+import { Category, NewCategory } from "@/types/category";
 import { useBreweryContext } from "@/context/brewery-beer";
 import deleteCategory from "@/lib/DELETE/deleteCategory";
 import handleCreateNewCategory from "@/lib/handleSubmit/handleCreateNewCategory";
@@ -12,7 +12,7 @@ import OnlyEmptyCategoryDelete from "../Alerts/OnlyEmptyCategoryDelete";
 import CategoryRow from "./CategoryRow";
 import CreateNewCategoryRow from "./CreateNewCategoryRow";
 
-import { Brewery } from "@/app/types/brewery";
+import { Brewery } from "@/types/brewery";
 import CardCategory from "../CardCategory/CardCategory";
 import { useOnClickOutside } from "usehooks-ts";
 import cn from "classnames";

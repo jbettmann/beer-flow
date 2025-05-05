@@ -1,4 +1,4 @@
-import { Brewery } from "@/app/types/brewery";
+import { Brewery } from "@/types/brewery";
 import ImageDisplay from "@/components/ImageDisplay/ImageDisplay";
 import BrewerySettingsList from "@/components/Settings/BrewerySettingsList";
 import getBreweries from "@/lib/getBreweries";

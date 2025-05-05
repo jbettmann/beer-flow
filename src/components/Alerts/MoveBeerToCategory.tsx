@@ -1,5 +1,5 @@
 "use client";
-import { Category } from "@/app/types/category";
+import { Category } from "@/types/category";
 import { useEffect, useRef } from "react";
 import CategorySelect from "../CategorySelect/CategorySelect";
 

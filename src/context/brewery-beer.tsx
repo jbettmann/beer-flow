@@ -1,6 +1,6 @@
 "use client";
-import { Beer } from "@/app/types/beer";
-import { Brewery } from "@/app/types/brewery";
+import { Beer } from "@/types/beer";
+import { Brewery } from "@/types/brewery";
 import { useGetBeerByBreweryId } from "@/services/queries/beers";
 import { useGetBreweryById } from "@/services/queries/brewery";
 import Cookies from "js-cookie";
@@ -17,9 +17,11 @@ import React, {
 type BreweryContextProps = {
   selectedBrewery: Brewery | null;
   setSelectedBrewery: React.Dispatch<React.SetStateAction<Brewery | null>>;
+  mutateBrewery: () => void;
   selectedBeers: Beer[] | null;
   setBreweryId: (breweryId: string | null) => void;
   setSelectedBeers: React.Dispatch<React.SetStateAction<Beer[] | null>>;
+  mutateBeers: () => void;
   beersLoading: boolean | null;
   breweryLoading: boolean | null;
   isAdmin: boolean;
@@ -107,6 +109,7 @@ export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
       value={{
         selectedBrewery,
         setSelectedBrewery,
+        mutateBrewery,
         setBreweryId: (breweryId: string | null) => {
           setBreweryId(breweryId as string);
           mutateBeers();
@@ -114,6 +117,7 @@ export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
         },
         selectedBeers,
         setSelectedBeers,
+        mutateBeers,
         beersLoading,
         breweryLoading,
         isAdmin,

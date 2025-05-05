@@ -1,7 +1,7 @@
 type RefsType = {
   name: React.RefObject<HTMLInputElement>;
 };
-import { Category, NewCategory } from "@/app/types/category";
+import { Category, NewCategory } from "@/types/category";
 
 interface FormValues {
   _id?: string;

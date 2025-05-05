@@ -1,6 +1,6 @@
 "use client";
-import { Notifications } from "@/app/types/notifications";
-import { Users } from "@/app/types/users";
+import { Notifications } from "@/types/notifications";
+import { Users } from "@/types/users";
 
 type NotificationUpdateProps = {
   notifications: Notifications; // The entire notification settings

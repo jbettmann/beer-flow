@@ -10,7 +10,7 @@ import {
   X,
 } from "lucide-react";
 import { useBreweryContext } from "@/context/brewery-beer";
-import { Beer } from "@/app/types/beer";
+import { Beer } from "@/types/beer";
 import Link from "next/link";
 import { hopSuggestions, maltSuggestions } from "@/lib/suggestionsDB";
 

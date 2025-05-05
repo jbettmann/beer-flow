@@ -2,7 +2,7 @@
 
 import { ChevronsUpDown } from "lucide-react";
 
-import { Brewery } from "@/app/types/brewery";
+import { Brewery } from "@/types/brewery";
 import {
   DropdownMenu,
   DropdownMenuContent,

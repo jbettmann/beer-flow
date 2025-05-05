@@ -2,8 +2,8 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { Beer } from "@/app/types/beer";
-import { Brewery } from "@/app/types/brewery";
+import { Beer } from "@/types/beer";
+import { Brewery } from "@/types/brewery";
 import getBreweryBeers from "@/lib/getBreweryBeers";
 import getSingleBrewery from "@/lib/getSingleBrewery";
 import { User } from "next-auth";

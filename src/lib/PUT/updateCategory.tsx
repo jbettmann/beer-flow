@@ -1,6 +1,6 @@
 "use server";
-import { Beer } from "@/app/types/beer";
-import { Category } from "@/app/types/category";
+import { Beer } from "@/types/beer";
+import { Category } from "@/types/category";
 import { FormValues } from "@/components/UpdateCategory/types";
 
 import { revalidatePath } from "next/cache";

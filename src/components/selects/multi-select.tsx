@@ -190,25 +190,25 @@ export const MultiSelect = React.forwardRef<
         onOpenChange={setIsPopoverOpen}
         modal={modalPopover}
       >
-        <PopoverTrigger asChild>
+        <PopoverTrigger asChild className="bg-inherit dark:!bg-inherit">
           <Button
             ref={ref}
             {...props}
             onClick={handleTogglePopover}
             className={cn(
-              "flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit [&_svg]:pointer-events-auto",
+              "flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between hover:bg-inherit [&_svg]:pointer-events-auto",
               className
             )}
           >
             {selectedValues.length > 0 ? (
-              <div className="flex justify-between items-center w-full">
-                <div className="flex flex-wrap items-center">
-                  {selectedValues.slice(0, maxCount).map((value) => {
+              <div className="flex justify-between items-center w-full ">
+                <div className="flex flex-wrap items-center gap-1">
+                  {selectedValues.slice(0, maxCount).map((value, i) => {
                     const option = options.find((o) => o.value === value);
                     const IconComponent = option?.icon;
                     return (
                       <Badge
-                        key={value}
+                        key={value + i}
                         className={cn(
                           isAnimating ? "animate-bounce" : "",
                           multiSelectVariants({ variant })
@@ -287,11 +287,11 @@ export const MultiSelect = React.forwardRef<
             <CommandList>
               <CommandEmpty>No results found.</CommandEmpty>
               <CommandGroup>
-                {options.map((option) => {
+                {options.map((option, i) => {
                   const isSelected = selectedValues.includes(option.value);
                   return (
                     <CommandItem
-                      key={option.value}
+                      key={option.value + i}
                       onSelect={() => toggleOption(option.value)}
                       className="cursor-pointer"
                     >

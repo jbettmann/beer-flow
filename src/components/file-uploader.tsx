@@ -15,9 +15,10 @@ import { cn } from "@/lib/utils";
 import ImageDisplay from "./ImageDisplay/ImageDisplay";
 
 interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
-  value?: File[] | string;
-  onValueChange?: (files: File[] | string | null) => void;
-  onUpload?: (files: File[] | string) => Promise<void>;
+  value?: string | File;
+  onValueChange?: (file: string | null) => void;
+  onUpload?: (file: string) => Promise<void>;
+  setUploadedFile?: (files: File) => void;
   progresses?: Record<string, number>;
   accept?: DropzoneProps["accept"];
   maxSize?: DropzoneProps["maxSize"];
@@ -30,6 +31,7 @@ export function FileUploader(props: FileUploaderProps) {
   const {
     value,
     onValueChange,
+    setUploadedFile,
     onUpload,
     progresses,
     accept = { "image/*": [] },
@@ -41,27 +43,20 @@ export function FileUploader(props: FileUploaderProps) {
     ...dropzoneProps
   } = props;
 
-  const isFileArray = Array.isArray(value);
+  const [fileName, setFileName] = React.useState<string | null>(null);
   const isSingleString = typeof value === "string";
 
   const onDrop = (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
-    if (!multiple && maxFiles === 1 && acceptedFiles.length > 1) {
-      toast.error("Cannot upload more than 1 file at a time");
+    if (acceptedFiles.length !== 1) {
+      toast.error("Please upload a single image file");
       return;
     }
 
-    if (isFileArray && value.length + acceptedFiles.length > maxFiles) {
-      toast.error(`Cannot upload more than ${maxFiles} files`);
-      return;
-    }
-
-    const newFiles = acceptedFiles.map((file) =>
-      Object.assign(file, { preview: URL.createObjectURL(file) })
-    );
-
-    const updatedFiles = isFileArray ? [...value, ...newFiles] : newFiles;
-
-    onValueChange?.(updatedFiles);
+    const file = acceptedFiles[0];
+    setUploadedFile?.(file);
+    const fileURL = URL.createObjectURL(file);
+    setFileName(file.name);
+    onValueChange?.(fileURL);
 
     if (rejectedFiles.length > 0) {
       rejectedFiles.forEach(({ file }) => {
@@ -69,22 +64,16 @@ export function FileUploader(props: FileUploaderProps) {
       });
     }
 
-    if (onUpload && updatedFiles.length > 0) {
-      toast.promise(onUpload(updatedFiles), {
-        loading: `Uploading ${updatedFiles.length} files...`,
+    if (onUpload) {
+      toast.promise(onUpload(fileURL), {
+        loading: "Uploading file...",
         success: "Upload successful!",
-        error: "Failed to upload files",
+        error: "Failed to upload file",
       });
     }
   };
 
-  function onRemove(index: number) {
-    if (!isFileArray) return;
-    const newFiles = value.filter((_, i) => i !== index);
-    onValueChange?.(newFiles.length ? newFiles : null);
-  }
-
-  function onRemoveString() {
+  function onRemove() {
     onValueChange?.(null);
   }
 
@@ -94,8 +83,8 @@ export function FileUploader(props: FileUploaderProps) {
         onDrop={onDrop}
         accept={accept}
         maxSize={maxSize}
-        maxFiles={maxFiles}
-        multiple={maxFiles > 1 || multiple}
+        maxFiles={1}
+        multiple={false}
         disabled={disabled}
       >
         {({ getRootProps, getInputProps, isDragActive }) => (
@@ -120,7 +109,7 @@ export function FileUploader(props: FileUploaderProps) {
                   />
                 </div>
                 <p className="font-medium text-muted-foreground">
-                  Drop the files here
+                  Drop the file here
                 </p>
               </div>
             ) : (
@@ -132,7 +121,7 @@ export function FileUploader(props: FileUploaderProps) {
                   />
                 </div>
                 <p className="font-medium text-muted-foreground">
-                  Drag & drop files here, or click to select
+                  Drag & drop an image here, or click to select
                 </p>
               </div>
             )}
@@ -142,20 +131,11 @@ export function FileUploader(props: FileUploaderProps) {
 
       <ScrollArea className="h-fit w-full px-3">
         <div className="max-h-48 space-y-4">
-          {isFileArray &&
-            value.map((file, index) => (
-              <FileCard
-                key={index}
-                file={file}
-                onRemove={() => onRemove(index)}
-                progress={progresses?.[file.name]}
-              />
-            ))}
-
           {isSingleString && (
             <FileCard
               file={value}
-              onRemove={onRemoveString}
+              fileName={fileName}
+              onRemove={onRemove}
               progress={progresses?.[value]}
             />
           )}
@@ -166,43 +146,37 @@ export function FileUploader(props: FileUploaderProps) {
 }
 
 interface FileCardProps {
-  file: File | string;
+  file: string | File;
+  fileName: string | null;
   onRemove: () => void;
   progress?: number;
 }
 
-function FileCard({ file, progress, onRemove }: FileCardProps) {
-  const isFile = file instanceof File;
-  const fileName = isFile ? file.name : extractFileName(file);
+function FileCard({ file, fileName, progress, onRemove }: FileCardProps) {
+  function extractFileName(filePath: string | null): string {
+    if (filePath) return filePath;
+
+    const parts = (file as string).split("_");
+    return parts.length > 1 ? parts[1] : (file as string);
+  }
 
   return (
     <div className="relative flex items-center space-x-4">
-      <div className="flex flex-1 space-x-4">
-        {isFile ? (
+      <div className="flex w-full flex-col gap-2">
+        <div className=" flex flex-1 items-center gap-2">
           <Image
-            src={URL.createObjectURL(file)}
-            alt={file.name}
-            width={48}
-            height={48}
+            src={file as string}
+            alt="Uploaded Image"
+            width={50}
+            height={50}
             loading="lazy"
             className="aspect-square shrink-0 rounded-md object-cover"
           />
-        ) : null}
+          <p className="line-clamp-1 text-sm font-medium text-foreground/80 ">
+            {extractFileName(fileName)}
+          </p>
+        </div>
         <div className="flex w-full flex-col gap-2">
-          <div className=" flex flex-1 items-center gap-2">
-            <Image
-              src={file as string}
-              alt={fileName}
-              width={48}
-              height={48}
-              loading="lazy"
-              className="aspect-square shrink-0 rounded-md object-cover "
-            />
-
-            <p className="line-clamp-1 text-sm font-medium text-foreground/80">
-              {fileName}
-            </p>
-          </div>
           {progress ? <Progress value={progress} /> : null}
         </div>
       </div>
@@ -218,9 +192,4 @@ function FileCard({ file, progress, onRemove }: FileCardProps) {
       </Button>
     </div>
   );
-}
-
-function extractFileName(filePath: string): string {
-  const parts = filePath.split("_");
-  return parts.length > 1 ? parts[1] : filePath;
 }

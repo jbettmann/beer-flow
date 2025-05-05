@@ -1,5 +1,5 @@
 "use client";
-import { Users } from "@/app/types/users";
+import { Users } from "@/types/users";
 import { useBreweryContext } from "@/context/brewery-beer";
 import updateBreweryAdmin from "@/lib/PATCH/updateBreweryAdmin";
 import { PencilLine, SkullIcon } from "lucide-react";
@@ -34,7 +34,7 @@ const StaffMemberCard = ({
   breweryId,
 }: Props) => {
   const { data: session } = useSession();
- 
+
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isDeleteLoading, setIsDeleteLoading] = useState<boolean>(false);

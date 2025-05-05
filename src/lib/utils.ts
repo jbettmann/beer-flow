@@ -1,9 +1,11 @@
 import { ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { v4 as uuidv4 } from "uuid";
-import { Beer } from "@/app/types/beer";
-import { Category, NewCategory } from "@/app/types/category";
+import { Beer } from "@/types/beer";
+import { Category, NewCategory } from "@/types/category";
 import { supabase } from "./supabase";
+import createCategory from "./createCategory";
+import { Brewery } from "@/types/brewery";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -30,11 +32,11 @@ export function formatBytes(
 }
 
 // auth token from db
-export const setAuthToken = (token: string) => {
-  if (typeof window !== "undefined") {
-    localStorage.setItem("authToken", token);
-  }
-};
+// export const setAuthToken = (token: string) => {
+//   if (typeof window !== "undefined") {
+//     localStorage.setItem("authToken", token);
+//   }
+// };
 
 // Covert beer timestamps to Date objects
 export const convertDate = (timestamp: string | Date | null) => {
@@ -132,4 +134,31 @@ export const debounce = (func: () => void, delay: number) => {
       func.apply(null, args as any);
     }, delay);
   };
+};
+
+export const getCategoryId = async (
+  categoryName: string,
+  brewery: Brewery
+): Promise<string> => {
+  // Converting brewery categories to a Map for O(1) lookup times
+  const existingCategories = new Map(
+    brewery?.categories.map((cat) => [cat.name, cat._id])
+  );
+  if (existingCategories.has(categoryName)) {
+    const existingId = existingCategories.get(categoryName);
+    if (!existingId) {
+      throw new Error(`ID not found for existing category: ${categoryName}`);
+    }
+    return existingId;
+  } else {
+    const newCategory = { name: categoryName };
+    const createdCategory = await createCategory({
+      newCategory,
+      breweryId: brewery._id,
+    });
+    if (!createdCategory._id) {
+      throw new Error(`Category creation failed for: ${categoryName}`);
+    }
+    return createdCategory._id;
+  }
 };

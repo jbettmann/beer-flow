@@ -1,6 +1,6 @@
 "use client";
-import { Brewery } from "@/app/types/brewery";
-import { Users } from "@/app/types/users";
+import { Brewery } from "@/types/brewery";
+import { Users } from "@/types/users";
 import { cn } from "@/lib/utils";
 import { ListFilter, MoveDown, MoveUp, UserPlus } from "lucide-react";
 import React, { use, useEffect, useMemo, useRef, useState } from "react";
@@ -58,14 +58,14 @@ const StaffTable = ({ viewFilter, brewery, setIsOpen }: Props) => {
     setIsAlphabetical(!isAlphabetical);
     if (isAlphabetical) {
       setStaff(
-        staff.sort(
-          (a: Users, b: Users) => b?.fullName.localeCompare(a?.fullName)
+        staff.sort((a: Users, b: Users) =>
+          b?.fullName.localeCompare(a?.fullName)
         )
       );
     } else {
       setStaff(
-        staff.sort(
-          (a: Users, b: Users) => a?.fullName.localeCompare(b?.fullName)
+        staff.sort((a: Users, b: Users) =>
+          a?.fullName.localeCompare(b?.fullName)
         )
       );
     }
@@ -215,8 +215,8 @@ const StaffTable = ({ viewFilter, brewery, setIsOpen }: Props) => {
                     s._id === (brewery?.owner as Users)._id
                       ? "Owner"
                       : adminIds.has(s._id)
-                      ? "Admin"
-                      : "Crew";
+                        ? "Admin"
+                        : "Crew";
                   return (
                     <StaffMemberRow
                       key={s._id}
@@ -269,8 +269,8 @@ const StaffTable = ({ viewFilter, brewery, setIsOpen }: Props) => {
                     s._id === (brewery?.owner as Users)._id
                       ? "Owner"
                       : adminIds.has(s._id)
-                      ? "Admin"
-                      : "Crew";
+                        ? "Admin"
+                        : "Crew";
                   return (
                     <StaffMemberCard
                       key={s._id}

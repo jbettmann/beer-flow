@@ -4,7 +4,6 @@ import { auth } from "@/auth";
 type pageProps = [url: string, token: string];
 
 export default async function getBreweryBeers([url, token]: any) {
-
   const user = await auth();
 
   if (user?.user) {
@@ -24,7 +23,7 @@ export default async function getBreweryBeers([url, token]: any) {
       return await response.json();
     } catch (err) {
       console.error(err);
-      return []; 
+      return [];
     }
   } else {
     return [];

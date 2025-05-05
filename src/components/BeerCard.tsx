@@ -1,5 +1,5 @@
 "use client";
-import { Beer } from "@/app/types/beer";
+import { Beer } from "@/types/beer";
 import { useBreweryContext } from "@/context/brewery-beer";
 import { convertDate, isNew } from "@/lib/utils";
 import {
@@ -13,7 +13,6 @@ import {
 import { useEffect, useState } from "react";
 import ToggleButton from "./Buttons/ToggleButton";
 import ImageDisplay from "./ImageDisplay/ImageDisplay";
-import UpdateBeerForm from "./UpdateBeerForm/UpdateBeerForm";
 import { hopSuggestions, maltSuggestions } from "@/lib/suggestionsDB";
 import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";
@@ -84,7 +83,7 @@ const BeerCard = ({ beerId, beerForDrawer, onClose }: Props) => {
         {/* Beer Image and Name */}
         <div className="">
           {isEditing ? (
-            <UpdateBeerForm beer={beer} brewery={selectedBrewery} />
+            <div></div>
           ) : (
             <>
               <div className="flex items-center justify-around lg:p-6 lg:pb-3 relative gap-2 xs:gap-4 md:gap-6 ">

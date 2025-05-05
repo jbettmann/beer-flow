@@ -1,6 +1,6 @@
 "use client";
-import { Beer } from "@/app/types/beer";
-import { Category } from "@/app/types/category";
+import { Beer } from "@/types/beer";
+import { Category } from "@/types/category";
 import { Beer as BeerMug, Check, Flame, LogIn, Scissors } from "lucide-react";
 import { useEffect, useState } from "react";
 import AlertDialog from "../Alerts/AlertDialog";
@@ -14,7 +14,7 @@ import updateBeerCategory from "@/lib/PUT/updateBeerCategory";
 import useSWR from "swr";
 import getBreweryBeers from "@/lib/getBreweryBeers";
 import getSingleBrewery from "@/lib/getSingleBrewery";
-import { Brewery } from "@/app/types/brewery";
+import { Brewery } from "@/types/brewery";
 
 type Props = {
   category: Category;

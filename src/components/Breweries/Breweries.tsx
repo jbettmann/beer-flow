@@ -1,5 +1,5 @@
 "use client";
-import { Brewery } from "@/app/types/brewery";
+import { Brewery } from "@/types/brewery";
 import { debounce } from "@/lib/utils";
 import { Plus, Router } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -11,6 +11,7 @@ import CreateBreweryForm from "../CreateBreweryForm";
 import BottomDrawer from "../Drawers/BottomDrawer";
 import { useBreweryContext } from "@/context/brewery-beer";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { toast } from "sonner";
 
 type Props = {
   breweries: Brewery[];

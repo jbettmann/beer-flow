@@ -3,7 +3,7 @@ import React from "react";
 import blueprint from "../../flatfile/blueprint";
 import { Sheet, useFlatfile } from "@flatfile/react";
 import moment from "moment";
-import { Beer } from "@/app/types/beer";
+import { Beer } from "@/types/beer";
 type Props = {};
 
 const generateCSVTemplate = (blueprint) => {

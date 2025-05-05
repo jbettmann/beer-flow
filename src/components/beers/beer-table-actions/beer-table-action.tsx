@@ -3,20 +3,22 @@
 import { DataTableFilterBox } from "@/components/ui/table/data-table-filter-box";
 import { DataTableResetFilter } from "@/components/ui/table/data-table-reset-filter";
 import { DataTableSearch } from "@/components/ui/table/data-table-search";
-import { useProductTableFilters } from "./use-product-table-filters";
+import { useProductTableFilters } from "./use-beer-table-filters";
 import { useBreweryContext } from "@/context/brewery-beer";
-import { Suspense, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import TableViewToggleButton from "@/components/Buttons/table-view-toggle-btn";
 import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
-import BreweryProfiles from "@/components/BreweryProfiles";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Category } from "@/app/types/category";
+import { Category } from "@/types/category";
 import { useSearchParams } from "next/navigation";
-import { DataTable as BeerListTable } from "@/components/ui/table/data-table";
+
+import BeerCardSkeleton from "@/components/skeletons/beer-card-skeleton";
+import { BeerListTable } from "../beer-list-table";
+import BeerListCarousel from "../beer-list-carousel";
 import { columns } from "./columns";
 
 export default function ProductTableAction({
@@ -132,20 +134,22 @@ export default function ProductTableAction({
             setSearchQuery={setSearchQuery}
             setPage={setPage}
           />
-          <DataTableFilterBox
-            filterKey="categories"
-            title="Categories"
-            options={CATEGORY_OPTIONS}
-            setFilterValue={setCategoriesFilter}
-            filterValue={categoriesFilter as string}
-          />
-          <DataTableFilterBox
-            filterKey="styles"
-            title="Styles"
-            options={STYLE_OPTIONS}
-            setFilterValue={setStylesFilter}
-            filterValue={stylesFilter}
-          />
+          <div className="flex flex-wrap gap-4">
+            <DataTableFilterBox
+              filterKey="categories"
+              title="Categories"
+              options={CATEGORY_OPTIONS}
+              setFilterValue={setCategoriesFilter}
+              filterValue={categoriesFilter as string}
+            />
+            <DataTableFilterBox
+              filterKey="styles"
+              title="Styles"
+              options={STYLE_OPTIONS}
+              setFilterValue={setStylesFilter}
+              filterValue={stylesFilter}
+            />
+          </div>
           <DataTableResetFilter
             isFilterActive={isAnyFilterActive}
             onReset={resetFilters}
@@ -159,7 +163,15 @@ export default function ProductTableAction({
           />
         )}
       </div>
-      <Suspense fallback={<DataTableSkeleton columnCount={5} rowCount={10} />}>
+      <Suspense
+        fallback={
+          isTableView ? (
+            <DataTableSkeleton columnCount={5} rowCount={10} />
+          ) : (
+            <BeerCardSkeleton />
+          )
+        }
+      >
         {isTableView ? (
           <BeerListTable
             columns={columns}
@@ -167,7 +179,7 @@ export default function ProductTableAction({
             totalItems={filteredBeers.length}
           />
         ) : (
-          <BreweryProfiles categories={categories} data={filteredBeers} />
+          <BeerListCarousel categories={categories} data={filteredBeers} />
         )}
       </Suspense>
       {/* Small Screen New Beer Button */}

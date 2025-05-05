@@ -1,5 +1,5 @@
 "use client";
-import { Users } from "@/app/types/users";
+import { Users } from "@/types/users";
 import { useBreweryContext } from "@/context/brewery-beer";
 import updateBreweryAdmin from "@/lib/PATCH/updateBreweryAdmin";
 import { PencilLine, SkullIcon } from "lucide-react";

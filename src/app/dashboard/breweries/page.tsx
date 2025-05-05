@@ -3,7 +3,7 @@ import Breweries from "@/components/Breweries/Breweries";
 import BreweriesPageLS from "@/components/LoadingSkeleton/BreweriesPageLS";
 import getBreweries from "@/lib/getBreweries";
 import { Suspense } from "react";
-import { Brewery } from "../../types/brewery";
+import { Brewery } from "../../../types/brewery";
 
 const BreweriesPage = async () => {
   const breweryData: Promise<Brewery[]> = getBreweries();

@@ -1,7 +1,7 @@
 "use client";
-import { Beer } from "@/app/types/beer";
-import { Brewery } from "@/app/types/brewery";
-import { Category, NewCategory } from "@/app/types/category";
+import { Beer } from "@/types/beer";
+import { Brewery } from "@/types/brewery";
+import { Category, NewCategory } from "@/types/category";
 import { useBreweryContext } from "@/context/brewery-beer";
 import { handleDeleteCategory } from "@/lib/handleSubmit/handleDeleteCategory";
 import { debounce, handleBeerView, isNew } from "@/lib/utils";

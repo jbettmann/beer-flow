@@ -1,5 +1,5 @@
-import { Brewery } from "@/app/types/brewery";
-import { Users } from "@/app/types/users";
+import { Brewery } from "@/types/brewery";
+import { Users } from "@/types/users";
 import ImageDisplay from "@/components/ImageDisplay/ImageDisplay";
 import { getInitials } from "@/lib/utils";
 import { ChevronRight } from "lucide-react";

@@ -36,7 +36,13 @@ const Provider: FC<ProviderProps> = ({ children }) => {
         }}
       >
         <NuqsAdapter>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+            enableColorScheme
+          >
             <BreweryProvider>
               <ToastProvider>
                 <QueryClientProvider client={queryClient}>

@@ -1,5 +1,5 @@
 "use client";
-import { Brewery } from "@/app/types/brewery";
+import { Brewery } from "@/types/brewery";
 import handleCreateBeer from "@/lib/handleSubmit/handleCreateBeer";
 import { hopSuggestions, maltSuggestions } from "@/lib/suggestionsDB";
 import validateFields from "@/lib/validators/forms";
@@ -13,7 +13,7 @@ import { useSession } from "next-auth/react";
 import useSWR from "swr";
 import getBreweryBeers from "@/lib/getBreweryBeers";
 import { useBreweryContext } from "@/context/brewery-beer";
-import { Beer } from "@/app/types/beer";
+import { Beer } from "@/types/beer";
 import Image from "next/image";
 import { ImagePlus, X } from "lucide-react";
 import { useToast } from "@/context/toast";
