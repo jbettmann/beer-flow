@@ -176,7 +176,7 @@ h6 {
 
 
 .alert-modal {
-  @apply bg-primary text-background bg-opacity-10 rounded-xl border-none
+  @apply bg-primary/10 text-background rounded-xl border-none
 }
 
 
@@ -402,7 +402,7 @@ h6 {
 
 
 .new-category {
-  @apply bg-primary bg-opacity-10 shadow-xl
+  @apply bg-primary/10 shadow-xl
 }
 
 .ReactTags__remove {
