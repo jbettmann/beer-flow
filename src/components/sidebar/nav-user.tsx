@@ -53,7 +53,7 @@ export function NavUser({ user }: { user: User }) {
                   src={user?.picture}
                   alt={user?.name || "user image"}
                 />
-                <AvatarFallback className=" logo__default !text-base">
+                <AvatarFallback className=" logo__default text-base!">
                   {getInitials(user?.name || user.fullName)}
                 </AvatarFallback>
               </Avatar>
@@ -65,7 +65,7 @@ export function NavUser({ user }: { user: User }) {
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
@@ -77,7 +77,7 @@ export function NavUser({ user }: { user: User }) {
                     src={user?.picture}
                     alt={user?.name || "user image"}
                   />
-                  <AvatarFallback className=" logo__default !text-base">
+                  <AvatarFallback className=" logo__default text-base!">
                     {getInitials(user?.name || user.fullName)}
                   </AvatarFallback>
                 </Avatar>

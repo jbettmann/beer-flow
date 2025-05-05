@@ -171,7 +171,7 @@ export const Search: FC<SearchDrawerProps> = ({ isOpen, setIsOpen }) => {
           onClick={onClose}
         >
           <span className="md:hidden">Cancel</span>
-          <kbd className="hidden  md:kbd !bg-accent text-primary">Esc</kbd>
+          <kbd className="hidden  md:kbd bg-accent! text-primary">Esc</kbd>
         </button>
       </div>
       {/* Recent Searches  */}

@@ -410,7 +410,7 @@ const CategoryList = ({
       )}
       {/* Small Screen Filter and Edit */}
       <div
-        className={`lg:hidden flex justify-between sticky top-0 l z-[1] bg-background xxs:px-4 w-full`}
+        className={`lg:hidden flex justify-between sticky top-0 l z-1 bg-background xxs:px-4 w-full`}
       >
         {isEdit ? (
           <>
@@ -440,7 +440,7 @@ const CategoryList = ({
             </button>
             <div
               ref={ref}
-              className={`lg:hidden flex-initial z-[1] dropdown-end bg-transparent lg:z-0 ${cn(
+              className={`lg:hidden flex-initial z-1 dropdown-end bg-transparent lg:z-0 ${cn(
                 {
                   dropdown: true,
                   "dropdown-open ": isFilterOpen,

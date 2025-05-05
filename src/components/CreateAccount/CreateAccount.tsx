@@ -188,7 +188,7 @@ const CreateAccount = (props: Props) => {
       >
         <div className="flex flex-col">
           <label
-            className="beer-card__label-text !text-primary"
+            className="beer-card__label-text text-primary!"
             htmlFor="fullName"
           >
             Full Name
@@ -211,7 +211,7 @@ const CreateAccount = (props: Props) => {
         </div>
         <div className="flex flex-col">
           <label
-            className="beer-card__label-text !text-primary"
+            className="beer-card__label-text text-primary!"
             htmlFor="email"
           >
             Email
@@ -234,7 +234,7 @@ const CreateAccount = (props: Props) => {
         </div>
         <div className="flex flex-col">
           <label
-            className="beer-card__label-text !text-primary"
+            className="beer-card__label-text text-primary!"
             htmlFor="password"
           >
             Password
@@ -257,7 +257,7 @@ const CreateAccount = (props: Props) => {
         </div>
         <div className="flex flex-col">
           <label
-            className="beer-card__label-text !text-primary"
+            className="beer-card__label-text text-primary!"
             htmlFor="confirmPassword"
           >
             Confirm Password
@@ -285,7 +285,7 @@ const CreateAccount = (props: Props) => {
         <SaveButton
           isLoading={isCreateLoading}
           title="Create Account"
-          className="create-btn !bg-accent !text-primary my-6"
+          className="create-btn bg-accent! text-primary! my-6"
           type="submit"
         />
         <div className="text-sm inline-flex gap-2 mx-auto">

@@ -14,7 +14,7 @@ const StaffManagementTable = (props: Props) => {
         ))}
       </div>
 
-      <div className=" flex-grow border-r-8 border-gray-200 animate-pulse">
+      <div className=" grow border-r-8 border-gray-200 animate-pulse">
         <table className="table ">
           {/* head */}
           <thead>
@@ -28,7 +28,7 @@ const StaffManagementTable = (props: Props) => {
           </thead>
           <tbody>
             {[...Array(6)].map((_, idx) => (
-              <tr key={idx} className="flex-grow">
+              <tr key={idx} className="grow">
                 <th className="w-8 h-2 bg-gray-200 animate-pulse"></th>
                 <td className="flex items-center space-x-3 w-full">
                   <div className="avatar w-12 h-12 bg-gray-200 animate-pulse"></div>

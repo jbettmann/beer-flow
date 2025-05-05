@@ -553,7 +553,7 @@ const CategoryRow = ({
 
       <tr
         className={` lg:table-row table-row__effect relative ${
-          isOpen ? " category-card__open !shadow-none hover:shadow-none" : ""
+          isOpen ? " category-card__open shadow-none! hover:shadow-none" : ""
         } ${isChecked ? "table-row__checked" : ""}`}
         key={category._id}
       >
@@ -688,7 +688,7 @@ const CategoryRow = ({
           <>
             <td></td>
             <td></td>
-            <th className="flex gap-3 !p-4 absolute  right-0 rounded-r-lg">
+            <th className="flex gap-3 p-4! absolute  right-0 rounded-r-lg">
               <button
                 className="btn btn-ghost text-primary " // Made the button more visible
                 onClick={() => setChangeName(false)}
@@ -706,7 +706,7 @@ const CategoryRow = ({
       </tr>
       <tr
         className={`${
-          isOpen ? "category-card__open !shadow-lg rounded-lg" : ""
+          isOpen ? "category-card__open shadow-lg! rounded-lg" : ""
         }`}
       >
         <td colSpan={5} className="rounded-b-lg ">
@@ -726,7 +726,7 @@ const CategoryRow = ({
                   <th>ABV%</th>
                   <th>Last Updated</th>
 
-                  <th className="absolute right-5 top-[-23px] !pr-0">
+                  <th className="absolute right-5 top-[-23px] pr-0!">
                     <button
                       className="btn btn-sm border-none bg-transparent disabled:bg-transparent text-primary hover:btn-warning"
                       onClick={() => setMoveAlertOpen(true)}

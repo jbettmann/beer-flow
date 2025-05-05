@@ -26,7 +26,7 @@ const BeerCard = forwardRef<HTMLDivElement, Props>((props, ref) => {
         ref={ref}
         {...rest}
         className={cn(
-          "w-full h-full max-h-[40rem] overflow-x-scroll hover:cursor-pointer",
+          "w-full h-full max-h-[40rem] overflow-x-scroll hover:cursor-pointer py-0",
           cardClassName
         )}
       >
@@ -42,7 +42,7 @@ const BeerCard = forwardRef<HTMLDivElement, Props>((props, ref) => {
             <h6 className="text-gray-500 dark:text-gray-400 text-base text-left">
               {beer.style}
             </h6>
-            <Card className="p-2 flex justify-between items-center w-full my-4">
+            <Card className="p-2 px-3 flex-row justify-between items-center w-full my-4">
               <div className="text-center text-base font-bold flex-1">
                 {beer.abv}
                 <h5 className="flex items-center justify-center gap-1 text-sm">
@@ -51,14 +51,14 @@ const BeerCard = forwardRef<HTMLDivElement, Props>((props, ref) => {
                 </h5>
               </div>
               <Separator
-                className="mx-2 h-10 bg-gray-400"
+                className=" h-10 w-0.5 bg-border"
                 orientation="vertical"
               />
               <h5 className="flex items-center justify-center gap-1 text-base w-1/3">
                 {beer.style}
               </h5>
               <Separator
-                className="mx-2 h-10 bg-gray-400"
+                className=" h-10 w-0.5 bg-border"
                 orientation="vertical"
               />
               <div className="text-center text-base font-bold flex-1">

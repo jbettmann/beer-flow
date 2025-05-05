@@ -47,7 +47,7 @@ export function BrewerySwitcher({ breweries }: { breweries: Brewery[] }) {
                     <ImageDisplay item={selectedBrewery} className="h-6" />
                   ) : (
                     selectedBrewery?.companyName && (
-                      <div className="logo__default  !text-base">
+                      <div className="logo__default  text-base!">
                         {getInitials(selectedBrewery?.companyName as string)}
                       </div>
                     )
@@ -61,7 +61,7 @@ export function BrewerySwitcher({ breweries }: { breweries: Brewery[] }) {
               </SidebarMenuButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-              className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+              className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
               align="start"
               side={isMobile ? "bottom" : "right"}
               sideOffset={4}
@@ -85,12 +85,12 @@ export function BrewerySwitcher({ breweries }: { breweries: Brewery[] }) {
                         <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                           <ImageDisplay
                             item={brewery}
-                            className="logo !w-6 !h-6"
+                            className="logo w-6! h-6!"
                           />
                         </div>
                       ) : (
                         brewery?.companyName && (
-                          <div className="logo__default  !text-base">
+                          <div className="logo__default  text-base!">
                             {getInitials(brewery?.companyName as string)}
                           </div>
                         )

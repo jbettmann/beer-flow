@@ -56,7 +56,7 @@ const StaffContainer = (props: Props) => {
           )}
         </div>
         {/* Small Screen New Category Button */}
-        <div className="fixed right-5 bottom-10 p-1 z-[2] lg:hidden ">
+        <div className="fixed right-5 bottom-10 p-1 z-2 lg:hidden ">
           {isAdmin && (
             <button
               onClick={() => setIsOpen(true)}

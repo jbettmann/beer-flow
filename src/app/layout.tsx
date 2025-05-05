@@ -5,6 +5,7 @@ import { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
+import "./theme.css";
 import { Toaster } from "sonner";
 import { cookies } from "next/headers";
 const myFont = localFont({
@@ -42,7 +43,7 @@ export default async function Layout(props: {
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          "bg-background overflow-hidden overscroll-none font-sans antialiased",
+          "bg-background overflow-hidden",
           `${myFont.variable} ${inter.className}`
         )}
       >

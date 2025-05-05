@@ -190,7 +190,7 @@ export const MultiSelect = React.forwardRef<
         onOpenChange={setIsPopoverOpen}
         modal={modalPopover}
       >
-        <PopoverTrigger asChild className="bg-inherit dark:!bg-inherit">
+        <PopoverTrigger asChild className="bg-inherit dark:bg-inherit!">
           <Button
             ref={ref}
             {...props}
@@ -275,7 +275,7 @@ export const MultiSelect = React.forwardRef<
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="p-0 w-[var(--radix-popper-anchor-width)]"
+          className="p-0 w-(--radix-popper-anchor-width)"
           align="start"
           onEscapeKeyDown={() => setIsPopoverOpen(false)}
         >

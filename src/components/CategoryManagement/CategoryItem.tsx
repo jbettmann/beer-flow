@@ -48,7 +48,7 @@ const CategoryItem = ({
   return (
     <>
       <tr className={`relative ${checked ? "table-row__checked" : ""}`}>
-        <th className="rounded-l-lg !py-6">
+        <th className="rounded-l-lg py-6!">
           <label>
             <input
               type="checkbox"

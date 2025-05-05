@@ -228,7 +228,7 @@ const CreateBeerForm = ({}: pageProps) => {
   return isAdmin ? (
     <form
       onSubmit={handleSubmit}
-      className=" p-4 form md:!p-0 flex flex-col justify-between mx-auto rounded-lg "
+      className=" p-4 form md:p-0! flex flex-col justify-between mx-auto rounded-lg "
     >
       <div className="flex w-full justify-between mb-2  bg-primary py-3 md:px-4 sticky top-[-2px] h-10 md:h-auto z-20  ">
         <button

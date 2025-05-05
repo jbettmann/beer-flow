@@ -272,7 +272,7 @@ const CreateBreweryForm = ({ onClose }: Props) => {
             <input
               id="companyName"
               name="companyName"
-              className="form__input w-full !font-bold !text-2xl text-primary text-center !pr-7 lg:!h-11"
+              className="form__input w-full font-bold! text-2xl! text-primary text-center pr-7! lg:h-11!"
               placeholder="Company Name"
               autoComplete="off"
               value={values.companyName}
