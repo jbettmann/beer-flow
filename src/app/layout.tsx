@@ -42,7 +42,7 @@ export default async function Layout(props: {
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          "bg-background overflow-hidden overscroll-none font-sans antialiased",
+          "bg-background overflow-hidden",
           `${myFont.variable} ${inter.className}`
         )}
       >
