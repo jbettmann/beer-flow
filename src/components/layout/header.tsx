@@ -14,7 +14,7 @@ export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   return (
     <header className="flex h-16 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
-      {isMobile ? (
+      {/* {isMobile ? (
         <SideDrawer isOpen={isSearchOpen}>
           <Search isOpen={isSearchOpen} setIsOpen={setIsSearchOpen} />
         </SideDrawer>
@@ -22,7 +22,7 @@ export default function Header() {
         <SearchModal isOpen={isSearchOpen}>
           <Search isOpen={isSearchOpen} setIsOpen={setIsSearchOpen} />
         </SearchModal>
-      )}
+      )} */}
       <div className="flex items-center gap-2 px-4">
         <SidebarTrigger className="-ml-1" />
         <Separator orientation="vertical" className="mr-2 h-4" />

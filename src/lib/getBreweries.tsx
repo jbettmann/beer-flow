@@ -1,33 +1,26 @@
+"use server";
 import { auth } from "@/auth";
+import { httpClient } from "@/services/utils/httpClient";
 
 export default async function getBreweries() {
   const session = await auth();
+  const { accessToken, breweries } = session?.user || {};
 
-  if (session?.user) {
-    try {
-      const response = await fetch(
-        process.env.NEXT_PUBLIC_API_URL + `/users/breweries`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session.user.accessToken}`,
-          },
-          body: JSON.stringify({ breweryIds: session.user.breweries }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(response.statusText);
+  try {
+    const response = await httpClient.post(
+      `/users/breweries`,
+      { breweryIds: breweries },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       }
+    );
 
-      const responseData = await response.json();
-      return responseData.breweries;
-    } catch (err) {
-      console.error(err);
-      return []; // Return empty array on error
-    }
-  } else {
-    return []; // Return empty array if user has no breweries
+    const responseData = await response;
+    return responseData.breweries;
+  } catch (err) {
+    console.error(err);
+    return []; // Return empty array on error
   }
 }

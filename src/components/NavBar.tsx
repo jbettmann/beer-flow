@@ -27,14 +27,16 @@ import SearchModal from "./Alerts/SearchModal";
 import SideDrawer from "./Drawers/SideDrawer";
 import ImageDisplay from "./ImageDisplay/ImageDisplay";
 import { Search } from "./Search/Search";
+import { useSidebar } from "./ui/sidebar";
 
 const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
+  const { isMobile } = useSidebar();
   const { selectedBrewery, setSelectedBrewery, isAdmin } = useBreweryContext();
 
   const [isScrolled, setIsScrolled] = useState(false);
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  // const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   // Reference to the drawer div
 
   const breweryMenuRef = useRef<any>(null);

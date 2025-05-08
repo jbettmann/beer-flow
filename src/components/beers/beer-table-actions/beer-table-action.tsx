@@ -1,31 +1,23 @@
 "use client";
 
+import TableViewToggleButton from "@/components/Buttons/table-view-toggle-btn";
 import { DataTableFilterBox } from "@/components/ui/table/data-table-filter-box";
 import { DataTableResetFilter } from "@/components/ui/table/data-table-reset-filter";
 import { DataTableSearch } from "@/components/ui/table/data-table-search";
-import { useProductTableFilters } from "./use-beer-table-filters";
-import { useBreweryContext } from "@/context/brewery-beer";
-import { Suspense, useEffect, useMemo, useState } from "react";
-import TableViewToggleButton from "@/components/Buttons/table-view-toggle-btn";
 import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import Link from "next/link";
-import { Plus } from "lucide-react";
+import { useBreweryContext } from "@/context/brewery-beer";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Category } from "@/types/category";
 import { useSearchParams } from "next/navigation";
+import { Suspense, useMemo, useState } from "react";
+import { useProductTableFilters } from "./use-beer-table-filters";
 
 import BeerCardSkeleton from "@/components/skeletons/beer-card-skeleton";
-import { BeerListTable } from "../beer-list-table";
 import BeerListCarousel from "../beer-list-carousel";
+import { BeerListTable } from "../beer-list-table";
 import { columns } from "./columns";
 
-export default function ProductTableAction({
-  categories,
-}: {
-  categories: Category[];
-}) {
+export default function ProductTableAction() {
   const {
     stylesFilter,
     setStylesFilter,
@@ -55,11 +47,11 @@ export default function ProductTableAction({
   );
   const CATEGORY_OPTIONS = useMemo(
     () =>
-      categories.map((category) => ({
+      selectedBrewery?.categories.map((category) => ({
         value: category.name,
         label: category.name,
       })) || [],
-    [selectedBrewery, categories]
+    [selectedBrewery?.categories]
   );
 
   const STYLE_OPTIONS = useMemo(() => {
@@ -179,24 +171,9 @@ export default function ProductTableAction({
             totalItems={filteredBeers.length}
           />
         ) : (
-          <BeerListCarousel categories={categories} data={filteredBeers} />
+          <BeerListCarousel data={filteredBeers} />
         )}
       </Suspense>
-      {/* Small Screen New Beer Button */}
-      {isAdmin && isMobile && (
-        //  Small Screen New Beer Button
-        <div className="fixed right-5 bottom-10 p-1 z-2 lg:hidden ">
-          <Link
-            href={`/dashboard/breweries/${selectedBrewery?._id}/beers/create`}
-            className={cn(
-              buttonVariants({ size: "actionButton" }),
-              "text-xs md:text-sm rounded-full px-2"
-            )}
-          >
-            <Plus />
-          </Link>
-        </div>
-      )}
     </>
   );
 }

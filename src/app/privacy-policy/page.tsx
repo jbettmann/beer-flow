@@ -6,12 +6,7 @@ const Policy = (props: Props) => {
   return (
     <>
       {/* Hello world */}
-      <style
-        dangerouslySetInnerHTML={{
-          __html:
-            "\n  [data-custom-class='body'], [data-custom-class='body'] * {\n          background: transparent !important;\n        }\n[data-custom-class='title'], [data-custom-class='title'] * {\n          font-family: Arial !important;\nfont-size: 26px !important;\ncolor: #000000 !important;\n        }\n[data-custom-class='subtitle'], [data-custom-class='subtitle'] * {\n          font-family: Arial !important;\ncolor: #595959 !important;\nfont-size: 14px !important;\n        }\n[data-custom-class='heading_1'], [data-custom-class='heading_1'] * {\n          font-family: Arial !important;\nfont-size: 19px !important;\ncolor: #000000 !important;\n        }\n[data-custom-class='heading_2'], [data-custom-class='heading_2'] * {\n          font-family: Arial !important;\nfont-size: 17px !important;\ncolor: #000000 !important;\n        }\n[data-custom-class='body_text'], [data-custom-class='body_text'] * {\n          color: #595959 !important;\nfont-size: 14px !important;\nfont-family: Arial !important;\n        }\n[data-custom-class='link'], [data-custom-class='link'] * {\n          color: #3030F1 !important;\nfont-size: 14px !important;\nfont-family: Arial !important;\nword-break: break-word !important;\n        }\n",
-        }}
-      />
+      <style />
       <div data-custom-class="body" className="p-8 w-full lg:w-1/2 mx-auto">
         <div className="">
           <strong>
@@ -9657,12 +9652,7 @@ const Policy = (props: Props) => {
                                                                                             .
                                                                                           </span>
                                                                                         </div>
-                                                                                        <style
-                                                                                          dangerouslySetInnerHTML={{
-                                                                                            __html:
-                                                                                              "\n      ul {\n        list-style-type: square;\n      }\n      ul > li > ul {\n        list-style-type: circle;\n      }\n      ul > li > ul > li > ul {\n        list-style-type: square;\n      }\n      ol li {\n        font-family: Arial ;\n      }\n    ",
-                                                                                          }}
-                                                                                        />
+                                                                                        <style />
                                                                                       </div>
                                                                                       <div
                                                                                         style={{

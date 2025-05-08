@@ -1,10 +1,14 @@
 import AcceptInvite from "@/components/Invite/AcceptInvite";
-import React from "react";
+import React, { Suspense } from "react";
 
 type Props = {};
 
 const AcceptInvitePage = (props: Props) => {
-  return <AcceptInvite />;
+  return (
+    <Suspense fallback={<div>Loading invite...</div>}>
+      <AcceptInvite />
+    </Suspense>
+  );
 };
 
 export default AcceptInvitePage;

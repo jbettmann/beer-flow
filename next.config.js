@@ -1,10 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experiments: {
-    topLevelAwait: true,
-    appDir: true,
-    serverActions: true,
-  },
   images: {
     domains: ["lh3.googleusercontent.com", "api.slingacademy.com"],
     remotePatterns: [

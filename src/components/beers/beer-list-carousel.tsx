@@ -16,30 +16,25 @@ import {
   CarouselPrevious,
 } from "../ui/carousel";
 
-export default function BeerListCarousel({
-  categories,
-  data,
-}: {
-  categories: Category[];
-  data: Beer[];
-}) {
-  const isMobile = useIsMobile();
-  const { beersLoading, breweryLoading } = useBreweryContext();
+export default function BeerListCarousel({ data }: { data: Beer[] }) {
+  const { beersLoading, breweryLoading, selectedBrewery } = useBreweryContext();
 
   const getBeersForCategory = useMemo(() => {
     return (
-      categories.map((category, i) => {
-        return {
-          title: category.name,
-          beers:
-            data?.filter((beer) =>
-              beer.category
-                ? beer?.category.some((cat) => cat.name === category.name) &&
-                  !beer.archived
-                : false
-            ) || [],
-        };
-      }) || []
+      (selectedBrewery &&
+        selectedBrewery?.categories.map((category, i) => {
+          return {
+            title: category.name,
+            beers:
+              data?.filter((beer) =>
+                beer.category
+                  ? beer?.category.some((cat) => cat.name === category.name) &&
+                    !beer.archived
+                  : false
+              ) || [],
+          };
+        })) ||
+      []
     );
   }, [data]);
 
