@@ -7,7 +7,7 @@ export const config = {
     "/api/message/:path*",
     "/accept-invite/:path*",
     "/accept-invite",
-    "/dashboard/:path*",
+    "/dashboard/overview",
     "/dashboard/breweries",
     "/dashboard/breweries/:path*",
     "/dashboard/breweries/beers/",
