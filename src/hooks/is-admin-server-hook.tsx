@@ -1,3 +1,4 @@
+"use server";
 import { Users } from "@/types/users";
 import { auth } from "@/auth";
 import getSingleBrewery from "@/lib/getSingleBrewery";

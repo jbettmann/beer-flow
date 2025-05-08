@@ -12,8 +12,9 @@ export default async function DashboardLayout({
   children: React.ReactNode;
   modal: React.ReactNode;
 }) {
-  const breweries = (await getBreweries()) || [];
   const session = await auth();
+  const breweries = (await getBreweries()) || [];
+
   return (
     <div className="flex w-full">
       <AppSidebar breweries={breweries} user={session?.user} />

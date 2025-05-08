@@ -1,3 +1,4 @@
+export const runtime = "nodejs";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 
@@ -187,9 +188,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           selectedBreweryId = existingUser.breweries[0]; // fallback if logging in to different account
         }
 
-        user.id = existingUser.id.toString();
-        user.breweries = existingUser.breweries;
-        user.notifications = existingUser.notifications;
+        user.id = existingUser._id.toString();
+        user.breweries = existingUser.breweries.map((b: any) => b.toString());
+        user.notifications = { ...existingUser.notifications };
         user.selectedBreweryId = selectedBreweryId || null;
 
         return true;
@@ -322,17 +323,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return token;
     },
 
-    async session({ session, token, user }) {
-      if (token.accessToken) {
-        session.user = token as any;
-        session.user.accessToken = token.accessToken as string;
-        session.user.breweries = token.breweries as string[];
-        session.user.selectedBreweryId =
-          typeof token.selectedBreweryId === "string"
-            ? token.selectedBreweryId
-            : null;
-        session.user.notifications = token.notifications as Notifications;
-      }
+    async session({ session, token }: { session: any; token: any }) {
+      // session.user = token as any;
+      session.user = {
+        id: token.id as string,
+        accessToken: token.accessToken as string,
+        breweries: token.breweries as string[],
+        selectedBreweryId: token.selectedBreweryId as string | null,
+        notifications: token.notifications as Notifications,
+      };
 
       return session;
     },

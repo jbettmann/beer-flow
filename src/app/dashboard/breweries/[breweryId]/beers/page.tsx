@@ -1,19 +1,14 @@
+import ProductTableAction from "@/components/beers/beer-table-actions/beer-table-action";
 import PageContainer from "@/components/layout/page-container";
 import { buttonVariants } from "@/components/ui/button";
+import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
-import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
+import getIsAdminServer from "@/hooks/is-admin-server-hook";
+import { searchParamsCache, serialize } from "@/lib/searchparams";
 import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { SearchParams } from "nuqs/server";
-import { Suspense } from "react";
-import ProductTableAction from "@/components/beers/beer-table-actions/beer-table-action";
-import { searchParamsCache, serialize } from "@/lib/searchparams";
-import { Heading } from "@/components/ui/heading";
-import TableViewToggleButton from "@/components/Buttons/table-view-toggle-btn";
-import { auth } from "@/auth";
-import getSingleBrewery from "@/lib/getSingleBrewery";
-import getIsAdminServer from "@/hooks/is-admin-server-hook";
 
 export const metadata = {
   title: "Dashboard: Brewery Beers",
@@ -29,9 +24,6 @@ async function Page({
   const resSearchParams = await searchParams;
   const { breweryId } = await params;
 
-  const selectedBrewery = await getSingleBrewery([
-    `https://beer-bible-api.vercel.app/breweries/${breweryId}`,
-  ]);
   const isAdmin = await getIsAdminServer(breweryId);
 
   // Allow nested RSCs to access the search params (in a type-safe way)
@@ -39,7 +31,6 @@ async function Page({
 
   // This key is used for invoke suspense if any of the search params changed (used for filters).
   const key = serialize({ ...resSearchParams });
-
   return (
     <PageContainer scrollable={false}>
       <div className="flex flex-1 flex-col space-y-4 ">
@@ -53,12 +44,12 @@ async function Page({
               href={`/dashboard/breweries/${breweryId}/beers/create`}
               className={cn(buttonVariants(), "text-xs md:text-sm")}
             >
-              <Plus className="mr-2 h-4 w-4" /> Add New
+              <Plus className="h-4 w-4" /> Add New
             </Link>
           )}
         </div>
         <Separator />
-        <ProductTableAction categories={selectedBrewery.categories} />
+        <ProductTableAction />
       </div>
     </PageContainer>
   );

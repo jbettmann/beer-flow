@@ -1,9 +1,8 @@
 "use client";
-import { Notifications } from "@/types/notifications";
 import updateUserNotifications from "@/lib/PUT/updateUserNotfications";
-import { set } from "mongoose";
+import { Notifications } from "@/types/notifications";
 import { useSession } from "next-auth/react";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const NotificationSettings = () => {
   const { data: session, update } = useSession();
@@ -15,7 +14,7 @@ const NotificationSettings = () => {
   const isInitialRender = useRef(true);
 
   // Get the keys from the notifications object
-  const [notificationKeys, setNotificationKeys] = useState<object>(
+  const [notificationKeys, setNotificationKeys] = useState<string[]>(
     Object.keys(session?.user.notifications).filter(
       (key) => key !== "allow" && key !== "_id"
     )

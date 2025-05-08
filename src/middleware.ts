@@ -1,6 +1,5 @@
+import { getToken } from "next-auth/jwt";
 import { NextResponse, type NextRequest } from "next/server";
-import { auth } from "@/auth";
-import { rateLimiter } from "./lib/rate-limiter";
 
 export const config = {
   matcher: [
@@ -8,6 +7,7 @@ export const config = {
     "/api/message/:path*",
     "/accept-invite/:path*",
     "/accept-invite",
+    "/dashboard/:path*",
     "/dashboard/breweries",
     "/dashboard/breweries/:path*",
     "/dashboard/breweries/beers/",
@@ -18,9 +18,9 @@ export const config = {
   ],
 };
 
-export default auth(async function middleware(req: NextRequest) {
+export default async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
-  const session = await auth();
+  const session = await getToken({ req, secret: process.env.AUTH_SECRET });
 
   // Rate limiting for message endpoint
   // if (pathname.startsWith("/api/message")) {
@@ -39,7 +39,7 @@ export default auth(async function middleware(req: NextRequest) {
   // }
 
   // Authentication checks
-  const isAuth = !!session?.user;
+  const isAuth = !!session?.accessToken;
   const isAuthPage = pathname.startsWith("/auth/login");
   const acceptInvite = pathname.startsWith("/accept-invite");
 
@@ -59,4 +59,4 @@ export default auth(async function middleware(req: NextRequest) {
   }
 
   return NextResponse.next();
-}) as any;
+}

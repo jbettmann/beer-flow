@@ -54,7 +54,7 @@ export function NavUser({ user }: { user: User }) {
                   alt={user?.name || "user image"}
                 />
                 <AvatarFallback className=" logo__default text-base!">
-                  {getInitials(user?.name || user.fullName)}
+                  {getInitials(user?.name || user?.fullName)}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
