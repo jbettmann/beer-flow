@@ -324,8 +324,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
 
     async session({ session, token }: { session: any; token: any }) {
-      // session.user = token as any;
       session.user = {
+        ...(session.user || {}),
         id: token.id as string,
         accessToken: token.accessToken as string,
         breweries: token.breweries as string[],

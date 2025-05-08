@@ -39,6 +39,7 @@ export function NavUser({ user }: { user: User }) {
 
     sessionStorage.removeItem("beerForm");
   };
+  console.log({ user });
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -50,13 +51,14 @@ export function NavUser({ user }: { user: User }) {
             >
               <Avatar className="h-8 w-8 rounded-full">
                 <AvatarImage
-                  src={user?.picture}
+                  src={user?.picture ?? user?.image}
                   alt={user?.name || "user image"}
                 />
                 <AvatarFallback className=" logo__default text-base!">
                   {getInitials(user?.name || user?.fullName)}
                 </AvatarFallback>
               </Avatar>
+
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">{user?.name}</span>
                 <span className="truncate text-xs">{user?.email}</span>
@@ -74,11 +76,11 @@ export function NavUser({ user }: { user: User }) {
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-full">
                   <AvatarImage
-                    src={user?.picture}
+                    src={user?.image}
                     alt={user?.name || "user image"}
                   />
                   <AvatarFallback className=" logo__default text-base!">
-                    {getInitials(user?.name || user.fullName)}
+                    {getInitials(user?.name || user?.fullName)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
