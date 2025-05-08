@@ -1,21 +1,24 @@
-export const runtime = "nodejs";
+export const config = {
+  runtime: "nodejs", // ✅ Forces Node.js runtime
+};
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 
-import getUser from "@/lib/getUser";
+import getUser from "@/lib/GET/getUser";
 import { signJwtAccessToken, signJwtRefreshToken } from "@/lib/jwt";
 import { jwtVerify } from "jose";
-import type { Account, Profile } from "next-auth";
+import type { Account, Profile, Session } from "next-auth";
 
 import { Notifications } from "@/types/notifications";
-import updateUserInfoDBDirect from "@/lib/PUT/updateUserInfoDBDirect";
+import * as bcyrpt from "bcryptjs";
 import NextAuth, { User as NextAuthUser } from "next-auth";
+import { AdapterUser } from "next-auth/adapters";
 import { JWT } from "next-auth/jwt";
 import { cookies } from "next/headers";
-import dbConnect from "@/lib/db";
-import * as bcyrpt from "bcryptjs";
-import { AdapterUser } from "next-auth/adapters";
-import User from "../models/user";
+import { NextRequest, NextResponse } from "next/server";
+import updateUserInfo from "./lib/PATCH/updateUserInfo";
+import createNewUser from "./lib/POST/createNewUser";
+import { NewUser } from "./types/users";
 
 interface MyToken extends JWT {
   id?: string;
@@ -60,9 +63,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
 
         try {
-          await dbConnect();
-
-          const user = await User.findOne({ email: credentials.email });
+          const user = await getUser(credentials.email as string);
 
           if (!user) {
             console.error("Invalid email address. User not found");
@@ -70,14 +71,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           }
 
           // Check if user registered using OAuth (i.e., doesn't have a password)
-          if (!user.get("password")) {
+          if (!user.password) {
             console.error("User registered using OAuth");
             throw new Error(
               "This account was created using Google. Please try log in using Googles OAuth method above."
             );
           }
 
-          const passwordFromDB = user.get("password");
+          const passwordFromDB = user.password;
 
           const isPasswordValid = await bcyrpt.compare(
             credentials.password as string,
@@ -89,9 +90,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             throw new Error("Invalid password");
           }
 
-          const { password, ...userWithoutPassword } = user.toObject();
+          const { password, _id, ...userWithoutPassword } = user;
 
-          return userWithoutPassword; // return the user without the password
+          return {
+            id: Number(_id),
+            selectedBreweryId: null,
+            ...userWithoutPassword,
+          }; // return the user with required properties
         } catch (error: any) {
           console.error("Error in authorization:", error);
           throw new Error(error);
@@ -132,9 +137,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (user) {
           if (user.image !== picture) {
             try {
-              await updateUserInfoDBDirect({
-                userId: user.id!,
-                updatedUserInfo: { image: picture },
+              await updateUserInfo({
+                userId: user.id! as string,
+                updatedUser: { image: picture },
               });
             } catch (error: string | any) {
               console.error("Error updating user info:", error.message);
@@ -171,9 +176,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (existingUser) {
         if (existingUser.image !== picture) {
           try {
-            const userWithNewImage = await updateUserInfoDBDirect({
+            const userWithNewImage = await updateUserInfo({
               userId: existingUser._id,
-              updatedUserInfo: { image: picture },
+              updatedUser: { image: picture },
             });
             picture = userWithNewImage.image;
           } catch (error: string | any) {
@@ -198,7 +203,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         try {
           // User does not exist, create the user
           // Create a new user with Mongoose
-          const newUser = new User({
+          const newUser = {
             fullName: name,
             email: email,
             breweries: [],
@@ -214,11 +219,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 push: true,
               },
             },
-          });
+          };
 
-          const savedUser = await newUser.save();
+          const savedUser = await createNewUser(newUser as unknown as NewUser);
           if (savedUser) {
-            user.id = savedUser.id.toString();
+            user.id = savedUser._id.toString();
             user.breweries = savedUser.breweries;
             user.notifications = savedUser.notifications;
             user.selectedBreweryId = null;
@@ -234,6 +239,28 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return false;
     },
 
+    authorized: async ({
+      request: { nextUrl },
+      auth,
+    }: {
+      request: NextRequest;
+      auth: Session | null;
+    }) => {
+      const isAuth = !!auth?.user;
+      const acceptInvite = nextUrl.pathname.startsWith("/accept-invite");
+      console.log({ nextUrl, auth });
+      if (!isAuth) {
+        return NextResponse.redirect(new URL("/auth/login", nextUrl));
+      }
+
+      if (isAuth && acceptInvite) {
+        const loginUrl = new URL("/auth/login", nextUrl);
+        loginUrl.searchParams.set("next", nextUrl.toString());
+        return NextResponse.redirect(loginUrl);
+      }
+
+      return true; // Example: Return true if auth exists, otherwise false
+    },
     async jwt({
       token,
       user,

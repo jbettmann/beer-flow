@@ -4,7 +4,7 @@ import NextAuth from "next-auth/next";
 import Users from "./users";
 import Brewery from "./brewery";
 
-declare module "next-auth" {
+export declare module "next-auth" {
   interface User {
     id: number;
     fullName: string;

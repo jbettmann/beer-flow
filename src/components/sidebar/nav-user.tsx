@@ -39,7 +39,6 @@ export function NavUser({ user }: { user: User }) {
 
     sessionStorage.removeItem("beerForm");
   };
-  console.log({ user });
   return (
     <SidebarMenu>
       <SidebarMenuItem>

@@ -5,15 +5,10 @@ import { revalidatePath } from "next/cache";
 
 export default async function deleteBeer(beerId: string) {
   const session = await auth();
-  const { accessToken, selectedBreweryId } = session?.user || {};
+  const { selectedBreweryId } = session?.user || {};
   try {
     const response = await httpClient.delete(
-      `/breweries/${selectedBreweryId}/beers/${beerId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
+      `/breweries/${selectedBreweryId}/beers/${beerId}`
     );
 
     const success = await response;

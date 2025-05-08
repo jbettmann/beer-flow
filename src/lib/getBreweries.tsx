@@ -4,18 +4,12 @@ import { httpClient } from "@/services/utils/httpClient";
 
 export default async function getBreweries() {
   const session = await auth();
-  const { accessToken, breweries } = session?.user || {};
+  const { breweries } = session?.user || {};
 
   try {
-    const response = await httpClient.post(
-      `/users/breweries`,
-      { breweryIds: breweries },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+    const response = await httpClient.post(`/users/breweries`, {
+      breweryIds: breweries,
+    });
 
     const responseData = await response;
     return responseData.breweries;

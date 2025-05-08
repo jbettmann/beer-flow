@@ -13,6 +13,12 @@ export const httpClientMethods = (
       body: JSON.stringify(data),
       ...options,
     }),
+  patch: (url: string, data: unknown, options?: RequestInit) =>
+    fetcher(url, {
+      method: "PATCH",
+      body: JSON.stringify(data),
+      ...options,
+    }),
   delete: (url: string, options?: RequestInit) =>
     fetcher(url, { method: "DELETE", ...options }),
 });

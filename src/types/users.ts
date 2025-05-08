@@ -1,6 +1,5 @@
 export type Users = {
   _id: string;
-
   fullName: string;
   username: string;
   password: string;
@@ -9,9 +8,18 @@ export type Users = {
   notifications: object;
   __v: number;
   image: string;
-
   accessToken: string;
   refreshToken: string;
+};
+
+export type NewUser = {
+  fullName: string;
+  username: string;
+  password: string;
+  email: string;
+  breweries: string[];
+  notifications: object;
+  image: string;
 };
 
 export type AuthContextType = {

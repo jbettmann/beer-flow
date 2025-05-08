@@ -17,16 +17,9 @@ export default async function BeerViewPage({ beerId }: BeerViewPageProps) {
   if (beerId !== "create") {
     // Called on server side
 
-    const options: RequestInit = {
-      headers: {
-        Authorization: `Bearer ${session?.user?.accessToken}`,
-      },
-    }; // Optional request settings
-
     try {
       const data = httpClient.getById(
-        `/breweries/${session?.user.selectedBreweryId}/beers/${beerId}`,
-        options
+        `/breweries/${session?.user.selectedBreweryId}/beers/${beerId}`
       );
 
       beer = await data;

@@ -5,7 +5,7 @@ import { Beer } from "@/types/beer";
 
 export default async function updateBeer(updatedBeer: Beer) {
   const session = await auth();
-  const { accessToken, selectedBreweryId } = session?.user || {};
+  const { selectedBreweryId } = session?.user || {};
 
   try {
     const response = await httpClient.put(
@@ -13,9 +13,6 @@ export default async function updateBeer(updatedBeer: Beer) {
       updatedBeer._id,
       updatedBeer,
       {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
         next: { revalidate: 0 },
       }
     );
