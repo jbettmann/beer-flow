@@ -19,29 +19,22 @@ const Policy = (props: Props) => {
             </span>
           </strong>
         </div>
-        <div>
-          <br />
-        </div>
+        <div></div>
         <div>
           <span style={{ color: "rgb(127, 127, 127)" }}>
             <strong>
               <span style={{ fontSize: 15 }}>
                 <span data-custom-class="subtitle">
-                  Last updated <br className="question">November 07, 2023</br>
+                  Last updated <br className="question" />
+                  November 07, 2023
                 </span>
               </span>
             </strong>
           </span>
         </div>
-        <div>
-          <br />
-        </div>
-        <div>
-          <br />
-        </div>
-        <div>
-          <br />
-        </div>
+        <div></div>
+        <div></div>
+        <div></div>
         <div style={{ lineHeight: "1.5" }}>
           <span style={{ color: "rgb(127, 127, 127)" }}>
             <span style={{ color: "rgb(89, 89, 89)", fontSize: 15 }}>
@@ -102,10 +95,10 @@ const Policy = (props: Props) => {
                       <span data-custom-class="body_text">
                         <span style={{ fontSize: 15 }}>
                           <span style={{ color: "rgb(89, 89, 89)" }}>
-                            <br className="statement-end-if-in-editor">
+                            <div className="statement-end-if-in-editor">
                               , or any website of ours that links to this
                               privacy notice
-                            </br>
+                            </div>
                           </span>
                         </span>
                       </span>
@@ -117,7 +110,7 @@ const Policy = (props: Props) => {
           </li>
         </ul>
         <div>
-          <br className="block-component">
+          <div className="block-component">
             <span style={{ fontSize: 15 }}>
               <span style={{ fontSize: 15 }}>
                 <span style={{ color: "rgb(127, 127, 127)" }}>
@@ -131,7 +124,7 @@ const Policy = (props: Props) => {
                 </span>
               </span>
             </span>
-          </br>
+          </div>
         </div>
         <ul>
           <li style={{ lineHeight: "1.5" }}>
@@ -238,12 +231,8 @@ const Policy = (props: Props) => {
             </span>
           </span>
         </div>
-        <div style={{ lineHeight: "1.5" }}>
-          <br />
-        </div>
-        <div style={{ lineHeight: "1.5" }}>
-          <br />
-        </div>
+        <div style={{ lineHeight: "1.5" }}></div>
+        <div style={{ lineHeight: "1.5" }}></div>
         <div style={{ lineHeight: "1.5" }}>
           <strong>
             <span style={{ fontSize: 15 }}>
@@ -251,9 +240,7 @@ const Policy = (props: Props) => {
             </span>
           </strong>
         </div>
-        <div style={{ lineHeight: "1.5" }}>
-          <br />
-        </div>
+        <div style={{ lineHeight: "1.5" }}></div>
         <div style={{ lineHeight: "1.5" }}>
           <span style={{ fontSize: 15 }}>
             <span data-custom-class="body_text">
@@ -284,9 +271,7 @@ const Policy = (props: Props) => {
             </span>
           </span>
         </div>
-        <div style={{ lineHeight: "1.5" }}>
-          <br />
-        </div>
+        <div style={{ lineHeight: "1.5" }}></div>
         <div style={{ lineHeight: "1.5" }}>
           <span style={{ fontSize: 15 }}>
             <span data-custom-class="body_text">
@@ -306,9 +291,7 @@ const Policy = (props: Props) => {
           </a>
           <span data-custom-class="body_text">.</span>
         </div>
-        <div style={{ lineHeight: "1.5" }}>
-          <br />
-        </div>
+        <div style={{ lineHeight: "1.5" }}></div>
         <div style={{ lineHeight: "1.5" }}>
           <span style={{ fontSize: 15 }}>
             <span data-custom-class="body_text">
@@ -319,9 +302,7 @@ const Policy = (props: Props) => {
             </span>
           </span>
         </div>
-        <div style={{ lineHeight: "1.5" }}>
-          <br />
-        </div>
+        <div style={{ lineHeight: "1.5" }}></div>
         <div style={{ lineHeight: "1.5" }}>
           <span style={{ fontSize: 15 }}>
             <span data-custom-class="body_text">
@@ -346,9 +327,7 @@ const Policy = (props: Props) => {
             </span>
           </span>
         </div>
-        <div style={{ lineHeight: "1.5" }}>
-          <br />
-        </div>
+        <div style={{ lineHeight: "1.5" }}></div>
         <div style={{ lineHeight: "1.5" }}>
           <span style={{ fontSize: 15 }}>
             <span data-custom-class="body_text">
@@ -369,9 +348,7 @@ const Policy = (props: Props) => {
           </a>
           <span data-custom-class="body_text">.</span>
         </div>
-        <div style={{ lineHeight: "1.5" }}>
-          <br />
-        </div>
+        <div style={{ lineHeight: "1.5" }}></div>
         <div style={{ lineHeight: "1.5" }}>
           <span style={{ fontSize: 15 }}>
             <span data-custom-class="body_text">
@@ -398,9 +375,7 @@ const Policy = (props: Props) => {
             </span>
           </span>
         </div>
-        <div style={{ lineHeight: "1.5" }}>
-          <br />
-        </div>
+        <div style={{ lineHeight: "1.5" }}></div>
         <div style={{ lineHeight: "1.5" }}>
           <span style={{ fontSize: 15 }}>
             <span data-custom-class="body_text">
@@ -433,9 +408,7 @@ const Policy = (props: Props) => {
             </span>
           </span>
         </div>
-        <div style={{ lineHeight: "1.5" }}>
-          <br />
-        </div>
+        <div style={{ lineHeight: "1.5" }}></div>
         <div style={{ lineHeight: "1.5" }}>
           <span style={{ fontSize: 15 }}>
             <span data-custom-class="body_text">
@@ -452,9 +425,7 @@ const Policy = (props: Props) => {
           </a>
           <span data-custom-class="body_text">.</span>
         </div>
-        <div style={{ lineHeight: "1.5" }}>
-          <br />
-        </div>
+        <div style={{ lineHeight: "1.5" }}></div>
         <div style={{ lineHeight: "1.5" }}>
           <span style={{ fontSize: 15 }}>
             <span data-custom-class="body_text">
@@ -483,9 +454,7 @@ const Policy = (props: Props) => {
             </span>
           </span>
         </div>
-        <div style={{ lineHeight: "1.5" }}>
-          <br />
-        </div>
+        <div style={{ lineHeight: "1.5" }}></div>
         <div style={{ lineHeight: "1.5" }}>
           <span style={{ fontSize: 15 }}>
             <span data-custom-class="body_text">
@@ -504,12 +473,8 @@ const Policy = (props: Props) => {
             <span data-custom-class="body_text">.</span>
           </span>
         </div>
-        <div style={{ lineHeight: "1.5" }}>
-          <br />
-        </div>
-        <div style={{ lineHeight: "1.5" }}>
-          <br />
-        </div>
+        <div style={{ lineHeight: "1.5" }}></div>
+        <div style={{ lineHeight: "1.5" }}></div>
         <div id="toc" style={{ lineHeight: "1.5" }}>
           <span style={{ fontSize: 15 }}>
             <span style={{ color: "rgb(127, 127, 127)" }}>
@@ -521,9 +486,7 @@ const Policy = (props: Props) => {
             </span>
           </span>
         </div>
-        <div style={{ lineHeight: "1.5" }}>
-          <br />
-        </div>
+        <div style={{ lineHeight: "1.5" }}></div>
         <div style={{ lineHeight: "1.5" }}>
           <span style={{ fontSize: 15 }}>
             <a data-custom-class="link" href="#infocollect">
@@ -746,12 +709,8 @@ const Policy = (props: Props) => {
             </span>
           </a>
         </div>
-        <div style={{ lineHeight: "1.5" }}>
-          <br />
-        </div>
-        <div style={{ lineHeight: "1.5" }}>
-          <br />
-        </div>
+        <div style={{ lineHeight: "1.5" }}></div>
+        <div style={{ lineHeight: "1.5" }}></div>
         <div id="infocollect" style={{ lineHeight: "1.5" }}>
           <span style={{ color: "rgb(0, 0, 0)" }}>
             <span style={{ color: "rgb(0, 0, 0)", fontSize: 15 }}>
@@ -769,9 +728,7 @@ const Policy = (props: Props) => {
             </span>
           </span>
         </div>
-        <div style={{ lineHeight: "1.5" }}>
-          <br />
-        </div>
+        <div style={{ lineHeight: "1.5" }}></div>
         <div id="personalinfo" style={{ lineHeight: "1.5" }}>
           <span data-custom-class="heading_2" style={{ color: "rgb(0, 0, 0)" }}>
             <span style={{ fontSize: 15 }}>
@@ -780,9 +737,7 @@ const Policy = (props: Props) => {
           </span>
         </div>
         <div>
-          <div>
-            <br />
-          </div>
+          <div></div>
           <div style={{ lineHeight: "1.5" }}>
             <span style={{ color: "rgb(127, 127, 127)" }}>
               <span style={{ color: "rgb(89, 89, 89)", fontSize: 15 }}>
@@ -816,9 +771,7 @@ const Policy = (props: Props) => {
             </span>
           </div>
         </div>
-        <div style={{ lineHeight: "1.5" }}>
-          <br />
-        </div>
+        <div style={{ lineHeight: "1.5" }}></div>
         <div style={{ lineHeight: "1.5" }}>
           <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
             <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
@@ -845,9 +798,7 @@ const Policy = (props: Props) => {
             </span>
           </span>
         </div>
-        <div style={{ lineHeight: "1.5" }}>
-          <br />
-        </div>
+        <div style={{ lineHeight: "1.5" }}></div>
         <div style={{ lineHeight: "1.5" }}>
           <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
             <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
@@ -1031,9 +982,7 @@ const Policy = (props: Props) => {
             </span>
           </span>
         </div>
-        <div style={{ lineHeight: "1.5" }}>
-          <br />
-        </div>
+        <div style={{ lineHeight: "1.5" }}></div>
         <div style={{ lineHeight: "1.5" }}>
           <span style={{ fontSize: 15 }}>
             <span data-custom-class="body_text">
@@ -1082,9 +1031,7 @@ const Policy = (props: Props) => {
             </span>
           </span>
         </div>
-        <div style={{ lineHeight: "1.5" }}>
-          <br />
-        </div>
+        <div style={{ lineHeight: "1.5" }}></div>
         <div style={{ lineHeight: "1.5" }}>
           <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
             <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
@@ -1170,9 +1117,7 @@ const Policy = (props: Props) => {
                 </span>
               </span>
             </div>
-            <div style={{ lineHeight: "1.5" }}>
-              <br />
-            </div>
+            <div style={{ lineHeight: "1.5" }}></div>
             <div style={{ lineHeight: "1.5" }}>
               <br className="statement-end-if-in-editor">
                 <span style={{ fontSize: 15 }}>
@@ -1191,9 +1136,7 @@ const Policy = (props: Props) => {
                 </span>
               </span>
             </div>
-            <div style={{ lineHeight: "1.5" }}>
-              <br />
-            </div>
+            <div style={{ lineHeight: "1.5" }}></div>
             <div style={{ lineHeight: "1.5" }}>
               <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
                 <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
@@ -1229,9 +1172,7 @@ const Policy = (props: Props) => {
               </span>
             </div>
             <div>
-              <div>
-                <br />
-              </div>
+              <div></div>
               <div style={{ lineHeight: "1.5" }}>
                 <span style={{ color: "rgb(127, 127, 127)" }}>
                   <span style={{ color: "rgb(89, 89, 89)", fontSize: 15 }}>
@@ -1268,9 +1209,7 @@ const Policy = (props: Props) => {
                 </span>
               </div>
             </div>
-            <div style={{ lineHeight: "1.5" }}>
-              <br />
-            </div>
+            <div style={{ lineHeight: "1.5" }}></div>
             <div style={{ lineHeight: "1.5" }}>
               <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
                 <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
@@ -1347,9 +1286,7 @@ const Policy = (props: Props) => {
                 </span>
               </span>
             </div>
-            <div style={{ lineHeight: "1.5" }}>
-              <br />
-            </div>
+            <div style={{ lineHeight: "1.5" }}></div>
             <div style={{ lineHeight: "1.5" }}>
               <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
                 <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
@@ -1414,9 +1351,7 @@ const Policy = (props: Props) => {
               </span>
             </div>
             <div>
-              <div style={{ lineHeight: "1.5" }}>
-                <br />
-              </div>
+              <div style={{ lineHeight: "1.5" }}></div>
               <div style={{ lineHeight: "1.5" }}>
                 <span style={{ color: "rgb(127, 127, 127)" }}>
                   <span style={{ color: "rgb(89, 89, 89)", fontSize: 15 }}>
@@ -1444,9 +1379,7 @@ const Policy = (props: Props) => {
                 </span>
               </div>
             </div>
-            <div style={{ lineHeight: "1.5" }}>
-              <br />
-            </div>
+            <div style={{ lineHeight: "1.5" }}></div>
             <div style={{ lineHeight: "1.5" }}>
               <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
                 <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
@@ -1766,9 +1699,7 @@ const Policy = (props: Props) => {
                                                           style={{
                                                             lineHeight: "1.5",
                                                           }}
-                                                        >
-                                                          <br />
-                                                        </div>
+                                                        ></div>
                                                         <div
                                                           id="whoshare"
                                                           style={{
@@ -1830,9 +1761,7 @@ const Policy = (props: Props) => {
                                                           style={{
                                                             lineHeight: "1.5",
                                                           }}
-                                                        >
-                                                          <br />
-                                                        </div>
+                                                        ></div>
                                                         <div
                                                           style={{
                                                             lineHeight: "1.5",
@@ -1904,9 +1833,7 @@ const Policy = (props: Props) => {
                                                           style={{
                                                             lineHeight: "1.5",
                                                           }}
-                                                        >
-                                                          <br />
-                                                        </div>
+                                                        ></div>
                                                         <div
                                                           style={{
                                                             lineHeight: "1.5",
@@ -2112,9 +2039,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     id="cookies"
                                                                     style={{
@@ -2180,9 +2105,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     style={{
                                                                       lineHeight:
@@ -2235,9 +2158,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     style={{
                                                                       lineHeight:
@@ -2408,9 +2329,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     id="sociallogins"
                                                                     style={{
@@ -2475,9 +2394,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     style={{
                                                                       lineHeight:
@@ -2541,9 +2458,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     style={{
                                                                       lineHeight:
@@ -2672,9 +2587,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     style={{
                                                                       lineHeight:
@@ -2854,9 +2767,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     id="inforetain"
                                                                     style={{
@@ -2921,9 +2832,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     style={{
                                                                       lineHeight:
@@ -2987,9 +2896,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     style={{
                                                                       lineHeight:
@@ -3122,9 +3029,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     style={{
                                                                       lineHeight:
@@ -3221,9 +3126,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     id="infosafe"
                                                                     style={{
@@ -3288,9 +3191,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     style={{
                                                                       lineHeight:
@@ -3347,9 +3248,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     style={{
                                                                       lineHeight:
@@ -3510,9 +3409,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     id="infominors"
                                                                     style={{
@@ -3576,9 +3473,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     style={{
                                                                       lineHeight:
@@ -3632,9 +3527,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     style={{
                                                                       lineHeight:
@@ -3931,9 +3824,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     id="privacyrights"
                                                                     style={{
@@ -3996,9 +3887,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     style={{
                                                                       lineHeight:
@@ -4084,9 +3973,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     id="withdrawconsent"
                                                                     style={{
@@ -4231,9 +4118,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     style={{
                                                                       lineHeight:
@@ -4302,9 +4187,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     style={{
                                                                       lineHeight:
@@ -4329,9 +4212,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     style={{
                                                                       lineHeight:
@@ -4541,9 +4422,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     style={{
                                                                       lineHeight:
@@ -4690,9 +4569,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     style={{
                                                                       lineHeight:
@@ -4738,9 +4615,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     id="DNT"
                                                                     style={{
@@ -4802,9 +4677,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     style={{
                                                                       lineHeight:
@@ -4945,9 +4818,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     id="uslaws"
                                                                     style={{
@@ -5013,9 +4884,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     style={{
                                                                       lineHeight:
@@ -5082,9 +4951,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     style={{
                                                                       lineHeight:
@@ -5125,9 +4992,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     style={{
                                                                       lineHeight:
@@ -5172,9 +5037,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <table
                                                                     style={{
                                                                       width:
@@ -5407,9 +5270,7 @@ const Policy = (props: Props) => {
                                                                               lineHeight:
                                                                                 "1.5",
                                                                             }}
-                                                                          >
-                                                                            <br />
-                                                                          </div>
+                                                                          ></div>
                                                                           <div
                                                                             style={{
                                                                               lineHeight:
@@ -5447,9 +5308,7 @@ const Policy = (props: Props) => {
                                                                               lineHeight:
                                                                                 "1.5",
                                                                             }}
-                                                                          >
-                                                                            <br />
-                                                                          </div>
+                                                                          ></div>
                                                                         </td>
                                                                       </tr>
                                                                     </tbody>
@@ -5579,9 +5438,7 @@ const Policy = (props: Props) => {
                                                                               lineHeight:
                                                                                 "1.5",
                                                                             }}
-                                                                          >
-                                                                            <br />
-                                                                          </div>
+                                                                          ></div>
                                                                           <div
                                                                             data-custom-class="body_text"
                                                                             style={{
@@ -5604,9 +5461,7 @@ const Policy = (props: Props) => {
                                                                               lineHeight:
                                                                                 "1.5",
                                                                             }}
-                                                                          >
-                                                                            <br />
-                                                                          </div>
+                                                                          ></div>
                                                                         </td>
                                                                       </tr>
                                                                       <tr>
@@ -5717,9 +5572,7 @@ const Policy = (props: Props) => {
                                                                               lineHeight:
                                                                                 "1.5",
                                                                             }}
-                                                                          >
-                                                                            <br />
-                                                                          </div>
+                                                                          ></div>
                                                                           <div
                                                                             data-custom-class="body_text"
                                                                             style={{
@@ -5743,9 +5596,7 @@ const Policy = (props: Props) => {
                                                                               lineHeight:
                                                                                 "1.5",
                                                                             }}
-                                                                          >
-                                                                            <br />
-                                                                          </div>
+                                                                          ></div>
                                                                         </td>
                                                                       </tr>
                                                                       <tr>
@@ -5850,9 +5701,7 @@ const Policy = (props: Props) => {
                                                                               lineHeight:
                                                                                 "1.5",
                                                                             }}
-                                                                          >
-                                                                            <br />
-                                                                          </div>
+                                                                          ></div>
                                                                           <div
                                                                             data-custom-class="body_text"
                                                                             style={{
@@ -5877,9 +5726,7 @@ const Policy = (props: Props) => {
                                                                               lineHeight:
                                                                                 "1.5",
                                                                             }}
-                                                                          >
-                                                                            <br />
-                                                                          </div>
+                                                                          ></div>
                                                                         </td>
                                                                       </tr>
                                                                       <tr>
@@ -6008,9 +5855,7 @@ const Policy = (props: Props) => {
                                                                               lineHeight:
                                                                                 "1.5",
                                                                             }}
-                                                                          >
-                                                                            <br />
-                                                                          </div>
+                                                                          ></div>
                                                                           <div
                                                                             data-custom-class="body_text"
                                                                             style={{
@@ -6033,9 +5878,7 @@ const Policy = (props: Props) => {
                                                                               lineHeight:
                                                                                 "1.5",
                                                                             }}
-                                                                          >
-                                                                            <br />
-                                                                          </div>
+                                                                          ></div>
                                                                         </td>
                                                                       </tr>
                                                                       <tr>
@@ -6139,9 +5982,7 @@ const Policy = (props: Props) => {
                                                                               lineHeight:
                                                                                 "1.5",
                                                                             }}
-                                                                          >
-                                                                            <br />
-                                                                          </div>
+                                                                          ></div>
                                                                           <div
                                                                             data-custom-class="body_text"
                                                                             style={{
@@ -6164,9 +6005,7 @@ const Policy = (props: Props) => {
                                                                               lineHeight:
                                                                                 "1.5",
                                                                             }}
-                                                                          >
-                                                                            <br />
-                                                                          </div>
+                                                                          ></div>
                                                                         </td>
                                                                       </tr>
                                                                       <tr>
@@ -6288,9 +6127,7 @@ const Policy = (props: Props) => {
                                                                               lineHeight:
                                                                                 "1.5",
                                                                             }}
-                                                                          >
-                                                                            <br />
-                                                                          </div>
+                                                                          ></div>
                                                                           <div
                                                                             data-custom-class="body_text"
                                                                             style={{
@@ -6313,9 +6150,7 @@ const Policy = (props: Props) => {
                                                                               lineHeight:
                                                                                 "1.5",
                                                                             }}
-                                                                          >
-                                                                            <br />
-                                                                          </div>
+                                                                          ></div>
                                                                         </td>
                                                                       </tr>
                                                                       <tr>
@@ -6449,9 +6284,7 @@ const Policy = (props: Props) => {
                                                                               lineHeight:
                                                                                 "1.5",
                                                                             }}
-                                                                          >
-                                                                            <br />
-                                                                          </div>
+                                                                          ></div>
                                                                           <div
                                                                             data-custom-class="body_text"
                                                                             style={{
@@ -6474,9 +6307,7 @@ const Policy = (props: Props) => {
                                                                               lineHeight:
                                                                                 "1.5",
                                                                             }}
-                                                                          >
-                                                                            <br />
-                                                                          </div>
+                                                                          ></div>
                                                                         </td>
                                                                       </tr>
                                                                       <tr>
@@ -6583,9 +6414,7 @@ const Policy = (props: Props) => {
                                                                               lineHeight:
                                                                                 "1.5",
                                                                             }}
-                                                                          >
-                                                                            <br />
-                                                                          </div>
+                                                                          ></div>
                                                                           <div
                                                                             data-custom-class="body_text"
                                                                             style={{
@@ -6608,9 +6437,7 @@ const Policy = (props: Props) => {
                                                                               lineHeight:
                                                                                 "1.5",
                                                                             }}
-                                                                          >
-                                                                            <br />
-                                                                          </div>
+                                                                          ></div>
                                                                         </td>
                                                                       </tr>
                                                                       <tr>
@@ -6744,9 +6571,7 @@ const Policy = (props: Props) => {
                                                                               lineHeight:
                                                                                 "1.5",
                                                                             }}
-                                                                          >
-                                                                            <br />
-                                                                          </div>
+                                                                          ></div>
                                                                           <div
                                                                             data-custom-class="body_text"
                                                                             style={{
@@ -6792,9 +6617,7 @@ const Policy = (props: Props) => {
                                                                               lineHeight:
                                                                                 "1.5",
                                                                             }}
-                                                                          >
-                                                                            <br />
-                                                                          </div>
+                                                                          ></div>
                                                                         </td>
                                                                       </tr>
                                                                       <tr>
@@ -6848,9 +6671,7 @@ const Policy = (props: Props) => {
                                                                               textAlign:
                                                                                 "center",
                                                                             }}
-                                                                          >
-                                                                            <br />
-                                                                          </div>
+                                                                          ></div>
                                                                           <div
                                                                             data-custom-class="body_text"
                                                                             data-empty="true"
@@ -6875,9 +6696,7 @@ const Policy = (props: Props) => {
                                                                               textAlign:
                                                                                 "center",
                                                                             }}
-                                                                          >
-                                                                            <br />
-                                                                          </div>
+                                                                          ></div>
                                                                         </td>
                                                                       </tr>
                                                                     </tbody>
@@ -6887,9 +6706,7 @@ const Policy = (props: Props) => {
                                                                       lineHeight:
                                                                         "1.5",
                                                                     }}
-                                                                  >
-                                                                    <br />
-                                                                  </div>
+                                                                  ></div>
                                                                   <div
                                                                     style={{
                                                                       lineHeight:
@@ -7565,9 +7382,7 @@ const Policy = (props: Props) => {
                                                                                             lineHeight:
                                                                                               "1.5",
                                                                                           }}
-                                                                                        >
-                                                                                          <br />
-                                                                                        </div>
+                                                                                        ></div>
                                                                                         <div
                                                                                           style={{
                                                                                             lineHeight:
@@ -7635,9 +7450,7 @@ const Policy = (props: Props) => {
                                                                                             lineHeight:
                                                                                               "1.5",
                                                                                           }}
-                                                                                        >
-                                                                                          <br />
-                                                                                        </div>
+                                                                                        ></div>
                                                                                         <div
                                                                                           style={{
                                                                                             lineHeight:
@@ -7714,9 +7527,7 @@ const Policy = (props: Props) => {
                                                                                             lineHeight:
                                                                                               "1.5",
                                                                                           }}
-                                                                                        >
-                                                                                          <br />
-                                                                                        </div>
+                                                                                        ></div>
                                                                                         <div
                                                                                           style={{
                                                                                             lineHeight:
@@ -7834,9 +7645,7 @@ const Policy = (props: Props) => {
                                                                                             lineHeight:
                                                                                               "1.5",
                                                                                           }}
-                                                                                        >
-                                                                                          <br />
-                                                                                        </div>
+                                                                                        ></div>
                                                                                         <div
                                                                                           style={{
                                                                                             lineHeight:
@@ -7913,9 +7722,7 @@ const Policy = (props: Props) => {
                                                                                             lineHeight:
                                                                                               "1.5",
                                                                                           }}
-                                                                                        >
-                                                                                          <br />
-                                                                                        </div>
+                                                                                        ></div>
                                                                                         <div
                                                                                           style={{
                                                                                             lineHeight:
@@ -8059,9 +7866,7 @@ const Policy = (props: Props) => {
                                                                                             style={{
                                                                                               fontSize: 15,
                                                                                             }}
-                                                                                          >
-                                                                                            <br />
-                                                                                          </span>
+                                                                                          ></span>
                                                                                         </div>
                                                                                         <div
                                                                                           style={{
@@ -8092,9 +7897,7 @@ const Policy = (props: Props) => {
                                                                                             style={{
                                                                                               fontSize: 15,
                                                                                             }}
-                                                                                          >
-                                                                                            <br />
-                                                                                          </span>
+                                                                                          ></span>
                                                                                         </div>
                                                                                         <div
                                                                                           style={{
@@ -8525,9 +8328,7 @@ const Policy = (props: Props) => {
                                                                                             lineHeight:
                                                                                               "1.5",
                                                                                           }}
-                                                                                        >
-                                                                                          <br />
-                                                                                        </div>
+                                                                                        ></div>
                                                                                         <div
                                                                                           style={{
                                                                                             lineHeight:
@@ -8768,9 +8569,7 @@ const Policy = (props: Props) => {
                                                                                             lineHeight:
                                                                                               "1.5",
                                                                                           }}
-                                                                                        >
-                                                                                          <br />
-                                                                                        </div>
+                                                                                        ></div>
                                                                                         <div
                                                                                           id="policyupdates"
                                                                                           style={{
@@ -8835,9 +8634,7 @@ const Policy = (props: Props) => {
                                                                                             lineHeight:
                                                                                               "1.5",
                                                                                           }}
-                                                                                        >
-                                                                                          <br />
-                                                                                        </div>
+                                                                                        ></div>
                                                                                         <div
                                                                                           style={{
                                                                                             lineHeight:
@@ -8888,9 +8685,7 @@ const Policy = (props: Props) => {
                                                                                             lineHeight:
                                                                                               "1.5",
                                                                                           }}
-                                                                                        >
-                                                                                          <br />
-                                                                                        </div>
+                                                                                        ></div>
                                                                                         <div
                                                                                           style={{
                                                                                             lineHeight:
@@ -9005,9 +8800,7 @@ const Policy = (props: Props) => {
                                                                                             lineHeight:
                                                                                               "1.5",
                                                                                           }}
-                                                                                        >
-                                                                                          <br />
-                                                                                        </div>
+                                                                                        ></div>
                                                                                         <div
                                                                                           id="contact"
                                                                                           style={{
@@ -9073,9 +8866,7 @@ const Policy = (props: Props) => {
                                                                                             lineHeight:
                                                                                               "1.5",
                                                                                           }}
-                                                                                        >
-                                                                                          <br />
-                                                                                        </div>
+                                                                                        ></div>
                                                                                         <div
                                                                                           style={{
                                                                                             lineHeight:
@@ -9163,9 +8954,7 @@ const Policy = (props: Props) => {
                                                                                             lineHeight:
                                                                                               "1.5",
                                                                                           }}
-                                                                                        >
-                                                                                          <br />
-                                                                                        </div>
+                                                                                        ></div>
                                                                                         <div
                                                                                           style={{
                                                                                             lineHeight:
@@ -9477,9 +9266,7 @@ const Policy = (props: Props) => {
                                                                                             lineHeight:
                                                                                               "1.5",
                                                                                           }}
-                                                                                        >
-                                                                                          <br />
-                                                                                        </div>
+                                                                                        ></div>
                                                                                         <div
                                                                                           id="request"
                                                                                           style={{
@@ -9550,9 +9337,7 @@ const Policy = (props: Props) => {
                                                                                             lineHeight:
                                                                                               "1.5",
                                                                                           }}
-                                                                                        >
-                                                                                          <br />
-                                                                                        </div>
+                                                                                        ></div>
                                                                                         <div
                                                                                           style={{
                                                                                             lineHeight:
