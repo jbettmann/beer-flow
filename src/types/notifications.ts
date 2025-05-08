@@ -8,4 +8,5 @@ export type Notifications = {
     email: boolean;
     push: boolean;
   };
+  [key: string]: any;
 };

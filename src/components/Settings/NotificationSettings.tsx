@@ -10,14 +10,16 @@ const NotificationSettings = () => {
     session?.user.notifications
   );
   const [hasChanges, setHasChanges] = useState(false); // To track if there are unsaved changes
-  const saveTimeout = useRef(null); // Reference to the timeout
+  const saveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isInitialRender = useRef(true);
 
   // Get the keys from the notifications object
-  const [notificationKeys, setNotificationKeys] = useState<string[]>(
-    Object.keys(session?.user.notifications).filter(
-      (key) => key !== "allow" && key !== "_id"
-    )
+  const [notificationKeys, setNotificationKeys] = useState<string[]>(() =>
+    session?.user?.notifications
+      ? Object.keys(session.user.notifications).filter(
+          (key) => key !== "allow" && key !== "_id"
+        )
+      : []
   );
 
   const saveChanges = async () => {
