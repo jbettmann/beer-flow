@@ -143,7 +143,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }) => {
       const isAuth = !!auth?.user;
       const acceptInvite = nextUrl.pathname.startsWith("/accept-invite");
-      console.log({ nextUrl, auth });
       if (!isAuth) {
         return NextResponse.redirect(new URL("/auth/login", nextUrl));
       }
