@@ -1,19 +1,31 @@
-import StaffManagementTableLS from "@/components/LoadingSkeleton/StaffManagementTableLS";
-import StaffContainer from "@/components/StaffManagement/StaffContainer";
-import StaffTable from "@/components/StaffManagement/StaffContainer";
-import { Suspense } from "react";
+import PageContainer from "@/components/layout/page-container";
+import StaffContainer from "@/components/staff/staff-container";
+import { Heading } from "@/components/ui/heading";
+import { Separator } from "@/components/ui/separator";
+import { Plus } from "lucide-react";
+import Link from "next/link";
+
+export const metadata = {
+  title: "Dashboard : Staff Management",
+};
 
 type Props = {};
 
-const BreweryStaffPage = (props: Props) => {
+const StaffPage = (props: Props) => {
   return (
-    <div className="py-3 md:p-8 lg:w-10/12 mx-auto">
-      <Suspense fallback={<StaffManagementTableLS />}>
-        {/* @ts-expect-error Server Component */}
+    <PageContainer scrollable={false}>
+      <div className="flex flex-1 flex-col space-y-4 ">
+        <div className="flex items-start justify-between">
+          <Heading
+            title={`Staff Management`}
+            description="Manage your staff members and their roles"
+          />
+        </div>
+
         <StaffContainer />
-      </Suspense>
-    </div>
+      </div>
+    </PageContainer>
   );
 };
 
-export default BreweryStaffPage;
+export default StaffPage;

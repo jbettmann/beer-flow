@@ -1,23 +1,22 @@
 "use client";
 
 import TableViewToggleButton from "@/components/Buttons/table-view-toggle-btn";
+import BeerCardSkeleton from "@/components/skeletons/beer-card-skeleton";
 import { DataTableFilterBox } from "@/components/ui/table/data-table-filter-box";
 import { DataTableResetFilter } from "@/components/ui/table/data-table-reset-filter";
 import { DataTableSearch } from "@/components/ui/table/data-table-search";
 import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
 import { useBreweryContext } from "@/context/brewery-beer";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Category } from "@/types/category";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useMemo, useState } from "react";
-import { useProductTableFilters } from "./use-beer-table-filters";
-
-import BeerCardSkeleton from "@/components/skeletons/beer-card-skeleton";
 import BeerListCarousel from "../beer-list-carousel";
 import { BeerListTable } from "../beer-list-table";
 import { columns } from "./columns";
+import { useProductTableFilters } from "./use-beer-table-filters";
+import { ReusableTableWrapper } from "@/components/tables/reusable-table-wrapper";
 
-export default function ProductTableAction() {
+export default function BeerTableContainer() {
   const {
     stylesFilter,
     setStylesFilter,
@@ -32,10 +31,8 @@ export default function ProductTableAction() {
   const isMobile = useIsMobile();
   const searchParams = useSearchParams();
   const { selectedBeers, selectedBrewery, isAdmin } = useBreweryContext();
+
   // Get params directly from URL using Next.js navigation hook
-  const page = searchParams.get("page");
-  const search = searchParams.get("q");
-  const pageLimit = searchParams.get("limit");
   const categoriesParam = searchParams.get("categories");
   const stylesParam = searchParams.get("styles");
 
@@ -117,9 +114,12 @@ export default function ProductTableAction() {
   ]);
 
   return (
-    <>
-      <div className="flex flex-nowrap gap-2">
-        <div className="flex flex-wrap items-center gap-4 w-full">
+    <ReusableTableWrapper
+      isTableView={isTableView}
+      setIsTableView={setIsTableView}
+      showToggleView={isAdmin}
+      header={
+        <>
           <DataTableSearch
             searchKey="beers"
             searchQuery={searchQuery as string}
@@ -146,34 +146,16 @@ export default function ProductTableAction() {
             isFilterActive={isAnyFilterActive}
             onReset={resetFilters}
           />
-        </div>
-
-        {isAdmin && (
-          <TableViewToggleButton
-            tableView={isTableView}
-            setTableView={setIsTableView}
-          />
-        )}
-      </div>
-      <Suspense
-        fallback={
-          isTableView ? (
-            <DataTableSkeleton columnCount={5} rowCount={10} />
-          ) : (
-            <BeerCardSkeleton />
-          )
-        }
-      >
-        {isTableView ? (
-          <BeerListTable
-            columns={columns}
-            data={filteredBeers}
-            totalItems={filteredBeers.length}
-          />
-        ) : (
-          <BeerListCarousel data={filteredBeers} />
-        )}
-      </Suspense>
-    </>
+        </>
+      }
+      tableComponent={
+        <BeerListTable
+          columns={columns}
+          data={filteredBeers}
+          totalItems={filteredBeers.length}
+        />
+      }
+      cardComponent={<BeerListCarousel data={filteredBeers} />}
+    />
   );
 }

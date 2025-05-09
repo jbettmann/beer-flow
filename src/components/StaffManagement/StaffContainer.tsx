@@ -21,20 +21,6 @@ const StaffContainer = (props: Props) => {
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 1024);
-    };
-
-    const debouncedResize = debounce(handleResize, 250); // 250ms delay
-
-    window.addEventListener("resize", debouncedResize);
-
-    return () => {
-      window.removeEventListener("resize", debouncedResize);
-    };
-  }, []);
-
   return (
     selectedBrewery?.staff && (
       <>

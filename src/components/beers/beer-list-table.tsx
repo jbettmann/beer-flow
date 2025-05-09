@@ -37,7 +37,7 @@ import { Beer } from "@/types/beer";
 
 interface BeerListTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+  data: TData[] | any[];
   totalItems: number;
   pageSizeOptions?: number[];
 }

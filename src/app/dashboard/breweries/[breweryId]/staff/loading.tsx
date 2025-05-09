@@ -3,7 +3,7 @@ import StaffManagementTableLS from "@/components/LoadingSkeleton/StaffManagement
 
 export default function Loading() {
   return (
-    <div className="w-1/2 m-auto">
+    <div className="w-full h-full m-auto">
       <StaffManagementTableLS />
     </div>
   );
