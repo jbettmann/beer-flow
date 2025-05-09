@@ -1,3 +1,4 @@
+"use server";
 export const httpClientMethods = (
   fetcher: (url: string, options?: RequestInit) => Promise<any>
 ) => ({

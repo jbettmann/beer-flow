@@ -1,3 +1,4 @@
+"use server";
 import { fetcher } from "../fetcher";
 import { httpClientMethods } from "./httpClientMethods";
 
