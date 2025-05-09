@@ -1,6 +1,8 @@
 "use server";
 import { auth } from "@/auth";
 
+const baseUrl = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL;
+
 export const fetcher = async (endpoint: string, options: RequestInit = {}) => {
   const session = await auth();
   const headers = {
@@ -17,7 +19,7 @@ export const fetcher = async (endpoint: string, options: RequestInit = {}) => {
   };
 
   try {
-    const res = await fetch(process.env.NEXT_PUBLIC_API_URL + endpoint, config);
+    const res = await fetch(baseUrl + endpoint, config);
 
     if (!res.ok) {
       if (res.status === 400) {
