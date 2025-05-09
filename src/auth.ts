@@ -4,21 +4,18 @@ export const config = {
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 
-import getUser from "@/lib/GET/getUser";
+import { getUserByCredentials } from "@/lib/GET/getUserByCredentials";
 import { signJwtAccessToken, signJwtRefreshToken } from "@/lib/jwt";
 import { jwtVerify } from "jose";
 import type { Account, Profile, Session } from "next-auth";
 
 import { Notifications } from "@/types/notifications";
-import * as bcyrpt from "bcryptjs";
 import NextAuth, { User as NextAuthUser } from "next-auth";
 import { AdapterUser } from "next-auth/adapters";
 import { JWT } from "next-auth/jwt";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import updateUserInfo from "./lib/PATCH/updateUserInfo";
-import createNewUser from "./lib/POST/createNewUser";
-import { NewUser } from "./types/users";
+import { getUserByOauth } from "./lib/GET/getUserByOauth";
 
 interface MyToken extends JWT {
   id?: string;
@@ -63,43 +60,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
 
         try {
-          const user = await getUser(credentials.email as string);
-
-          if (!user) {
-            console.error("Invalid email address. User not found");
-            throw new Error("Invalid email address. User not found");
-          }
-
-          // Check if user registered using OAuth (i.e., doesn't have a password)
-          if (!user.password) {
-            console.error("User registered using OAuth");
-            throw new Error(
-              "This account was created using Google. Please try log in using Googles OAuth method above."
-            );
-          }
-
-          const passwordFromDB = user.password;
-
-          const isPasswordValid = await bcyrpt.compare(
-            credentials.password as string,
-            passwordFromDB
+          const user = await getUserByCredentials(
+            credentials.email as string,
+            credentials.password
           );
-
-          if (!isPasswordValid) {
-            console.error("Invalid password");
-            throw new Error("Invalid password");
-          }
-
-          const { password, _id, ...userWithoutPassword } = user;
-
           return {
-            id: Number(_id),
+            id: Number(user._id.toString()),
+            ...user,
             selectedBreweryId: null,
-            ...userWithoutPassword,
-          }; // return the user with required properties
+          };
         } catch (error: any) {
-          console.error("Error in authorization:", error);
-          throw new Error(error);
+          console.error("Login error:", error.message);
+          throw new Error(error.message);
         }
       },
     }),
@@ -123,7 +95,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }): Promise<boolean> {
       const name = user?.name ?? profile?.name;
       const email = user?.email ?? profile?.email;
-      let picture = profile?.picture ?? user?.image;
+      const picture = profile?.picture ?? user?.image;
       const cookieStore = await cookies();
       let selectedBreweryId =
         cookieStore.get("selectedBreweryId")?.value || null;
@@ -135,108 +107,31 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       if (account?.type === "credentials") {
         if (user) {
-          if (user.image !== picture) {
-            try {
-              await updateUserInfo({
-                userId: user.id! as string,
-                updatedUser: { image: picture },
-              });
-            } catch (error: string | any) {
-              console.error("Error updating user info:", error.message);
-            }
-          }
-          // User exists in your DB
-          if (user.id) {
-            user.id = user.id.toString();
-          }
+          user.id = user.id.toString();
+          user.picture = picture;
           user.selectedBreweryId = selectedBreweryId;
-          user.breweries = user.breweries;
-          user.notifications = user.notifications;
-
+          user.breweries = user.breweries.map((b: any) => b.toString());
+          user.notifications = { ...user.notifications };
           return true;
         }
         return false;
       }
 
-      let existingUser;
       try {
-        existingUser = await getUser(email);
-      } catch (err: string | any) {
-        console.error(err);
-      }
-      // Check if user exists and was registered with credentials
-      if (existingUser && existingUser.password) {
-        console.error(
-          "User tried to sign in with OAuth but was registered with credentials"
-        );
-
-        return false;
-      }
-
-      if (existingUser) {
-        if (existingUser.image !== picture) {
-          try {
-            const userWithNewImage = await updateUserInfo({
-              userId: existingUser._id,
-              updatedUser: { image: picture },
-            });
-            picture = userWithNewImage.image;
-          } catch (error: string | any) {
-            console.error("Error updating user info:", error.message);
-          }
-        }
-
-        if (
-          selectedBreweryId &&
-          !existingUser.breweries?.includes(selectedBreweryId)
-        ) {
-          selectedBreweryId = existingUser.breweries[0]; // fallback if logging in to different account
-        }
+        const existingUser = await getUserByOauth(email);
 
         user.id = existingUser._id.toString();
+        user.picture = picture;
         user.breweries = existingUser.breweries.map((b: any) => b.toString());
         user.notifications = { ...existingUser.notifications };
-        user.selectedBreweryId = selectedBreweryId || null;
+        user.selectedBreweryId =
+          selectedBreweryId || existingUser.breweries[0] || null;
 
         return true;
-      } else if (name && email) {
-        try {
-          // User does not exist, create the user
-          // Create a new user with Mongoose
-          const newUser = {
-            fullName: name,
-            email: email,
-            breweries: [],
-            image: picture || null,
-            notifications: {
-              allow: true,
-              newBeerRelease: {
-                email: true,
-                push: true,
-              },
-              beerUpdate: {
-                email: true,
-                push: true,
-              },
-            },
-          };
-
-          const savedUser = await createNewUser(newUser as unknown as NewUser);
-          if (savedUser) {
-            user.id = savedUser._id.toString();
-            user.breweries = savedUser.breweries;
-            user.notifications = savedUser.notifications;
-            user.selectedBreweryId = null;
-            return true;
-          }
-        } catch (err) {
-          console.error("Error in insertOne:", err);
-        }
-
-        return false;
+      } catch (err: string | any) {
+        console.error("signIn error:", err.message);
+        throw new Error(err.message);
       }
-
-      return false;
     },
 
     authorized: async ({
@@ -309,10 +204,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           process.env.REFRESH_TOKEN_SECRET!
         );
         token.id = user.id as string;
+
         return {
           ...token,
           breweries: user.breweries,
-          fullName: user.fullName,
+          picture: user.picture,
+          name: user.fullName || user.name,
           notifications: user.notifications,
           accessToken: accessToken,
           refreshToken: refreshToken,
@@ -355,6 +252,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         ...(session.user || {}),
         id: token.id as string,
         accessToken: token.accessToken as string,
+        refreshToken: token.refreshToken as string,
+        picture: token.picture as string,
         breweries: token.breweries as string[],
         selectedBreweryId: token.selectedBreweryId as string | null,
         notifications: token.notifications as Notifications,

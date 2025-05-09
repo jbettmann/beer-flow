@@ -1,10 +1,11 @@
 "use client";
 import SaveButton from "@/components/Buttons/SaveButton";
 import { Loader2 } from "lucide-react";
-import { signIn, useSession } from "next-auth/react";
+import { signIn, SignInResponse, useSession } from "next-auth/react";
 import Link from "next/link";
 import { redirect, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const LoginContainer = () => {
   const searchParams = useSearchParams();
@@ -24,9 +25,14 @@ const LoginContainer = () => {
     try {
       if (provider === "google") {
         setIsGoogleLoading(true);
-        await signIn("google", {
+        const result = await signIn("google", {
           callbackUrl: acceptInviteUrl || "/dashboard/overview",
         });
+        const res = result as unknown as SignInResponse;
+
+        if (res?.error) {
+          toast.error(res.error);
+        }
         return;
       }
 
@@ -42,7 +48,10 @@ const LoginContainer = () => {
         if (!login || !login.ok) {
           setLoginError(login?.error?.split(":")[1]);
           setIsCreateLoading(false);
-          return;
+          toast.error(
+            "There was an error logging in. Please check your credentials and try again."
+          );
+          redirect("/auth/login");
         }
 
         sessionStorage.setItem("credentialsLogin", "true");

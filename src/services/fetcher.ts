@@ -33,11 +33,11 @@ export const fetcher = async (endpoint: string, options: RequestInit = {}) => {
       if (res.status === 404) {
         throw new Error("Resource not found");
       }
-      if (res.status === 422) {
-        const errorData = await res.json();
-        console.error("Unprocessable Entity:", errorData);
-        throw new Error(errorData.message || "Unprocessable Entity");
-      }
+      // if (res.status === 422) {
+      //   const errorData = await res.json();
+      //   console.error("Unprocessable Entity:", errorData);
+      //   throw new Error(errorData.message || "Unprocessable Entity");
+      // }
       if (res.status === 500) {
         throw new Error("Internal Server Error");
       }
