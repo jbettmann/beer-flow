@@ -6,7 +6,7 @@ const BeerCardSkeleton = () => {
   return (
     <div className="w-full space-y-8">
       {[...Array(3)].map((_, categoryIndex) => (
-        <div key={categoryIndex} className="relative space-y-6 px-12">
+        <div key={categoryIndex} className="relative space-y-6 ">
           <div className="h-6 w-40 bg-gray-300 dark:bg-gray-700 rounded animate-pulse" />
 
           <div className="w-full max-w-full">
@@ -14,9 +14,9 @@ const BeerCardSkeleton = () => {
               {[...Array(4)].map((_, beerIndex) => (
                 <div
                   key={beerIndex}
-                  className="pl-4 md:basis-1/2 lg:basis-1/4 min-w-max"
+                  className="pl-1 sm:basis-1/2 lg:basis-1/3 2xl:basis-1/4  min-w-max"
                 >
-                  <Card className="animate-pulse">
+                  <Card className="animate-pulse py-0">
                     <div className="w-full h-64 bg-gray-300 dark:bg-gray-700 rounded-t-lg" />
                     <CardContent className="p-4">
                       <CardTitle className="h-6 w-32 bg-gray-300 dark:bg-gray-700 rounded mb-2" />

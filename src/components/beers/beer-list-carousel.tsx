@@ -58,11 +58,11 @@ export default function BeerListCarousel({ data }: { data: Beer[] }) {
                             align: "start",
                           }}
                         >
-                          <CarouselContent className="-ml-1">
+                          <CarouselContent>
                             {category.beers.map((beer, beerIndex) => (
                               <CarouselItem
                                 key={beerIndex}
-                                className="pl-8 sm:basis-1/2 lg:basis-1/3 2xl:basis-1/4 min-w-80 "
+                                className="sm:basis-1/2 lg:basis-1/3 2xl:basis-1/4 min-w-80 "
                               >
                                 <BeerDialogWrapper
                                   key={beerIndex + "dialog"}

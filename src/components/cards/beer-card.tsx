@@ -25,13 +25,13 @@ const BeerCard = forwardRef<HTMLDivElement, Props>((props, ref) => {
       ref={ref}
       {...rest}
       className={cn(
-        "w-full h-full max-h-[45rem]  hover:cursor-pointer py-0",
+        "w-full h-full max-h-[45rem]  hover:cursor-pointer py-0 ",
         cardClassName
       )}
     >
       <ImageDisplay
         item={beer}
-        className="object-cover w-full h-64 rounded-t-lg aspect-square"
+        className="object-cover w-full h-64 rounded-t-xl aspect-square"
       />
 
       <CardContent className="p-4 pb-0">

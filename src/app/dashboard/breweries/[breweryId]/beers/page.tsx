@@ -1,4 +1,4 @@
-import ProductTableAction from "@/components/beers/beer-table-actions/beer-table-action";
+import BeerTableContainer from "@/components/beers/beer-table-actions/beer-table-container";
 import PageContainer from "@/components/layout/page-container";
 import { buttonVariants } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
@@ -49,7 +49,7 @@ async function Page({
           )}
         </div>
         <Separator />
-        <ProductTableAction />
+        <BeerTableContainer />
       </div>
     </PageContainer>
   );
