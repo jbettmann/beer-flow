@@ -38,7 +38,7 @@ const StaffContainer = (props: Props) => {
           </Badge>
         </TabsTrigger>
         <TabsTrigger value="invitations">
-          Invitations{" "}
+          Invitations
           <Badge
             variant={"secondary"}
             className="rounded-full ml-1 border border-border"
@@ -54,34 +54,13 @@ const StaffContainer = (props: Props) => {
 
       <TabsContent value="staff">
         <StaffTable />
-        {/* <Card>
-          <CardHeader>
-            <CardTitle>Account</CardTitle>
-            <CardDescription>
-              Make changes to your account here. Click save when you're done.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <div className="space-y-1">
-              <Label htmlFor="name">Name</Label>
-              <Input id="name" defaultValue="Pedro Duarte" />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="username">Username</Label>
-              <Input id="username" defaultValue="@peduarte" />
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button>Save changes</Button>
-          </CardFooter>
-        </Card> */}
       </TabsContent>
       <TabsContent value="invitations">
         <Card>
           <CardHeader>
             <CardTitle>Password</CardTitle>
             <CardDescription>
-              Change your password here. After saving, you'll be logged out.
+              Change your password here. After saving, youll be logged out.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">

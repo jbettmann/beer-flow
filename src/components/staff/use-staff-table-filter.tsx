@@ -25,7 +25,7 @@ export function useStaffTableFilters() {
     setSearchQuery("");
     setRoleFilter(null);
     setPage(1);
-  }, []);
+  }, [setSearchQuery, setRoleFilter, setPage]);
 
   return {
     page,
