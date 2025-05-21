@@ -89,13 +89,16 @@ const CreateAccount = (props: Props) => {
 
     setIsCreateLoading(true);
     try {
-      const response = await fetch("https://beer-bible-api.vercel.app/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ fullName, email, password }),
-      });
+      const response = await fetch(
+        "https://beer-bible-api.vercel.app/users/credentials/create",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ fullName, email, password }),
+        }
+      );
 
       const data = await response.json();
 

@@ -8,9 +8,20 @@ import logo from "../../public/Brett_Logo.svg";
 import { auth, signOut } from "@/auth";
 import { Button } from "@/components/ui/button";
 import ServerSignOutButton from "@/components/Buttons/server-sign-out-buttton";
+import { redirect } from "next/navigation";
 
 export default async function Home() {
   const session = await auth();
+
+  // if (session) {
+  //   console.log("redirecting from home page '/'");
+  //   redirect("/dashboard/overview");
+  //  } else {
+  //   console.log("redirecting from home page '/'");
+  //   redirect('/auth/login')
+  //  }
+
+  
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between w-full">

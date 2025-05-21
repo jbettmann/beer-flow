@@ -7,9 +7,7 @@ type Props = {};
 const CreateAccountPage = (props: Props) => {
   return (
     <div className="w-full h-full mx-auto">
-      <Suspense fallback={<LoginPageSkeleton />}>
-        <CreateAccount />
-      </Suspense>
+      <CreateAccount />
     </div>
   );
 };

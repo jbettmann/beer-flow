@@ -1,7 +1,7 @@
 export const config = {
   matcher: [
     // "/api/:path*",
-    "/((?!api|_next/static|_next/image|favicon.ico|privacy-policy|auth/login|accept-invite|$).*)",
+    "/((?!api|_next(?:/static|/image)|favicon\\.ico|privacy-policy|auth/login|auth/signup|accept-invite|.*\\.(?:svg|png|jpg|jpeg|webp|gif|ico)$).*)",
   ],
 };
 export { auth as middleware } from "@/auth";
