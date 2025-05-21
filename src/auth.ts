@@ -48,6 +48,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
+        console.log("Credentials login", credentials, req);
         if (!credentials?.email) {
           throw new Error("Email address is required");
         }

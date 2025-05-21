@@ -7,12 +7,14 @@ export const getUserByCredentials = async (
   email: string,
   password: string
 ): Promise<Users> => {
+  console.log("getUserByCredentials", email, password);
   try {
     const user = await httpClient.post("/users/credentials/login", {
       email,
       password,
     });
 
+    console.log("User data:", user);
     return user as Users;
   } catch (err: any) {
     const errorMessage =

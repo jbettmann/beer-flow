@@ -9,5 +9,9 @@ export default function supabaseLoader({
   width: number;
   quality: number;
 }) {
+  console.log(src);
+  if (src.startsWith("/")) {
+    return src;
+  }
   return `https://${projectId}.supabase.co/storage/v1/object/public/Brett_bucket/${src}?width=${width}&quality=${quality || 90}`;
 }
