@@ -98,7 +98,7 @@ export function LoginForm({
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
             <svg
-              className="mr-2 h-6 w-6"
+              className="h-6 w-6"
               aria-hidden="true"
               focusable="false"
               data-prefix="fab"
@@ -126,6 +126,7 @@ export function LoginForm({
               <path d="M1 1h22v22H1z" fill="none" />
             </svg>
           )}
+          Google
         </Button>
         <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
           <span className="relative z-10 bg-background px-2 text-muted-foreground">

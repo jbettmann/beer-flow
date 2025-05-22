@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import homepageImage from "../assets/img/homepage.png";
 import mobilePhoneImage from "../assets/img/mobile.png";
-import logo from "../../public/Brett_Logo.svg";
+
 import { auth, signOut } from "@/auth";
 import { Button } from "@/components/ui/button";
 import ServerSignOutButton from "@/components/Buttons/server-sign-out-buttton";
@@ -21,8 +21,6 @@ export default async function Home() {
   //   redirect('/auth/login')
   //  }
 
-  
-
   return (
     <main className="flex min-h-screen flex-col items-center justify-between w-full">
       <div className="w-full mx-auto max-w-7xl">
@@ -34,7 +32,7 @@ export default async function Home() {
             <Image
               width={50}
               height={50}
-              src={logo}
+              src={"/brett_logo.png"}
               alt="Brett Logo"
               className="w-16"
             />

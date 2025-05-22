@@ -22,7 +22,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import logo from "../../public/Brett_Logo_light.svg";
 import SearchModal from "./Alerts/SearchModal";
 import SideDrawer from "./Drawers/SideDrawer";
 import ImageDisplay from "./ImageDisplay/ImageDisplay";
@@ -452,7 +451,7 @@ const NavBar = ({ breweries, user }: { breweries: Brewery[]; user: any }) => {
                 }`}
               >
                 <Image
-                  src={logo}
+                  src={"/brett_logo.png"}
                   width={50}
                   height={50}
                   alt="Brett Logo"
