@@ -8,8 +8,11 @@ import SearchModal from "../Alerts/SearchModal";
 import SideDrawer from "../Drawers/SideDrawer";
 import { Search } from "../Search/Search";
 import ThemeToggle from "./ThemeToggle/theme-toggle";
+import Image from "next/image";
+import { BrewerySwitcher } from "../sidebar/brewery-switcher";
+import { Brewery } from "@/types/brewery";
 
-export default function Header() {
+export default function Header({ breweries }: { breweries: Brewery[] }) {
   const { isMobile } = useSidebar();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   return (
@@ -23,10 +26,11 @@ export default function Header() {
           <Search isOpen={isSearchOpen} setIsOpen={setIsSearchOpen} />
         </SearchModal>
       )} */}
-      <div className="flex items-center gap-2 px-4">
+      <div className="flex items-center  px-4">
         <SidebarTrigger className="-ml-1" />
         <Separator orientation="vertical" className="mr-2 h-4" />
         {/* <Breadcrumbs /> */}
+        <BrewerySwitcher breweries={breweries} />
       </div>
 
       <div className="flex items-center gap-4 px-4">

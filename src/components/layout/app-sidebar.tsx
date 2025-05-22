@@ -12,11 +12,16 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
   SidebarRail,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
 import { useBreweryContext } from "@/context/brewery-beer";
 import { useMemo } from "react";
+import Image from "next/image";
+import Link from "next/link";
 
 // This is sample data.
 
@@ -96,7 +101,25 @@ export function AppSidebar({
     <>
       <Sidebar collapsible="icon" {...props}>
         <SidebarHeader>
-          <BrewerySwitcher breweries={breweries} />
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton className="ml-0 ">
+                <Link
+                  href={"/dashboard/overview"}
+                  className="flex items-center gap-2 font-semibold"
+                >
+                  <Image
+                    src="/brett_logo.png"
+                    alt="Brett Logo"
+                    width={20}
+                    height={20}
+                  />
+                  <span>Brett</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+          <SidebarSeparator />
         </SidebarHeader>
         <SidebarContent>
           <NavMain items={navItems.nonAuthNav} />

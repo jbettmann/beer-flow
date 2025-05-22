@@ -19,7 +19,7 @@ export default async function DashboardLayout({
     <div className="flex w-full">
       <AppSidebar breweries={breweries} user={session?.user} />
       <SidebarInset>
-        <Header />
+        <Header breweries={breweries} />
         {/* page main content */}
         {children}
         {modal}
