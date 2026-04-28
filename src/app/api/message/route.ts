@@ -1,3 +1,4 @@
+import { auth } from "@/auth";
 import { chatbotPrompt } from "@/app/helpers/constants/chatbot-prompt";
 import {
   ChatGPTMessage,
@@ -5,15 +6,70 @@ import {
   OpenAIStreamPayload,
 } from "@/lib/opendai-stream";
 import { MessageArraySchema } from "@/lib/validators/message";
+import { NextResponse } from "next/server";
+
+const MAX_BODY_BYTES = 16 * 1024;
+const MAX_MESSAGES = 20;
+const MAX_MESSAGE_CHARS = 1000;
+const MAX_TOTAL_CHARS = 6000;
+
+function jsonError(message: string, status: number) {
+  return NextResponse.json({ error: message }, { status });
+}
 
 export async function POST(req: Request) {
-  const { messages } = await req.json();
+  if (process.env.ENABLE_MESSAGE_API !== "true") {
+    return jsonError("Not found", 404);
+  }
 
-  const parsedMessages = MessageArraySchema.parse(messages);
+  const session = await auth();
+  if (!session?.user) {
+    return jsonError("Unauthorized", 401);
+  }
+
+  const contentLength = req.headers.get("content-length");
+  if (contentLength && Number(contentLength) > MAX_BODY_BYTES) {
+    return jsonError("Request too large", 413);
+  }
+
+  const rawBody = await req.text();
+  if (rawBody.length > MAX_BODY_BYTES) {
+    return jsonError("Request too large", 413);
+  }
+
+  let body: unknown;
+  try {
+    body = JSON.parse(rawBody);
+  } catch {
+    return jsonError("Invalid JSON body", 400);
+  }
+
+  const parsedMessagesResult = MessageArraySchema.safeParse(
+    (body as { messages?: unknown })?.messages
+  );
+  if (!parsedMessagesResult.success) {
+    return jsonError("Invalid messages payload", 400);
+  }
+
+  const parsedMessages = parsedMessagesResult.data;
+  if (parsedMessages.length > MAX_MESSAGES) {
+    return jsonError("Too many messages", 413);
+  }
+
+  const totalChars = parsedMessages.reduce(
+    (sum, message) => sum + message.text.length,
+    0
+  );
+  if (
+    totalChars > MAX_TOTAL_CHARS ||
+    parsedMessages.some((message) => message.text.length > MAX_MESSAGE_CHARS)
+  ) {
+    return jsonError("Message content too large", 413);
+  }
 
   const outboundMessages: ChatGPTMessage[] = parsedMessages.map((message) => {
     return {
-      role: message.isUserMessage ? "user" : "system",
+      role: "user",
       content: message.text,
     };
   });
@@ -35,7 +91,11 @@ export async function POST(req: Request) {
     n: 1,
   };
 
-  const stream = await OpenAIStream(payload);
+  try {
+    const stream = await OpenAIStream(payload);
 
-  return new Response(stream);
+    return new Response(stream);
+  } catch {
+    return jsonError("Unable to process message request", 502);
+  }
 }

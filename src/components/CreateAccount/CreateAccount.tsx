@@ -103,7 +103,6 @@ const CreateAccount = (props: Props) => {
       const data = await response.json();
 
       if (!response.ok) {
-        console.log("Error", data);
         // Redirect or handle success
         setSubmitError(data.message);
       } else {

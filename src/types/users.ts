@@ -9,7 +9,6 @@ export type Users = {
   __v: number;
   image: string;
   accessToken: string;
-  refreshToken: string;
 };
 
 export type NewUser = {
