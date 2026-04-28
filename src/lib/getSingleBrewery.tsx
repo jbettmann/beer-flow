@@ -1,22 +1,23 @@
 "use server";
 
 import { auth } from "@/auth";
-
-type pageProps = [url: string, token: string];
+import { buildApiUrl } from "@/lib/api/base";
 
 export default async function getSingleBrewery([url, token]: any) {
   const user = await auth();
-  if (user?.user) {
+  const accessToken = token || user?.user?.accessToken;
+
+  if (accessToken) {
     try {
-      const response = await fetch(url, {
+      const response = await fetch(buildApiUrl(url), {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${user.user.accessToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
         method: "GET",
       });
 
-      if (response.status != 200) {
+      if (!response.ok) {
         throw new Error(response.statusText);
       }
 

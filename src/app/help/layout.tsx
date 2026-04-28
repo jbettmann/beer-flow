@@ -25,7 +25,7 @@ const layout = async ({ children }: Props) => {
               Log In
             </Link>
             <Link
-              href="/auth/create/account"
+              href="/auth/signup"
               className=" flex justify-center items-center w-full rounded-full bg-accent hover:shadow-xl transition-all ease-in-out text-sm  text-primary shadow-sm font-medium hover:bg-[#68cdc0] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             >
               Sign up

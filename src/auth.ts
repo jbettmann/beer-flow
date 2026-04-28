@@ -47,8 +47,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         email: { label: "Email address", type: "text", placeholder: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials, req) {
-        console.log("Credentials login", credentials, req);
+      async authorize(credentials, _req) {
         if (!credentials?.email) {
           throw new Error("Email address is required");
         }
@@ -71,7 +70,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             selectedBreweryId: null,
           };
         } catch (error: any) {
-          console.error("Login error:", error.message);
           throw new Error(error.message);
         }
       },
@@ -94,7 +92,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       profile?: Profiles | undefined;
       account?: Account | null;
     }): Promise<boolean> {
-      const name = user?.name ?? profile?.name;
       const email = user?.email ?? profile?.email;
       const picture = profile?.picture ?? user?.image;
       const cookieStore = await cookies();
@@ -144,17 +141,37 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }) => {
       const isAuth = !!auth?.user;
       const acceptInvite = nextUrl.pathname.startsWith("/accept-invite");
-      if (!isAuth) {
-        return NextResponse.redirect(new URL("/auth/login", nextUrl));
+      const publicRoutes = [
+        "/",
+        "/help",
+        "/privacy-policy",
+        "/auth/login",
+        "/auth/signup",
+        "/auth/create/account",
+      ];
+
+      if (
+        publicRoutes.some(
+          (route) =>
+            nextUrl.pathname === route || nextUrl.pathname.startsWith(`${route}/`)
+        )
+      ) {
+        return true;
       }
 
-      if (isAuth && acceptInvite) {
+      if (!isAuth) {
         const loginUrl = new URL("/auth/login", nextUrl);
-        loginUrl.searchParams.set("next", nextUrl.toString());
+        if (acceptInvite) {
+          loginUrl.searchParams.set("next", nextUrl.toString());
+        }
         return NextResponse.redirect(loginUrl);
       }
 
-      return true; // Example: Return true if auth exists, otherwise false
+      if (acceptInvite) {
+        return true;
+      }
+
+      return true;
     },
     async jwt({
       token,

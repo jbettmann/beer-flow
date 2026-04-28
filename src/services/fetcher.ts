@@ -1,7 +1,6 @@
 "use server";
 import { auth } from "@/auth";
-
-const baseUrl = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL;
+import { buildApiUrl } from "@/lib/api/base";
 
 export const fetcher = async (endpoint: string, options: RequestInit = {}) => {
   const session = await auth();
@@ -19,7 +18,7 @@ export const fetcher = async (endpoint: string, options: RequestInit = {}) => {
   };
 
   try {
-    const res = await fetch(baseUrl + endpoint, config);
+    const res = await fetch(buildApiUrl(endpoint), config);
 
     if (!res.ok) {
       if (res.status === 400) {

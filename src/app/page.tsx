@@ -59,7 +59,7 @@ export default async function Home() {
                   Log In
                 </Link>
                 <Link
-                  href="/auth/create/account"
+                  href="/auth/signup"
                   className=" flex justify-center items-center w-full h-3/4 rounded-full bg-accent hover:shadow-xl transition-all ease-in-out text-sm  text-primary shadow-sm font-medium hover:bg-[#68cdc0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                 >
                   Sign up
@@ -104,7 +104,7 @@ export default async function Home() {
                 <GoogleSignInButton title="Sign up with Google" />
 
                 <Link
-                  href="/auth/create/account"
+                  href="/auth/signup"
                   className=" flex justify-center items-center w-full md:w-1/2 rounded-full bg-primary hover:shadow-xl transition-all ease-in-out px-3.5 py-2.5 text-sm  text-background shadow-sm hover:bg-[#1e1e1e] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white gap-2"
                 >
                   <Mail size={24} strokeWidth={1} color="#f7f4ea" /> Sign up

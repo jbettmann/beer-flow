@@ -1,13 +1,13 @@
 "use client";
-import { cn } from "@/lib/utils";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import SaveButton from "@/components/Buttons/SaveButton";
+import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
-import { signIn, SignInResponse, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
-import { redirect, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -15,71 +15,81 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"form">) {
+  const router = useRouter();
   const searchParams = useSearchParams();
-  const { data: session } = useSession();
 
-  const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
-  const [isCreateLoading, setIsCreateLoading] = useState<boolean>(false);
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [loginError, setLoginError] = useState<any>(null);
-  const [acceptInviteUrl, setAcceptInviteUrl] = useState<string | null>(null);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isCreateLoading, setIsCreateLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const next = searchParams.get("next");
-
-  const onSignIn = async (e: any, provider: string) => {
-    setLoginError(null);
-    console.log(e, provider);
-    try {
-      if (provider === "google") {
-        setIsGoogleLoading(true);
-        const result = await signIn("google", {
-          callbackUrl: acceptInviteUrl || "/dashboard/overview",
-        });
-        const res = result as unknown as SignInResponse;
-
-        if (res?.error) {
-          toast.error(res.error);
-        }
-        return;
-      }
-
-      if (provider === "credentials") {
-        setIsCreateLoading(true);
-        const login = await signIn("credentials", {
-          email,
-          password,
-          redirect: false,
-          callbackUrl: acceptInviteUrl || "/dashboard/overview",
-        });
-
-        if (!login || !login.ok) {
-          console.log("Login error!!!:", login);
-          setLoginError(login?.error?.split(":")[1]);
-          setIsCreateLoading(false);
-          toast.error(
-            "There was an error logging in. Please check your credentials and try again."
-          );
-          redirect("/auth/login");
-        }
-
-        sessionStorage.setItem("credentialsLogin", "true");
-        redirect(acceptInviteUrl || "/dashboard/overview");
-      }
-    } catch (error: any) {
-      setLoginError(error);
-    } finally {
-      setIsGoogleLoading(false);
-    }
-  };
+  const [acceptInviteUrl, setAcceptInviteUrl] = useState<string | null>(next);
+  const callbackUrl = acceptInviteUrl || "/dashboard/overview";
 
   useEffect(() => {
     if (next) {
       setAcceptInviteUrl(next);
     }
-  }, []);
+  }, [next]);
+
+  const onSignIn = async (provider: "google" | "credentials") => {
+    try {
+      if (provider === "google") {
+        setIsGoogleLoading(true);
+        const result = await signIn("google", {
+          callbackUrl,
+        });
+
+        if (result?.error) {
+          toast.error(result.error);
+        }
+
+        return;
+      }
+
+      setIsCreateLoading(true);
+
+      const login = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+        callbackUrl,
+      });
+
+      if (!login || !login.ok) {
+        toast.error(
+          "There was an error logging in. Please check your credentials and try again."
+        );
+        return;
+      }
+
+      sessionStorage.setItem("credentialsLogin", "true");
+      const destination = login.url || callbackUrl;
+      const resolvedDestination = destination.startsWith("http")
+        ? (() => {
+            const parsedUrl = new URL(destination);
+            return parsedUrl.pathname + parsedUrl.search + parsedUrl.hash;
+          })()
+        : destination;
+
+      router.push(resolvedDestination);
+    } catch {
+      toast.error("There was an error logging in. Please try again.");
+    } finally {
+      setIsGoogleLoading(false);
+      setIsCreateLoading(false);
+    }
+  };
 
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
+    <form
+      className={cn("flex flex-col gap-6", className)}
+      onSubmit={(event) => {
+        event.preventDefault();
+        void onSignIn("credentials");
+      }}
+      {...props}
+    >
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-bold">Login to your account</h1>
         <p className="text-balance text-sm text-muted-foreground">
@@ -91,7 +101,7 @@ export function LoginForm({
           variant="outline"
           className="w-full"
           type="button"
-          onClick={(e) => onSignIn(e, "google")}
+          onClick={() => void onSignIn("google")}
           disabled={isGoogleLoading}
         >
           {isGoogleLoading ? (
@@ -135,7 +145,16 @@ export function LoginForm({
         </div>
         <div className="grid gap-2">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="m@example.com" required />
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="m@example.com"
+            autoComplete="email"
+            required
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+          />
         </div>
         <div className="grid gap-2">
           <div className="flex items-center">
@@ -147,13 +166,20 @@ export function LoginForm({
               Forgot your password?
             </a>
           </div>
-          <Input id="password" type="password" required />
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            autoComplete="current-password"
+            required
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+          />
         </div>
-        <Button
-          type="submit"
-          className="w-full"
-          onClick={(e) => onSignIn(e, "credentials")}
-        >
+        <Button type="submit" className="w-full" disabled={isCreateLoading}>
+          {isCreateLoading ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : null}
           Login
         </Button>
       </div>

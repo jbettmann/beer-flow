@@ -18,6 +18,7 @@ import { useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { buildApiUrl } from "@/lib/api/base";
 
 // 1. Zod schema
 const formSchema = z
@@ -38,7 +39,9 @@ export function SignUpForm() {
   const searchParams = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
-  const [acceptInviteUrl, setAcceptInviteUrl] = useState<string | null>(null);
+  const [acceptInviteUrl, setAcceptInviteUrl] = useState<string | null>(
+    searchParams.get("next")
+  );
 
   useEffect(() => {
     const next = searchParams.get("next");
@@ -60,7 +63,7 @@ export function SignUpForm() {
     console.log("Form Data", data);
     try {
       const response = await fetch(
-        "https://beer-bible-api.vercel.app/users/credentials/create",
+        buildApiUrl("/users/credentials/create"),
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
