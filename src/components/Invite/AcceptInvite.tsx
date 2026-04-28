@@ -1,12 +1,9 @@
 "use client";
 import { Brewery } from "@/types/brewery";
-import { useBreweryContext } from "@/context/brewery-beer";
 import { useToast } from "@/context/toast";
+import { buildApiUrl } from "@/lib/api/base";
 import { acceptInvite } from "@/lib/POST/acceptInvite";
-import getBreweries from "@/lib/getBreweries";
-import getSingleBrewery from "@/lib/getSingleBrewery";
 import { useSession } from "next-auth/react";
-import { revalidatePath } from "next/cache";
 import Link from "next/link";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -59,10 +56,9 @@ const AcceptInvite = (props: Props) => {
       }
     };
 
-    mutate(
-      "https://beer-bible-api.vercel.app/users/breweries",
-      fetcher("https://beer-bible-api.vercel.app/users/breweries")
-    );
+    const breweryListUrl = buildApiUrl("/users/breweries");
+
+    mutate(breweryListUrl, fetcher(breweryListUrl));
   };
 
   const fetchInvite = async (token: string) => {

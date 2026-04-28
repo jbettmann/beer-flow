@@ -1,7 +1,15 @@
 export const config = {
+  // api, _next/static, _next/image, favicon.ico, and static assets are intentionally not included in the explicit matcher list.
   matcher: [
-    // "/api/:path*",
-    "/((?!api|_next(?:/static|/image)|favicon\\.ico|privacy-policy|auth/login|auth/signup|accept-invite|.*\\.(?:svg|png|jpg|jpeg|webp|gif|ico)$).*)",
+    "/",
+    "/help/:path*",
+    "/privacy-policy",
+    "/auth/login",
+    "/auth/signup",
+    "/auth/create/account",
+    "/accept-invite",
+    "/dashboard/:path*",
+    "/settings/:path*",
   ],
 };
 export { auth as middleware } from "@/auth";

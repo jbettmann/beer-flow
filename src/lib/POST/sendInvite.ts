@@ -1,4 +1,5 @@
 // apiService.ts
+import { buildApiUrl } from "@/lib/api/base";
 
 interface Invite {
   email: string;
@@ -16,20 +17,17 @@ export async function sendInvite({
   accessToken,
 }: Props) {
   if (breweryId && accessToken) {
-    const response = await fetch(
-      `https://beer-bible-api.vercel.app/breweries/${breweryId}/invite`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({
-          email: inviteData.email,
-          isAdmin: inviteData.isAdmin,
-        }),
-      }
-    );
+    const response = await fetch(buildApiUrl(`/breweries/${breweryId}/invite`), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({
+        email: inviteData.email,
+        isAdmin: inviteData.isAdmin,
+      }),
+    });
 
     // Check if the response is JSON before calling response.json()
     if (response.headers.get("Content-Type")?.includes("application/json")) {

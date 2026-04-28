@@ -1,3 +1,5 @@
+import { buildApiUrl } from "@/lib/api/base";
+
 type pageProps = {
   token: string | string[];
   accessToken: string;
@@ -5,8 +7,11 @@ type pageProps = {
 export const acceptInvite = async ({ token, accessToken }: pageProps) => {
   try {
     if (token && accessToken) {
+      const inviteToken = Array.isArray(token) ? token[0] : token;
       const response = await fetch(
-        `https://beer-bible-api.vercel.app/accept-invite?token=${token}`,
+        `${buildApiUrl("/accept-invite")}?token=${encodeURIComponent(
+          inviteToken
+        )}`,
         {
           method: "GET",
           headers: {
