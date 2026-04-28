@@ -82,6 +82,7 @@ export function SignUpForm() {
 
       toast.success("Account created! Redirecting...");
       await signIn("credentials", {
+        fullName: data.fullName,
         email: data.email,
         password: data.password,
         callbackUrl: acceptInviteUrl || "/",

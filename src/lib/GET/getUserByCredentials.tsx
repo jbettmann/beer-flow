@@ -3,11 +3,13 @@ import { httpClient } from "@/services/utils/httpClient";
 import { Users } from "@/types/users";
 
 export const getUserByCredentials = async (
+  fullName: string,
   email: string,
   password: string
 ): Promise<Users> => {
   try {
     const user = await httpClient.post("/users/credentials/login", {
+      fullName,
       email,
       password,
     });

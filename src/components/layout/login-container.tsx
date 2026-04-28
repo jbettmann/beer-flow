@@ -13,6 +13,7 @@ const LoginContainer = () => {
 
   const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
   const [isCreateLoading, setIsCreateLoading] = useState<boolean>(false);
+  const [fullName, setFullName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [loginError, setLoginError] = useState<any>(null);
@@ -39,6 +40,7 @@ const LoginContainer = () => {
       if (provider === "credentials") {
         setIsCreateLoading(true);
         const login = await signIn("credentials", {
+          fullName,
           email,
           password,
           redirect: false,
@@ -129,6 +131,24 @@ const LoginContainer = () => {
             <h5 className="my-3">OR</h5>
           </div>
           <form>
+            <div className="flex flex-col">
+              <label
+                className="beer-card__label-text text-primary!"
+                htmlFor="fullName"
+              >
+                Full Name
+              </label>
+              <input
+                className="form-input__create-account"
+                type="text"
+                placeholder="Full Name"
+                name="fullName"
+                id="fullName"
+                required
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+              />
+            </div>
             <div className="flex flex-col">
               <label
                 className="beer-card__label-text text-primary!"
