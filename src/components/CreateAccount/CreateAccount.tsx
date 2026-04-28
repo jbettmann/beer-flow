@@ -109,6 +109,7 @@ const CreateAccount = (props: Props) => {
         // Handle error responses
         addToast("Account successfully created!", "success");
         await signIn("credentials", {
+          fullName,
           email,
           password,
           callbackUrl: acceptInviteUrl || "/",

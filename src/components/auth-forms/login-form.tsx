@@ -20,6 +20,7 @@ export function LoginForm({
 
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isCreateLoading, setIsCreateLoading] = useState(false);
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const next = searchParams.get("next");
@@ -50,6 +51,7 @@ export function LoginForm({
       setIsCreateLoading(true);
 
       const login = await signIn("credentials", {
+        fullName,
         email,
         password,
         redirect: false,
@@ -97,6 +99,19 @@ export function LoginForm({
         </p>
       </div>
       <div className="grid gap-6">
+        <div className="grid gap-2">
+          <Label htmlFor="fullName">Full name</Label>
+          <Input
+            id="fullName"
+            name="fullName"
+            type="text"
+            placeholder="Jane Doe"
+            autoComplete="name"
+            required
+            value={fullName}
+            onChange={(event) => setFullName(event.target.value)}
+          />
+        </div>
         <Button
           variant="outline"
           className="w-full"

@@ -47,10 +47,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       name: "credentials",
 
       credentials: {
+        fullName: {
+          label: "Full name",
+          type: "text",
+          placeholder: "Jane Doe",
+        },
         email: { label: "Email address", type: "text", placeholder: "email" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, _req) {
+        if (!credentials?.fullName || typeof credentials.fullName !== "string") {
+          throw new Error("Full name is required");
+        }
+
         if (!credentials?.email) {
           throw new Error("Email address is required");
         }
@@ -64,6 +73,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         try {
           const user = await getUserByCredentials(
+            credentials.fullName as string,
             credentials.email as string,
             credentials.password
           );
