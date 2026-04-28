@@ -14,7 +14,6 @@ export declare module "next-auth" {
     image: string;
     picture?: string;
     accessToken: string;
-    refreshToken: string;
     notifications: Notifications;
     selectedBreweryId: string | null;
   }

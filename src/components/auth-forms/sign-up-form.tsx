@@ -60,7 +60,6 @@ export function SignUpForm() {
 
   const onSubmit = async (data: SignUpFormValues) => {
     setIsSubmitting(true);
-    console.log("Form Data", data);
     try {
       const response = await fetch(
         buildApiUrl("/users/credentials/create"),
@@ -74,9 +73,7 @@ export function SignUpForm() {
           }),
         }
       );
-      console.log("Response", response);
       const resData = await response.json();
-      console.log("resData", resData);
 
       if (!response.ok) {
         toast.error(resData.message || "Failed to create account");

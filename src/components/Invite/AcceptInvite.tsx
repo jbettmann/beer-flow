@@ -101,9 +101,15 @@ const AcceptInvite = (props: Props) => {
     const token = searchParams.get("token");
 
     if (token) {
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete("token");
+      const cleanedPath = params.toString()
+        ? `${pathname}?${params.toString()}`
+        : pathname;
+      window.history.replaceState(null, "", cleanedPath);
       fetchInvite(token);
     }
-  }, [pathname, session]);
+  }, [pathname, searchParams, session]);
 
   return (
     <div className="mx-auto w-full h-full text-center">
