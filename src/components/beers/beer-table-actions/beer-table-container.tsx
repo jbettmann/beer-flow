@@ -1,15 +1,12 @@
 "use client";
 
-import TableViewToggleButton from "@/components/Buttons/table-view-toggle-btn";
-import BeerCardSkeleton from "@/components/skeletons/beer-card-skeleton";
 import { DataTableFilterBox } from "@/components/ui/table/data-table-filter-box";
 import { DataTableResetFilter } from "@/components/ui/table/data-table-reset-filter";
 import { DataTableSearch } from "@/components/ui/table/data-table-search";
-import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
+import FlatfilePortal from "@/components/FlatfilePortal/FlatfilePortal";
 import { useBreweryContext } from "@/context/brewery-beer";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import BeerListCarousel from "../beer-list-carousel";
 import { BeerListTable } from "../beer-list-table";
 import { columns } from "./columns";
@@ -28,7 +25,6 @@ export default function BeerTableContainer() {
     setPage,
     setSearchQuery,
   } = useProductTableFilters();
-  const isMobile = useIsMobile();
   const searchParams = useSearchParams();
   const { selectedBeers, selectedBrewery, isAdmin } = useBreweryContext();
 
@@ -146,6 +142,7 @@ export default function BeerTableContainer() {
             isFilterActive={isAnyFilterActive}
             onReset={resetFilters}
           />
+          {isAdmin && <FlatfilePortal />}
         </>
       }
       tableComponent={

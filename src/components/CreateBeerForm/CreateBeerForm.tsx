@@ -1,10 +1,8 @@
 "use client";
-import { Brewery } from "@/types/brewery";
 import handleCreateBeer from "@/lib/handleSubmit/handleCreateBeer";
 import { hopSuggestions, maltSuggestions } from "@/lib/suggestionsDB";
 import validateFields from "@/lib/validators/forms";
-import { useRouter } from "next/navigation";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CategorySelect from "../CategorySelect/CategorySelect";
 import ErrorField from "../ErrorField/ErrorField";
 import TagInput from "../TagInput/TagInput";
@@ -21,14 +19,35 @@ import TrashCanIcon from "../Buttons/TrashCanIcon";
 import SaveButton from "../Buttons/SaveButton";
 import DefaultBeerImage from "../../assets/img/beer.png";
 import getSingleBrewery from "@/lib/getSingleBrewery";
-import { spawn } from "child_process";
+import BeerPostCreateShare from "../beers/beer-post-create-share";
 
-type pageProps = {};
+type pageProps = {
+  setIsCreateBeer?: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
-const CreateBeerForm = ({}: pageProps) => {
-  const { data: session, status, update } = useSession();
+const getEmptyValues = (): FormValues => ({
+  name: "",
+  abv: "",
+  ibu: "",
+  style: "",
+  malt: [],
+  hops: [],
+  description: "",
+  category: [],
+  nameSake: "",
+  notes: "",
+  image: null,
+  releasedOn: "",
+  archived: false,
+});
+
+const CreateBeerForm = (props: pageProps) => {
+  const { setIsCreateBeer } = props;
+  void setIsCreateBeer;
+  const { data: session } = useSession();
 
   const { selectedBeers, selectedBrewery, isAdmin } = useBreweryContext();
+  const [createdBeer, setCreatedBeer] = useState<Beer | null>(null);
 
   const { mutate } = useSWR(
     [
@@ -50,21 +69,7 @@ const CreateBeerForm = ({}: pageProps) => {
 
   const [isClearing, setIsClearing] = useState<boolean>(false); // Track if form is being cleared
 
-  const [values, setValues] = useState<FormValues>({
-    name: "",
-    abv: "",
-    ibu: "",
-    style: "",
-    malt: [],
-    hops: [],
-    description: "",
-    category: [],
-    nameSake: "",
-    notes: "",
-    image: null,
-    releasedOn: "",
-    archived: false,
-  });
+  const [values, setValues] = useState<FormValues>(getEmptyValues());
 
   // Define a new state to track "touched" status for each field
   const [touched, setTouched] = useState<{ [K in keyof FormValues]: boolean }>({
@@ -83,9 +88,14 @@ const CreateBeerForm = ({}: pageProps) => {
     archived: false,
   });
 
-  const router = useRouter();
   const { addToast } = useToast();
   const isSubmitting = useRef(false);
+
+  useEffect(() => {
+    if (createdBeer) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [createdBeer]);
 
   // Create a map that connects field names to their refs
   const fieldRefs: RefsType = {
@@ -99,6 +109,7 @@ const CreateBeerForm = ({}: pageProps) => {
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setCreatedBeer(null);
     isSubmitting.current = true;
     // Mark all fields as touched
     setTouched({
@@ -147,6 +158,7 @@ const CreateBeerForm = ({}: pageProps) => {
           mutate([...(selectedBeers as Beer[]), newBeerRes]);
           mutateBrewery();
           handleClear(); // Clear the form
+          setCreatedBeer(newBeerRes);
           addToast(`${newBeerRes.name} successfully created!`, "success");
         }
       }
@@ -165,21 +177,7 @@ const CreateBeerForm = ({}: pageProps) => {
 
   const handleClear = () => {
     setIsClearing(true); // Set to true at the start of clearing
-    setValues({
-      name: "",
-      abv: "",
-      ibu: "",
-      style: "",
-      malt: [],
-      hops: [],
-      description: "",
-      category: [],
-      nameSake: "",
-      notes: "",
-      image: null,
-      releasedOn: "",
-      archived: false,
-    });
+    setValues(getEmptyValues());
 
     setTouched({
       name: false,
@@ -199,6 +197,7 @@ const CreateBeerForm = ({}: pageProps) => {
 
     sessionStorage.removeItem("beerForm"); // Remove the saved form
     setPreviewImage(null);
+    setCreatedBeer(null);
     setIsClearing(false); // Set to false at the end of clearing
   };
 
@@ -223,7 +222,7 @@ const CreateBeerForm = ({}: pageProps) => {
     sessionStorage.setItem("beerForm", JSON.stringify(values));
     // Clear the error message when the form fields change
     setSubmitError(null);
-  }, [values]);
+  }, [values, isClearing]);
 
   return isAdmin ? (
     <form
@@ -246,6 +245,15 @@ const CreateBeerForm = ({}: pageProps) => {
           <X size={20} strokeWidth={1} />
         </button>
       </div>
+      {createdBeer && selectedBrewery?._id && (
+        <div className="px-2 md:px-4 pt-2">
+          <BeerPostCreateShare
+            beer={createdBeer}
+            sharePath={`/dashboard/breweries/${selectedBrewery._id}/beers/${createdBeer._id}`}
+            onCreateAnother={handleClear}
+          />
+        </div>
+      )}
       <div className="flex flex-col md:flex-row-reverse justify-between p-2 md:p-4 ">
         {/*  Beer Image */}
         <div className="flex flex-col items-center justify-between w-full md:w-[45%] p-2 pt-4 md:pt-2">
