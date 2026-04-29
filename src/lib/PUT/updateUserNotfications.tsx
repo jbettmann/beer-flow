@@ -29,10 +29,15 @@ export default async function updateUserNotifications({
 
       // Check if the response is not ok (non-2xx status code)
       if (!response.ok) {
-        const errorData = await response.json(); // Parse the JSON response to get the error message
-        console.error(errorData);
-        alert(errorData.error); // Display the error message
-        throw new Error(errorData.error);
+        let errorMessage = "Unable to update notification preferences.";
+        try {
+          const errorData = await response.json();
+          errorMessage =
+            errorData?.error || errorData?.message || errorMessage;
+        } catch {
+          // Keep the fallback message when the API does not return JSON.
+        }
+        throw new Error(errorMessage);
       }
 
       const responseData: Users = await response.json();

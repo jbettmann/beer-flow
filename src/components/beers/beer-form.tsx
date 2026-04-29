@@ -1,7 +1,5 @@
 "use client";
 
-import { FileUploader } from "@/components/file-uploader";
-import { MultiSelect } from "@/components/selects/multi-select";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -26,20 +24,16 @@ import { updateImage } from "@/lib/supabase/updateImage";
 import { Beer, NewBeer } from "@/types/beer";
 import BeerFormSchema from "@/zod/beer-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Beer as BeerIcon,
-  Hop,
-  LayoutGrid,
-  Percent,
-  Tag,
-  Wheat,
-} from "lucide-react";
+import { Beer as BeerIcon, Hop, LayoutGrid, Percent, Tag, Wheat } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
+import { FileUploader } from "@/components/file-uploader";
+import { MultiSelect } from "@/components/selects/multi-select";
+import BeerPostCreateShare from "./beer-post-create-share";
 
 type BeerSchemaValues = z.infer<typeof BeerFormSchema>;
 
@@ -51,8 +45,10 @@ export default function BeerForm({
   pageTitle: string;
 }) {
   const router = useRouter();
-  const { data: session, status, update } = useSession();
+  const { data: session } = useSession();
   const { selectedBrewery, mutateBeers, mutateBrewery } = useBreweryContext();
+  const isCreateMode = !initialData?._id;
+  const [createdBeer, setCreatedBeer] = useState<Beer | null>(null);
   const [beerImage, setBeerImage] = useState<File | string | null>(
     initialData?.image || null
   );
@@ -79,6 +75,14 @@ export default function BeerForm({
     resolver: zodResolver(BeerFormSchema),
     defaultValues: defaultValues,
   });
+
+  useEffect(() => {
+    if (!createdBeer) {
+      return;
+    }
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [createdBeer]);
 
   async function onSubmit(values: BeerSchemaValues) {
     try {
@@ -111,7 +115,13 @@ export default function BeerForm({
         toast.success(
           `${beerRes.name} successfully ${initialData?._id ? "edited" : "created"}!`
         );
-        router.push(`/dashboard/breweries/${selectedBrewery._id}/beers`);
+        if (initialData?._id) {
+          router.push(`/dashboard/breweries/${selectedBrewery._id}/beers`);
+        } else {
+          setCreatedBeer(beerRes);
+          form.reset(defaultValues);
+          setBeerImage(null);
+        }
       }
     } catch (err: string | any) {
       console.error(err);
@@ -126,6 +136,20 @@ export default function BeerForm({
         </CardTitle>
       </CardHeader>
       <CardContent>
+        {isCreateMode && createdBeer && selectedBrewery?._id && (
+          <div className="mb-8">
+            <BeerPostCreateShare
+              beer={createdBeer}
+              sharePath={`/dashboard/breweries/${selectedBrewery._id}/beers/${createdBeer._id}`}
+              onCreateAnother={() => {
+                setCreatedBeer(null);
+                form.reset(defaultValues);
+                setBeerImage(null);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+            />
+          </div>
+        )}
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit, onFormError)}

@@ -1,9 +1,10 @@
 "use client";
 
-import * as React from "react";
-
+import { useMemo } from "react";
 import { Label, Pie, PieChart } from "recharts";
+import { Users } from "lucide-react";
 
+import { useBreweryContext } from "@/context/brewery-beer";
 import {
   Card,
   CardContent,
@@ -18,56 +19,88 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { TrendingUp } from "lucide-react";
-
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--primary)" },
-  { browser: "safari", visitors: 200, fill: "var(--primary-light)" },
-  { browser: "firefox", visitors: 287, fill: "var(--primary-lighter)" },
-  { browser: "edge", visitors: 173, fill: "var(--primary-dark)" },
-  { browser: "other", visitors: 190, fill: "var(--primary-darker)" },
-];
+import { Skeleton } from "@/components/ui/skeleton";
+import { buildTeamPieData } from "../lib/overview-data";
 
 const chartConfig = {
-  visitors: {
-    label: "Visitors",
+  members: {
+    label: "Members",
   },
-  chrome: {
-    label: "Chrome",
-    color: "var(--primary)",
+  Owner: {
+    label: "Owner",
+    color: "var(--chart-1)",
   },
-  safari: {
-    label: "Safari",
-    color: "var(--primary)",
+  Admin: {
+    label: "Admins",
+    color: "var(--chart-2)",
   },
-  firefox: {
-    label: "Firefox",
-    color: "var(--primary)",
-  },
-  edge: {
-    label: "Edge",
-    color: "var(--primary)",
-  },
-  other: {
-    label: "Other",
-    color: "var(--primary)",
+  Staff: {
+    label: "Staff",
+    color: "var(--chart-3)",
   },
 } satisfies ChartConfig;
 
+function EmptyStateCard({ title, description }: { title: string; description: string }) {
+  return (
+    <Card className="@container/card">
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+        <CardDescription>{description}</CardDescription>
+      </CardHeader>
+      <CardContent className="flex min-h-[220px] items-center justify-center">
+        <div className="text-muted-foreground flex flex-col items-center gap-2 text-sm">
+          <Users className="size-5" />
+          <span>No team data to show</span>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 export function PieGraph() {
-  const totalVisitors = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.visitors, 0);
-  }, []);
+  const { selectedBrewery, breweryLoading, beersLoading } = useBreweryContext();
+
+  const chartData = useMemo(() => buildTeamPieData(selectedBrewery), [selectedBrewery]);
+  const totalMembers = chartData.reduce((acc, curr) => acc + curr.members, 0);
+
+  if (breweryLoading || beersLoading) {
+    return (
+      <Card className="@container/card">
+        <CardHeader>
+          <Skeleton className="h-6 w-48" />
+          <Skeleton className="h-4 w-56" />
+        </CardHeader>
+        <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+          <Skeleton className="mx-auto h-[250px] w-[250px] rounded-full" />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!selectedBrewery) {
+    return (
+      <EmptyStateCard
+        title="Team access mix"
+        description="Select a brewery to see how ownership, admin, and staff access is distributed."
+      />
+    );
+  }
+
+  if (!chartData.length) {
+    return (
+      <EmptyStateCard
+        title="Team access mix"
+        description="No team members are attached to this brewery yet."
+      />
+    );
+  }
 
   return (
     <Card className="@container/card">
       <CardHeader>
-        <CardTitle>Pie Chart - Donut with Text</CardTitle>
+        <CardTitle>Team access mix</CardTitle>
         <CardDescription>
-          <span className="hidden @[540px]/card:block">
-            Total visitors by browser for the last 6 months
-          </span>
-          <span className="@[540px]/card:hidden">Browser distribution</span>
+          Owner, admin, and staff membership for the selected brewery
         </CardDescription>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
@@ -76,42 +109,11 @@ export function PieGraph() {
           className="mx-auto aspect-square h-[250px]"
         >
           <PieChart>
-            <defs>
-              {["chrome", "safari", "firefox", "edge", "other"].map(
-                (browser, index) => (
-                  <linearGradient
-                    key={browser}
-                    id={`fill${browser}`}
-                    x1="0"
-                    y1="0"
-                    x2="0"
-                    y2="1"
-                  >
-                    <stop
-                      offset="0%"
-                      stopColor="var(--primary)"
-                      stopOpacity={1 - index * 0.15}
-                    />
-                    <stop
-                      offset="100%"
-                      stopColor="var(--primary)"
-                      stopOpacity={0.8 - index * 0.15}
-                    />
-                  </linearGradient>
-                )
-              )}
-            </defs>
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
+            <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
             <Pie
-              data={chartData.map((item) => ({
-                ...item,
-                fill: `url(#fill${item.browser})`,
-              }))}
-              dataKey="visitors"
-              nameKey="browser"
+              data={chartData}
+              dataKey="members"
+              nameKey="role"
               innerRadius={60}
               strokeWidth={2}
               stroke="var(--background)"
@@ -131,14 +133,14 @@ export function PieGraph() {
                           y={viewBox.cy}
                           className="fill-foreground text-3xl font-bold"
                         >
-                          {totalVisitors.toLocaleString()}
+                          {totalMembers.toLocaleString()}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground text-sm"
                         >
-                          Total Visitors
+                          Members
                         </tspan>
                       </text>
                     );
@@ -149,15 +151,8 @@ export function PieGraph() {
           </PieChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 leading-none font-medium">
-          Chrome leads with{" "}
-          {((chartData[0].visitors / totalVisitors) * 100).toFixed(1)}%{" "}
-          <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="text-muted-foreground leading-none">
-          Based on data from January - June 2024
-        </div>
+      <CardFooter className="text-muted-foreground text-sm">
+        Role counts are deduplicated across owner, admin, and staff lists.
       </CardFooter>
     </Card>
   );

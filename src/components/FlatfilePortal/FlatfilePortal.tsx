@@ -1,178 +1,328 @@
 "use client";
-import React from "react";
-import blueprint from "../../flatfile/blueprint";
-import { Sheet, useFlatfile } from "@flatfile/react";
-import moment from "moment";
-import { Beer } from "@/types/beer";
-type Props = {};
 
-const generateCSVTemplate = (blueprint) => {
-  const headers = blueprint.fields.map((field) => field.label).join(",") + "\n";
-  const exampleRows = [
-    [
-      "Example Beer Name",
-      "IPA",
-      "7.5",
-      "70",
-      "Hoppy",
-      "Malt1 Malt2",
-      "Hop1 Hop2",
-      "Freshest of the fresh hops",
-      "One that was made up buy the great master minds",
-      "Double Dry hopped with Citra and Mosaic",
-      "2019-03-05",
-      "false",
-    ],
-    [
-      "Another Beer Name",
-      "Stout",
-      "5.6",
-      "30",
-      "Dark & Malty",
-      "Malt1 Malt2",
-      "Hop1 Hop2",
-      "Dark Chocolatey and Delicious",
-      "One that was made up buy the great master minds... again",
-      "Collaboration with the brewery down the street",
-      "2019-03-05",
-      "true",
-    ],
-  ];
-  const rows = exampleRows.map((row) => row.join(",")).join("\n");
-  return headers + rows;
-};
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useBreweryContext } from "@/context/brewery-beer";
+import { useToast } from "@/context/toast";
+import {
+  buildBeerExportCsv,
+  createBeerCategoryCache,
+  buildBeerImportTemplateCsv,
+  createBeerForBrewery,
+  normalizeBeerImportRow,
+  parseBeerImportCsv,
+  resolveBeerCategoryIds,
+} from "@/lib/import/beerImport";
+import { Download, Loader2, Upload } from "lucide-react";
+import { useSession } from "next-auth/react";
+import React, { useRef, useState } from "react";
+import type {
+  BeerImportFailure,
+  BeerImportSummary,
+} from "@/lib/import/beerImport";
 
-const downloadCSVTemplate = (template) => {
-  const blob = new Blob([template], { type: "text/csv;charset=utf-8;" });
+const downloadCsv = (filename: string, csv: string) => {
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = "beer_template.csv";
+  link.download = filename;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+  URL.revokeObjectURL(url);
 };
 
 const FlatfilePortal = () => {
-  const { openPortal } = useFlatfile();
+  const { data: session } = useSession();
+  const { selectedBrewery, selectedBeers, mutateBeers, mutateBrewery, isAdmin } =
+    useBreweryContext();
+  const { addToast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [isImporting, setIsImporting] = useState(false);
+  const [summary, setSummary] = useState<BeerImportSummary | null>(null);
 
-  //  Validate and transform records via onRecordHook
-  const handleRecordValidation = (record: any) => {
-    // Transform malts and hops into arrays
-    const malts = record.get("malts");
-    if (malts) {
-      record.set(
-        "malts",
-        malts.split(",").map((malt: any) => malt.trim())
-      );
-    }
-
-    const hops = record.get("hops");
-    if (hops) {
-      record.set(
-        "hops",
-        hops.split(",").map((hop: any) => hop.trim())
-      );
-    }
-
-    // Convert ABV to a number
-    const abv = parseFloat(record.get("abv"));
-    record.set("abv", isNaN(abv) ? null : abv);
-
-    // Convert IBU to a number
-    const ibu = parseFloat(record.get("ibu"));
-    record.set("ibu", isNaN(ibu) ? null : ibu);
-
-    // Convert releaseDate to YYYY-MM-DD format using moment.js
-    const releaseDate = record.get("release_date");
-    if (releaseDate) {
-      const formattedDate = moment(releaseDate, [
-        "MM/DD/YYYY",
-        "M/D/YYYY",
-        "M/D/YY",
-        "YYYY-MM-DD",
-        "MMMM Do, YYYY",
-        "MMM D, YYYY",
-        "MMMM Do, YYYY",
-      ]).format("YYYY-MM-DD");
-      record.set("release_date", formattedDate);
-    }
-
-    // Convert archived to a boolean
-    const archived = record.get("archived");
-    record.set("archived", archived.toLowerCase() === "false");
-
-    return record;
-  };
-
-  const template = generateCSVTemplate(blueprint);
+  const accessToken = session?.user?.accessToken;
+  const breweryId = selectedBrewery?._id;
+  const canImport = Boolean(isAdmin && breweryId && accessToken);
 
   const handleDownloadTemplate = () => {
-    downloadCSVTemplate(template);
+    downloadCsv("beer_template.csv", buildBeerImportTemplateCsv());
+  };
+
+  const handleExport = () => {
+    downloadCsv(
+      `${selectedBrewery?.companyName || "beer"}-export.csv`,
+      buildBeerExportCsv(selectedBeers ?? [])
+    );
+  };
+
+  const pushFailure = (
+    failures: BeerImportFailure[],
+    failure: BeerImportFailure
+  ) => {
+    failures.push(failure);
+  };
+
+  const handleImportRows = async (csvText: string) => {
+    if (!selectedBrewery || !breweryId || !accessToken) {
+      throw new Error("Select a brewery and sign in before importing beers.");
+    }
+
+    const parsedRows = parseBeerImportCsv(csvText);
+    if (parsedRows.length === 0) {
+      throw new Error("No rows were found in the CSV file.");
+    }
+
+    const categoryCache = createBeerCategoryCache(selectedBrewery.categories);
+
+    const failures: BeerImportFailure[] = [];
+    let createdCount = 0;
+
+    for (let index = 0; index < parsedRows.length; index += 1) {
+      const rowNumber = index + 2;
+      const record = parsedRows[index];
+      const rowName =
+        record.Name || record.name || record["Beer Name"] || record["beer name"];
+
+      try {
+        const normalized = normalizeBeerImportRow(record);
+
+        if (!normalized.value) {
+          pushFailure(failures, {
+            rowNumber,
+            beerName: rowName || undefined,
+            message: normalized.errors.join(" "),
+          });
+          continue;
+        }
+
+        const categoryIds = await resolveBeerCategoryIds({
+          breweryId,
+          accessToken,
+          categoryCache,
+          categoryNames: normalized.value.category,
+        });
+
+        const createdBeer = await createBeerForBrewery({
+          breweryId,
+          accessToken,
+          beer: {
+            name: normalized.value.name,
+            style: normalized.value.style,
+            abv: normalized.value.abv ?? 0,
+            ibu: normalized.value.ibu ?? 0,
+            category: categoryIds,
+            malt: normalized.value.malt,
+            hops: normalized.value.hops,
+            description: normalized.value.description,
+            nameSake: normalized.value.nameSake,
+            notes: normalized.value.notes,
+            image: "",
+            archived: normalized.value.archived,
+            releasedOn: normalized.value.releasedOn,
+          },
+        });
+
+        if (!createdBeer?._id) {
+          pushFailure(failures, {
+            rowNumber,
+            beerName: normalized.value.name,
+            message: "Beer created but no record id was returned.",
+          });
+          continue;
+        }
+
+        createdCount += 1;
+      } catch (error) {
+        pushFailure(failures, {
+          rowNumber,
+          beerName: rowName || undefined,
+          message:
+            error instanceof Error ? error.message : "Failed to import row.",
+        });
+      }
+    }
+
+    if (createdCount > 0) {
+      await Promise.all([mutateBeers(), mutateBrewery()]);
+    }
+
+    const result: BeerImportSummary = {
+      createdCount,
+      failedCount: failures.length,
+      totalCount: parsedRows.length,
+      failures,
+    };
+
+    setSummary(result);
+
+    if (failures.length > 0) {
+      addToast(
+        `Imported ${createdCount} beer${createdCount === 1 ? "" : "s"} with ${failures.length} failure${
+          failures.length === 1 ? "" : "s"
+        }.`,
+        "info"
+      );
+    } else {
+      addToast(
+        `Imported ${createdCount} beer${createdCount === 1 ? "" : "s"} successfully.`,
+        "success"
+      );
+    }
+  };
+
+  const handleFileSelection = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+
+    if (!file) {
+      return;
+    }
+
+    setIsImporting(true);
+    try {
+      const csvText = await file.text();
+      await handleImportRows(csvText);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to import beers.";
+      setSummary({
+        createdCount: 0,
+        failedCount: 1,
+        totalCount: 0,
+        failures: [
+          {
+            rowNumber: 0,
+            message,
+          },
+        ],
+      });
+      addToast(message, "error");
+    } finally {
+      setIsImporting(false);
+    }
   };
 
   return (
     <>
-      <button className="btn btn-outline" onClick={openPortal}>
-        Upload Beers
-      </button>
-      <button className="btn btn-outline" onClick={handleDownloadTemplate}>
-        Download CSV Template
-      </button>
-      <Sheet
-        config={blueprint}
-        onSubmit={async ({ sheet }) => {
-          const data = await sheet.allData();
-          console.log("onSubmit", data);
-        }}
-        onRecordHook={(record) => handleRecordValidation(record)}
+      <div className="flex flex-wrap items-center gap-2">
+        <Button type="button" variant="outline" onClick={handleDownloadTemplate}>
+          <Download className="mr-2 h-4 w-4" />
+          Template
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={!canImport || isImporting}
+        >
+          {isImporting ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Upload className="mr-2 h-4 w-4" />
+          )}
+          Import
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={handleExport}
+          disabled={!selectedBrewery}
+        >
+          <Download className="mr-2 h-4 w-4" />
+          Export
+        </Button>
+      </div>
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".csv,text/csv"
+        className="hidden"
+        onChange={handleFileSelection}
       />
+
+      <Dialog
+        open={Boolean(summary)}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSummary(null);
+          }
+        }}
+      >
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Import summary</DialogTitle>
+            <DialogDescription>
+              Review the created beer count and any rows that need attention.
+            </DialogDescription>
+          </DialogHeader>
+
+          {summary && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-3 gap-3">
+                <div className="rounded-md border p-3">
+                  <p className="text-xs uppercase text-muted-foreground">
+                    Created
+                  </p>
+                  <p className="text-2xl font-semibold">
+                    {summary.createdCount}
+                  </p>
+                </div>
+                <div className="rounded-md border p-3">
+                  <p className="text-xs uppercase text-muted-foreground">
+                    Failed
+                  </p>
+                  <p className="text-2xl font-semibold">{summary.failedCount}</p>
+                </div>
+                <div className="rounded-md border p-3">
+                  <p className="text-xs uppercase text-muted-foreground">
+                    Total
+                  </p>
+                  <p className="text-2xl font-semibold">{summary.totalCount}</p>
+                </div>
+              </div>
+
+              {summary.failures.length > 0 ? (
+                <ScrollArea className="max-h-[18rem] rounded-md border">
+                  <div className="divide-y">
+                    {summary.failures.map((failure) => (
+                      <div
+                        key={`${failure.rowNumber}-${failure.message}`}
+                        className="space-y-1 p-3"
+                      >
+                        <p className="text-sm font-medium">
+                          Row {failure.rowNumber}
+                          {failure.beerName ? ` - ${failure.beerName}` : ""}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {failure.message}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  No row-level failures were reported.
+                </p>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
 
 export default FlatfilePortal;
-
-/* records
-: 
-Array(9)
-0
-: 
-{id: 'us_rc_bf9281d474904d2eaac55ae5a63d74d2', values: {…}, metadata: {…}, config: {…}, valid: false}
-1
-: 
-{id: 'us_rc_ff8585c6e50e4ff582f2337910d0d031', values: {…}, metadata: {…}, config: {…}, valid: false}
-2
-: 
-{id: 'us_rc_bf9e8bc3a04d4814bf64795ff4ba4a83', values: {…}, metadata: {…}, config: {…}, valid: false}
-3
-: 
-{id: 'us_rc_23fd47fb4dcb4b488809aa254a202f42', values: {…}, metadata: {…}, config: {…}, valid: false}
-4
-: 
-{id: 'us_rc_7507e1841b594acdafdb958071a9af6a', values: {…}, metadata: {…}, config: {…}, valid: false}
-5
-: 
-{id: 'us_rc_264bcd323d34434b937ba6dd9d09b829', values: {…}, metadata: {…}, config: {…}, valid: false}
-6
-: 
-{id: 'us_rc_f7a342235f7e4305a5e820c71ab8204c', values: {…}, metadata: {…}, config: {…}, valid: false}
-7
-: 
-{id: 'us_rc_eb29c3214f634709b040df529e4ecbec', values: {…}, metadata: {…}, config: {…}, valid: false}
-8
-: 
-{id: 'us_rc_d921fa0aed2d42ec8642bb53a9908fca', values: {…}, metadata: {…}, config: {…}, valid: false}
-length
-: 
-9
-[[Prototype]]
-: 
-Array(0)
-sheetId
-: 
-"us_sh_HnmAZL5Q"
-workbookId
-: 
-"us_wb_OkCqw1Pq" 
-*/
