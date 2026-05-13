@@ -1,5 +1,5 @@
 import { AreaGraph } from "@/features/overview/components/area-graph";
 
-export default async function AreaStats() {
+export default function AreaStats() {
   return <AreaGraph />;
 }
