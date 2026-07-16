@@ -23,8 +23,6 @@ import { useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-// This is sample data.
-
 export function AppSidebar({
   breweries,
   user,
@@ -34,6 +32,7 @@ export function AppSidebar({
   user: any;
 } & React.ComponentProps<typeof Sidebar>) {
   const { selectedBrewery } = useBreweryContext();
+  const hasSelectedBrewery = Boolean(selectedBrewery?._id);
 
   const navItems = useMemo(() => {
     const data = {
@@ -44,19 +43,26 @@ export function AppSidebar({
           icon: "dashboard",
           isActive: true,
         },
-      ],
-      authNav: [
         {
-          title: "Beers",
-          url: `/dashboard/breweries/${selectedBrewery?._id}/beers`,
+          title: "Breweries",
+          url: "/dashboard/breweries",
           icon: "beer",
         },
-        {
-          title: "Staff",
-          url: `/dashboard/breweries/${selectedBrewery?._id}/staff`,
-          icon: "users",
-        },
       ],
+      authNav: hasSelectedBrewery
+        ? [
+            {
+              title: "Beers",
+              url: `/dashboard/breweries/${selectedBrewery?._id}/beers`,
+              icon: "beer",
+            },
+            {
+              title: "Staff",
+              url: `/dashboard/breweries/${selectedBrewery?._id}/staff`,
+              icon: "users",
+            },
+          ]
+        : [],
       navGenerals: [
         {
           title: "Help",
@@ -95,7 +101,7 @@ export function AppSidebar({
       ],
     };
     return data;
-  }, [selectedBrewery]);
+  }, [hasSelectedBrewery, selectedBrewery]);
 
   return (
     <>
@@ -123,9 +129,12 @@ export function AppSidebar({
         </SidebarHeader>
         <SidebarContent>
           <NavMain items={navItems.nonAuthNav} />
-          <SidebarSeparator />
-          <NavMain items={navItems.authNav} />
-          {/* <NavProjects projects={navItems.projects} /> */}
+          {hasSelectedBrewery && (
+            <>
+              <SidebarSeparator />
+              <NavMain items={navItems.authNav} />
+            </>
+          )}
           <div className="mt-auto">
             <NavMain items={navItems.navGenerals} />
           </div>

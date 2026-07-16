@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { useSession } from "next-auth/react";
 import type { ReactNode } from "react";
 import { useMemo } from "react";
 import { Beer, Layers3, Percent } from "lucide-react";
@@ -66,6 +68,9 @@ function OverviewMetricSkeleton() {
 export default function OverviewSummary() {
   const { selectedBrewery, selectedBeers, breweryLoading, beersLoading } =
     useBreweryContext();
+  const { data: session } = useSession();
+  const breweryCount = session?.user?.breweries?.length ?? 0;
+  const hasBreweries = breweryCount > 0;
 
   const overview = useMemo(
     () => getOverviewContextState(selectedBrewery, selectedBeers),
@@ -83,14 +88,26 @@ export default function OverviewSummary() {
   }
 
   if (!overview.hasBrewery) {
+    const title = hasBreweries
+      ? "No brewery selected"
+      : "No breweries yet";
+    const description = hasBreweries
+      ? "Pick a brewery from the switcher to see live counts for beers, categories, and ABV."
+      : "Create your first brewery to unlock the overview, brewery switcher, and beer management screens.";
+
     return (
       <Card className="border-dashed">
-        <CardHeader>
-          <CardTitle>Select a brewery</CardTitle>
-          <CardDescription>
-            Pick a brewery from the switcher to see live counts for beers,
-            categories, and ABV.
-          </CardDescription>
+        <CardHeader className="space-y-3">
+          <div className="space-y-1">
+            <CardTitle>{title}</CardTitle>
+            <CardDescription>{description}</CardDescription>
+          </div>
+          <Link
+            href="/dashboard/breweries"
+            className="inline-flex w-fit items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+          >
+            Create or manage breweries
+          </Link>
         </CardHeader>
       </Card>
     );
