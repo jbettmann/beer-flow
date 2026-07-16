@@ -24,9 +24,9 @@ export default async function getSingleBrewery([url, token]: any) {
       return await response.json();
     } catch (err) {
       console.error(err);
-      return {};
+      return null;
     }
   } else {
-    return {};
+    return null;
   }
 }
