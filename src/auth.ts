@@ -78,7 +78,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             credentials.password
           );
           return {
-            id: Number(user._id.toString()),
+            id: user._id.toString(),
             ...user,
             selectedBreweryId: null,
           };

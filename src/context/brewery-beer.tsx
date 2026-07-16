@@ -45,12 +45,14 @@ export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
 
   const {
     data: beers,
+    error: beersError,
     isLoading: beersLoading,
     mutate: mutateBeers,
   } = useGetBeerByBreweryId(breweryId);
 
   const {
     data: brewery,
+    error: breweryError,
     isLoading: breweryLoading,
     mutate: mutateBrewery,
   } = useGetBreweryById(breweryId);
@@ -78,14 +80,26 @@ export const BreweryProvider: FC<ProviderProps> = ({ children }) => {
   useEffect(() => {
     if (brewery) {
       setSelectedBrewery(brewery);
+      return;
     }
-  }, [brewery]);
+
+    if (breweryError) {
+      setSelectedBrewery(null);
+      setSelectedBeers(null);
+      setIsAdmin(false);
+    }
+  }, [brewery, breweryError]);
 
   useEffect(() => {
     if (beers !== undefined) {
       setSelectedBeers(beers);
+      return;
     }
-  }, [beers]);
+
+    if (beersError) {
+      setSelectedBeers(null);
+    }
+  }, [beers, beersError]);
 
   useEffect(() => {
     if (session?.user.selectedBreweryId) {
