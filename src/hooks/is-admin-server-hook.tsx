@@ -2,7 +2,7 @@
 import { Users } from "@/types/users";
 import { auth } from "@/auth";
 import getSingleBrewery from "@/lib/getSingleBrewery";
-import React from "react";
+import { getBreweryMemberId, getBreweryMemberIds } from "@/lib/brewery-members";
 
 const getIsAdminServer = async (breweryId: string) => {
   const session = await auth();
@@ -12,10 +12,15 @@ const getIsAdminServer = async (breweryId: string) => {
 
   const [user, brewery] = await Promise.all([session, selectedBrewery]);
 
-  const isAdmin = new Set([
-    ...brewery?.admin?.map((admin: Users) => admin._id),
-    brewery.owner._id,
-  ]).has(user?.user.id);
+  const breweryOwnerId = getBreweryMemberId(brewery?.owner);
+  const adminIds = getBreweryMemberIds(brewery?.admin as Users[] | undefined);
+  const userId = user?.user.id;
+
+  if (!breweryOwnerId || !userId) {
+    return false;
+  }
+
+  const isAdmin = new Set([...adminIds, breweryOwnerId]).has(userId);
 
   return isAdmin;
 };
