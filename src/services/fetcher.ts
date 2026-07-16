@@ -2,6 +2,39 @@
 import { auth } from "@/auth";
 import { buildApiUrl } from "@/lib/api/base";
 
+const FETCH_TIMEOUT_MS = 8000;
+
+function createTimeoutSignal(signal?: AbortSignal | null) {
+  const controller = new AbortController();
+  let timedOut = false;
+
+  const timeoutId = setTimeout(() => {
+    timedOut = true;
+    controller.abort();
+  }, FETCH_TIMEOUT_MS);
+
+  const abortFromExternalSignal = () => {
+    controller.abort();
+  };
+
+  if (signal) {
+    if (signal.aborted) {
+      controller.abort();
+    } else {
+      signal.addEventListener("abort", abortFromExternalSignal, { once: true });
+    }
+  }
+
+  return {
+    signal: controller.signal,
+    timedOut: () => timedOut,
+    cleanup: () => {
+      clearTimeout(timeoutId);
+      signal?.removeEventListener("abort", abortFromExternalSignal);
+    },
+  };
+}
+
 export const fetcher = async (endpoint: string, options: RequestInit = {}) => {
   const session = await auth();
   const headers = {
@@ -16,6 +49,8 @@ export const fetcher = async (endpoint: string, options: RequestInit = {}) => {
     ...options,
     headers,
   };
+  const timeout = createTimeoutSignal(options.signal);
+  config.signal = timeout.signal;
 
   try {
     const res = await fetch(buildApiUrl(endpoint), config);
@@ -48,7 +83,18 @@ export const fetcher = async (endpoint: string, options: RequestInit = {}) => {
     }
     return await res.json();
   } catch (error) {
+    if (timeout.timedOut()) {
+      const url = buildApiUrl(endpoint);
+      const timeoutError = new Error(
+        `Request to ${url} timed out after ${FETCH_TIMEOUT_MS}ms`
+      );
+      console.error(timeoutError.message);
+      throw timeoutError;
+    }
+
     console.error("Fetch error:", error);
     throw error;
+  } finally {
+    timeout.cleanup();
   }
 };

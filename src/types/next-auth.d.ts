@@ -6,7 +6,7 @@ import Brewery from "./brewery";
 
 export declare module "next-auth" {
   interface User {
-    id: number;
+    id: string;
     fullName: string;
     email: string;
     breweries: string[];
