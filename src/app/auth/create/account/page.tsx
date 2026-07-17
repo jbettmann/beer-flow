@@ -1,13 +1,29 @@
+import { sanitizeNextPath } from "@/lib/invite-flow";
 import { redirect } from "next/navigation";
 
 type Props = {
-  searchParams?: Record<string, string | string[] | undefined>;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
-const CreateAccountPage = ({ searchParams }: Props) => {
+const CreateAccountPage = async ({ searchParams }: Props) => {
+  const resolvedSearchParams = await searchParams;
   const params = new URLSearchParams();
+  const safeNext = sanitizeNextPath(
+    typeof resolvedSearchParams?.next === "string"
+      ? resolvedSearchParams.next
+      : null,
+    ""
+  );
 
-  for (const [key, value] of Object.entries(searchParams || {})) {
+  if (safeNext) {
+    params.set("next", safeNext);
+  }
+
+  for (const [key, value] of Object.entries(resolvedSearchParams || {})) {
+    if (key === "next") {
+      continue;
+    }
+
     if (typeof value === "string") {
       params.set(key, value);
     } else if (Array.isArray(value)) {

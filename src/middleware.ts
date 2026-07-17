@@ -7,6 +7,7 @@ export const config = {
     "/auth/login",
     "/auth/signup",
     "/auth/create/account",
+    "/invite/:path*",
     "/accept-invite",
     "/dashboard/:path*",
     "/settings/:path*",

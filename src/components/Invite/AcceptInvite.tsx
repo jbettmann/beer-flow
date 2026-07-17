@@ -1,140 +1,309 @@
 "use client";
-import { Brewery } from "@/types/brewery";
+
 import { useToast } from "@/context/toast";
-import { buildApiUrl } from "@/lib/api/base";
-import { acceptInvite } from "@/lib/POST/acceptInvite";
+import {
+  buildInviteAcceptAttemptKey,
+  getOrCreateInviteAcceptRequest,
+  InviteAcceptRoutePayload,
+  isValidLegacyInviteToken,
+  isValidInviteState,
+} from "@/lib/invite-flow";
+import Cookies from "js-cookie";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { mutate } from "swr";
 
-type Props = {};
+const acceptInviteRequests = new Map<string, Promise<InviteAcceptRoutePayload>>();
+const legacyRelayRequests = new Map<string, Promise<{ redirectTo: string }>>();
 
-const AcceptInvite = (props: Props) => {
+type ViewState = {
+  tone: "loading" | "success" | "error";
+  message: string;
+  retryable: boolean;
+};
+
+const fetchAcceptInvite = (state: string, attempt: number) => {
+  const requestKey = buildInviteAcceptAttemptKey(state, attempt);
+
+  return getOrCreateInviteAcceptRequest(acceptInviteRequests, requestKey, async () => {
+    const response = await fetch("/api/invites/accept", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      cache: "no-store",
+      body: JSON.stringify({ state }),
+    });
+
+    return (await response.json()) as InviteAcceptRoutePayload;
+  });
+};
+
+const relayLegacyInvite = (token: string) =>
+  getOrCreateInviteAcceptRequest(legacyRelayRequests, token, async () => {
+    const response = await fetch("/api/invites/relay", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      cache: "no-store",
+      body: JSON.stringify({ token }),
+    });
+
+    return (await response.json()) as { redirectTo: string };
+  });
+
+const AcceptInvite = () => {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState(`Accepting Invite... `);
   const searchParams = useSearchParams();
-  const pathname = usePathname();
   const { addToast } = useToast();
+  const inviteError = searchParams.get("error");
+  const inviteToken = searchParams.get("token");
+  const inviteState = searchParams.get("state");
+  const { status, update } = useSession();
+  const [attempt, setAttempt] = useState(0);
+  const [isRelayingLegacyToken, setIsRelayingLegacyToken] = useState(false);
+  const [viewState, setViewState] = useState<ViewState>({
+    tone: "loading",
+    message: "Preparing your invitation...",
+    retryable: false,
+  });
+  const hasValidLegacyInviteToken = useMemo(
+    () => !!inviteToken && isValidLegacyInviteToken(inviteToken),
+    [inviteToken]
+  );
+  const hasValidInviteState = useMemo(
+    () => !!inviteState && isValidInviteState(inviteState),
+    [inviteState]
+  );
 
-  const { data: session, update } = useSession();
+  const handleInviteAccepted = useCallback(
+    async (response: InviteAcceptRoutePayload) => {
+      const breweryId = response.brewery?._id;
+      const breweryName = response.brewery?.companyName;
 
-  const handleBreweryToStorage = async (brewery: Brewery) => {
-    localStorage.setItem("selectedBreweryId", brewery._id);
-    // Create a new event
-    const selectedBreweryChangedEvent = new Event("selectedBreweryChanged");
-    // Dispatch the event
-    window.dispatchEvent(selectedBreweryChangedEvent);
-
-    const fetcher = async (url: string) => {
-      if (session?.user.accessToken) {
-        try {
-          const response = await fetch(url, {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${session?.user.accessToken}`,
-            },
-            method: "POST",
-            body: JSON.stringify({ breweryIds: session.user.breweries }),
-          });
-
-          if (!response.ok) {
-            throw new Error(response.statusText);
-          }
-
-          const responseData = await response.json();
-          return responseData.breweries;
-        } catch (err) {
-          console.error(err);
-          return []; // Return empty array on error
-        }
-      } else {
-        return []; // Return empty array if user has no breweries
-      }
-    };
-
-    const breweryListUrl = buildApiUrl("/users/breweries");
-
-    mutate(breweryListUrl, fetcher(breweryListUrl));
-  };
-
-  const fetchInvite = async (token: string) => {
-    setLoading(true);
-
-    try {
-      if (session?.user.accessToken) {
-        const response = await acceptInvite({
-          token,
-          accessToken: session?.user.accessToken,
+      if (!breweryId || !breweryName) {
+        setViewState({
+          tone: "error",
+          message: "Invitation accepted, but brewery details could not be loaded.",
+          retryable: true,
         });
-
-        if (response.message === "Invitation accepted.") {
-          setMessage(response.message);
-          addToast(
-            `You have successfully joined ${response.brewery.companyName}!`,
-            "success"
-          );
-
-          await update({ newBreweryId: response.brewery._id });
-          handleBreweryToStorage(response.brewery);
-
-          router.push(`/dashboard/breweries/${response.brewery._id}`);
-        }
-      } else {
-        addToast("Unable to process invite. Please try again later", "error");
-        setMessage("Unable to process invite. Please try again later");
+        return;
       }
-    } catch (err: string | any) {
-      console.error(err);
-      setMessage(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+
+      await update({
+        newBreweryId: breweryId,
+        selectedBreweryId: breweryId,
+      });
+      Cookies.set("selectedBreweryId", breweryId);
+      localStorage.setItem("selectedBreweryId", breweryId);
+      window.dispatchEvent(new CustomEvent("selectedBreweryChanged"));
+      await Promise.all([
+        mutate(`/breweries/${breweryId}`),
+        mutate(`/breweries/${breweryId}/beers`),
+      ]);
+
+      addToast(`You have successfully joined ${breweryName}.`, "success");
+      setViewState({
+        tone: "success",
+        message: response.message,
+        retryable: false,
+      });
+      router.replace(`/dashboard/breweries/${breweryId}`);
+    },
+    [addToast, router, update]
+  );
 
   useEffect(() => {
-    // accept-invite url example:
-    // const inviteUrl = `http://localhost:3000/accept-invite?token=${token}`;
-    const token = searchParams.get("token");
-
-    if (token) {
-      const params = new URLSearchParams(searchParams.toString());
-      params.delete("token");
-      const cleanedPath = params.toString()
-        ? `${pathname}?${params.toString()}`
-        : pathname;
-      window.history.replaceState(null, "", cleanedPath);
-      fetchInvite(token);
+    if (!inviteToken) {
+      return;
     }
-  }, [pathname, searchParams, session]);
+
+    setIsRelayingLegacyToken(true);
+    setViewState({
+      tone: "loading",
+      message: "Preparing your invitation...",
+      retryable: false,
+    });
+
+    if (!hasValidLegacyInviteToken) {
+      setIsRelayingLegacyToken(false);
+      router.replace("/accept-invite?error=invalid");
+      return;
+    }
+
+    let isActive = true;
+
+    void relayLegacyInvite(inviteToken)
+      .then(({ redirectTo }) => {
+        if (!isActive) {
+          return;
+        }
+
+        router.replace(redirectTo);
+      })
+      .catch(() => {
+        if (!isActive) {
+          return;
+        }
+
+        router.replace("/accept-invite?error=invalid");
+      })
+      .finally(() => {
+        if (!isActive) {
+          return;
+        }
+
+        setIsRelayingLegacyToken(false);
+      });
+
+    return () => {
+      isActive = false;
+    };
+  }, [hasValidLegacyInviteToken, inviteToken, router]);
+
+  useEffect(() => {
+    if (isRelayingLegacyToken) {
+      setViewState({
+        tone: "loading",
+        message: "Preparing your invitation...",
+        retryable: false,
+      });
+      return;
+    }
+
+    if (inviteError === "invalid" || !inviteState || !hasValidInviteState) {
+      setViewState({
+        tone: "error",
+        message: "This invitation link is invalid.",
+        retryable: false,
+      });
+      return;
+    }
+
+    if (status === "loading") {
+      setViewState({
+        tone: "loading",
+        message: "Checking your session...",
+        retryable: false,
+      });
+      return;
+    }
+
+    if (status !== "authenticated") {
+      setViewState({
+        tone: "loading",
+        message: "Redirecting you to sign in...",
+        retryable: false,
+      });
+      return;
+    }
+
+    let isActive = true;
+
+    setViewState({
+      tone: "loading",
+      message: "Accepting your invitation...",
+      retryable: false,
+    });
+
+    void fetchAcceptInvite(inviteState, attempt)
+      .then(async (response) => {
+        if (!isActive) {
+          return;
+        }
+
+        if (response.status === "success") {
+          await handleInviteAccepted(response);
+          return;
+        }
+
+        if (response.status === "completed") {
+          await update({ refreshMembership: true });
+          addToast(response.message, "success");
+          setViewState({
+            tone: "success",
+            message: response.message,
+            retryable: false,
+          });
+          router.replace("/dashboard");
+          return;
+        }
+
+        if (response.status === "email_mismatch") {
+          addToast(response.message, "error");
+        }
+
+        setViewState({
+          tone: "error",
+          message: response.message,
+          retryable: response.retryable,
+        });
+      })
+      .catch(() => {
+        if (!isActive) {
+          return;
+        }
+
+        setViewState({
+          tone: "error",
+          message: "Unable to accept the invitation right now. Please try again.",
+          retryable: true,
+        });
+      });
+
+    return () => {
+      isActive = false;
+    };
+  }, [
+    addToast,
+    attempt,
+    handleInviteAccepted,
+    hasValidInviteState,
+    isRelayingLegacyToken,
+    inviteError,
+    inviteState,
+    router,
+    status,
+    update,
+  ]);
 
   return (
-    <div className="mx-auto w-full h-full text-center">
-      <div className=" w-full h-[80%] flex flex-col justify-center items-center ">
-        {loading ? (
-          <>
-            <p>{message}</p>
+    <div className="mx-auto flex min-h-[70vh] w-full max-w-2xl items-center justify-center px-6">
+      <div className="w-full rounded-xl border border-border bg-card p-8 text-center shadow-sm">
+        <h1 className="text-2xl font-semibold">Invitation</h1>
+        <p
+          className="mt-4 text-muted-foreground"
+          role={viewState.tone === "error" ? "alert" : "status"}
+          aria-live="polite"
+        >
+          {viewState.message}
+        </p>
+
+        {viewState.tone === "loading" ? (
+          <div className="mt-6 flex justify-center">
             <span className="loading loading-spinner loading-lg">
               Loading...
             </span>
-          </>
+          </div>
         ) : (
-          <div className="flex flex-col justify-center items-center">
-            <p>{message}</p>
-            <div className="flex gap-3">
-              <Link className="create-btn" href={"/"}>
-                Home
-              </Link>
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
+            <Link className="btn btn-outline" href="/">
+              Home
+            </Link>
+            {viewState.retryable && inviteState ? (
               <button
-                className="btn btn-outline btn-primary"
-                onClick={() => router.refresh()}
+                type="button"
+                className="btn btn-primary"
+                onClick={() => {
+                  setAttempt((currentAttempt) => currentAttempt + 1);
+                }}
               >
                 Try Again
               </button>
-            </div>
+            ) : null}
           </div>
         )}
       </div>

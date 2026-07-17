@@ -5,6 +5,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 
 import { getUserByCredentials } from "@/lib/GET/getUserByCredentials";
+import { buildApiUrl } from "@/lib/api/base";
 import { signJwtAccessToken } from "@/lib/jwt";
 import type { Account, Profile, Session } from "next-auth";
 
@@ -15,6 +16,12 @@ import { JWT } from "next-auth/jwt";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { getUserByOauth } from "./lib/GET/getUserByOauth";
+import {
+  mergeRefreshedMembershipTokenFields,
+  mergeUniqueStrings,
+  sanitizeNextPath,
+  toUniqueStringArray,
+} from "./lib/invite-flow";
 
 interface MyToken extends JWT {
   id?: string;
@@ -32,6 +39,32 @@ interface MyToken extends JWT {
 
 interface Profiles extends Profile {
   picture?: string;
+}
+
+function buildAccessTokenPayload(source: {
+  id?: string | null;
+  name?: string | null;
+  fullName?: string | null;
+  email?: string | null;
+  breweries?: Array<string | null | undefined>;
+  notifications?: Notifications;
+  selectedBreweryId?: string | null;
+  picture?: string | null;
+  image?: string | null;
+}) {
+  const breweries = toUniqueStringArray(source.breweries ?? []);
+
+  return {
+    id: source.id,
+    name: source.name,
+    fullName: source.fullName || source.name,
+    email: source.email,
+    breweries,
+    notifications: source.notifications,
+    selectedBreweryId: source.selectedBreweryId,
+    picture: source.picture,
+    image: source.image || source.picture,
+  };
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -164,6 +197,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }) => {
       const isAuth = !!auth?.user;
       const acceptInvite = nextUrl.pathname.startsWith("/accept-invite");
+      const inviteLanding = nextUrl.pathname.startsWith("/invite/");
       const publicRoutes = [
         "/",
         "/help",
@@ -174,6 +208,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       ];
 
       if (
+        inviteLanding ||
         publicRoutes.some(
           (route) =>
             nextUrl.pathname === route || nextUrl.pathname.startsWith(`${route}/`)
@@ -182,10 +217,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         return true;
       }
 
+      if (acceptInvite && nextUrl.searchParams.has("token")) {
+        // Let the transitional client relay exchange the raw legacy token for
+        // an HttpOnly state cookie before any auth redirect copies the URL.
+        return true;
+      }
+
       if (!isAuth) {
         const loginUrl = new URL("/auth/login", nextUrl);
         if (acceptInvite) {
-          loginUrl.searchParams.set("next", nextUrl.toString());
+          loginUrl.searchParams.set(
+            "next",
+            sanitizeNextPath(
+              `${nextUrl.pathname}${nextUrl.search}${nextUrl.hash}`,
+              "/accept-invite"
+            )
+          );
         }
         return NextResponse.redirect(loginUrl);
       }
@@ -214,14 +261,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       session?: any;
     }) {
       if (trigger && trigger === "update") {
+        let shouldRefreshAccessToken = false;
+
         if (session.newBreweryId) {
-          token.breweries = [...(token.breweries ?? []), session.newBreweryId];
+          token.breweries = mergeUniqueStrings(
+            token.breweries ?? [],
+            session.newBreweryId as string
+          );
+          shouldRefreshAccessToken = true;
         }
         if (session.removeBreweryId) {
-          token.breweries = (token.breweries ?? []).filter(
+          token.breweries = toUniqueStringArray(token.breweries ?? []).filter(
             (breweryId: string) =>
               breweryId !== (session.removeBreweryId as string)
           );
+          shouldRefreshAccessToken = true;
         }
         if (session.updatedNotifications) {
           token.notifications = session.updatedNotifications as Notifications;
@@ -229,13 +283,80 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         if (session.selectedBreweryId) {
           token.selectedBreweryId = session.selectedBreweryId as string;
+          shouldRefreshAccessToken = true;
+        }
+
+        if (session.refreshMembership && token.accessToken) {
+          try {
+            const response = await fetch(buildApiUrl("/users/me"), {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token.accessToken}`,
+              },
+              cache: "no-store",
+            });
+
+            if (response.ok) {
+              const refreshedUser = await response.json();
+              const mergedMembership = mergeRefreshedMembershipTokenFields(
+                {
+                  id: token.id,
+                  name: token.name,
+                  fullName: token.fullName,
+                  email: token.email,
+                  breweries: token.breweries,
+                  notifications:
+                    (token.notifications as Record<string, unknown> | undefined) ??
+                    null,
+                  selectedBreweryId: token.selectedBreweryId,
+                  picture: token.picture,
+                  image: token.image,
+                },
+                refreshedUser
+              );
+
+              if (mergedMembership) {
+                token.id = mergedMembership.id;
+                token.name = mergedMembership.name;
+                token.fullName = mergedMembership.fullName;
+                token.email = mergedMembership.email;
+                token.breweries = mergedMembership.breweries;
+                token.notifications = mergedMembership.notifications as Notifications;
+                token.selectedBreweryId = mergedMembership.selectedBreweryId;
+                token.picture = mergedMembership.picture;
+                token.image = mergedMembership.image;
+                shouldRefreshAccessToken = true;
+              }
+            }
+          } catch {
+            // Preserve the existing token when membership refresh fails.
+          }
+        }
+
+        token.breweries = toUniqueStringArray(token.breweries ?? []);
+
+        if (shouldRefreshAccessToken) {
+          token.accessToken = await signJwtAccessToken(
+            buildAccessTokenPayload({
+              id: token.id,
+              name: token.name,
+              fullName: token.fullName,
+              email: token.email,
+              breweries: token.breweries,
+              notifications: token.notifications,
+              selectedBreweryId: token.selectedBreweryId,
+              picture: token.picture,
+              image: token.image,
+            }),
+            process.env.AUTH_SECRET!
+          );
         }
         return token;
       }
 
       if (user) {
-        const accessTokenPayload = {
-          id: user.id,
+        const accessTokenPayload = buildAccessTokenPayload({
+          id: user.id as string,
           name: user.name,
           fullName: (user as any).fullName || user.name,
           email: user.email,
@@ -244,7 +365,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           selectedBreweryId: user.selectedBreweryId,
           picture: user.picture,
           image: (user as any).image || user.picture,
-        };
+        });
 
         const accessToken = await signJwtAccessToken(
           accessTokenPayload,
@@ -257,7 +378,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           name: user.name,
           fullName: (user as any).fullName || user.name,
           email: user.email,
-          breweries: user.breweries,
+          breweries: accessTokenPayload.breweries,
           picture: user.picture,
           image: (user as any).image || user.picture,
           notifications: user.notifications,
