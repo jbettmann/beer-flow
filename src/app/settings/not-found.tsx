@@ -1,15 +1,10 @@
 import Link from "next/link";
-import React from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 // default name and page for not found dynamic page
 export default function NotFound() {
   return (
-    <div>
-      Could not access setting at this time. Return to
-      <Link className="link" href={"/breweries"}>
-        {" "}
-        Breweries
-      </Link>
-    </div>
+    <Card><CardHeader><CardTitle>Setting not found</CardTitle><CardDescription>This settings page does not exist or is no longer available.</CardDescription></CardHeader><CardContent><Button asChild variant="outline"><Link href="/settings/profile">Back to settings</Link></Button></CardContent></Card>
   );
 }

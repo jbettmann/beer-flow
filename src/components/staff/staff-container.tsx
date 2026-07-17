@@ -34,8 +34,12 @@ const StaffContainer = (props: Props) => {
       }
     };
 
-    addPopulatedMemberIds(selectedBrewery.staff as Array<string | number | Users>);
-    addPopulatedMemberIds(selectedBrewery.admin as Array<string | number | Users>);
+    addPopulatedMemberIds(
+      selectedBrewery.staff as Array<string | number | Users>,
+    );
+    addPopulatedMemberIds(
+      selectedBrewery.admin as Array<string | number | Users>,
+    );
 
     const ownerId = getBreweryMemberId(selectedBrewery.owner);
     if (ownerId) {
@@ -46,11 +50,14 @@ const StaffContainer = (props: Props) => {
   }, [selectedBrewery]);
 
   return (
-    <div className="w-full space-y-4">
+    <div className="flex min-h-0 w-full flex-1 flex-col gap-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
           <h2 className="text-lg font-semibold">Staff</h2>
-          <Badge variant="secondary" className="rounded-full border border-border">
+          <Badge
+            variant="secondary"
+            className="rounded-full border border-border"
+          >
             {numberOfStaff}
           </Badge>
         </div>
@@ -67,7 +74,9 @@ const StaffContainer = (props: Props) => {
         <StaffTable />
       ) : (
         <div className="rounded-lg border border-border bg-muted/30 p-6 text-center">
-          <h3 className="text-base font-semibold">Admin authorization required</h3>
+          <h3 className="text-base font-semibold">
+            Admin authorization required
+          </h3>
           <p className="mt-2 text-sm text-muted-foreground">
             Only brewery admins can access staff management for{" "}
             {selectedBrewery?.companyName || "this brewery"}.

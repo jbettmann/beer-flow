@@ -2,12 +2,13 @@ import BrewerySettingsProfileView from "@/components/Settings/BrewerySettingsPro
 import React from "react";
 
 type Props = {
-  params: {
+  params: Promise<{
     breweryId: string;
-  };
+  }>;
 };
 
-const SingleBrewerySettingsPage = ({ params: { breweryId } }: Props) => {
+const SingleBrewerySettingsPage = async ({ params }: Props) => {
+  const { breweryId } = await params;
   return <BrewerySettingsProfileView breweryId={breweryId} />;
 };
 

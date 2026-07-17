@@ -14,6 +14,7 @@ interface ReusableTableWrapperProps<T> {
   tableComponent: React.ReactNode;
   cardComponent?: React.ReactNode;
   isLoading?: boolean;
+  fillHeight?: boolean;
 }
 
 export function ReusableTableWrapper<T>({
@@ -24,11 +25,14 @@ export function ReusableTableWrapper<T>({
   tableComponent,
   cardComponent,
   isLoading,
+  fillHeight = false,
 }: ReusableTableWrapperProps<T>) {
   return (
-    <>
-      <div className="flex flex-nowrap gap-2 mb-4">
-        <div className="flex flex-wrap items-center gap-4 w-full">{header}</div>
+    <div className={fillHeight ? "flex min-h-0 flex-1 flex-col" : undefined}>
+      <div className="mb-4 flex flex-nowrap gap-2">
+        <div className="flex w-full flex-wrap items-center gap-2 sm:gap-4">
+          {header}
+        </div>
         {showToggleView && (
           <TableViewToggleButton
             tableView={isTableView}
@@ -49,6 +53,6 @@ export function ReusableTableWrapper<T>({
       >
         {isTableView ? tableComponent : cardComponent}
       </Suspense>
-    </>
+    </div>
   );
 }

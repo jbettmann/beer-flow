@@ -32,12 +32,18 @@ import {
   ChevronsRight,
 } from "lucide-react";
 import { parseAsInteger, useQueryState } from "nuqs";
+import { useEffect } from "react";
+
+type PaginationMode = "client" | "server";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   totalItems: number;
   pageSizeOptions?: number[];
+  paginationMode?: PaginationMode;
+  emptyState?: React.ReactNode;
+  hiddenColumnIdsBelowMd?: readonly string[];
 }
 
 export function DataTable<TData, TValue>({
@@ -45,29 +51,39 @@ export function DataTable<TData, TValue>({
   data,
   totalItems,
   pageSizeOptions = [10, 20, 30, 40, 50],
+  paginationMode = "server",
+  emptyState,
+  hiddenColumnIdsBelowMd = [],
 }: DataTableProps<TData, TValue>) {
   const [currentPage, setCurrentPage] = useQueryState(
     "page",
-    parseAsInteger.withOptions({ shallow: false }).withDefault(1)
+    parseAsInteger.withOptions({ shallow: false }).withDefault(1),
   );
   const [pageSize, setPageSize] = useQueryState(
     "limit",
     parseAsInteger
       .withOptions({ shallow: false, history: "push" })
-      .withDefault(10)
+      .withDefault(10),
   );
 
+  const pageCount = Math.ceil(totalItems / pageSize);
+  const lastPage = Math.max(pageCount, 1);
+  const safeCurrentPage = Math.min(Math.max(currentPage, 1), lastPage);
   const paginationState = {
-    pageIndex: currentPage - 1, // zero-based index for React Table
-    pageSize: pageSize,
+    pageIndex: safeCurrentPage - 1,
+    pageSize,
   };
 
-  const pageCount = Math.ceil(totalItems / pageSize);
+  useEffect(() => {
+    if (currentPage < 1 || currentPage > lastPage) {
+      setCurrentPage(Math.min(Math.max(currentPage, 1), lastPage));
+    }
+  }, [currentPage, lastPage, setCurrentPage]);
 
   const handlePaginationChange = (
     updaterOrValue:
       | PaginationState
-      | ((old: PaginationState) => PaginationState)
+      | ((old: PaginationState) => PaginationState),
   ) => {
     const pagination =
       typeof updaterOrValue === "function"
@@ -87,34 +103,50 @@ export function DataTable<TData, TValue>({
     },
     onPaginationChange: handlePaginationChange,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    manualPagination: true,
+    getPaginationRowModel:
+      paginationMode === "client" ? getPaginationRowModel() : undefined,
+    manualPagination: paginationMode === "server",
     manualFiltering: true,
   });
 
   return (
-    <div className="flex flex-1 flex-col space-y-4 ">
-      <div className="relative flex flex-1">
-        <div className="absolute bottom-0 left-0 right-0 top-0 flex overflow-scroll rounded-md border md:overflow-auto">
-          <ScrollArea className="flex-1">
-            <Table className="relative">
-              <TableHeader>
+    <div className="flex min-h-0 flex-1 flex-col gap-3 sm:gap-4">
+      <div className="relative flex min-h-0 flex-1">
+        <div className="absolute inset-0 flex overflow-hidden rounded-md border">
+          <ScrollArea className="min-h-0 flex-1">
+            <Table
+              className={
+                table.getRowModel().rows.length ? "relative" : "relative h-full"
+              }
+            >
+              <TableHeader className="sticky top-0 z-10 bg-background">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id}>
                     {headerGroup.headers.map((header) => (
-                      <TableHead key={header.id}>
+                      <TableHead
+                        key={header.id}
+                        className={
+                          hiddenColumnIdsBelowMd.includes(header.column.id)
+                            ? "hidden md:table-cell"
+                            : undefined
+                        }
+                      >
                         {header.isPlaceholder
                           ? null
                           : flexRender(
                               header.column.columnDef.header,
-                              header.getContext()
+                              header.getContext(),
                             )}
                       </TableHead>
                     ))}
                   </TableRow>
                 ))}
               </TableHeader>
-              <TableBody>
+              <TableBody
+                className={
+                  table.getRowModel().rows.length ? undefined : "h-full"
+                }
+              >
                 {table.getRowModel().rows?.length ? (
                   table.getRowModel().rows.map((row) => (
                     <TableRow
@@ -122,22 +154,29 @@ export function DataTable<TData, TValue>({
                       data-state={row.getIsSelected() && "selected"}
                     >
                       {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
+                        <TableCell
+                          key={cell.id}
+                          className={
+                            hiddenColumnIdsBelowMd.includes(cell.column.id)
+                              ? "hidden md:table-cell"
+                              : undefined
+                          }
+                        >
                           {flexRender(
                             cell.column.columnDef.cell,
-                            cell.getContext()
+                            cell.getContext(),
                           )}
                         </TableCell>
                       ))}
                     </TableRow>
                   ))
                 ) : (
-                  <TableRow>
+                  <TableRow className="h-full">
                     <TableCell
                       colSpan={columns.length}
                       className="h-24 text-center"
                     >
-                      No results.
+                      {emptyState ?? "No results."}
                     </TableCell>
                   </TableRow>
                 )}
@@ -148,16 +187,16 @@ export function DataTable<TData, TValue>({
         </div>
       </div>
 
-      <div className="flex flex-col items-center justify-end gap-2 space-x-2 py-2 sm:flex-row">
-        <div className="flex w-full items-center justify-between">
-          <div className="flex-1 text-sm text-muted-foreground">
+      <div className="flex shrink-0 flex-col gap-3 pb-1 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex min-w-0 flex-col gap-2 min-[380px]:flex-row min-[380px]:items-center min-[380px]:justify-between sm:flex-1">
+          <div className="text-xs text-muted-foreground sm:text-sm">
             {totalItems > 0 ? (
               <>
                 Showing{" "}
                 {paginationState.pageIndex * paginationState.pageSize + 1} to{" "}
                 {Math.min(
                   (paginationState.pageIndex + 1) * paginationState.pageSize,
-                  totalItems
+                  totalItems,
                 )}{" "}
                 of {totalItems} entries
               </>
@@ -165,33 +204,32 @@ export function DataTable<TData, TValue>({
               "No entries found"
             )}
           </div>
-          <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-6 lg:gap-8">
-            <div className="flex items-center space-x-2">
-              <p className="whitespace-nowrap text-sm font-medium">
-                Rows per page
-              </p>
-              <Select
-                value={`${paginationState.pageSize}`}
-                onValueChange={(value) => {
-                  table.setPageSize(Number(value));
-                }}
-              >
-                <SelectTrigger className="h-8 w-[70px]">
-                  <SelectValue placeholder={paginationState.pageSize} />
-                </SelectTrigger>
-                <SelectContent side="top">
-                  {pageSizeOptions.map((pageSize) => (
-                    <SelectItem key={pageSize} value={`${pageSize}`}>
-                      {pageSize}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+          <div className="flex items-center gap-2">
+            <p className="whitespace-nowrap text-xs font-medium sm:text-sm">
+              Rows
+            </p>
+            <Select
+              value={`${paginationState.pageSize}`}
+              onValueChange={(value) => {
+                setCurrentPage(1);
+                setPageSize(Number(value));
+              }}
+            >
+              <SelectTrigger className="h-9 w-[68px] sm:h-8">
+                <SelectValue placeholder={paginationState.pageSize} />
+              </SelectTrigger>
+              <SelectContent side="top">
+                {pageSizeOptions.map((pageSize) => (
+                  <SelectItem key={pageSize} value={`${pageSize}`}>
+                    {pageSize}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
-        <div className="flex w-full items-center justify-between gap-2 sm:justify-end">
-          <div className="flex w-[150px] items-center justify-center text-sm font-medium">
+        <div className="flex w-full items-center justify-between gap-2 sm:w-auto sm:justify-end">
+          <div className="whitespace-nowrap text-xs font-medium sm:text-sm">
             {totalItems > 0 ? (
               <>
                 Page {paginationState.pageIndex + 1} of {table.getPageCount()}
@@ -213,7 +251,7 @@ export function DataTable<TData, TValue>({
             <Button
               aria-label="Go to previous page"
               variant="outline"
-              className="h-8 w-8 p-0"
+              className="h-9 w-9 p-0 sm:h-8 sm:w-8"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
             >
@@ -222,7 +260,7 @@ export function DataTable<TData, TValue>({
             <Button
               aria-label="Go to next page"
               variant="outline"
-              className="h-8 w-8 p-0"
+              className="h-9 w-9 p-0 sm:h-8 sm:w-8"
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
             >
