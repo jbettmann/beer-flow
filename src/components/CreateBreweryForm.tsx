@@ -11,7 +11,6 @@ import { deleteImage } from "@/lib/supabase/deleteImage";
 import { ImagePlus, Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
@@ -27,9 +26,8 @@ export default function CreateBreweryForm({ onClose }: Props) {
   const [errors, setErrors] = useState<{ companyName?: string; image?: string; submit?: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { data: session, update } = useSession();
-  const { setSelectedBrewery } = useBreweryContext();
+  const { selectBrewery } = useBreweryContext();
   const { addToast } = useToast();
-  const router = useRouter();
 
   useEffect(() => () => { if (preview) URL.revokeObjectURL(preview); }, [preview]);
 
@@ -74,12 +72,11 @@ export default function CreateBreweryForm({ onClose }: Props) {
       if (!response?.savedBrewery?._id) throw new Error("The brewery could not be created.");
 
       await update({ newBreweryId: response.savedBrewery._id });
-      localStorage.setItem("selectedBreweryId", response.savedBrewery._id);
-      setSelectedBrewery(response.savedBrewery);
+      await selectBrewery(response.savedBrewery, {
+        route: `/dashboard/breweries/${response.savedBrewery._id}`,
+      });
       addToast(`${response.savedBrewery.companyName} successfully created!`, "success");
       onClose();
-      router.push(`/dashboard/breweries/${response.savedBrewery._id}`);
-      router.refresh();
     } catch (error) {
       if (uploadedImage) await deleteImage(uploadedImage);
       const message = error instanceof Error ? error.message : "Unable to create brewery.";

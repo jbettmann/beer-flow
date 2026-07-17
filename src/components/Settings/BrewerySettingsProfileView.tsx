@@ -9,7 +9,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useBreweryContext } from "@/context/brewery-beer";
 import { useToast } from "@/context/toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { getBreweryMemberId, getBreweryMemberIds } from "@/lib/brewery-members";
@@ -35,7 +34,6 @@ export default function BrewerySettingsProfileView({ breweryId }: { breweryId: s
   const router = useRouter();
   const isMobile = useIsMobile();
   const { addToast } = useToast();
-  const { selectedBrewery, setSelectedBrewery } = useBreweryContext();
 
   if (isLoading) return <div className="space-y-4" aria-label="Loading brewery settings"><Skeleton className="h-10 w-44" /><Skeleton className="h-64 w-full rounded-xl" /><Skeleton className="h-36 w-full rounded-xl" /></div>;
   if (error) return <Card><CardHeader><CardTitle>Couldn’t load brewery</CardTitle><CardDescription>Check your connection and try again.</CardDescription></CardHeader><CardContent><Button type="button" onClick={() => mutate()}>Try again</Button></CardContent></Card>;
@@ -55,11 +53,6 @@ export default function BrewerySettingsProfileView({ breweryId }: { breweryId: s
         ? await deleteBrewery({ breweryId, accessToken: session?.user.accessToken })
         : await removeBreweryFromUser({ breweryId, userId: session?.user.id, accessToken: session?.user.accessToken });
       await update({ removeBreweryId: breweryId });
-      if (selectedBrewery?._id === breweryId) {
-        setSelectedBrewery(null as any);
-        localStorage.removeItem("selectedBreweryId");
-        window.dispatchEvent(new CustomEvent("selectedBreweryChanged"));
-      }
       addToast(result?.message ?? (confirmAction === "delete" ? "Brewery deleted" : "Access removed"), "success");
       router.replace("/settings/breweries");
       router.refresh();

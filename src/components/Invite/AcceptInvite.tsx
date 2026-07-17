@@ -1,6 +1,7 @@
 "use client";
 
 import { useToast } from "@/context/toast";
+import { useBreweryContext } from "@/context/brewery-beer";
 import {
   buildInviteAcceptAttemptKey,
   getOrCreateInviteAcceptRequest,
@@ -8,12 +9,11 @@ import {
   isValidLegacyInviteToken,
   isValidInviteState,
 } from "@/lib/invite-flow";
-import Cookies from "js-cookie";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { mutate } from "swr";
+import { Brewery } from "@/types/brewery";
 
 const acceptInviteRequests = new Map<string, Promise<InviteAcceptRoutePayload>>();
 const legacyRelayRequests = new Map<string, Promise<{ redirectTo: string }>>();
@@ -63,6 +63,7 @@ const AcceptInvite = () => {
   const inviteToken = searchParams.get("token");
   const inviteState = searchParams.get("state");
   const { status, update } = useSession();
+  const { selectBrewery } = useBreweryContext();
   const [attempt, setAttempt] = useState(0);
   const [isRelayingLegacyToken, setIsRelayingLegacyToken] = useState(false);
   const [viewState, setViewState] = useState<ViewState>({
@@ -97,13 +98,10 @@ const AcceptInvite = () => {
         newBreweryId: breweryId,
         selectedBreweryId: breweryId,
       });
-      Cookies.set("selectedBreweryId", breweryId);
-      localStorage.setItem("selectedBreweryId", breweryId);
-      window.dispatchEvent(new CustomEvent("selectedBreweryChanged"));
-      await Promise.all([
-        mutate(`/breweries/${breweryId}`),
-        mutate(`/breweries/${breweryId}/beers`),
-      ]);
+      await selectBrewery(response.brewery as Brewery, {
+        route: `/dashboard/breweries/${breweryId}`,
+        replace: true,
+      });
 
       addToast(`You have successfully joined ${breweryName}.`, "success");
       setViewState({
@@ -111,9 +109,8 @@ const AcceptInvite = () => {
         message: response.message,
         retryable: false,
       });
-      router.replace(`/dashboard/breweries/${breweryId}`);
     },
-    [addToast, router, update]
+    [addToast, selectBrewery, update]
   );
 
   useEffect(() => {
@@ -228,7 +225,7 @@ const AcceptInvite = () => {
             message: response.message,
             retryable: false,
           });
-          router.replace("/dashboard");
+          router.replace("/dashboard/overview");
           return;
         }
 

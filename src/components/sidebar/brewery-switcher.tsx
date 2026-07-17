@@ -20,17 +20,15 @@ import { useBreweryContext } from "@/context/brewery-beer";
 import { getInitials } from "@/lib/utils";
 import Link from "next/link";
 import ImageDisplay from "../ImageDisplay/ImageDisplay";
-import { useSession } from "next-auth/react";
 
 export function BrewerySwitcher({ breweries }: { breweries: Brewery[] }) {
   const { isMobile } = useSidebar();
-  const { update } = useSession();
-  const { selectedBrewery } = useBreweryContext();
+  const { selectedBrewery, selectBrewery } = useBreweryContext();
   const hasBreweries = breweries.length > 0;
   const hasSelectedBrewery = Boolean(selectedBrewery?._id);
 
   const handleBreweryClick = async (brewery: Brewery) => {
-    await update({ selectedBreweryId: brewery._id });
+    await selectBrewery(brewery);
   };
 
   return (
@@ -89,11 +87,7 @@ export function BrewerySwitcher({ breweries }: { breweries: Brewery[] }) {
                   onClick={() => handleBreweryClick(brewery)}
                   className="gap-2 p-2"
                 >
-                  <Link
-                    href={`/dashboard/breweries/${brewery._id}/beers`}
-                    key={brewery._id}
-                    className="flex flex-row items-center text-left gap-4"
-                  >
+                  <div className="flex flex-row items-center text-left gap-4">
                     <div className="flex size-6 items-center justify-center rounded-sm ">
                       {brewery?.image ? (
                         <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
@@ -111,7 +105,7 @@ export function BrewerySwitcher({ breweries }: { breweries: Brewery[] }) {
                       )}
                     </div>
                     {brewery.companyName}
-                  </Link>
+                  </div>
                 </DropdownMenuItem>
               ))
             )}

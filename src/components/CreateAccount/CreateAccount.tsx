@@ -112,7 +112,7 @@ const CreateAccount = (props: Props) => {
           fullName,
           email,
           password,
-          callbackUrl: acceptInviteUrl || "/",
+          callbackUrl: acceptInviteUrl || "/dashboard/overview",
         });
       }
     } catch (err: any) {
@@ -141,7 +141,7 @@ const CreateAccount = (props: Props) => {
           onClick={async () => {
             setIsGoogleLoading(true);
             await signIn("google", {
-              callbackUrl: acceptInviteUrl || "/",
+              callbackUrl: acceptInviteUrl || "/dashboard/overview",
             });
           }}
           disabled={isGoogleLoading}

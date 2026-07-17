@@ -524,6 +524,22 @@ export function mergeRefreshedMembershipTokenFields(
   };
 }
 
+/** Pick a preference only when it is still part of the user's memberships. */
+export function resolvePreferredBreweryId(
+  breweries: Array<string | null | undefined>,
+  ...preferences: Array<string | null | undefined>
+) {
+  const memberships = toUniqueStringArray(breweries);
+  return (
+    preferences.find(
+      (preference): preference is string =>
+        typeof preference === "string" && memberships.includes(preference)
+    ) ??
+    memberships[0] ??
+    null
+  );
+}
+
 export function buildInviteAcceptAttemptKey(state: string, attempt: number) {
   return `${state}:${attempt}`;
 }
