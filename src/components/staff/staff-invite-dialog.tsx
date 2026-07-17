@@ -22,8 +22,8 @@ import {
   sendStaffInvitesSafely,
   StaffInviteRecipient,
 } from "@/lib/invite-results";
+import { validateInviteRecipients } from "@/lib/invite-flow";
 import { sendInvite } from "@/lib/POST/sendInvite";
-import { validateEmail } from "@/lib/validators/email";
 import { Loader2, Plus, Send, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
@@ -65,6 +65,10 @@ export default function StaffInviteDialog({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
 
+  const previewValidation = useMemo(
+    () => validateInviteRecipients(rows),
+    [rows]
+  );
   useEffect(() => {
     if (!open) {
       return;
@@ -77,10 +81,7 @@ export default function StaffInviteDialog({
     return () => window.clearTimeout(focusTimer);
   }, [open]);
 
-  const hasValidRows = useMemo(
-    () => rows.every((row) => row.email.trim() && validateEmail(row.email.trim())),
-    [rows]
-  );
+  const hasValidRows = previewValidation.isValid;
 
   const resetRows = () => {
     setRows([createInviteRow()]);
@@ -127,26 +128,9 @@ export default function StaffInviteDialog({
   };
 
   const validateRows = () => {
-    let isValid = true;
-
-    setRows((currentRows) =>
-      currentRows.map((row) => {
-        const email = row.email.trim();
-        if (!email) {
-          isValid = false;
-          return { ...row, error: "Email address is required." };
-        }
-
-        if (!validateEmail(email)) {
-          isValid = false;
-          return { ...row, error: "Enter a valid email address." };
-        }
-
-        return { ...row, email, error: "" };
-      })
-    );
-
-    return isValid;
+    const validation = validateInviteRecipients(rows);
+    setRows(validation.rows);
+    return validation.isValid;
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {

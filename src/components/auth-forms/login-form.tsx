@@ -3,12 +3,13 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { sanitizeNextPath } from "@/lib/invite-flow";
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 export function LoginForm({
@@ -23,15 +24,14 @@ export function LoginForm({
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const next = searchParams.get("next");
-  const [acceptInviteUrl, setAcceptInviteUrl] = useState<string | null>(next);
-  const callbackUrl = acceptInviteUrl || "/dashboard/overview";
-
-  useEffect(() => {
-    if (next) {
-      setAcceptInviteUrl(next);
-    }
-  }, [next]);
+  const safeNext = useMemo(
+    () => sanitizeNextPath(searchParams.get("next"), ""),
+    [searchParams]
+  );
+  const callbackUrl = safeNext || "/dashboard/overview";
+  const signupHref = safeNext
+    ? `/auth/signup?next=${encodeURIComponent(safeNext)}`
+    : "/auth/signup";
 
   const onSignIn = async (provider: "google" | "credentials") => {
     try {
@@ -63,12 +63,11 @@ export function LoginForm({
 
       sessionStorage.setItem("credentialsLogin", "true");
       const destination = login.url || callbackUrl;
-      const resolvedDestination = destination.startsWith("http")
-        ? (() => {
-            const parsedUrl = new URL(destination);
-            return parsedUrl.pathname + parsedUrl.search + parsedUrl.hash;
-          })()
-        : destination;
+      const resolvedDestination = sanitizeNextPath(
+        destination,
+        callbackUrl,
+        window.location.origin
+      );
 
       router.push(resolvedDestination);
     } catch {
@@ -197,7 +196,7 @@ export function LoginForm({
       </div>
       <div className="text-center text-sm">
         Don&apos;t have an account?{" "}
-        <Link href="/auth/signup" className="underline underline-offset-4">
+        <Link href={signupHref} className="underline underline-offset-4">
           Sign up
         </Link>
       </div>

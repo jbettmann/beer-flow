@@ -15,10 +15,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import Link from "next/link";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { buildApiUrl } from "@/lib/api/base";
+import { sanitizeNextPath } from "@/lib/invite-flow";
 
 // 1. Zod schema
 const formSchema = z
@@ -39,14 +41,14 @@ export function SignUpForm() {
   const searchParams = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
-  const [acceptInviteUrl, setAcceptInviteUrl] = useState<string | null>(
-    searchParams.get("next")
+  const safeNext = useMemo(
+    () => sanitizeNextPath(searchParams.get("next"), ""),
+    [searchParams]
   );
-
-  useEffect(() => {
-    const next = searchParams.get("next");
-    if (next) setAcceptInviteUrl(next);
-  }, [searchParams]);
+  const callbackUrl = safeNext || "/dashboard/overview";
+  const loginHref = safeNext
+    ? `/auth/login?next=${encodeURIComponent(safeNext)}`
+    : "/auth/login";
 
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(formSchema),
@@ -85,7 +87,7 @@ export function SignUpForm() {
         fullName: data.fullName,
         email: data.email,
         password: data.password,
-        callbackUrl: acceptInviteUrl || "/",
+        callbackUrl,
       });
     } catch (err: any) {
       toast.error(err.message || "Something went wrong");
@@ -110,7 +112,7 @@ export function SignUpForm() {
           onClick={async (e) => {
             setIsGoogleLoading(true);
             await signIn("google", {
-              callbackUrl: acceptInviteUrl || "/",
+              callbackUrl,
             });
           }}
           disabled={isGoogleLoading}
@@ -231,9 +233,9 @@ export function SignUpForm() {
         </form>
         <div className="text-center text-sm">
           Already have an account?{" "}
-          <a href="/auth/login" className="underline underline-offset-4">
+          <Link href={loginHref} className="underline underline-offset-4">
             Sign In
-          </a>
+          </Link>
         </div>
       </div>
     </Form>
