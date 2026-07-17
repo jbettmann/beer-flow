@@ -1,84 +1,90 @@
 "use client";
-import React, { use } from "react";
+
+import React, { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useBreweryContext } from "@/context/brewery-beer";
+import { getBreweryMemberId } from "@/lib/brewery-members";
 import { Badge } from "../ui/badge";
 import { Separator } from "../ui/separator";
 import StaffTable from "./staff-table";
+import StaffInviteDialog from "./staff-invite-dialog";
+import { UserPlus } from "lucide-react";
+import { Users } from "@/types/users";
 
 type Props = {};
 
 const StaffContainer = (props: Props) => {
-  const { selectedBrewery, isAdmin } = useBreweryContext();
-  const numberOfStaff = selectedBrewery?.staff.length || 0;
-  return (
-    // <div>
+  const { selectedBrewery, isAdmin, mutateBrewery } = useBreweryContext();
+  const [isInviteOpen, setIsInviteOpen] = useState(false);
+  const numberOfStaff = useMemo(() => {
+    if (!selectedBrewery) {
+      return 0;
+    }
 
-    // </div>
-    <Tabs defaultValue="staff" className="w-full">
-      <TabsList className="w-full">
-        <TabsTrigger value="staff">
-          Staff
-          <Badge
-            variant={"secondary"}
-            className="rounded-full ml-1 border border-border"
-          >
+    const memberIds = new Set<string>();
+    const addPopulatedMemberIds = (group: Array<string | number | Users>) => {
+      for (const member of group) {
+        if (member && typeof member === "object") {
+          const memberId = getBreweryMemberId(member);
+
+          if (memberId) {
+            memberIds.add(memberId);
+          }
+        }
+      }
+    };
+
+    addPopulatedMemberIds(selectedBrewery.staff as Array<string | number | Users>);
+    addPopulatedMemberIds(selectedBrewery.admin as Array<string | number | Users>);
+
+    const ownerId = getBreweryMemberId(selectedBrewery.owner);
+    if (ownerId) {
+      memberIds.add(ownerId);
+    }
+
+    return memberIds.size;
+  }, [selectedBrewery]);
+
+  return (
+    <div className="w-full space-y-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-2">
+          <h2 className="text-lg font-semibold">Staff</h2>
+          <Badge variant="secondary" className="rounded-full border border-border">
             {numberOfStaff}
           </Badge>
-        </TabsTrigger>
-        <TabsTrigger value="invitations">
-          Invitations
-          <Badge
-            variant={"secondary"}
-            className="rounded-full ml-1 border border-border"
-          >
-            0
-          </Badge>
-        </TabsTrigger>
-      </TabsList>
-      <Separator className="-mt-2.25 mb-4" />
-      <div className="ml-auto">
-        <Button>Invite</Button>
+        </div>
+        {isAdmin && selectedBrewery ? (
+          <Button type="button" onClick={() => setIsInviteOpen(true)}>
+            <UserPlus className="h-4 w-4" />
+            Invite staff
+          </Button>
+        ) : null}
       </div>
 
-      <TabsContent value="staff">
+      <Separator />
+      {isAdmin ? (
         <StaffTable />
-      </TabsContent>
-      <TabsContent value="invitations">
-        <Card>
-          <CardHeader>
-            <CardTitle>Password</CardTitle>
-            <CardDescription>
-              Change your password here. After saving, youll be logged out.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <div className="space-y-1">
-              <Label htmlFor="current">Current password</Label>
-              <Input id="current" type="password" />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="new">New password</Label>
-              <Input id="new" type="password" />
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button>Save password</Button>
-          </CardFooter>
-        </Card>
-      </TabsContent>
-    </Tabs>
+      ) : (
+        <div className="rounded-lg border border-border bg-muted/30 p-6 text-center">
+          <h3 className="text-base font-semibold">Admin authorization required</h3>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Only brewery admins can access staff management for{" "}
+            {selectedBrewery?.companyName || "this brewery"}.
+          </p>
+        </div>
+      )}
+
+      {selectedBrewery ? (
+        <StaffInviteDialog
+          breweryId={selectedBrewery._id}
+          breweryName={selectedBrewery.companyName}
+          open={isInviteOpen}
+          onOpenChange={setIsInviteOpen}
+          onInvitesSent={mutateBrewery}
+        />
+      ) : null}
+    </div>
   );
 };
 

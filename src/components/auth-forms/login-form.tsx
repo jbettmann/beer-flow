@@ -37,13 +37,9 @@ export function LoginForm({
     try {
       if (provider === "google") {
         setIsGoogleLoading(true);
-        const result = await signIn("google", {
+        await signIn("google", {
           callbackUrl,
         });
-
-        if (result?.error) {
-          toast.error(result.error);
-        }
 
         return;
       }
@@ -174,12 +170,13 @@ export function LoginForm({
         <div className="grid gap-2">
           <div className="flex items-center">
             <Label htmlFor="password">Password</Label>
-            <a
-              href="#"
-              className="ml-auto text-sm underline-offset-4 hover:underline"
+            <span
+              className="ml-auto text-sm text-muted-foreground"
+              aria-disabled="true"
+              title="Password recovery is not available yet."
             >
-              Forgot your password?
-            </a>
+              Password recovery unavailable
+            </span>
           </div>
           <Input
             id="password"

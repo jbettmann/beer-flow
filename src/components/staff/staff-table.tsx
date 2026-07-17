@@ -1,30 +1,43 @@
 "use client";
 
-import TableViewToggleButton from "@/components/Buttons/table-view-toggle-btn";
-import BeerCardSkeleton from "@/components/skeletons/beer-card-skeleton";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { DataTable } from "@/components/ui/table/data-table";
 import { DataTableFilterBox } from "@/components/ui/table/data-table-filter-box";
 import { DataTableResetFilter } from "@/components/ui/table/data-table-reset-filter";
 import { DataTableSearch } from "@/components/ui/table/data-table-search";
-import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
 import { useBreweryContext } from "@/context/brewery-beer";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { getBreweryMemberId, getBreweryMemberIds } from "@/lib/brewery-members";
+import { getInitials } from "@/lib/utils";
+import { ColumnDef } from "@tanstack/react-table";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useMemo, useState } from "react";
+import { useMemo } from "react";
 
 import { ReusableTableWrapper } from "@/components/tables/reusable-table-wrapper";
-import { useProductTableFilters } from "../beers/beer-table-actions/use-beer-table-filters";
-import { BeerListTable } from "../beers/beer-list-table";
-import { columns } from "../beers/beer-table-actions/columns";
 import { Users } from "@/types/users";
 import { useStaffTableFilters } from "./use-staff-table-filter";
+import { Badge } from "../ui/badge";
 
 const ROLE_OPTIONS = [
+  { value: "owner", label: "Owner" },
   { value: "admin", label: "Admin" },
   { value: "staff", label: "Staff" },
 ];
 
+type StaffRole = "owner" | "admin" | "staff";
+
+type StaffRow = {
+  _id: string;
+  fullName: string;
+  email: string;
+  image: string;
+  roleKey: StaffRole;
+  role: "Owner" | "Admin" | "Staff";
+  isOwner: boolean;
+  isAdmin: boolean;
+};
+
 export default function StaffTable() {
-  const { selectedBrewery, isAdmin } = useBreweryContext();
+  const { selectedBrewery } = useBreweryContext();
   const searchParams = useSearchParams();
 
   const {
@@ -38,53 +51,151 @@ export default function StaffTable() {
   } = useStaffTableFilters();
   const roleParams = searchParams.get("role");
 
-  const selectedRole = roleParams ? roleParams.split(".") : [];
+  const selectedRole = useMemo(
+    () => (roleParams ? roleParams.split(".") : []),
+    [roleParams]
+  );
 
-  const searchIndex = useMemo(() => {
-    return (
-      selectedBrewery?.staff
-        ?.filter((s): s is Users => typeof s !== "string")
-        .map((staff) => ({
-          id: staff._id,
-          searchString: [staff.fullName, staff.email].join(" ").toLowerCase(),
-        })) || []
-    );
-  }, [selectedBrewery]);
+  const ownerId = useMemo(() => {
+    return getBreweryMemberId(selectedBrewery?.owner);
+  }, [selectedBrewery?.owner]);
+
+  const roster = useMemo(() => {
+    if (!selectedBrewery) {
+      return [];
+    }
+
+    const members = new Map<string, Users>();
+
+    const addPopulatedMembers = (group: Array<string | number | Users>) => {
+      for (const member of group) {
+        if (member && typeof member === "object") {
+          const memberId = getBreweryMemberId(member);
+
+          if (memberId) {
+            members.set(memberId, {
+              ...member,
+              _id: memberId,
+            });
+          }
+        }
+      }
+    };
+
+    addPopulatedMembers(selectedBrewery.staff as Array<string | number | Users>);
+    addPopulatedMembers(selectedBrewery.admin as Array<string | number | Users>);
+
+    if (selectedBrewery.owner && typeof selectedBrewery.owner === "object") {
+      const populatedOwnerId = getBreweryMemberId(selectedBrewery.owner);
+
+      if (populatedOwnerId) {
+        members.set(populatedOwnerId, {
+          ...selectedBrewery.owner,
+          _id: populatedOwnerId,
+        });
+      }
+    }
+
+    const adminIds = new Set(getBreweryMemberIds(selectedBrewery.admin as Array<string | number | Users>));
+    const rows = Array.from(members.values()).map((member) => {
+      const isOwner = ownerId === member._id;
+      const isAdmin = isOwner || adminIds.has(member._id);
+
+      return {
+        ...member,
+        isOwner,
+        isAdmin,
+        roleKey: isOwner ? "owner" : isAdmin ? "admin" : "staff",
+        role: isOwner ? "Owner" : isAdmin ? "Admin" : "Staff",
+      } satisfies StaffRow;
+    });
+
+    if (ownerId && !rows.some((member) => member._id === ownerId)) {
+      rows.unshift({
+        _id: ownerId,
+        fullName: "Brewery owner",
+        email: "",
+        image: "",
+        isOwner: true,
+        isAdmin: true,
+        roleKey: "owner",
+        role: "Owner",
+      });
+    }
+
+    return rows;
+  }, [ownerId, selectedBrewery]);
+
+  const searchIndex = useMemo(
+    () =>
+      roster.map((staff) => ({
+        id: staff._id,
+        searchString: [staff.fullName, staff.email, staff.role]
+          .join(" ")
+          .toLowerCase(),
+      })),
+    [roster]
+  );
 
   const filteredStaff = useMemo(() => {
-    if (!selectedBrewery) return [];
-
     const searchTerms = searchQuery.toLowerCase().split(/\s+/).filter(Boolean);
-    const staffList = selectedBrewery.staff.filter(
-      (s): s is Users => typeof s !== "string"
-    );
 
-    return staffList
-      .map((staff) => {
-        const isAdmin = selectedBrewery.admin.some(
-          (admin) => typeof admin !== "string" && admin._id === staff._id
-        );
-        return {
-          ...staff,
-          isAdmin,
-        };
-      })
-      .filter((staff) => {
-        // Role filter
-        const roleMatch =
-          selectedRole.length === 0 ||
-          (staff.isAdmin && selectedRole.includes("admin")) ||
-          (!staff.isAdmin && selectedRole.includes("staff"));
+    return roster.filter((staff) => {
+      const roleMatch =
+        selectedRole.length === 0 || selectedRole.includes(staff.roleKey);
 
-        // Search match
-        const index = searchIndex.find((idx) => idx.id === staff._id);
-        const searchMatch =
-          searchTerms.length === 0 ||
-          searchTerms.every((term) => index?.searchString.includes(term));
+      const index = searchIndex.find((idx) => idx.id === staff._id);
+      const searchMatch =
+        searchTerms.length === 0 ||
+        searchTerms.every((term) => index?.searchString.includes(term));
 
-        return roleMatch && searchMatch;
-      });
-  }, [selectedBrewery, selectedRole, searchQuery, searchIndex]);
+      return roleMatch && searchMatch;
+    });
+  }, [roster, selectedRole, searchQuery, searchIndex]);
+
+  const columns = useMemo<ColumnDef<StaffRow>[]>(
+    () => [
+      {
+        accessorKey: "fullName",
+        header: "NAME",
+        cell: ({ row }) => {
+          const staff = row.original;
+
+          return (
+            <div className="flex items-center gap-3">
+              <Avatar className="h-10 w-10">
+                <AvatarImage src={staff.image || ""} alt={staff.fullName} />
+                <AvatarFallback>{getInitials(staff.fullName)}</AvatarFallback>
+              </Avatar>
+              <div className="min-w-0">
+                <div className="font-medium">{staff.fullName}</div>
+                {staff.email ? (
+                  <div className="truncate text-sm text-muted-foreground">
+                    {staff.email}
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: "email",
+        header: "EMAIL",
+        cell: ({ row }) => row.original.email || " ",
+      },
+      {
+        accessorKey: "role",
+        header: "ROLE",
+        cell: ({ row }) => (
+          <Badge variant={row.original.isOwner ? "default" : "secondary"}>
+            {row.original.role}
+          </Badge>
+        ),
+      },
+    ],
+    []
+  );
 
   return (
     <ReusableTableWrapper
@@ -113,7 +224,7 @@ export default function StaffTable() {
         </>
       }
       tableComponent={
-        <BeerListTable
+        <DataTable
           columns={columns}
           data={filteredStaff}
           totalItems={filteredStaff.length}

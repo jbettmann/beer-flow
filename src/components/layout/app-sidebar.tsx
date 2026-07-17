@@ -77,24 +77,28 @@ export function AppSidebar({
         },
         {
           title: "Settings",
-          url: "/settings",
+          url: "/settings/profile",
           icon: "settings",
           items: [
             {
-              title: "General",
-              url: "#",
+              title: "Profile",
+              url: "/settings/profile",
             },
             {
-              title: "Breweries",
+              title: "Notifications",
+              url: "/settings/notifications",
+            },
+            {
+              title: "Security",
+              url: "/settings/security",
+            },
+            {
+              title: "Account",
+              url: "/settings/account",
+            },
+            {
+              title: "Brewery settings",
               url: "/settings/breweries",
-            },
-            {
-              title: "Billing",
-              url: "#",
-            },
-            {
-              title: "Limits",
-              url: "#",
             },
           ],
         },

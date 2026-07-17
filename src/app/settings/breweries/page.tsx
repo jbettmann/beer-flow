@@ -1,11 +1,7 @@
 import { Brewery } from "@/types/brewery";
-import ImageDisplay from "@/components/ImageDisplay/ImageDisplay";
 import BrewerySettingsList from "@/components/Settings/BrewerySettingsList";
 import getBreweries from "@/lib/getBreweries";
-import { getInitials } from "@/lib/utils";
-import { ChevronRight } from "lucide-react";
 import { auth } from "@/auth";
-import Link from "next/link";
 import React from "react";
 
 type Props = {};
@@ -14,9 +10,14 @@ const BreweriesSettingsPage = async (props: Props) => {
   const session = await auth();
   const breweries = await getBreweries();
   return (
-    <div>
-      <h4>Brewery Settings</h4>
-      <div className="flex flex-col justify-center items-start gap-4">
+    <section className="w-full max-w-3xl rounded-md border border-border bg-background p-6">
+      <div>
+        <h3 className="text-xl font-semibold">Brewery settings</h3>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Configure breweries separately from your personal profile and account.
+        </p>
+      </div>
+      <div className="mt-5 flex flex-col items-start justify-center gap-4">
         {breweries.map((brewery: Brewery) => (
           <BrewerySettingsList
             key={brewery._id}
@@ -25,7 +26,7 @@ const BreweriesSettingsPage = async (props: Props) => {
           />
         ))}
       </div>
-    </div>
+    </section>
   );
 };
 

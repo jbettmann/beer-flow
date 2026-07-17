@@ -1,21 +1,34 @@
 "use client";
-import { signOut, useSession } from "next-auth/react";
+
+import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { use, useState } from "react";
-import SetSideDrawerSettings from "./SetSideDrawerSettings";
-import { Bell, LogOut, UserCircle2, ShieldBan, Factory } from "lucide-react";
+import React from "react";
+import {
+  Bell,
+  Building2,
+  LogOut,
+  ShieldCheck,
+  Trash2,
+  UserCircle2,
+} from "lucide-react";
 
 type Props = {
   children: React.ReactNode;
 };
 
+const navItems = [
+  { href: "/settings/profile", label: "Profile", icon: UserCircle2 },
+  { href: "/settings/notifications", label: "Notifications", icon: Bell },
+  { href: "/settings/security", label: "Security", icon: ShieldCheck },
+  { href: "/settings/account", label: "Account", icon: Trash2 },
+  { href: "/settings/breweries", label: "Brewery settings", icon: Building2 },
+];
+
 const SettingTabs = ({ children }: Props) => {
   const pathname = usePathname();
 
-  // clear local storage when sign out
   const handleSignOut = () => {
-    // After sign out, redirects next user to homepage
     signOut({ callbackUrl: `${window.location.origin}/` });
   };
 
@@ -26,67 +39,63 @@ const SettingTabs = ({ children }: Props) => {
     ) {
       return true;
     }
+
     return pathname === path;
   };
 
   return (
-    <div className="h-full py-6 px-0 md:p-6 flex flex-col  relative ">
-      <h2 className="mb-4">Settings</h2>
-      <div className="flex flex-col md:tabs md:flex-row bg-background justify-evenly space-y-4 w-full h-full">
-        <div className="md:hidden">
-          <SetSideDrawerSettings>{children}</SetSideDrawerSettings>
+    <div className="grid gap-6 lg:grid-cols-[16rem_minmax(0,1fr)]">
+      <aside className="space-y-4">
+        <div>
+          <h2 className="text-2xl font-semibold">Personal settings</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Manage your profile, notifications, security, and account status.
+          </p>
         </div>
-        <Link
-          href={`/settings`}
-          className={`tab tab-bordered justify-start gap-2 hidden md:flex ${
-            isActive(`/settings`) ? "tab-active" : ""
-          }`}
+
+        <nav
+          className="grid gap-2 sm:grid-cols-2 lg:grid-cols-1"
+          aria-label="Personal settings"
         >
-          <ShieldBan /> Account
-        </Link>
-        <Link
-          href={`/settings/account`}
-          className={`tab tab-bordered justify-start gap-2 md:hidden `}
-        >
-          <ShieldBan /> Account
-        </Link>
-        <Link
-          href={`/settings/profile`}
-          className={`tab tab-bordered justify-start gap-2  ${
-            isActive(`/settings/profile`) ? "tab-active" : ""
-          }`}
-        >
-          <UserCircle2 /> Profile
-        </Link>
-        <Link
-          href={`/settings/notifications`}
-          className={`tab tab-bordered justify-start gap-2  ${
-            isActive(`/settings/notifications`) ? "tab-active" : ""
-          }`}
-        >
-          <Bell /> Notifications
-        </Link>
-        <Link
-          href={`/settings/breweries`}
-          className={`tab tab-bordered justify-start gap-2  ${
-            isActive(`/settings/breweries`) ? "tab-active" : ""
-          }`}
-        >
-          <Factory /> Breweries
-        </Link>
-        <div
-          className={`hidden md:block h-[2px] flex-1 bg-gray-400 opacity-20 hover:cursor-default `}
-        ></div>
-      </div>
-      <div className="md:hidden mt-8 pl-4">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex min-h-11 items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium transition-colors ${
+                  isActive(item.href)
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border bg-background hover:bg-accent hover:text-accent-foreground"
+                }`}
+              >
+                <Icon className="h-4 w-4" />
+                {item.label}
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="rounded-md border border-border bg-background p-3">
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Brewery operations
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Staff management remains in each brewery dashboard.
+          </p>
+        </div>
+
         <button
-          className=" flex flex-row items-center "
+          className="flex flex-row items-center gap-2 text-sm"
           onClick={handleSignOut}
+          type="button"
         >
-          <LogOut size={24} />
-          <h6 className="pl-3">Sign Out</h6>
+          <LogOut size={18} />
+          Sign out
         </button>
-      </div>
+      </aside>
+
+      <main className="min-w-0">{children}</main>
     </div>
   );
 };
