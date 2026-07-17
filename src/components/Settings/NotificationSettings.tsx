@@ -201,10 +201,10 @@ const NotificationSettings = () => {
 
   return (
     <div className="w-full max-w-3xl space-y-6">
-      <div className="rounded-2xl border border-base-300 bg-base-100 p-6 shadow-sm">
+      <div className="rounded-md border border-border bg-background p-6">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h3 className="text-xl font-semibold">Notification preferences</h3>
+            <h3 className="text-xl font-semibold">Notifications</h3>
             <p className="mt-1 text-sm text-base-content/70">
               Control which beer updates you receive by email and push.
             </p>
@@ -237,7 +237,7 @@ const NotificationSettings = () => {
         ) : null}
       </div>
 
-      <div className="rounded-2xl border border-base-300 bg-base-100 p-6 shadow-sm">
+      <div className="rounded-md border border-border bg-background p-6">
         <div className="flex items-center justify-between gap-4">
           <div>
             <h4 className="text-base font-semibold">Allow notifications</h4>
@@ -275,7 +275,7 @@ const NotificationSettings = () => {
         {(Object.keys(channelMeta) as NotificationChannelKey[]).map((key) => (
           <div
             key={key}
-            className="rounded-2xl border border-base-300 bg-base-100 p-5 shadow-sm"
+            className="rounded-md border border-border bg-background p-5"
           >
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div className="max-w-md">
@@ -291,7 +291,7 @@ const NotificationSettings = () => {
                   return (
                     <label
                       key={`${key}-${channel}`}
-                      className="flex min-w-36 items-center justify-between gap-3 rounded-xl border border-base-300 px-4 py-3"
+                      className="flex min-w-36 items-center justify-between gap-3 rounded-md border border-border px-4 py-3"
                     >
                       <div>
                         <div className="text-sm font-medium capitalize">

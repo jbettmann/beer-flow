@@ -12,10 +12,8 @@ export default async function SettingsLayout({ children }: Props) {
         {/* @ts-expect-error Server component */}
         <BackArrow />
       </div>
-      <div className="h-full p-4 md:p-8 text-primary md:py-16 md:w-10/12 mx-auto">
+      <div className="mx-auto h-full w-full max-w-6xl p-4 text-primary md:p-8 md:py-16">
         <SettingTabs>{children}</SettingTabs>
-
-        <div className="hidden md:block lg:w-2/3 px-10">{children}</div>
       </div>
     </>
   );
