@@ -11,11 +11,11 @@ interface DataTableSearchProps {
   searchQuery: string;
   setSearchQuery: (
     value: string | ((old: string) => string | null) | null,
-    options?: Options | undefined
+    options?: Options | undefined,
   ) => Promise<URLSearchParams>;
   setPage: <Shallow>(
     value: number | ((old: number) => number | null) | null,
-    options?: Options | undefined
+    options?: Options | undefined,
   ) => Promise<URLSearchParams>;
 }
 
@@ -68,6 +68,7 @@ export function DataTableSearch({
           className="absolute inset-y-0 right-3  flex items-center opacity-50 cursor-pointer focus:outline-none"
           onClick={() => {
             setSearchQuery("");
+            setPage(1);
           }}
         >
           <XCircle size={18} color="#2b2b2b" />

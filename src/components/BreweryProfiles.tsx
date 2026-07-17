@@ -1,5 +1,6 @@
 "use client";
 import { Beer } from "@/types/beer";
+import { Brewery } from "@/types/brewery";
 import { Category } from "@/types/category";
 import { Users } from "@/types/users";
 import { useBreweryContext } from "@/context/brewery-beer";
@@ -33,15 +34,21 @@ import {
 } from "./ui/carousel";
 import ImageDisplay from "./ImageDisplay/ImageDisplay";
 import { Separator } from "./ui/separator";
-import { BeerViewDialog } from "./dialogs/beer-dialog-wrapper";
+import { BeerDialogWrapper } from "./dialogs/beer-dialog-wrapper";
 import BeerCardSkeleton from "./skeletons/beer-card-skeleton";
+import { Button } from "./ui/button";
+import Link from "next/link";
 
 export default function BreweryProfiles({
   categories,
   data,
+  brewery,
+  canManage,
 }: {
   categories: Category[];
   data: Beer[];
+  brewery: Brewery;
+  canManage: boolean;
 }) {
   const isMobile = useIsMobile();
   const { beersLoading, breweryLoading } = useBreweryContext();
@@ -64,17 +71,22 @@ export default function BreweryProfiles({
         };
       }) || []
     );
-  }, [data]);
+  }, [categories, data]);
 
-  if (breweryLoading || beersLoading) return <BeerCardSkeleton />;
+  const populatedCategories = getBeersForCategory.filter((category) => category.beers.length > 0);
+  if (breweryLoading || beersLoading) return <BreweryProfileSkeleton />;
   return (
     data && (
-      <div className="relative flex flex-1 flex-col space-y-4 ">
-        <div className="absolute bottom-0 left-0 right-0 top-0 flex overflow-scroll rounded-md  md:overflow-y-auto">
+      <div className="mx-auto w-full max-w-7xl space-y-6 px-4 py-6 sm:px-8 sm:py-10">
+        <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div><p className="text-sm font-medium text-muted-foreground">Brewery</p><h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">{brewery.companyName}</h1><p className="mt-1 text-sm text-muted-foreground">Browse the active beer catalog.</p></div>
+          {canManage && <div className="flex flex-wrap gap-2"><Button asChild variant="outline"><Link href={`/dashboard/breweries/${brewery._id}/categories`}>Manage categories</Link></Button><Button asChild><Link href={`/settings/breweries/${brewery._id}`}>Brewery settings</Link></Button></div>}
+        </header>
+        <div className="rounded-md">
           <Suspense fallback={<BeerCardSkeleton />}>
             <div className="w-full space-y-8">
-              {getBeersForCategory && getBeersForCategory.length > 0 ? (
-                getBeersForCategory.map(
+              {populatedCategories.length > 0 ? (
+                populatedCategories.map(
                   (category, categoryIndex) =>
                     category.beers.length > 0 && (
                       <div key={categoryIndex} className="relative space-y-6 ">
@@ -92,7 +104,7 @@ export default function BreweryProfiles({
                                 key={beerIndex}
                                 className="pl-8 sm:basis-1/2 lg:basis-1/4 min-w-80 "
                               >
-                                <BeerViewDialog key={beerIndex} beer={beer}>
+                                <BeerDialogWrapper key={beerIndex} beer={beer}>
                                   <Card className="w-full h-full hover:cursor-pointer">
                                     <ImageDisplay
                                       item={beer}
@@ -163,7 +175,7 @@ export default function BreweryProfiles({
                                       )}
                                     </CardFooter>
                                   </Card>
-                                </BeerViewDialog>
+                                </BeerDialogWrapper>
                               </CarouselItem>
                             ))}
                           </CarouselContent>
@@ -176,10 +188,10 @@ export default function BreweryProfiles({
                     )
                 )
               ) : (
-                <div className="text-center pt-6">
-                  <h5 className="text-center text-primary opacity-50">
-                    No beers found
-                  </h5>
+                <div className="rounded-xl border border-dashed px-6 py-12 text-center">
+                  <BeerIcon className="mx-auto size-7 text-muted-foreground" />
+                  <h2 className="mt-3 font-semibold">No active beers</h2>
+                  <p className="mt-1 text-sm text-muted-foreground">Beer cards will appear here after beers are added to a category.</p>
                 </div>
               )}
             </div>

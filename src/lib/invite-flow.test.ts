@@ -20,6 +20,7 @@ import {
   mergeRefreshedMembershipTokenFields,
   parseInviteStateCookie,
   readInviteStateCookie,
+  resolvePreferredBreweryId,
   sanitizeNextPath,
   toUniqueStringArray,
   validateInviteRecipients,
@@ -458,5 +459,22 @@ test("mergeRefreshedMembershipTokenFields rejects unusable refresh payloads", ()
       }
     ),
     null
+  );
+});
+
+test("resolvePreferredBreweryId accepts only valid preferences in priority order", () => {
+  assert.equal(
+    resolvePreferredBreweryId(["brewery-1", "brewery-2"], "deleted", "brewery-2"),
+    "brewery-2"
+  );
+  assert.equal(resolvePreferredBreweryId(["brewery-1"], "deleted"), "brewery-1");
+  assert.equal(resolvePreferredBreweryId([], "brewery-1"), null);
+  assert.equal(
+    resolvePreferredBreweryId(["brewery-2", "brewery-1", "brewery-2"]),
+    "brewery-2"
+  );
+  assert.equal(
+    resolvePreferredBreweryId(["brewery-1", "brewery-2"], null, "brewery-2"),
+    "brewery-2"
   );
 });

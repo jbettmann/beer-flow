@@ -19,6 +19,7 @@ import { getUserByOauth } from "./lib/GET/getUserByOauth";
 import {
   mergeRefreshedMembershipTokenFields,
   mergeUniqueStrings,
+  resolvePreferredBreweryId,
   sanitizeNextPath,
   toUniqueStringArray,
 } from "./lib/invite-flow";
@@ -155,9 +156,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           user.name = user.name || user.fullName;
           user.picture = picture;
           user.image = picture;
-          user.selectedBreweryId = selectedBreweryId;
           user.breweries = (user.breweries ?? []).map((b: any) =>
             b.toString()
+          );
+          user.selectedBreweryId = resolvePreferredBreweryId(
+            user.breweries,
+            selectedBreweryId
           );
           user.notifications = { ...(user.notifications ?? {}) };
           return true;
@@ -178,8 +182,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           b.toString()
         );
         user.notifications = { ...(existingUser.notifications ?? {}) };
-        user.selectedBreweryId =
-          selectedBreweryId || (existingUser.breweries ?? [])[0] || null;
+        user.selectedBreweryId = resolvePreferredBreweryId(
+          user.breweries,
+          selectedBreweryId,
+          (existingUser as any).selectedBreweryId
+        );
 
         return true;
       } catch (err: string | any) {
@@ -206,6 +213,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         "/auth/signup",
         "/auth/create/account",
       ];
+      const isAuthPage = nextUrl.pathname === "/auth/login" ||
+        nextUrl.pathname === "/auth/signup" ||
+        nextUrl.pathname === "/auth/create/account";
+
+      if (isAuth && isAuthPage) {
+        const destination = sanitizeNextPath(
+          nextUrl.searchParams.get("next"),
+          "/dashboard/overview"
+        );
+        return NextResponse.redirect(new URL(destination, nextUrl));
+      }
 
       if (
         inviteLanding ||
@@ -281,10 +299,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           token.notifications = session.updatedNotifications as Notifications;
         }
 
-        if (session.selectedBreweryId) {
-          token.selectedBreweryId = session.selectedBreweryId as string;
+        if (Object.prototype.hasOwnProperty.call(session, "selectedBreweryId")) {
+          token.selectedBreweryId = resolvePreferredBreweryId(
+            token.breweries ?? [],
+            session.selectedBreweryId as string | null
+          );
           shouldRefreshAccessToken = true;
         }
+
+        token.selectedBreweryId = resolvePreferredBreweryId(
+          token.breweries ?? [],
+          token.selectedBreweryId
+        );
 
         if (session.refreshMembership && token.accessToken) {
           try {

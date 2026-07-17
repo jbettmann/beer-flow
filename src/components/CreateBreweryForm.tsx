@@ -1,317 +1,117 @@
 "use client";
-import saveImage from "@/lib/supabase/saveImage";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import React, {
-  FC,
-  use,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import Image from "next/image";
-import createBrewery from "@/lib/createBrewery";
-import ErrorField from "./ErrorField/ErrorField";
-import SaveButton from "./Buttons/SaveButton";
-import { ImagePlus, X } from "lucide-react";
-import { useToast } from "@/context/toast";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useBreweryContext } from "@/context/brewery-beer";
-import { User } from "next-auth";
+import { useToast } from "@/context/toast";
+import createBrewery from "@/lib/createBrewery";
+import saveImage from "@/lib/supabase/saveImage";
+import { deleteImage } from "@/lib/supabase/deleteImage";
+import { ImagePlus, Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
+import { FormEvent, useEffect, useState } from "react";
 
-interface FormValues {
-  companyName: string;
-  image: File | null | string;
-}
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+const MAX_NAME_LENGTH = 80;
 
-interface ErrorValues {
-  companyName?: string;
-  image?: string;
-}
+type Props = { onClose: () => void };
 
-type Props = {
-  onClose: () => void;
-};
-
-// Utility function to validate form fields
-const validateFields = (values: FormValues) => {
-  const errors: ErrorValues = {};
-
-  // validate companyName
-  if (!values.companyName) {
-    errors.companyName = "Company Name is required.";
-  }
-  if (values.companyName && values.companyName.length < 2) {
-    errors.companyName = "Company Name must be at least 2 characters long.";
-  }
-
-  return errors;
-};
-
-const CreateBreweryForm = ({ onClose }: Props) => {
-  const { setSelectedBrewery } = useBreweryContext();
-  const [values, setValues] = useState<FormValues>({
-    companyName: "",
-    image: null,
-  });
-  const [errors, setErrors] = useState<ErrorValues>({});
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const [hasCreated, setHasCreated] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const { data: session, status, update } = useSession();
+export default function CreateBreweryForm({ onClose }: Props) {
+  const [companyName, setCompanyName] = useState("");
+  const [image, setImage] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [errors, setErrors] = useState<{ companyName?: string; image?: string; submit?: string }>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { data: session, update } = useSession();
+  const { selectBrewery } = useBreweryContext();
   const { addToast } = useToast();
-  const router = useRouter();
-  const isSubmitting = useRef(false);
 
-  // Define a new state to track "touched" status for each field
-  const [touched, setTouched] = useState<{ [K in keyof FormValues]: boolean }>({
-    companyName: false,
-    image: false,
-  });
+  useEffect(() => () => { if (preview) URL.revokeObjectURL(preview); }, [preview]);
 
-  // Handle blur events for the inputs
-  const handleBlur = (field: keyof FormValues) => () => {
-    setTouched((prevTouched) => ({ ...prevTouched, [field]: true }));
-  };
-
-  const onDismiss = () => {
-    if (hasCreated) {
-      setHasCreated(false);
-      setValues({ companyName: "", image: null });
-    }
-
-    setTouched({ companyName: false, image: false });
-    onClose();
-  };
-
-  const handleSubmit = useCallback(
-    async (event: React.FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-
-      // Don't submit if there are validation errors
-      if (Object.keys(errors).length > 0) {
-        return;
-      }
-      setIsLoading(true);
-      isSubmitting.current = true;
-
-      try {
-        const companyImage = values.image
-          ? await saveImage({ file: values.image } as any)
-          : undefined;
-
-        const newBrewery = {
-          companyName: values.companyName,
-          image: companyImage ?? undefined,
-        };
-
-        const responseBrewery = (await createBrewery({
-          brewery: newBrewery,
-          accessToken: session?.user?.accessToken as string,
-        })) as any;
-
-        if (responseBrewery) {
-          addToast(
-            `${responseBrewery.savedBrewery.companyName} successfully created!`,
-            "success"
-          );
-          await update({
-            newBreweryId: responseBrewery.savedBrewery._id,
-          });
-          localStorage.setItem(
-            "selectedBreweryId",
-            responseBrewery.savedBrewery._id
-          );
-          setSelectedBrewery(responseBrewery.savedBrewery);
-          router.push(
-            `/dashboard/breweries/${responseBrewery.savedBrewery._id}`
-          );
-        } else {
-          addToast(`Error creating brewery`, "error");
-        }
-      } catch (err: any) {
-        console.error(err);
-        setSubmitError(err.message);
-        addToast(err.message, "error");
-      } finally {
-        if (previewImage) {
-          URL.revokeObjectURL(previewImage);
-          setPreviewImage(null);
-        }
-        onDismiss();
-        setIsLoading(false);
-        isSubmitting.current = false;
-      }
-    },
-    [errors, values, session, router, update, setSelectedBrewery]
-  );
-
-  // Handling Enter key press within input fields
-  const handleEnterKeyPress = useCallback(
-    (event: KeyboardEvent) => {
-      if (event.key === "Enter" && !isSubmitting.current) {
-        handleSubmit(event as any); // Typecasting to align with expected event type
-      }
-    },
-    [handleSubmit]
-  );
-
-  useEffect(() => {
-    // Adding Enter key press event listener
-    window.addEventListener("keydown", handleEnterKeyPress);
-
-    return () => {
-      // Removing the event listener on cleanup
-      window.removeEventListener("keydown", handleEnterKeyPress);
+  const chooseImage = (file: File | null) => {
+    setErrors((current) => ({ ...current, image: undefined, submit: undefined }));
+    if (!file) return;
+    const rejectFile = (message: string) => {
+      if (preview) URL.revokeObjectURL(preview);
+      setImage(null);
+      setPreview(null);
+      setErrors((current) => ({ ...current, image: message }));
     };
-  }, [handleEnterKeyPress]);
-
-  // Validate fields and persist state on every render
-  useEffect(() => {
-    setErrors(validateFields(values));
-
-    // Clear the error message when the form fields change
-    setSubmitError(null);
-    if (values.companyName === "") {
-      setHasCreated(false);
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      return rejectFile("Choose a JPG, PNG, WebP, or GIF image.");
     }
-  }, [values]);
+    if (file.size === 0) return rejectFile("Choose a non-empty image file.");
+    if (file.size > MAX_IMAGE_SIZE) return rejectFile("Image must be smaller than 5 MB.");
+    if (preview) URL.revokeObjectURL(preview);
+    setImage(file);
+    setPreview(URL.createObjectURL(file));
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (isSubmitting) return;
+    const trimmedName = companyName.trim();
+    if (trimmedName.length < 2 || trimmedName.length > MAX_NAME_LENGTH) {
+      setErrors((current) => ({ ...current, companyName: `Brewery name must be between 2 and ${MAX_NAME_LENGTH} characters.` }));
+      return;
+    }
+
+    setIsSubmitting(true);
+    setErrors({});
+    let uploadedImage: string | null | undefined;
+    try {
+      uploadedImage = image ? await saveImage({ file: image }) : undefined;
+      if (image && !uploadedImage) throw new Error("The logo could not be uploaded. Please try again.");
+      const response = (await createBrewery({
+        brewery: { companyName: trimmedName, image: uploadedImage ?? undefined },
+        accessToken: session?.user?.accessToken as string,
+      })) as any;
+      if (!response?.savedBrewery?._id) throw new Error("The brewery could not be created.");
+
+      await update({ newBreweryId: response.savedBrewery._id });
+      await selectBrewery(response.savedBrewery, {
+        route: `/dashboard/breweries/${response.savedBrewery._id}`,
+      });
+      addToast(`${response.savedBrewery.companyName} successfully created!`, "success");
+      onClose();
+    } catch (error) {
+      if (uploadedImage) await deleteImage(uploadedImage);
+      const message = error instanceof Error ? error.message : "Unable to create brewery.";
+      setErrors((current) => ({ ...current, submit: message }));
+      addToast(message, "error");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
-    <div className="flex flex-col justify-center items-center z-50 text-background my-auto ">
-      <div className="flex w-full h-full justify-between items-center p-3 lg:hidden">
-        <button onClick={onDismiss} className="btn btn-ghost " type="button">
-          <X size={24} />
-        </button>
-        <h4>Create Brewery</h4>
-        <SaveButton
-          isLoading={isLoading}
-          onClick={handleSubmit}
-          title="Create"
-          className={`ghost`}
-          disabled={!hasCreated}
-        />
+    <form onSubmit={handleSubmit} className="flex min-h-0 flex-col gap-5 text-foreground" noValidate>
+      <div className="flex flex-col items-center gap-3">
+        <Label htmlFor="brewery-image" className="cursor-pointer rounded-full focus-within:ring-2 focus-within:ring-ring">
+          <span className="relative flex size-28 items-center justify-center overflow-hidden rounded-full border bg-muted">
+            {preview ? <Image src={preview} alt="New brewery logo preview" fill className="object-cover" /> : <ImagePlus className="size-10 text-muted-foreground" aria-hidden="true" />}
+          </span>
+          <span className="mt-2 block text-center text-sm font-medium">Choose logo</span>
+        </Label>
+        <Input id="brewery-image" type="file" accept={ALLOWED_IMAGE_TYPES.join(",")} className="sr-only" onChange={(event) => chooseImage(event.target.files?.[0] ?? null)} />
+        {errors.image ? <p className="text-sm text-destructive" role="alert">{errors.image}</p> : <p className="text-xs text-muted-foreground">JPG, PNG, WebP, or GIF. Up to 5 MB.</p>}
       </div>
-      <form
-        onSubmit={handleSubmit}
-        className="p-4 form flex flex-col justify-between mx-auto rounded-lg text-white lg:w-3/4 lg:p-0"
-      >
-        <div className="flex flex-col items-center p-6 pt-7 w-full">
-          <label htmlFor="image" className="beer-card__label-text">
-            Photo
-          </label>
-          <div className="relative w-32 h-32 ">
-            {/* Set a fixed size for responsiveness */}
-            <label
-              htmlFor="image"
-              className="absolute top-0 left-0 w-full h-full flex justify-center items-center rounded-full border border-background bg-background/50 object-cover overflow-hidden text-primary"
-            >
-              {previewImage ? (
-                <Image
-                  className="bg-transparent border border-stone-400 rounded-xl w-full object-cover"
-                  alt="Company image preview"
-                  src={previewImage as any}
-                  width={50}
-                  height={50}
-                />
-              ) : (
-                <ImagePlus size={120} strokeWidth={1} />
-              )}
-            </label>
-          </div>
 
-          <input
-            id="image"
-            name="image"
-            type="file"
-            className="hidden"
-            onChange={(e) => {
-              const file = e.target.files ? e.target.files[0] : null;
-              if (file && file.size > 5 * 1024 * 1024) {
-                // Check if file size is greater than 2MB
-                addToast(
-                  "File is too large. Please select a file less than 5MB.",
-                  "error"
-                );
-                e.target.value = ""; // Clear the selected file
-              } else {
-                setValues({
-                  ...values,
-                  image: file,
-                });
-                if (previewImage) {
-                  URL.revokeObjectURL(previewImage);
-                }
-                // Generate a URL for the new image and set it as the preview
-                const url = URL.createObjectURL(file as any);
-                setPreviewImage(url as any);
-              }
-            }}
-            onBlur={handleBlur("image")}
-          />
-          {touched.image && errors.image && (
-            <ErrorField message={errors.image} />
-          )}
-        </div>
-        <div>
-          <div className="flex flex-col mt-6 w-full  lg:w-fit relative">
-            {hasCreated && (
-              <button
-                aria-label="Clear input"
-                className="absolute inset-y-0 right-2 flex items-center  cursor-pointer  text-accent/50"
-                onClick={() => {
-                  setValues({ ...values, companyName: "" }),
-                    setTouched({ ...touched, companyName: false });
-                  setHasCreated(false);
-                }}
-              >
-                <X size={20} strokeWidth={3} />
-              </button>
-            )}
-            <input
-              id="companyName"
-              name="companyName"
-              className="form__input w-full font-bold! text-2xl! text-primary text-center pr-7! lg:h-11!"
-              placeholder="Company Name"
-              autoComplete="off"
-              value={values.companyName}
-              onChange={(e) => {
-                setValues({ ...values, companyName: e.target.value });
-                setHasCreated(true);
-              }}
-              onBlur={handleBlur("companyName")}
-            />
-          </div>
-          {touched.companyName && errors.companyName && (
-            <ErrorField message={errors.companyName} />
-          )}
-        </div>
-        <div className="flex justify-between p-3 lg:mt-2 lg:pb-0  ">
-          {submitError && <div>Error: {submitError}</div>}
-          <div className=" hidden lg:flex justify-between items-center w-full">
-            {submitError && <div>Error: {submitError}</div>}
+      <div className="space-y-2">
+        <Label htmlFor="brewery-name">Brewery name</Label>
+        <Input id="brewery-name" value={companyName} maxLength={MAX_NAME_LENGTH + 1} autoFocus autoComplete="organization" aria-invalid={!!errors.companyName} aria-describedby={errors.companyName ? "brewery-name-error" : undefined} onChange={(event) => { setCompanyName(event.target.value); setErrors((current) => ({ ...current, companyName: undefined, submit: undefined })); }} placeholder="e.g. North Shore Brewing" />
+        {errors.companyName && <p id="brewery-name-error" className="text-sm text-destructive" role="alert">{errors.companyName}</p>}
+      </div>
 
-            <button
-              className="btn border-none bg-transparent hover:bg-background hover:text-primary text-background"
-              onClick={onDismiss}
-              type="button"
-            >
-              Cancel
-            </button>
+      {errors.submit && <div className="rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive" role="alert">{errors.submit}</div>}
 
-            <SaveButton
-              isLoading={isLoading}
-              type="submit"
-              onClick={handleSubmit}
-              className=" ml-2 inverse"
-              disabled={!hasCreated}
-            />
-          </div>
-        </div>
-      </form>
-    </div>
+      <div className="sticky bottom-0 flex flex-col-reverse gap-2 bg-background pb-[max(0px,env(safe-area-inset-bottom))] pt-2 sm:flex-row sm:justify-end">
+        <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting}>Cancel</Button>
+        <Button type="submit" disabled={isSubmitting}>{isSubmitting && <Loader2 className="size-4 animate-spin" />}Create brewery</Button>
+      </div>
+    </form>
   );
-};
-
-export default CreateBreweryForm;
+}

@@ -1,102 +1,82 @@
 "use client";
-import { Brewery } from "@/types/brewery";
-import { debounce } from "@/lib/utils";
-import { Plus, Router } from "lucide-react";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { use, useEffect, useState } from "react";
-import EditModal from "../Alerts/EditModal";
-import SetBreweryIdStorage from "../Buttons/SetBreweryIdStorage";
-import CreateBreweryForm from "../CreateBreweryForm";
-import BottomDrawer from "../Drawers/BottomDrawer";
-import { useBreweryContext } from "@/context/brewery-beer";
+
+import CreateBreweryForm from "@/components/CreateBreweryForm";
+import SetBreweryIdStorage from "@/components/Buttons/SetBreweryIdStorage";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { toast } from "sonner";
+import { Brewery } from "@/types/brewery";
+import { Building2, Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-type Props = {
-  breweries: Brewery[];
-};
-
-const Breweries = ({ breweries }: Props) => {
+export default function Breweries({ breweries }: { breweries: Brewery[] }) {
   const isMobile = useIsMobile();
-  const [isCreateBrewery, setIsCreateBrewery] = useState<boolean>(false);
-
+  const [open, setOpen] = useState(false);
+  const [presentation, setPresentation] = useState<"dialog" | "drawer">("dialog");
   const router = useRouter();
 
   useEffect(() => {
-    const credentialsLogin = sessionStorage.getItem("credentialsLogin");
-    if (credentialsLogin) {
+    if (sessionStorage.getItem("credentialsLogin")) {
       sessionStorage.removeItem("credentialsLogin");
       router.refresh();
     }
-  }, []);
+  }, [router]);
+
+  const form = <CreateBreweryForm onClose={() => setOpen(false)} />;
+  const openCreate = () => {
+    setPresentation(isMobile ? "drawer" : "dialog");
+    setOpen(true);
+  };
 
   return (
-    <div className="flex flex-col justify-center  mx-auto text-center gap-6">
-      <div className="flex justify-between md:p-5 ">
-        <div className="flex flex-col w-fit mx-auto lg:m-0 lg:my-auto ">
-          <h3 className="text-center lg:text-left">Breweries</h3>
+    <div className="mx-auto w-full max-w-6xl space-y-6 px-4 py-6 sm:px-8 sm:py-10">
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Breweries</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Open a brewery workspace or create a new one.</p>
         </div>
-        <div className="hidden lg:flex justify-center items-center gap-2">
-          <button
-            onClick={() => setIsCreateBrewery(true)}
-            className="create-btn  "
-          >
-            + Brewery
-          </button>
+        <Button type="button" onClick={openCreate} className="w-full sm:w-auto"><Plus className="size-4" />Add brewery</Button>
+      </header>
+
+      {breweries.length ? (
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {breweries.map((brewery) => (
+            <Card key={brewery._id} className="py-0 transition-colors hover:border-primary/40">
+              <CardContent className="p-5 [&_a]:min-h-20 [&_a]:justify-start [&_a]:text-left">
+                <SetBreweryIdStorage brewery={brewery} href={`/dashboard/breweries/${brewery._id}`} />
+              </CardContent>
+            </Card>
+          ))}
         </div>
-      </div>
-      <div className="flex flex-col justify-center w-[80%] items-center mx-auto gap-8">
-        {breweries.length > 0 ? (
-          breweries.map((brewery) => {
-            return (
-              <>
-                <div
-                  key={brewery._id}
-                  className="category-card w-full md:w-1/2 rounded-xl p-5 sm:p-6"
-                >
-                  <SetBreweryIdStorage
-                    brewery={brewery}
-                    href={`/dashboard/breweries/${brewery._id}`}
-                  />
-                </div>
-              </>
-            );
-          })
-        ) : (
-          <div>
-            <h4>You have no breweries</h4>
-            <p>Let get started!</p>
-            <div className="hidden lg:flex justify-center items-center gap-2">
-              <button
-                onClick={() => setIsCreateBrewery(true)}
-                className="create-btn  "
-              >
-                + Brewery
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-      <div className="fixed right-5 bottom-10 p-1 z-2 lg:hidden ">
-        <button
-          onClick={() => setIsCreateBrewery(true)}
-          className="btn btn-circle btn-white create-btn !btn-lg"
-        >
-          <Plus size={28} />
-        </button>
-      </div>
-      {isMobile ? (
-        <BottomDrawer isOpen={isCreateBrewery}>
-          <CreateBreweryForm onClose={() => setIsCreateBrewery(false)} />
-        </BottomDrawer>
       ) : (
-        <EditModal isOpen={isCreateBrewery} title="Create Brewery">
-          <CreateBreweryForm onClose={() => setIsCreateBrewery(false)} />
-        </EditModal>
+        <Card className="border-dashed">
+          <CardContent className="flex flex-col items-center px-5 py-10 text-center">
+            <span className="mb-4 rounded-full bg-muted p-3"><Building2 className="size-6 text-muted-foreground" /></span>
+            <h2 className="font-semibold">No breweries yet</h2>
+            <p className="mt-1 max-w-sm text-sm text-muted-foreground">Create your first brewery to manage beers, categories, and staff.</p>
+            <Button type="button" onClick={openCreate} className="mt-5"><Plus className="size-4" />Create brewery</Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {presentation === "drawer" ? (
+        <Drawer open={open} onOpenChange={setOpen} dismissible={false}>
+          <DrawerContent className="max-h-[calc(100dvh-env(safe-area-inset-top))]">
+            <DrawerHeader className="text-left"><DrawerTitle>Add brewery</DrawerTitle><DrawerDescription>Create a workspace for your brewery.</DrawerDescription></DrawerHeader>
+            <div className="overflow-y-auto px-4 pb-4">{form}</div>
+          </DrawerContent>
+        </Drawer>
+      ) : (
+        <Dialog open={open} onOpenChange={(next) => { if (!next) setOpen(false); }}>
+          <DialogContent onInteractOutside={(event) => event.preventDefault()}>
+            <DialogHeader><DialogTitle>Add brewery</DialogTitle><DialogDescription>Create a workspace for your brewery.</DialogDescription></DialogHeader>
+            {form}
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   );
-};
-
-export default Breweries;
+}

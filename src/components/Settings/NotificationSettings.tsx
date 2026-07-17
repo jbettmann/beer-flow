@@ -6,6 +6,9 @@ import type { Notifications } from "@/types/notifications";
 import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
+import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type NotificationChannelKey = "newBeerRelease" | "beerUpdate";
 
@@ -71,11 +74,6 @@ const normalizeNotifications = (
   },
 });
 
-const isSameNotifications = (
-  left: NotificationSettingsState,
-  right: NotificationSettingsState
-) => JSON.stringify(left) === JSON.stringify(right);
-
 const NotificationSettings = () => {
   const { data: session, update } = useSession();
   const [notifications, setNotifications] = useState<NotificationSettingsState>(
@@ -83,28 +81,26 @@ const NotificationSettings = () => {
   );
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
   const [saveError, setSaveError] = useState("");
+  const [retryKey, setRetryKey] = useState(0);
   const saveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const statusResetTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const saveRequestId = useRef(0);
   const hasHydratedRef = useRef(false);
   const lastSavedSnapshotRef = useRef("");
+  const desiredNotificationsRef = useRef(notifications);
+  const saveInFlightRef = useRef(false);
+  const mountedRef = useRef(true);
 
   useEffect(() => {
+    if (!session?.user?.notifications) return;
     const nextNotifications = normalizeNotifications(
       session?.user?.notifications as Notifications
     );
-    const isFirstSync = !hasHydratedRef.current;
-
+    if (hasHydratedRef.current) return;
     hasHydratedRef.current = true;
-    setNotifications((current) =>
-      isSameNotifications(current, nextNotifications) ? current : nextNotifications
-    );
+    setNotifications(nextNotifications);
     lastSavedSnapshotRef.current = JSON.stringify(nextNotifications);
-
-    if (isFirstSync) {
-      setSaveStatus("idle");
-      setSaveError("");
-    }
+    setSaveStatus("idle");
+    setSaveError("");
   }, [session?.user?.notifications]);
 
   useEffect(() => {
@@ -113,6 +109,7 @@ const NotificationSettings = () => {
     }
 
     const currentSnapshot = JSON.stringify(notifications);
+    desiredNotificationsRef.current = notifications;
     if (currentSnapshot === lastSavedSnapshotRef.current) {
       return;
     }
@@ -127,45 +124,45 @@ const NotificationSettings = () => {
     setSaveStatus("saving");
     setSaveError("");
 
-    const requestId = ++saveRequestId.current;
-
     saveTimeout.current = setTimeout(async () => {
+      if (saveInFlightRef.current) return;
+      saveInFlightRef.current = true;
+
       try {
-        if (!session?.user?.id || !session?.user?.accessToken) {
-          throw new Error("Missing user session. Please sign in again.");
+        while (
+          JSON.stringify(desiredNotificationsRef.current) !==
+          lastSavedSnapshotRef.current
+        ) {
+          if (!session?.user?.id || !session?.user?.accessToken) {
+            throw new Error("Missing user session. Please sign in again.");
+          }
+
+          const snapshot = desiredNotificationsRef.current;
+          await updateUserNotifications({
+            notifications: snapshot,
+            userId: session.user.id,
+            accessToken: session.user.accessToken,
+          });
+          await update({ updatedNotifications: snapshot });
+          lastSavedSnapshotRef.current = JSON.stringify(snapshot);
         }
 
-        await updateUserNotifications({
-          notifications,
-          userId: session.user.id,
-          accessToken: session.user.accessToken,
-        });
-
-        if (requestId !== saveRequestId.current) {
-          return;
-        }
-
-        await update({ updatedNotifications: notifications });
-        lastSavedSnapshotRef.current = JSON.stringify(notifications);
+        if (!mountedRef.current) return;
         setSaveStatus("saved");
         setSaveError("");
-
         statusResetTimeout.current = setTimeout(() => {
-          if (requestId === saveRequestId.current) {
-            setSaveStatus("idle");
-          }
+          if (mountedRef.current) setSaveStatus("idle");
         }, 1800);
       } catch (error) {
-        if (requestId !== saveRequestId.current) {
-          return;
-        }
-
+        if (!mountedRef.current) return;
         const message =
           error instanceof Error
             ? error.message
             : "Unable to save notification preferences.";
         setSaveStatus("error");
         setSaveError(message);
+      } finally {
+        saveInFlightRef.current = false;
       }
     }, 500);
 
@@ -174,10 +171,11 @@ const NotificationSettings = () => {
         clearTimeout(saveTimeout.current);
       }
     };
-  }, [notifications, session?.user?.accessToken, session?.user?.id, update]);
+  }, [notifications, session?.user?.accessToken, session?.user?.id, update, retryKey]);
 
   useEffect(() => {
     return () => {
+      mountedRef.current = false;
       if (saveTimeout.current) {
         clearTimeout(saveTimeout.current);
       }
@@ -193,8 +191,10 @@ const NotificationSettings = () => {
     !session?.user?.accessToken
   ) {
     return (
-      <div className="py-6 text-sm text-base-content/70">
-        Loading notification preferences...
+      <div className="space-y-4" aria-label="Loading notification preferences">
+        <Skeleton className="h-32 w-full rounded-xl" />
+        <Skeleton className="h-28 w-full rounded-xl" />
+        <Skeleton className="h-40 w-full rounded-xl" />
       </div>
     );
   }
@@ -233,7 +233,10 @@ const NotificationSettings = () => {
           </div>
         </div>
         {saveStatus === "error" && saveError ? (
-          <p className="mt-3 text-sm text-error">{saveError}</p>
+          <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-destructive">
+            <p>{saveError}</p>
+            <Button type="button" variant="outline" size="sm" onClick={() => setRetryKey((key) => key + 1)}>Retry</Button>
+          </div>
         ) : null}
       </div>
 
@@ -245,15 +248,12 @@ const NotificationSettings = () => {
               Master switch for all notification delivery.
             </p>
           </div>
-          <label className="label cursor-pointer gap-3 p-0">
+          <div className="flex items-center gap-3">
             <span className="label-text text-sm font-medium">
               {notifications.allow ? "On" : "Off"}
             </span>
-            <input
-              type="checkbox"
-              className="toggle toggle-accent"
-              onChange={(e) => {
-                const checked = e.currentTarget.checked;
+            <Switch
+              onCheckedChange={(checked) => {
                 setNotifications((prev) => ({
                   ...prev,
                   allow: checked,
@@ -262,7 +262,7 @@ const NotificationSettings = () => {
               checked={notifications.allow}
               aria-label="Allow notifications"
             />
-          </label>
+          </div>
         </div>
       </div>
 
@@ -303,11 +303,8 @@ const NotificationSettings = () => {
                             : "Disabled until notifications are enabled"}
                         </div>
                       </div>
-                      <input
-                        type="checkbox"
-                        className="toggle toggle-accent"
-                        onChange={(e) => {
-                          const nextChecked = e.currentTarget.checked;
+                      <Switch
+                        onCheckedChange={(nextChecked) => {
                           setNotifications((prev) => ({
                             ...prev,
                             [key]: {

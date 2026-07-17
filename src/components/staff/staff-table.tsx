@@ -53,7 +53,7 @@ export default function StaffTable() {
 
   const selectedRole = useMemo(
     () => (roleParams ? roleParams.split(".") : []),
-    [roleParams]
+    [roleParams],
   );
 
   const ownerId = useMemo(() => {
@@ -82,8 +82,12 @@ export default function StaffTable() {
       }
     };
 
-    addPopulatedMembers(selectedBrewery.staff as Array<string | number | Users>);
-    addPopulatedMembers(selectedBrewery.admin as Array<string | number | Users>);
+    addPopulatedMembers(
+      selectedBrewery.staff as Array<string | number | Users>,
+    );
+    addPopulatedMembers(
+      selectedBrewery.admin as Array<string | number | Users>,
+    );
 
     if (selectedBrewery.owner && typeof selectedBrewery.owner === "object") {
       const populatedOwnerId = getBreweryMemberId(selectedBrewery.owner);
@@ -96,8 +100,12 @@ export default function StaffTable() {
       }
     }
 
-    const adminIds = new Set(getBreweryMemberIds(selectedBrewery.admin as Array<string | number | Users>));
-    const rows = Array.from(members.values()).map((member) => {
+    const adminIds = new Set(
+      getBreweryMemberIds(
+        selectedBrewery.admin as Array<string | number | Users>,
+      ),
+    );
+    const rows: StaffRow[] = Array.from(members.values()).map((member) => {
       const isOwner = ownerId === member._id;
       const isAdmin = isOwner || adminIds.has(member._id);
 
@@ -134,7 +142,7 @@ export default function StaffTable() {
           .join(" ")
           .toLowerCase(),
       })),
-    [roster]
+    [roster],
   );
 
   const filteredStaff = useMemo(() => {
@@ -153,6 +161,13 @@ export default function StaffTable() {
     });
   }, [roster, selectedRole, searchQuery, searchIndex]);
 
+  const handleRoleFilterChange = async (
+    value: string | ((old: string) => string | null) | null,
+  ) => {
+    await Promise.all([setRoleFilter(value), setPage(1)]);
+    return new URLSearchParams();
+  };
+
   const columns = useMemo<ColumnDef<StaffRow>[]>(
     () => [
       {
@@ -170,7 +185,7 @@ export default function StaffTable() {
               <div className="min-w-0">
                 <div className="font-medium">{staff.fullName}</div>
                 {staff.email ? (
-                  <div className="truncate text-sm text-muted-foreground">
+                  <div className="truncate text-sm text-muted-foreground md:hidden">
                     {staff.email}
                   </div>
                 ) : null}
@@ -194,7 +209,7 @@ export default function StaffTable() {
         ),
       },
     ],
-    []
+    [],
   );
 
   return (
@@ -202,6 +217,7 @@ export default function StaffTable() {
       isTableView={true}
       setIsTableView={() => {}}
       showToggleView={false}
+      fillHeight
       header={
         <>
           <DataTableSearch
@@ -214,7 +230,7 @@ export default function StaffTable() {
             filterKey="role"
             title="Role"
             options={ROLE_OPTIONS}
-            setFilterValue={setRoleFilter}
+            setFilterValue={handleRoleFilterChange}
             filterValue={roleFilter}
           />
           <DataTableResetFilter
@@ -228,6 +244,25 @@ export default function StaffTable() {
           columns={columns}
           data={filteredStaff}
           totalItems={filteredStaff.length}
+          paginationMode="client"
+          hiddenColumnIdsBelowMd={["email"]}
+          emptyState={
+            <div className="flex min-h-32 flex-col items-center justify-center gap-3 py-6">
+              <span>
+                {isAnyFilterActive
+                  ? "No staff match these filters."
+                  : "No staff members found."}
+              </span>
+              {isAnyFilterActive ? (
+                <button
+                  className="text-sm font-medium text-primary underline-offset-4 hover:underline"
+                  onClick={resetFilters}
+                >
+                  Reset filters
+                </button>
+              ) : null}
+            </div>
+          }
         />
       }
       cardComponent={null}

@@ -11,7 +11,7 @@ type Props = {};
 const StaffPage = (props: Props) => {
   return (
     <PageContainer scrollable={false}>
-      <div className="flex flex-1 flex-col space-y-4 ">
+      <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden">
         <div className="flex items-start justify-between">
           <Heading
             title={`Staff Management`}
